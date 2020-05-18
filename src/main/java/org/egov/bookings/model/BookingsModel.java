@@ -19,9 +19,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
-@Entity(name = "OpenSpaceBuildingMaterialBookingsModel")
-@Table(name = "TP_OPEN_SPACE_BUILDING_MATERIAL_BOOKINGS")
-public class OpenSpaceBuildingMaterialBookingsModel {
+@Entity(name = "Bookings")
+@Table(name = "TP_BOOKINGS")
+public class BookingsModel {
 
 	
 	@Id

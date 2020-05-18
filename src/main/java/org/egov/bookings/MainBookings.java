@@ -10,9 +10,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableSwagger2
 @Import({ TracerConfiguration.class })
-public class Bookings {
+public class MainBookings {
 	public static void main(String[] args) {
-		SpringApplication.run(Bookings.class, args);
+		SpringApplication.run(MainBookings.class, args);
 	}
 
 }

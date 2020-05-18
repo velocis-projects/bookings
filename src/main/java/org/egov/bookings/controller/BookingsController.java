@@ -3,8 +3,10 @@ package org.egov.bookings.controller;
 import java.util.List;
 import java.util.Optional;
 
-import org.egov.bookings.model.OpenSpaceBuildingMaterialBookingsModel;
-import org.egov.bookings.service.OpenSpaceBuildingMaterialBookingsService;
+import org.egov.bookings.common.model.ResponseModel;
+import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.service.BookingsService;
+import org.egov.bookings.web.models.BookingsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
@@ -16,24 +18,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.ResourceAccessException;
 
-import org.egov.bookings.common.model.ResponseModel;
-
 @RestController
 @RequestMapping("/api")
-public class OpenSpaceBuildingMaterialBookingsController {
+public class BookingsController {
 
 	@Autowired
-	private OpenSpaceBuildingMaterialBookingsService bookingsService;
+	private BookingsService bookingsService;
 	
 	@Autowired
 	private Environment env;
 
 	@PostMapping("/save")
 	private ResponseEntity<?> saveBuildingMaterial(
-			@RequestBody OpenSpaceBuildingMaterialBookingsModel openSpaceBuildingMaterialBookingsModel) {
+			@RequestBody BookingsRequest bookingsRequest) {
 		
-		OpenSpaceBuildingMaterialBookingsModel bookingsModel = bookingsService
-				.save(openSpaceBuildingMaterialBookingsModel);
+		BookingsModel bookingsModel = bookingsService
+				.save(bookingsRequest);
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");
 		rs.setMessage("Data submitted successfully");
@@ -44,7 +44,7 @@ public class OpenSpaceBuildingMaterialBookingsController {
 
 	@GetMapping("/getAllBuildingMaterial")
 	private ResponseEntity<?> getAllBuildingMaterial() {
-		List<OpenSpaceBuildingMaterialBookingsModel> bookingsModel = bookingsService.getAllBuildingMaterial();
+		List<BookingsModel> bookingsModel = bookingsService.getAllBuildingMaterial();
 		
 		if (bookingsModel.size() == 0)
 			throw new ResourceAccessException(env.getProperty("NOT_FOUND"));
@@ -54,7 +54,7 @@ public class OpenSpaceBuildingMaterialBookingsController {
 	
 	@GetMapping("/getBuildingMaterialById/{id}")
 	private ResponseEntity<?> getBuildingMaterialById(@PathVariable Long id) {
-		OpenSpaceBuildingMaterialBookingsModel bookingsModel = bookingsService.getBuildingMaterialById(id);
+		BookingsModel bookingsModel = bookingsService.getBuildingMaterialById(id);
 		
 		Optional.ofNullable(bookingsModel).orElseThrow(() -> new ResourceAccessException(env.getProperty("NOT_FOUND")));
 		return ResponseEntity.ok(bookingsModel);
