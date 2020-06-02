@@ -96,7 +96,7 @@ public class WorkflowIntegrator {
 			obj.put(BUSINESSSERVICEKEY, config.getBusinessServiceValue());
 			obj.put(MODULENAMEKEY, MODULENAMEVALUE);
 			obj.put(ACTIONKEY, license.getBkAction());
-			obj.put(COMMENTKEY, license.getBkBookingRemarks().get(0).getBkRemarks());
+			obj.put(COMMENTKEY, license.getBkRemarksId().get(0).getBkRemarks());
 			if (!StringUtils.isEmpty(license.getAssignee()))
 				obj.put(ASSIGNEEKEY, uuidmap);
 			obj.put(DOCUMENTSKEY, license.getWfDocuments());

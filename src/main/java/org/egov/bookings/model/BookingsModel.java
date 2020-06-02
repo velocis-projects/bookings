@@ -32,18 +32,17 @@ import lombok.NoArgsConstructor;
 @Table(name = "TT_BOOKINGS")
 public class BookingsModel {
 
-	@Column(name = "BK_BOOKING_ID")
-	private Long bkBookingId;
-	
 	@Id
 	@Column(name = "BK_APPLICATION_NUMBER")
 	private String bkApplicationNumber;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "BK_BOOKING_REMARKS")
-	private List<BookingsRemarks> bkBookingRemarks;
-	
-	
+	@JoinColumn(name = "BK_APPLICATION_NO")
+	private List<BookingsRemarks> bkRemarksId;
+
+	/*@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	private List<BookingsRemarks> bookingsRemarks;*/
+
 	@Column(name = "BK_HOUSE_NO")
 	private String bkHouseNo;
 
@@ -181,114 +180,111 @@ public class BookingsModel {
 
 	@Column(name = "BK_OPEN_SPACE_LOCATION")
 	private String bkOpenSpaceLocation;
-	
+
 	@Column(name = "BK_LANDMARK")
 	private String bkLandmark;
-	
+
 	@Column(name = "BK_REQUIREMENT_AREA")
 	private String bkRequirementArea;
-	
+
 	@Column(name = "BK_LOCATION_PICTURES")
 	private String bkLocationPictures;
-	
+
 	@Column(name = "BK_BOOKING_REFERENCE_NUMBER")
 	private String bkBookingReferenceNumber;
-	
+
 	@Column(name = "BK_PAYMENT_RECEIPT_NUMBER")
 	private String bkPaymentReceiptNumber;
-	
+
 	@Column(name = "BK_PARK_OR_COMMUNITY_CENTER")
 	private String bkParkOrCommunityCenter;
-	
+
 	@Column(name = "BK_REFUND_AMOUNT")
 	private String bkRefundAmount;
-	
+
 	@Column(name = "BK_BANK_ACCOUNT_NUMBER")
 	private String bkBankAccountNumber;
-	
+
 	@Column(name = "BK_BANK_NAME")
 	private String bkBankName;
-	
+
 	@Column(name = "BK_IFSC_CODE")
 	private String bkIfscCode;
-	
+
 	@Column(name = "BK_ACCOUNT_TYPE")
 	private String bkAccountType;
-	
+
 	@Column(name = "BK_PROPERTY_OWNER_NAME")
 	private String bkPropertyOwnerName;
-	
+
 	@Column(name = "BK_COMPLETE_ADDRESS")
 	private String bkCompleteAddress;
-	
+
 	@Column(name = "BK_RESIDENTIAL_OR_COMMERCIAL")
-	private String bkResidentialOrCommercial;	
-	
+	private String bkResidentialOrCommercial;
+
 	@Column(name = "BK_MATERIAL_STORAGE_AREA")
 	private String bkMaterialStorageArea;
-	
+
 	@Column(name = "BK_PLOT_SKETCH")
 	private String bkPlotSketch;
-	
+
 	@Column(name = "BK_APPLICATION_STATUS")
 	private String bkApplicationStatus;
-	
-	
-	
+
 	@Column(name = "BK_TIME")
-	private String bkTime ;
-	
+	private String bkTime;
+
 	@Column(name = "BK_STATUS_UPDATE_REQUEST")
 	private String bkStatusUpdateRequest;
-	
+
 	@Column(name = "BK_STATUS")
 	private String bkStatus;
-	
+
 	@Column(name = "BK_DRIVER_NAME")
 	private String bkDriverName;
-	
+
 	@Column(name = "BK_VEHICLE_NUMBER")
 	private String bkVehicleNumber;
-	
+
 	@Column(name = "BK_ESTIMATED_DELIVERY_TIME")
 	private String bkEstimatedDeliveryTime;
-	
+
 	@Column(name = "BK_ACTUAL_DELIVERY_TIME")
 	private String bkActualDeliveryTime;
-	
+
 	@Column(name = "BK_NORMAL_WATER_FAILURE_REQUEST")
 	private String bkNormalWaterFailureRequest;
-	
+
 	@Column(name = "BK_UPDATE_STATUS_OPTION")
 	private String bkUpdateStatusOption;
-	
+
 	@Column(name = "BK_ADD_SPECIAL_REQUEST_DETAILS")
 	private String bkAddSpecialRequestDetails;
-	
+
 	@Column(name = "BK_BOOKING_TIME")
 	private String bkBookingTime;
-	
 
 	@Column(name = "BK_APPROVED_BY")
 	private String bkApprovedBy;
-	
+
 	@Column(name = "BK_MODULE_TYPE")
 	private String bkModuleType;
-	
+
 	@Column(name = "TENANT_ID")
 	private String tenantId;
-	
+
 	@Column(name = "BK_ACTION")
 	private String bkAction;
-	
-    @Size(max=64)
-    @JsonProperty("assignee")
-    @Transient
-    private String assignee = null;
-    
-    @Valid
-    @JsonProperty("wfDocuments")
-    @Transient
-    private List<Document> wfDocuments;
-    
+
+	@Size(max = 64)
+	@JsonProperty("assignee")
+	@Transient
+	private String assignee = null;
+
+	@Valid
+	@JsonProperty("wfDocuments")
+	@Transient
+	private List<Document> wfDocuments;
+
 }

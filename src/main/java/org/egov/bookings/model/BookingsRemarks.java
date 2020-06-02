@@ -5,8 +5,12 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -25,11 +29,20 @@ import lombok.NoArgsConstructor;
 public class BookingsRemarks {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "BK_REMARKS_ID")
 	private Long bkRemarksId;
 	
-	@JoinColumn(name = "BK_BOOKING_REMARKS")
+	@JoinColumn(name = "BK_APPLICATION_NO")
 	private String   bkApplicationNumber;
+	
+	
+    /*@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BK_APPLICATION_NUMBER")
+    private BookingsModel bkApplicationNumber;*/
+
+
+	
 	
 	@Column(name = "BK_REMARKS")
 	private String bkRemarks;
