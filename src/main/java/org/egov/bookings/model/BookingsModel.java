@@ -1,15 +1,24 @@
 package org.egov.bookings.model;
 
 import java.sql.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,15 +28,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-@Entity(name = "Bookings")
-@Table(name = "TP_BOOKINGS")
+@Entity(name = "BookingsModel")
+@Table(name = "TT_BOOKINGS")
 public class BookingsModel {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "BK_BOOKING_ID")
 	private Long bkBookingId;
+	
+	@Id
+	@Column(name = "BK_APPLICATION_NUMBER")
+	private String bkApplicationNumber;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "BK_BOOKING_REMARKS")
+	private List<BookingsRemarks> bkBookingRemarks;
+	
+	
 	@Column(name = "BK_HOUSE_NO")
 	private String bkHouseNo;
 
@@ -80,7 +96,7 @@ public class BookingsModel {
 	private String bkBookingType;
 
 	@Column(name = "BK_FROM_DATE")
-	private String bkFromDate;
+	private Date bkFromDate;
 
 	@Column(name = "BK_TO_DATE")
 	private Date bkToDate;
@@ -217,8 +233,7 @@ public class BookingsModel {
 	@Column(name = "BK_APPLICATION_STATUS")
 	private String bkApplicationStatus;
 	
-	@Column(name = "BK_APPLICATION_NUMBER")
-	private String bkApplicationNumber;
+	
 	
 	@Column(name = "BK_TIME")
 	private String bkTime ;
@@ -253,12 +268,27 @@ public class BookingsModel {
 	@Column(name = "BK_BOOKING_TIME")
 	private String bkBookingTime;
 	
-	@Column(name = "BK_BOOKING_REMARKS")
-	private String bkBookingRemarks;
-	
+
 	@Column(name = "BK_APPROVED_BY")
 	private String bkApprovedBy;
 	
 	@Column(name = "BK_MODULE_TYPE")
 	private String bkModuleType;
+	
+	@Column(name = "TENANT_ID")
+	private String tenantId;
+	
+	@Column(name = "BK_ACTION")
+	private String bkAction;
+	
+    @Size(max=64)
+    @JsonProperty("assignee")
+    @Transient
+    private String assignee = null;
+    
+    @Valid
+    @JsonProperty("wfDocuments")
+    @Transient
+    private List<Document> wfDocuments;
+    
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.egov.bookings.common.model.ResponseModel;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.service.BookingsService;
+import org.egov.bookings.service.impl.EnrichmentService;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -28,11 +29,15 @@ public class BookingsController {
 	@Autowired
 	private Environment env;
 
+	@Autowired
+	private EnrichmentService enrichmentService;
+	
 	@PostMapping("/save")
 	private ResponseEntity<?> saveBuildingMaterial(
 			@RequestBody BookingsRequest bookingsRequest) {
 		
-		BookingsModel bookingsModel = bookingsService
+		enrichmentService.enrichTLCreateRequest(bookingsRequest);
+		List<BookingsModel> bookingsModel = bookingsService
 				.save(bookingsRequest);
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");
@@ -42,7 +47,7 @@ public class BookingsController {
 		return ResponseEntity.ok(rs);
 	}
 
-	@GetMapping("/getAllBuildingMaterial")
+	@GetMapping("/getAllBookingData")
 	private ResponseEntity<?> getAllBuildingMaterial() {
 		List<BookingsModel> bookingsModel = bookingsService.getAllBuildingMaterial();
 		
@@ -52,7 +57,7 @@ public class BookingsController {
 	}
 		
 	
-	@GetMapping("/getBuildingMaterialById/{id}")
+	@GetMapping("/getBookingDataById/{id}")
 	private ResponseEntity<?> getBuildingMaterialById(@PathVariable Long id) {
 		BookingsModel bookingsModel = bookingsService.getBuildingMaterialById(id);
 		
