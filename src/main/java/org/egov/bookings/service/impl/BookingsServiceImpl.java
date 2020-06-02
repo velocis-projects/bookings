@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.model.SearchCriteriaFieldsDTO;
 import org.egov.bookings.producer.BookingsProducer;
 import org.egov.bookings.repository.BookingsRepository;
 import org.egov.bookings.service.BookingsService;
@@ -56,4 +57,23 @@ public class BookingsServiceImpl implements BookingsService {
 		return bookingsRepository.findOne(id);
 	}
 
+	@Override
+	public List<BookingsModel> getCitizenSearchBooking( SearchCriteriaFieldsDTO searchCriteriaFieldsDTO ) 
+	{
+		if( searchCriteriaFieldsDTO == null )
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if( searchCriteriaFieldsDTO.getTenantId() == null && searchCriteriaFieldsDTO.getTenantId() == "" )
+		{
+			throw new IllegalArgumentException("Invalid tentantId");
+		}
+		return (List<BookingsModel>) bookingsRepository.findAll();
+//		return bookingsRepository.getCitizenSearchBooking();
+	}
+
+	@Override
+	public List<BookingsModel> getEmployeeSearchBooking(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
+		return null;
+	}
 }

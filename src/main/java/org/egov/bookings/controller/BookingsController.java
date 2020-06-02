@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.egov.bookings.common.model.ResponseModel;
 import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.model.SearchCriteriaFieldsDTO;
 import org.egov.bookings.service.BookingsService;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,7 @@ public class BookingsController {
 	private ResponseEntity<?> saveBuildingMaterial(
 			@RequestBody BookingsRequest bookingsRequest) {
 		
-		BookingsModel bookingsModel = bookingsService
-				.save(bookingsRequest);
+		BookingsModel bookingsModel = bookingsService.save(bookingsRequest);
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");
 		rs.setMessage("Data submitted successfully");
@@ -61,4 +61,33 @@ public class BookingsController {
 		
 	}
 	
+	@PostMapping(value = "/_citizen/_search")
+	public ResponseEntity<?> getCitizenSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
+	{
+		if( searchCriteriaFieldsDTO == null )
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if( searchCriteriaFieldsDTO.getTenantId() == null && searchCriteriaFieldsDTO.getTenantId() == "" )
+		{
+			throw new IllegalArgumentException("Invalid tentantId");
+		}
+		List<BookingsModel> bookingsModel = bookingsService.getCitizenSearchBooking( searchCriteriaFieldsDTO );
+		return ResponseEntity.ok(bookingsModel);
+	}
+	
+	@PostMapping(value = "/_employee/_search")
+	public ResponseEntity<?> getEmployeeSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
+	{
+		if( searchCriteriaFieldsDTO == null )
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if( searchCriteriaFieldsDTO.getTenantId() == null && searchCriteriaFieldsDTO.getTenantId() == "" )
+		{
+			throw new IllegalArgumentException("Invalid tentantId");
+		}
+		List<BookingsModel> bookingsModel = bookingsService.getEmployeeSearchBooking( searchCriteriaFieldsDTO );
+		return ResponseEntity.ok(bookingsModel);
+	}
 }
