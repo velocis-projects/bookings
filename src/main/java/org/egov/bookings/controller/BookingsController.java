@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.egov.bookings.common.model.ResponseModel;
+import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.service.BookingsService;
 import org.egov.bookings.service.impl.EnrichmentService;
@@ -66,4 +67,33 @@ public class BookingsController {
 		
 	}
 	
+	@PostMapping(value = "/_citizen/_search")
+	public ResponseEntity<?> getCitizenSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
+	{
+		if( searchCriteriaFieldsDTO == null )
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if( searchCriteriaFieldsDTO.getTenantId() == null && searchCriteriaFieldsDTO.getTenantId() == "" )
+		{
+			throw new IllegalArgumentException("Invalid tentantId");
+		}
+		List<BookingsModel> bookingsModel = bookingsService.getCitizenSearchBooking( searchCriteriaFieldsDTO );
+		return ResponseEntity.ok(bookingsModel);
+	}
+	
+	@PostMapping(value = "/_employee/_search")
+	public ResponseEntity<?> getEmployeeSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
+	{
+		if( searchCriteriaFieldsDTO == null )
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if( searchCriteriaFieldsDTO.getTenantId() == null && searchCriteriaFieldsDTO.getTenantId() == "" )
+		{
+			throw new IllegalArgumentException("Invalid tentantId");
+		}
+		List<BookingsModel> bookingsModel = bookingsService.getEmployeeSearchBooking( searchCriteriaFieldsDTO );
+		return ResponseEntity.ok(bookingsModel);
+	}
 }
