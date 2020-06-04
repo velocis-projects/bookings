@@ -25,12 +25,6 @@ public class SearchCriteriaFieldsDTO {
 	/** The to date. */
 	private Date toDate;
 	
-	/** The s from date. */
-//	private String sFromDate;
-	
-	/** The s to date. */
-//	private String sToDate;
-	
 	/** The mobile number. */
 	private String mobileNumber;
 	
@@ -126,7 +120,6 @@ public class SearchCriteriaFieldsDTO {
 	public void setToDate(Date toDate) {
 		this.toDate = toDate;
 	}
-
 
 	/**
 	 * Gets the mobile number.
