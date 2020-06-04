@@ -67,6 +67,12 @@ public class BookingsController {
 		
 	}
 	
+	/**
+	 * Gets the citizen search booking.
+	 *
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
+	 * @return the citizen search booking
+	 */
 	@PostMapping(value = "/_citizen/_search")
 	public ResponseEntity<?> getCitizenSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
@@ -74,7 +80,7 @@ public class BookingsController {
 		{
 			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
 		}
-		if( searchCriteriaFieldsDTO.getTenantId() == null && searchCriteriaFieldsDTO.getTenantId() == "" )
+		if( searchCriteriaFieldsDTO.getTenantId() == null || searchCriteriaFieldsDTO.getTenantId() == "" )
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
 		}
@@ -82,6 +88,12 @@ public class BookingsController {
 		return ResponseEntity.ok(bookingsModel);
 	}
 	
+	/**
+	 * Gets the employee search booking.
+	 *
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
+	 * @return the employee search booking
+	 */
 	@PostMapping(value = "/_employee/_search")
 	public ResponseEntity<?> getEmployeeSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
@@ -89,7 +101,7 @@ public class BookingsController {
 		{
 			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
 		}
-		if( searchCriteriaFieldsDTO.getTenantId() == null && searchCriteriaFieldsDTO.getTenantId() == "" )
+		if( searchCriteriaFieldsDTO.getTenantId() == null || searchCriteriaFieldsDTO.getTenantId() == "" )
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
 		}
