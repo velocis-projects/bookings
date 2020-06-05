@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.egov.bookings.config.BookingsConfiguration;
+import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.web.models.ProcessInstance;
 import org.egov.tracer.model.CustomException;
@@ -81,29 +82,29 @@ public class WorkflowIntegrator {
 
 		
 		
-		String wfTenantId = bookingsRequest.getProcessInstanceRequest().getProcessInstances().get(0).getTenantId();
+		String wfTenantId = bookingsRequest.getBookingsModel().get(0).getTenantId();
 
 		JSONArray array = new JSONArray();
 		//JSONObject workFlowRequest = (JSONObject) bookingsRequest.getProcessInstanceRequest().getProcessInstances();
-		for (ProcessInstance license : bookingsRequest.getProcessInstanceRequest().getProcessInstances()) {
+		for (BookingsModel license : bookingsRequest.getBookingsModel()) {
 
 			JSONObject obj = new JSONObject();
 			Map<String, String> uuidmap = new HashMap<>();
-			uuidmap.put(UUIDKEY, bookingsRequest.getProcessInstanceRequest().getRequestInfo().getUserInfo().getUuid());
-			obj.put(BUSINESSIDKEY, license.getBusinessId());
+			uuidmap.put(UUIDKEY, bookingsRequest.getRequestInfo().getUserInfo().getUuid());
+			obj.put(BUSINESSIDKEY, license.getBkApplicationNumber());
 			obj.put(TENANTIDKEY, wfTenantId);
 			obj.put(BUSINESSSERVICEKEY, config.getBusinessServiceValue());
 			obj.put(MODULENAMEKEY, MODULENAMEVALUE);
-			obj.put(ACTIONKEY, license.getAction());
-			obj.put(COMMENTKEY, license.getComment());
+			obj.put(ACTIONKEY, license.getBkAction());
+			obj.put(COMMENTKEY, license.getBkRemarksId().get(0).getBkRemarks());
 			if (!StringUtils.isEmpty(license.getAssignee()))
 				obj.put(ASSIGNEEKEY, uuidmap);
-			obj.put(DOCUMENTSKEY, license.getDocuments());
+			obj.put(DOCUMENTSKEY, license.getWfDocuments());
 			array.add(obj);
 		}
 
 		JSONObject workFlowRequest = new JSONObject();
-		workFlowRequest.put(REQUESTINFOKEY, bookingsRequest.getProcessInstanceRequest().getRequestInfo());
+		workFlowRequest.put(REQUESTINFOKEY, bookingsRequest.getRequestInfo());
 		workFlowRequest.put(WORKFLOWREQUESTARRAYKEY, array);
 		
 		log.info("Workflow Request "+workFlowRequest);

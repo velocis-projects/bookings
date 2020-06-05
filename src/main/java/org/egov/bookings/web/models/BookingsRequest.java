@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
+import org.egov.common.contract.request.RequestInfo;
 import org.egov.bookings.model.BookingsModel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,10 +27,16 @@ public class BookingsRequest {
 	 
 	 @JsonProperty("Booking")
      @Valid
-     private BookingsModel bookingsModel = null;
+     private List<BookingsModel> bookingsModel = null;
 	 
+	 
+	 @JsonProperty("RequestInfo")
+     private RequestInfo requestInfo = null;
+	 
+	 
+	/* 
 	 @JsonProperty("ProcessInstanceRequest")
      @Valid
      @NotNull
-     private ProcessInstanceRequest processInstanceRequest;
+     private ProcessInstanceRequest processInstanceRequest;*/
 }

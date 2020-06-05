@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.egov.bookings.common.model.ResponseModel;
+import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
-import org.egov.bookings.model.SearchCriteriaFieldsDTO;
 import org.egov.bookings.service.BookingsService;
+import org.egov.bookings.service.impl.EnrichmentService;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -29,11 +30,16 @@ public class BookingsController {
 	@Autowired
 	private Environment env;
 
+	@Autowired
+	private EnrichmentService enrichmentService;
+	
 	@PostMapping("/save")
 	private ResponseEntity<?> saveBuildingMaterial(
 			@RequestBody BookingsRequest bookingsRequest) {
 		
-		BookingsModel bookingsModel = bookingsService.save(bookingsRequest);
+		enrichmentService.enrichTLCreateRequest(bookingsRequest);
+		List<BookingsModel> bookingsModel = bookingsService
+				.save(bookingsRequest);
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");
 		rs.setMessage("Data submitted successfully");
@@ -42,7 +48,7 @@ public class BookingsController {
 		return ResponseEntity.ok(rs);
 	}
 
-	@GetMapping("/getAllBuildingMaterial")
+	@GetMapping("/getAllBookingData")
 	private ResponseEntity<?> getAllBuildingMaterial() {
 		List<BookingsModel> bookingsModel = bookingsService.getAllBuildingMaterial();
 		
@@ -52,7 +58,7 @@ public class BookingsController {
 	}
 		
 	
-	@GetMapping("/getBuildingMaterialById/{id}")
+	@GetMapping("/getBookingDataById/{id}")
 	private ResponseEntity<?> getBuildingMaterialById(@PathVariable Long id) {
 		BookingsModel bookingsModel = bookingsService.getBuildingMaterialById(id);
 		
@@ -61,6 +67,12 @@ public class BookingsController {
 		
 	}
 	
+	/**
+	 * Gets the citizen search booking.
+	 *
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
+	 * @return the citizen search booking
+	 */
 	@PostMapping(value = "/_citizen/_search")
 	public ResponseEntity<?> getCitizenSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
@@ -68,7 +80,7 @@ public class BookingsController {
 		{
 			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
 		}
-		if( searchCriteriaFieldsDTO.getTenantId() == null && searchCriteriaFieldsDTO.getTenantId() == "" )
+		if( searchCriteriaFieldsDTO.getTenantId() == null || searchCriteriaFieldsDTO.getTenantId() == "" )
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
 		}
@@ -76,6 +88,12 @@ public class BookingsController {
 		return ResponseEntity.ok(bookingsModel);
 	}
 	
+	/**
+	 * Gets the employee search booking.
+	 *
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
+	 * @return the employee search booking
+	 */
 	@PostMapping(value = "/_employee/_search")
 	public ResponseEntity<?> getEmployeeSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
@@ -83,7 +101,7 @@ public class BookingsController {
 		{
 			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
 		}
-		if( searchCriteriaFieldsDTO.getTenantId() == null && searchCriteriaFieldsDTO.getTenantId() == "" )
+		if( searchCriteriaFieldsDTO.getTenantId() == null || searchCriteriaFieldsDTO.getTenantId() == "" )
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
 		}
