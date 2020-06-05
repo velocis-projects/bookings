@@ -27,7 +27,7 @@ public class BookingsRequest {
 	 
 	 @JsonProperty("Booking")
      @Valid
-     private List<BookingsModel> bookingsModel = null;
+     private BookingsModel bookingsModel = null;
 	 
 	 
 	 @JsonProperty("RequestInfo")

@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -36,12 +37,9 @@ public class BookingsModel {
 	@Column(name = "BK_APPLICATION_NUMBER")
 	private String bkApplicationNumber;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "BK_APPLICATION_NO")
-	private List<BookingsRemarks> bkRemarksId;
-
-	/*@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	private List<BookingsRemarks> bookingsRemarks;*/
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "BK_APPLICATION_NUMBER", referencedColumnName = "BK_APPLICATION_NUMBER")
+	private List<BookingsRemarks> bookingsRemarks;
 
 	@Column(name = "BK_HOUSE_NO")
 	private String bkHouseNo;
@@ -271,12 +269,21 @@ public class BookingsModel {
 	@Column(name = "BK_MODULE_TYPE")
 	private String bkModuleType;
 
+	@Column(name = "UUID")
+	private String uuid;
+	
+	
 	@Column(name = "TENANT_ID")
 	private String tenantId;
 
+	
 	@Column(name = "BK_ACTION")
 	private String bkAction;
 
+	
+	@Transient
+	private String businessService;
+	
 	@Size(max = 64)
 	@JsonProperty("assignee")
 	@Transient
@@ -286,5 +293,7 @@ public class BookingsModel {
 	@JsonProperty("wfDocuments")
 	@Transient
 	private List<Document> wfDocuments;
+	
+	
 
 }

@@ -7,7 +7,7 @@ import org.egov.bookings.web.models.BookingsRequest;
 
 public interface BookingsService {
 
-	public List<BookingsModel> save(BookingsRequest bookingsRequest);
+	public BookingsModel save(BookingsRequest bookingsRequest);
 
 	public List<BookingsModel> getAllBuildingMaterial();
 

@@ -42,30 +42,28 @@ public class EnrichmentService {
 
 	private void setIdgenIds(BookingsRequest bookingsRequest) {
 		RequestInfo requestInfo = bookingsRequest.getRequestInfo();
-		String tenantId = bookingsRequest.getBookingsModel().get(0).getTenantId();
+		String tenantId = bookingsRequest.getBookingsModel().getTenantId();
 
-		 List<BookingsModel> bookingsModel = bookingsRequest.getBookingsModel();
+		 BookingsModel bookingsModel = bookingsRequest.getBookingsModel();
 
 		List<String> applicationNumbers = getIdList(requestInfo, tenantId, config.getApplicationNumberIdgenName(),
-				config.getApplicationNumberIdgenFormat(), bookingsRequest.getBookingsModel().size());
+				config.getApplicationNumberIdgenFormat());
 		ListIterator<String> itr = applicationNumbers.listIterator();
 
 		Map<String, String> errorMap = new HashMap<>();
-		if (applicationNumbers.size() != bookingsRequest.getBookingsModel().size()) {
+		/*if (applicationNumbers.size() != bookingsRequest.getBookingsModel().size()) {
 			errorMap.put("IDGEN ERROR ",
 					"The number of LicenseNumber returned by idgen is not equal to number of TradeLicenses");
-		}
+		}*/
 
 		if (!errorMap.isEmpty())
 			throw new CustomException(errorMap);
 
-		bookingsModel.forEach(bkModel -> {
-			bkModel.setBkApplicationNumber(itr.next());
-		});
+		bookingsModel.setBkApplicationNumber(itr.next());
 	}
 
-	private List<String> getIdList(RequestInfo requestInfo, String tenantId, String idKey, String idformat, int count) {
-		List<IdResponse> idResponses = idGenRepository.getId(requestInfo, tenantId, idKey, idformat, count)
+	private List<String> getIdList(RequestInfo requestInfo, String tenantId, String idKey, String idformat) {
+		List<IdResponse> idResponses = idGenRepository.getId(requestInfo, tenantId, idKey, idformat)
 				.getIdResponses();
 
 		if (CollectionUtils.isEmpty(idResponses))

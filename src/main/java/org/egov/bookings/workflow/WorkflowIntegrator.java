@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.web.models.ProcessInstance;
 import org.egov.tracer.model.CustomException;
@@ -62,6 +63,8 @@ public class WorkflowIntegrator {
 	@Autowired
 	private BookingsConfiguration config;
 
+	@Autowired
+	private CommonRepository commonRepository;
 
 	@Autowired
 	public WorkflowIntegrator(RestTemplate rest, BookingsConfiguration config) {
@@ -82,26 +85,28 @@ public class WorkflowIntegrator {
 
 		
 		
-		String wfTenantId = bookingsRequest.getBookingsModel().get(0).getTenantId();
+		String wfTenantId = bookingsRequest.getBookingsModel().getTenantId();
 
 		JSONArray array = new JSONArray();
+		String uuid = null;
+		
 		//JSONObject workFlowRequest = (JSONObject) bookingsRequest.getProcessInstanceRequest().getProcessInstances();
-		for (BookingsModel license : bookingsRequest.getBookingsModel()) {
+		BookingsModel bkModel = bookingsRequest.getBookingsModel();
+			uuid = commonRepository.findAssigneeUuid(wfTenantId, bkModel.getBkAction(), bkModel.getBusinessService(),wfTenantId);
 
 			JSONObject obj = new JSONObject();
 			Map<String, String> uuidmap = new HashMap<>();
-			uuidmap.put(UUIDKEY, bookingsRequest.getRequestInfo().getUserInfo().getUuid());
-			obj.put(BUSINESSIDKEY, license.getBkApplicationNumber());
+			uuidmap.put(UUIDKEY, uuid);
+			obj.put(BUSINESSIDKEY, bkModel.getBkApplicationNumber());
 			obj.put(TENANTIDKEY, wfTenantId);
 			obj.put(BUSINESSSERVICEKEY, config.getBusinessServiceValue());
 			obj.put(MODULENAMEKEY, MODULENAMEVALUE);
-			obj.put(ACTIONKEY, license.getBkAction());
-			obj.put(COMMENTKEY, license.getBkRemarksId().get(0).getBkRemarks());
-			if (!StringUtils.isEmpty(license.getAssignee()))
+			obj.put(ACTIONKEY, bkModel.getBkAction());
+			obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());
+			if (!StringUtils.isEmpty(bkModel.getAssignee()))
 				obj.put(ASSIGNEEKEY, uuidmap);
-			obj.put(DOCUMENTSKEY, license.getWfDocuments());
+			obj.put(DOCUMENTSKEY, bkModel.getWfDocuments());
 			array.add(obj);
-		}
 
 		JSONObject workFlowRequest = new JSONObject();
 		workFlowRequest.put(REQUESTINFOKEY, bookingsRequest.getRequestInfo());
