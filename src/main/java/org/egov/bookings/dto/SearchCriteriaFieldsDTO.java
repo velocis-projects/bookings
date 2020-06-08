@@ -1,12 +1,18 @@
 package org.egov.bookings.dto;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class SearchCriteriaFieldsDTO.
  */
-public class SearchCriteriaFieldsDTO {
+public class SearchCriteriaFieldsDTO implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6489944586553914355L;
 
 	/** The tenant id. */
 	private String tenantId;
@@ -14,8 +20,6 @@ public class SearchCriteriaFieldsDTO {
 	/** The application number. */
 	private String applicationNumber;
 	
-	
-
 	/** The application status. */
 	private String applicationStatus;
 	
@@ -28,6 +32,14 @@ public class SearchCriteriaFieldsDTO {
 	/** The mobile number. */
 	private String mobileNumber;
 	
+	/** The role code. */
+	private String roleCode;
+	
+	/** The user id. */
+	private int userId;
+	
+	/** The uu id. */
+	private String uuId;
 	
 	/**
 	 * Gets the tenant id.
@@ -135,6 +147,60 @@ public class SearchCriteriaFieldsDTO {
 	 */
 	public void setMobileNumber(String mobileNumber) {
 		this.mobileNumber = mobileNumber;
+	}
+
+	/**
+	 * Gets the role code.
+	 *
+	 * @return the role code
+	 */
+	public String getRoleCode() {
+		return roleCode;
+	}
+
+	/**
+	 * Sets the role code.
+	 *
+	 * @param roleCode the new role code
+	 */
+	public void setRoleCode(String roleCode) {
+		this.roleCode = roleCode;
+	}
+
+	/**
+	 * Gets the user id.
+	 *
+	 * @return the user id
+	 */
+	public int getUserId() {
+		return userId;
+	}
+
+	/**
+	 * Sets the user id.
+	 *
+	 * @param userId the new user id
+	 */
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	/**
+	 * Gets the uu id.
+	 *
+	 * @return the uu id
+	 */
+	public String getUuId() {
+		return uuId;
+	}
+
+	/**
+	 * Sets the uu id.
+	 *
+	 * @param uuId the new uu id
+	 */
+	public void setUuId(String uuId) {
+		this.uuId = uuId;
 	}
 
 }

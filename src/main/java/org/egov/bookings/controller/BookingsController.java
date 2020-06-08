@@ -84,6 +84,10 @@ public class BookingsController {
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
 		}
+//		if( searchCriteriaFieldsDTO.getUuId() == null || searchCriteriaFieldsDTO.getUuId() == "" )
+//		{
+//			throw new IllegalArgumentException("Invalid user uuId");
+//		}
 		List<BookingsModel> bookingsModel = bookingsService.getCitizenSearchBooking( searchCriteriaFieldsDTO );
 		return ResponseEntity.ok(bookingsModel);
 	}
@@ -104,6 +108,18 @@ public class BookingsController {
 		if( searchCriteriaFieldsDTO.getTenantId() == null || searchCriteriaFieldsDTO.getTenantId() == "" )
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
+		}
+		if( searchCriteriaFieldsDTO.getUserId() <= 0 )
+		{
+			throw new IllegalArgumentException("Invalid userId");
+		}
+		if( searchCriteriaFieldsDTO.getRoleCode() == null || searchCriteriaFieldsDTO.getRoleCode() == "" )
+		{
+			throw new IllegalArgumentException("Invalid user role code");
+		}
+		if( searchCriteriaFieldsDTO.getUuId() == null || searchCriteriaFieldsDTO.getUuId() == "" )
+		{
+			throw new IllegalArgumentException("Invalid user uuId");
 		}
 		List<BookingsModel> bookingsModel = bookingsService.getEmployeeSearchBooking( searchCriteriaFieldsDTO );
 		return ResponseEntity.ok(bookingsModel);
