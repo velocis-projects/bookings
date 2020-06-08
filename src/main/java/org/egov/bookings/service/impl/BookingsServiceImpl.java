@@ -86,80 +86,80 @@ public class BookingsServiceImpl implements BookingsService {
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
 		}
-//		if( uuId == null || uuId == "" )
-//		{
-//			throw new IllegalArgumentException("Invalid user uuId");
-//		}
-		
-		if( tenantId != null && tenantId != "" && (applicationNumber == null && applicationStatus == null && mobileNumber == null && fromDate == null && toDate == null ) )
+		if( uuId == null || uuId == "" )
 		{
-			myBookingList =  bookingsRepository.findByTenantId( tenantId );
+			throw new IllegalArgumentException("Invalid user uuId");
 		}
-		else if( tenantId != null && tenantId != "" && applicationNumber != null && applicationNumber != "" 
+		
+		if( applicationNumber == null && applicationStatus == null && mobileNumber == null && fromDate == null && toDate == null )
+		{
+			myBookingList =  bookingsRepository.findByTenantIdAndUuId( tenantId, uuId );
+		}
+		else if( applicationNumber != null && applicationNumber != "" 
 				&& (applicationStatus == null && mobileNumber == null && fromDate == null && toDate == null ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumber( tenantId, applicationNumber );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndUuId( tenantId, applicationNumber, uuId );
 		}
-		else if( tenantId != null && tenantId != "" && applicationNumber != null && applicationNumber != "" 
+		else if( applicationNumber != null && applicationNumber != "" 
 				&& applicationStatus != null && applicationStatus != "" && (mobileNumber == null && fromDate == null && toDate == null ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatus( tenantId, applicationNumber, applicationStatus );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndUuId( tenantId, applicationNumber, applicationStatus, uuId );
 		}
-		else if( tenantId != null && tenantId != "" && applicationNumber != null && applicationNumber != "" && applicationStatus != null 
+		else if( applicationNumber != null && applicationNumber != "" && applicationStatus != null 
 				&& applicationStatus != "" && mobileNumber != null && mobileNumber != "" && (fromDate == null && toDate == null ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumber( tenantId, applicationNumber, applicationStatus, mobileNumber );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuId( tenantId, applicationNumber, applicationStatus, mobileNumber, uuId );
 		}
-		else if( tenantId != null && tenantId != "" && applicationNumber != null && applicationNumber != "" && applicationStatus != null 
+		else if( applicationNumber != null && applicationNumber != "" && applicationStatus != null 
 				&& applicationStatus != "" && mobileNumber != null && mobileNumber != "" && fromDate != null && toDate != null )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkDateCreatedBetween( tenantId, applicationNumber, applicationStatus, mobileNumber, fromDate, toDate );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuIdAndBkDateCreatedBetween( tenantId, applicationNumber, applicationStatus, mobileNumber, uuId, fromDate, toDate );
 		}
 		
-		else if( tenantId != null && tenantId != "" && applicationNumber != null && applicationNumber != "" && mobileNumber != null 
+		else if( applicationNumber != null && applicationNumber != "" && mobileNumber != null 
 				&& mobileNumber != "" && (applicationStatus == null && fromDate == null && toDate == null ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkMobileNumber( tenantId, applicationNumber, mobileNumber );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuId( tenantId, applicationNumber, mobileNumber, uuId );
 		}
-		else if( tenantId != null && tenantId != "" && applicationNumber != null && applicationNumber != "" && mobileNumber != null 
+		else if( applicationNumber != null && applicationNumber != "" && mobileNumber != null 
 				&& mobileNumber != "" && fromDate != null && toDate != null && (applicationStatus == null ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkDateCreatedBetween( tenantId, applicationNumber, mobileNumber, fromDate, toDate );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuIdAndBkDateCreatedBetween( tenantId, applicationNumber, mobileNumber, uuId, fromDate, toDate );
 		}
-		else if( tenantId != null && tenantId != "" && applicationNumber != null && applicationNumber != "" 
+		else if( applicationNumber != null && applicationNumber != "" 
 				&& fromDate != null && toDate != null && (applicationStatus == null && mobileNumber == null ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkDateCreatedBetween( tenantId, applicationNumber, fromDate, toDate );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndUuIdAndBkDateCreatedBetween( tenantId, applicationNumber, uuId, fromDate, toDate );
 		}
 		
-		else if( tenantId != null && tenantId != "" && applicationStatus != null && applicationStatus != "" 
+		else if( applicationStatus != null && applicationStatus != "" 
 				&& (applicationNumber == null && mobileNumber == null && fromDate == null && toDate == null ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatus( tenantId, applicationStatus );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndUuId( tenantId, applicationStatus, uuId );
 		}
-		else if( tenantId != null && tenantId != "" && applicationStatus != null && applicationStatus != "" && mobileNumber != null && mobileNumber != "" 
+		else if( applicationStatus != null && applicationStatus != "" && mobileNumber != null && mobileNumber != "" 
 				&& (applicationNumber == null && fromDate == null && toDate == null ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkMobileNumber( tenantId, applicationStatus, mobileNumber );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuId( tenantId, applicationStatus, mobileNumber, uuId );
 		}
-		else if( tenantId != null && tenantId != "" && applicationStatus != null && applicationStatus != "" && mobileNumber != null && mobileNumber != "" 
+		else if( applicationStatus != null && applicationStatus != "" && mobileNumber != null && mobileNumber != "" 
 				&& fromDate != null && toDate != null && (applicationNumber == null ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndBkDateCreatedBetween( tenantId, applicationStatus, mobileNumber, fromDate, toDate );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuIdAndBkDateCreatedBetween( tenantId, applicationStatus, mobileNumber, uuId, fromDate, toDate );
 		}
-		else if( tenantId != null && tenantId != "" && mobileNumber != null && mobileNumber != "" 
+		else if( mobileNumber != null && mobileNumber != "" 
 				&& (applicationStatus == null && applicationNumber == null && fromDate == null && toDate == null ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkMobileNumber( tenantId, mobileNumber );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkMobileNumberAndUuId( tenantId, mobileNumber, uuId );
 		}
-		else if( tenantId != null && tenantId != "" && mobileNumber != null && mobileNumber != "" && fromDate != null && toDate != null 
+		else if( mobileNumber != null && mobileNumber != "" && fromDate != null && toDate != null 
 				&& (applicationNumber == null && applicationStatus == null  ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkMobileNumberAndBkDateCreatedBetween( tenantId, mobileNumber, fromDate, toDate );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkMobileNumberAndUuIdAndBkDateCreatedBetween( tenantId, mobileNumber, uuId, fromDate, toDate );
 		}
-		if( tenantId != null && tenantId != "" && fromDate != null && toDate != null && (applicationNumber == null && applicationStatus == null && mobileNumber == null ) )
+		if( fromDate != null && toDate != null && (applicationNumber == null && applicationStatus == null && mobileNumber == null ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkDateCreatedBetween( tenantId, fromDate, toDate );
+			myBookingList =  bookingsRepository.findByTenantIdAndUuIdAndBkDateCreatedBetween( tenantId, uuId, fromDate, toDate );
 		}
 		return myBookingList;
 	}
@@ -206,73 +206,73 @@ public class BookingsServiceImpl implements BookingsService {
 			throw new IllegalArgumentException("Invalid user uuId");
 		}
 		
-		if( tenantId != null && tenantId != "" && (applicationNumber == null && applicationStatus == null && mobileNumber == null && fromDate == null && toDate == null ) )
+		if( applicationNumber == null && applicationStatus == null && mobileNumber == null && fromDate == null && toDate == null )
 		{
 			myBookingList =  bookingsRepository.findByTenantId( tenantId );
 		}
-		else if( tenantId != null && tenantId != "" && applicationNumber != null && applicationNumber != "" 
+		else if( applicationNumber != null && applicationNumber != "" 
 				&& (applicationStatus == null && mobileNumber == null && fromDate == null && toDate == null ) )
 		{
 			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumber( tenantId, applicationNumber );
 		}
-		else if( tenantId != null && tenantId != "" && applicationNumber != null && applicationNumber != "" 
+		else if( applicationNumber != null && applicationNumber != "" 
 				&& applicationStatus != null && applicationStatus != "" && (mobileNumber == null && fromDate == null && toDate == null ) )
 		{
 			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatus( tenantId, applicationNumber, applicationStatus );
 		}
-		else if( tenantId != null && tenantId != "" && applicationNumber != null && applicationNumber != "" && applicationStatus != null 
+		else if( applicationNumber != null && applicationNumber != "" && applicationStatus != null 
 				&& applicationStatus != "" && mobileNumber != null && mobileNumber != "" && (fromDate == null && toDate == null ) )
 		{
 			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumber( tenantId, applicationNumber, applicationStatus, mobileNumber );
 		}
-		else if( tenantId != null && tenantId != "" && applicationNumber != null && applicationNumber != "" && applicationStatus != null 
+		else if( applicationNumber != null && applicationNumber != "" && applicationStatus != null 
 				&& applicationStatus != "" && mobileNumber != null && mobileNumber != "" && fromDate != null && toDate != null )
 		{
 			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkDateCreatedBetween( tenantId, applicationNumber, applicationStatus, mobileNumber, fromDate, toDate );
 		}
 		
-		else if( tenantId != null && tenantId != "" && applicationNumber != null && applicationNumber != "" && mobileNumber != null 
+		else if( applicationNumber != null && applicationNumber != "" && mobileNumber != null 
 				&& mobileNumber != "" && (applicationStatus == null && fromDate == null && toDate == null ) )
 		{
 			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkMobileNumber( tenantId, applicationNumber, mobileNumber );
 		}
-		else if( tenantId != null && tenantId != "" && applicationNumber != null && applicationNumber != "" && mobileNumber != null 
+		else if( applicationNumber != null && applicationNumber != "" && mobileNumber != null 
 				&& mobileNumber != "" && fromDate != null && toDate != null && (applicationStatus == null ) )
 		{
 			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkDateCreatedBetween( tenantId, applicationNumber, mobileNumber, fromDate, toDate );
 		}
-		else if( tenantId != null && tenantId != "" && applicationNumber != null && applicationNumber != "" 
+		else if( applicationNumber != null && applicationNumber != "" 
 				&& fromDate != null && toDate != null && (applicationStatus == null && mobileNumber == null ) )
 		{
 			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkDateCreatedBetween( tenantId, applicationNumber, fromDate, toDate );
 		}
 		
-		else if( tenantId != null && tenantId != "" && applicationStatus != null && applicationStatus != "" 
+		else if( applicationStatus != null && applicationStatus != "" 
 				&& (applicationNumber == null && mobileNumber == null && fromDate == null && toDate == null ) )
 		{
 			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatus( tenantId, applicationStatus );
 		}
-		else if( tenantId != null && tenantId != "" && applicationStatus != null && applicationStatus != "" && mobileNumber != null && mobileNumber != "" 
+		else if( applicationStatus != null && applicationStatus != "" && mobileNumber != null && mobileNumber != "" 
 				&& (applicationNumber == null && fromDate == null && toDate == null ) )
 		{
 			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkMobileNumber( tenantId, applicationStatus, mobileNumber );
 		}
-		else if( tenantId != null && tenantId != "" && applicationStatus != null && applicationStatus != "" && mobileNumber != null && mobileNumber != "" 
+		else if( applicationStatus != null && applicationStatus != "" && mobileNumber != null && mobileNumber != "" 
 				&& fromDate != null && toDate != null && (applicationNumber == null ) )
 		{
 			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndBkDateCreatedBetween( tenantId, applicationStatus, mobileNumber, fromDate, toDate );
 		}
-		else if( tenantId != null && tenantId != "" && mobileNumber != null && mobileNumber != "" 
+		else if( mobileNumber != null && mobileNumber != "" 
 				&& (applicationStatus == null && applicationNumber == null && fromDate == null && toDate == null ) )
 		{
 			myBookingList =  bookingsRepository.findByTenantIdAndBkMobileNumber( tenantId, mobileNumber );
 		}
-		else if( tenantId != null && tenantId != "" && mobileNumber != null && mobileNumber != "" && fromDate != null && toDate != null 
+		else if( mobileNumber != null && mobileNumber != "" && fromDate != null && toDate != null 
 				&& (applicationNumber == null && applicationStatus == null  ) )
 		{
 			myBookingList =  bookingsRepository.findByTenantIdAndBkMobileNumberAndBkDateCreatedBetween( tenantId, mobileNumber, fromDate, toDate );
 		}
-		if( tenantId != null && tenantId != "" && fromDate != null && toDate != null && (applicationNumber == null && applicationStatus == null && mobileNumber == null ) )
+		if( fromDate != null && toDate != null && (applicationNumber == null && applicationStatus == null && mobileNumber == null ) )
 		{
 			myBookingList =  bookingsRepository.findByTenantIdAndBkDateCreatedBetween( tenantId, fromDate, toDate );
 		}

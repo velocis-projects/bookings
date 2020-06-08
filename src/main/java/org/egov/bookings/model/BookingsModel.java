@@ -271,6 +271,9 @@ public class BookingsModel {
 	@Column(name = "BK_MODULE_TYPE")
 	private String bkModuleType;
 
+	@Column(name = "UUID")
+	private String uuId;
+	
 	@Column(name = "TENANT_ID")
 	private String tenantId;
 

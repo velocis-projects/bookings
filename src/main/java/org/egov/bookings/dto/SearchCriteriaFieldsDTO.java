@@ -9,9 +9,7 @@ import java.sql.Date;
  */
 public class SearchCriteriaFieldsDTO implements Serializable {
 
-	/**
-	 * 
-	 */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -6489944586553914355L;
 
 	/** The tenant id. */
@@ -40,6 +38,9 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 	
 	/** The uu id. */
 	private String uuId;
+	
+	/** The sector. */
+	private String sector;
 	
 	/**
 	 * Gets the tenant id.
@@ -201,6 +202,24 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 	 */
 	public void setUuId(String uuId) {
 		this.uuId = uuId;
+	}
+
+	/**
+	 * Gets the sector.
+	 *
+	 * @return the sector
+	 */
+	public String getSector() {
+		return sector;
+	}
+
+	/**
+	 * Sets the sector.
+	 *
+	 * @param sector the new sector
+	 */
+	public void setSector(String sector) {
+		this.sector = sector;
 	}
 
 }

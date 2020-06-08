@@ -84,10 +84,10 @@ public class BookingsController {
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
 		}
-//		if( searchCriteriaFieldsDTO.getUuId() == null || searchCriteriaFieldsDTO.getUuId() == "" )
-//		{
-//			throw new IllegalArgumentException("Invalid user uuId");
-//		}
+		if( searchCriteriaFieldsDTO.getUuId() == null || searchCriteriaFieldsDTO.getUuId() == "" )
+		{
+			throw new IllegalArgumentException("Invalid user uuId");
+		}
 		List<BookingsModel> bookingsModel = bookingsService.getCitizenSearchBooking( searchCriteriaFieldsDTO );
 		return ResponseEntity.ok(bookingsModel);
 	}
