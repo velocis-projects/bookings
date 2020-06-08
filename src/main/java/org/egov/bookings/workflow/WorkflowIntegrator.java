@@ -6,9 +6,10 @@ import java.util.Map;
 
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.repository.CommonRepository;
+import org.egov.bookings.repository.OsbmApproverRepository;
 import org.egov.bookings.web.models.BookingsRequest;
-import org.egov.bookings.web.models.ProcessInstance;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,6 +68,9 @@ public class WorkflowIntegrator {
 	private CommonRepository commonRepository;
 
 	@Autowired
+	private OsbmApproverRepository osbmApproverRepository;
+
+	@Autowired
 	public WorkflowIntegrator(RestTemplate rest, BookingsConfiguration config) {
 		this.rest = rest;
 		this.config = config;
@@ -83,40 +87,40 @@ public class WorkflowIntegrator {
 	 */
 	public void callWorkFlow(BookingsRequest bookingsRequest) {
 
-		
-		
 		String wfTenantId = bookingsRequest.getBookingsModel().getTenantId();
 
 		JSONArray array = new JSONArray();
-		String uuid = null;
-		
-		//JSONObject workFlowRequest = (JSONObject) bookingsRequest.getProcessInstanceRequest().getProcessInstances();
 		BookingsModel bkModel = bookingsRequest.getBookingsModel();
-			uuid = commonRepository.findAssigneeUuid(wfTenantId, bkModel.getBkAction(), bkModel.getBusinessService(),wfTenantId);
-
-			JSONObject obj = new JSONObject();
-			Map<String, String> uuidmap = new HashMap<>();
-			uuidmap.put(UUIDKEY, uuid);
-			obj.put(BUSINESSIDKEY, bkModel.getBkApplicationNumber());
-			obj.put(TENANTIDKEY, wfTenantId);
-			obj.put(BUSINESSSERVICEKEY, config.getBusinessServiceValue());
-			obj.put(MODULENAMEKEY, MODULENAMEVALUE);
-			obj.put(ACTIONKEY, bkModel.getBkAction());
-			obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());
-			if (!StringUtils.isEmpty(bkModel.getAssignee()))
-				obj.put(ASSIGNEEKEY, uuidmap);
-			obj.put(DOCUMENTSKEY, bkModel.getWfDocuments());
-			array.add(obj);
+		/*
+		 * uuid = commonRepository.findAssigneeUuid(wfTenantId, bkModel.getBkAction(),
+		 * bkModel.getBusinessService(), wfTenantId);
+		 */
+		OsbmApproverModel osbmApproverModel = null;
+		osbmApproverModel = osbmApproverRepository.findBySector(bookingsRequest.getBookingsModel().getBkSector());
+		JSONObject obj = new JSONObject();
+		Map<String, String> uuidmap = new HashMap<>();
+		uuidmap.put(UUIDKEY, osbmApproverModel.getUuid());
+		obj.put(BUSINESSIDKEY, bkModel.getBkApplicationNumber());
+		obj.put(TENANTIDKEY, wfTenantId);
+		obj.put(BUSINESSSERVICEKEY, config.getBusinessServiceValue());
+		obj.put(MODULENAMEKEY, MODULENAMEVALUE);
+		obj.put(ACTIONKEY, bkModel.getBkAction());
+		obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());
+		if (!StringUtils.isEmpty(bkModel.getAssignee()))
+			obj.put(ASSIGNEEKEY, uuidmap);
+		obj.put(DOCUMENTSKEY, bkModel.getWfDocuments());
+		array.add(obj);
 
 		JSONObject workFlowRequest = new JSONObject();
 		workFlowRequest.put(REQUESTINFOKEY, bookingsRequest.getRequestInfo());
 		workFlowRequest.put(WORKFLOWREQUESTARRAYKEY, array);
-		
-		log.info("Workflow Request "+workFlowRequest);
-		
+
+		log.info("Workflow Request " + workFlowRequest);
+
 		String response = null;
 		try {
-			response = rest.postForObject(config.getWfHost().concat(config.getWfTransitionPath()), workFlowRequest, String.class);
+			response = rest.postForObject(config.getWfHost().concat(config.getWfTransitionPath()), workFlowRequest,
+					String.class);
 		} catch (HttpClientErrorException e) {
 
 			/*
@@ -145,15 +149,15 @@ public class WorkflowIntegrator {
 		DocumentContext responseContext = JsonPath.parse(response);
 		List<Map<String, Object>> responseArray = responseContext.read(PROCESSINSTANCESJOSNKEY);
 		Map<String, String> idStatusMap = new HashMap<>();
-		responseArray.forEach(
-				object -> {
+		responseArray.forEach(object -> {
 
-					DocumentContext instanceContext = JsonPath.parse(object);
-					idStatusMap.put(instanceContext.read(BUSINESSIDJOSNKEY), instanceContext.read(STATUSJSONKEY));
-				});
+			DocumentContext instanceContext = JsonPath.parse(object);
+			idStatusMap.put(instanceContext.read(BUSINESSIDJOSNKEY), instanceContext.read(STATUSJSONKEY));
+		});
 
 		// setting the status back to TL object from wf response
-		//tradeLicenseRequest.getLicenses()
-			//	.forEach(tlObj -> tlObj.setStatus(idStatusMap.get(tlObj.getApplicationNumber())));
+		// tradeLicenseRequest.getLicenses()
+		// .forEach(tlObj ->
+		// tlObj.setStatus(idStatusMap.get(tlObj.getApplicationNumber())));
 	}
 }

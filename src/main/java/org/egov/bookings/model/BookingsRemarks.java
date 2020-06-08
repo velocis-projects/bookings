@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 public class BookingsRemarks {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "BK_REMARKS_ID")
 	private Long bkRemarksId;
 
