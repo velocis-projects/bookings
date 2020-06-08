@@ -14,8 +14,6 @@ public class SearchCriteriaFieldsDTO {
 	/** The application number. */
 	private String applicationNumber;
 	
-	
-
 	/** The application status. */
 	private String applicationStatus;
 	
@@ -28,8 +26,6 @@ public class SearchCriteriaFieldsDTO {
 	/** The mobile number. */
 	private String mobileNumber;
 	
-	/** The status. */
-	private boolean status;
 	
 	/**
 	 * Gets the tenant id.
@@ -139,21 +135,4 @@ public class SearchCriteriaFieldsDTO {
 		this.mobileNumber = mobileNumber;
 	}
 
-	/**
-	 * Checks if is status.
-	 *
-	 * @return true, if is status
-	 */
-	public boolean isStatus() {
-		return status;
-	}
-
-	/**
-	 * Sets the status.
-	 *
-	 * @param status the new status
-	 */
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
 }
