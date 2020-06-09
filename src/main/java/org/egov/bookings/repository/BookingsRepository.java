@@ -22,7 +22,7 @@ public interface BookingsRepository
 	 * @param uuId the uu id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndUuId( String tenantId, String uuId );
+	List<BookingsModel> findByTenantIdAndUuid( String tenantId, String uuId );
 	
 	/**
 	 * Find by tenant id and bk application number and uu id.
@@ -32,7 +32,7 @@ public interface BookingsRepository
 	 * @param uuId the uu id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndUuId( String tenantId, String applicationNumber, String uuId );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndUuid( String tenantId, String applicationNumber, String uuId );
 	
 	/**
 	 * Find by tenant id and bk application number and bk application status and uu id.
@@ -43,7 +43,7 @@ public interface BookingsRepository
 	 * @param uuId the uu id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndUuId( String tenantId, String applicationNumber, String applicationStatus, String uuId );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndUuid( String tenantId, String applicationNumber, String applicationStatus, String uuId );
 	
 	/**
 	 * Find by tenant id and bk application number and bk application status and bk mobile number and uu id.
@@ -55,7 +55,7 @@ public interface BookingsRepository
 	 * @param uuId the uu id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuId( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String uuId );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuid( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String uuId );
 	
 	/**
 	 * Find by tenant id and bk application number and bk application status and bk mobile number and uu id and bk date created between.
@@ -69,7 +69,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuIdAndBkDateCreatedBetween( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String uuId, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkDateCreatedBetween( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String uuId, Date fromDate, Date toDate );
 	
 	/**
 	 * Find by tenant id and bk application number and bk mobile number and uu id.
@@ -80,7 +80,7 @@ public interface BookingsRepository
 	 * @param uuId the uu id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuId(String tenantId, String applicationNumber, String mobileNumber, String uuId );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuid(String tenantId, String applicationNumber, String mobileNumber, String uuId );
 	
 	/**
 	 * Find by tenant id and bk application number and bk mobile number and uu id and bk date created between.
@@ -93,7 +93,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuIdAndBkDateCreatedBetween( String tenantId, String applicationNumber, String mobileNumber, String uuId, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuidAndBkDateCreatedBetween( String tenantId, String applicationNumber, String mobileNumber, String uuId, Date fromDate, Date toDate );
 	
 	/**
 	 * Find by tenant id and bk application number and uu id and bk date created between.
@@ -105,7 +105,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndUuIdAndBkDateCreatedBetween( String tenantId, String applicationNumber, String uuId, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndUuidAndBkDateCreatedBetween( String tenantId, String applicationNumber, String uuId, Date fromDate, Date toDate );
 	
 	/**
 	 * Find by tenant id and bk application status and uu id.
@@ -115,7 +115,7 @@ public interface BookingsRepository
 	 * @param uuId the uu id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndUuId( String tenantId, String applicationStatus, String uuId );
+	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndUuid( String tenantId, String applicationStatus, String uuId );
 	
 	/**
 	 * Find by tenant id and bk application status and bk mobile number and uu id.
@@ -126,7 +126,7 @@ public interface BookingsRepository
 	 * @param uuId the uu id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuId( String tenantId, String applicationStatus, String mobileNumber, String uuId );
+	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuid( String tenantId, String applicationStatus, String mobileNumber, String uuId );
 	
 	/**
 	 * Find by tenant id and bk application status and bk mobile number and uu id and bk date created between.
@@ -139,7 +139,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuIdAndBkDateCreatedBetween( String tenantId, String applicationStatus, String mobileNumber, String uuId, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkDateCreatedBetween( String tenantId, String applicationStatus, String mobileNumber, String uuId, Date fromDate, Date toDate );
 	
 	/**
 	 * Find by tenant id and bk mobile number and uu id.
@@ -149,7 +149,7 @@ public interface BookingsRepository
 	 * @param uuId the uu id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkMobileNumberAndUuId( String tenantId,String mobileNumber, String uuId );
+	List<BookingsModel> findByTenantIdAndBkMobileNumberAndUuid( String tenantId,String mobileNumber, String uuId );
 	
 	/**
 	 * Find by tenant id and bk mobile number and uu id and bk date created between.
@@ -161,7 +161,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkMobileNumberAndUuIdAndBkDateCreatedBetween( String tenantId, String mobileNumber, String uuId, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkMobileNumberAndUuidAndBkDateCreatedBetween( String tenantId, String mobileNumber, String uuId, Date fromDate, Date toDate );
 	
 	/**
 	 * Find by tenant id and uu id and bk date created between.
@@ -172,7 +172,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndUuIdAndBkDateCreatedBetween( String tenantId, String uuId, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndUuidAndBkDateCreatedBetween( String tenantId, String uuId, Date fromDate, Date toDate );
 	
 	/**
 	 * Find by tenant id.
@@ -180,7 +180,7 @@ public interface BookingsRepository
 	 * @param tenantId the tenant id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantId( String tenantId );
+	List<BookingsModel> findByTenantIdAndBkSector( String tenantId, String sector );
 	
 	/**
 	 * Find by tenant id and bk application number.
@@ -189,7 +189,7 @@ public interface BookingsRepository
 	 * @param applicationNumber the application number
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumber( String tenantId, String applicationNumber );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkSector( String tenantId, String applicationNumber, String sector );
 	
 	/**
 	 * Find by tenant id and bk application number and bk application status.
@@ -199,7 +199,7 @@ public interface BookingsRepository
 	 * @param applicationStatus the application status
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatus( String tenantId, String applicationNumber, String applicationStatus );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkSector( String tenantId, String applicationNumber, String applicationStatus, String sector );
 	
 	/**
 	 * Find by tenant id and bk application number and bk application status and bk mobile number.
@@ -210,7 +210,7 @@ public interface BookingsRepository
 	 * @param mobileNumber the mobile number
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumber( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkSector( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String sector );
 	
 	/**
 	 * Find by tenant id and bk application number and bk mobile number.
@@ -220,7 +220,7 @@ public interface BookingsRepository
 	 * @param mobileNumber the mobile number
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumber(String tenantId, String applicationNumber, String mobileNumber );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkSector(String tenantId, String applicationNumber, String mobileNumber, String sector );
 	
 	/**
 	 * Find by tenant id and bk application status.
@@ -229,7 +229,7 @@ public interface BookingsRepository
 	 * @param applicationStatus the application status
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationStatus( String tenantId, String applicationStatus );
+	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkSector( String tenantId, String applicationStatus, String sector );
 	
 	/**
 	 * Find by tenant id and bk application status and bk mobile number.
@@ -239,7 +239,7 @@ public interface BookingsRepository
 	 * @param mobileNumber the mobile number
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumber( String tenantId, String applicationStatus, String mobileNumber );
+	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndBkSector( String tenantId, String applicationStatus, String mobileNumber, String sector );
 	
 	/**
 	 * Find by tenant id and bk mobile number.
@@ -248,7 +248,7 @@ public interface BookingsRepository
 	 * @param mobileNumber the mobile number
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkMobileNumber( String tenantId,String mobileNumber );
+	List<BookingsModel> findByTenantIdAndBkMobileNumberAndBkSector( String tenantId,String mobileNumber, String sector );
 	
 	/**
 	 * Find by tenant id and bk date created between.
@@ -258,7 +258,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkDateCreatedBetween( String tenantId, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkSectorAndBkDateCreatedBetween( String tenantId, String sector, Date fromDate, Date toDate );
 	
 	/**
 	 * Find by tenant id and bk application number and bk mobile number and bk date created between.
@@ -270,7 +270,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkDateCreatedBetween( String tenantId, String applicationNumber, String mobileNumber, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkSectorAndBkDateCreatedBetween( String tenantId, String applicationNumber, String mobileNumber, String sector, Date fromDate, Date toDate );
 	
 	/**
 	 * Find by tenant id and bk application number and bk date created between.
@@ -281,7 +281,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkDateCreatedBetween( String tenantId, String applicationNumber, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkSectorAndBkDateCreatedBetween( String tenantId, String applicationNumber, String sector, Date fromDate, Date toDate );
 	
 	/**
 	 * Find by tenant id and bk application number and bk application status and bk mobile number and bk date created between.
@@ -294,7 +294,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkDateCreatedBetween( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkSectorAndBkDateCreatedBetween( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String sector, Date fromDate, Date toDate );
 	
 	/**
 	 * Find by tenant id and bk application status and bk mobile number and bk date created between.
@@ -306,7 +306,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndBkDateCreatedBetween( String tenantId, String applicationStatus, String mobileNumber, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndBkSectorAndBkDateCreatedBetween( String tenantId, String applicationStatus, String mobileNumber, String sector, Date fromDate, Date toDate );
 	
 	/**
 	 * Find by tenant id and bk mobile number and bk date created between.
@@ -317,7 +317,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkMobileNumberAndBkDateCreatedBetween( String tenantId, String mobileNumber, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkMobileNumberAndBkSectorAndBkDateCreatedBetween( String tenantId, String mobileNumber, String sector, Date fromDate, Date toDate );
 	
 	
 	
