@@ -38,11 +38,12 @@ public class BookingsServiceImpl implements BookingsService {
 	private WorkflowIntegrator workflowIntegrator;
 
 	@Override
-	public List<BookingsModel> save(BookingsRequest bookingsRequest) {
+	public BookingsModel save(BookingsRequest bookingsRequest) {
 		
 		if (config.getIsExternalWorkFlowEnabled())
 			workflowIntegrator.callWorkFlow(bookingsRequest);
 		//bookingsProducer.push(saveTopic, bookingsRequest.getBookingsModel());
+		bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
 		 bookingsRepository.save(bookingsRequest.getBookingsModel());
 		 return bookingsRequest.getBookingsModel();
 		

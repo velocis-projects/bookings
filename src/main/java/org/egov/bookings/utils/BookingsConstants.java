@@ -208,4 +208,10 @@ public class BookingsConstants {
 		return actionRoleLocalizationKeyMap;
 	}
 		
+	
+	public static final String TENANT_ID = "tenantId";
+	public static final String ACTION = "action";
+	public static final String BUSINESS_SERVICE = "businessservice";
+	public static final String ROLE_TENANT_ID = "role_tenantId";
+	
 }

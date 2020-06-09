@@ -27,29 +27,21 @@ import lombok.NoArgsConstructor;
 @Entity(name = "BookingsRemarks")
 @Table(name = "TL_BOOKINGS_REMARKS")
 public class BookingsRemarks {
-	
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "BK_REMARKS_ID")
 	private Long bkRemarksId;
-	
-	@JoinColumn(name = "BK_APPLICATION_NO")
-	private String   bkApplicationNumber;
-	
-	
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BK_APPLICATION_NUMBER")
-    private BookingsModel bkApplicationNumber;*/
 
+	@Column(name = "BK_APPLICATION_NUMBER")
+	private String bkApplicationNumber;
 
-	
-	
 	@Column(name = "BK_REMARKS")
 	private String bkRemarks;
-	
+
 	@Column(name = "BK_CREATED_BY")
 	private String bkCreatedBy;
-	
+
 	@Column(name = "BK_CREATED_ON")
 	private Date bkCreatedOn;
 

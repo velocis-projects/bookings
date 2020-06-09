@@ -8,6 +8,7 @@ import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.service.BookingsService;
 import org.egov.bookings.service.impl.EnrichmentService;
+import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -33,12 +34,18 @@ public class BookingsController {
 	@Autowired
 	private EnrichmentService enrichmentService;
 	
-	@PostMapping("/save")
+	@Autowired
+	BookingsFieldsValidator bookingsFieldsValidator;
+	
+	@PostMapping("_create")
 	private ResponseEntity<?> saveBuildingMaterial(
 			@RequestBody BookingsRequest bookingsRequest) {
 		
+		bookingsFieldsValidator.validateAction(bookingsRequest.getBookingsModel().getBkAction());
+		bookingsFieldsValidator.validateBusinessService(bookingsRequest.getBookingsModel().getBusinessService());
+		bookingsFieldsValidator.validateTenantId(bookingsRequest.getBookingsModel().getTenantId());
 		enrichmentService.enrichTLCreateRequest(bookingsRequest);
-		List<BookingsModel> bookingsModel = bookingsService
+		BookingsModel bookingsModel = bookingsService
 				.save(bookingsRequest);
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");
@@ -48,7 +55,7 @@ public class BookingsController {
 		return ResponseEntity.ok(rs);
 	}
 
-	@GetMapping("/getAllBookingData")
+	@GetMapping("_getAllBookingData")
 	private ResponseEntity<?> getAllBuildingMaterial() {
 		List<BookingsModel> bookingsModel = bookingsService.getAllBuildingMaterial();
 		
@@ -58,7 +65,7 @@ public class BookingsController {
 	}
 		
 	
-	@GetMapping("/getBookingDataById/{id}")
+	@GetMapping("_getBookingDataById/{id}")
 	private ResponseEntity<?> getBuildingMaterialById(@PathVariable Long id) {
 		BookingsModel bookingsModel = bookingsService.getBuildingMaterialById(id);
 		
