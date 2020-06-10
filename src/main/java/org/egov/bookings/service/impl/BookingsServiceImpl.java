@@ -191,8 +191,8 @@ public class BookingsServiceImpl implements BookingsService {
 		String mobileNumber = searchCriteriaFieldsDTO.getMobileNumber();
 		Date fromDate = searchCriteriaFieldsDTO.getFromDate();
 		Date toDate = searchCriteriaFieldsDTO.getToDate();
-		String roleCode = searchCriteriaFieldsDTO.getRoleCode();
-		int userId = searchCriteriaFieldsDTO.getUserId();
+//		String roleCode = searchCriteriaFieldsDTO.getRoleCode();
+//		int userId = searchCriteriaFieldsDTO.getUserId();
 		String uuId = searchCriteriaFieldsDTO.getUuId();
 		String sector = searchCriteriaFieldsDTO.getSector();
 		if( tenantId == null || tenantId == "" )
@@ -211,19 +211,16 @@ public class BookingsServiceImpl implements BookingsService {
 		{
 			throw new IllegalArgumentException("Invalid user uuId");
 		}
+		
+		OsbmApproverModel osbmApproverModel = osbmApproverRepository.findByUuid( uuId );
+		if ( osbmApproverModel == null ) {
+			throw new IllegalArgumentException("Invalid user authentication");
+		}
+		sector = osbmApproverModel.getSector();
 		if( sector == null || sector == "" )
 		{
 			throw new IllegalArgumentException("Invalid user sector");
 		}
-		
-		OsbmApproverModel osbmApproverModel = osbmApproverRepository.findBySector( sector );
-		if ( osbmApproverModel == null ) {
-			throw new IllegalArgumentException("Invalid osbmApproverModel");
-		}
-		if ( osbmApproverModel.getUuid() != null && osbmApproverModel.getUuid() != "" && !osbmApproverModel.getUuid().equals( uuId ) ) {
-			throw new IllegalArgumentException("User can't search booking due to authentication");
-		}
-		
 		if( applicationNumber == null && applicationStatus == null && mobileNumber == null && fromDate == null && toDate == null )
 		{
 			myBookingList =  bookingsRepository.findByTenantIdAndBkSector( tenantId, sector );
@@ -297,5 +294,5 @@ public class BookingsServiceImpl implements BookingsService {
 		return myBookingList;
 	
 	}
-
+		
 }
