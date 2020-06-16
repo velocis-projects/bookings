@@ -170,4 +170,14 @@ public class BookingsServiceImpl implements BookingsService {
 		return null;
 	}
 
+	@Override
+	public BookingsModel update(BookingsRequest bookingsRequest) {
+		if (config.getIsExternalWorkFlowEnabled())
+			workflowIntegrator.callWorkFlow(bookingsRequest);
+		//bookingsProducer.push(saveTopic, bookingsRequest.getBookingsModel());
+		//bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
+		 bookingsRepository.save(bookingsRequest.getBookingsModel());
+		 return bookingsRequest.getBookingsModel();
+	}
+
 }

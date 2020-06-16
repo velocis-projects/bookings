@@ -29,4 +29,12 @@ public interface BookingsService {
 	 * @return the employee search booking
 	 */
 	public List<BookingsModel> getEmployeeSearchBooking( SearchCriteriaFieldsDTO searchCriteriaFieldsDTO );
+
+	/**
+	 * Update.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the bookings model
+	 */
+	public BookingsModel update(BookingsRequest bookingsRequest);
 }

@@ -37,6 +37,13 @@ public class BookingsController {
 	@Autowired
 	BookingsFieldsValidator bookingsFieldsValidator;
 	
+	
+	/**
+	 * Save building material.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the response entity
+	 */
 	@PostMapping("_create")
 	private ResponseEntity<?> saveBuildingMaterial(
 			@RequestBody BookingsRequest bookingsRequest) {
@@ -54,7 +61,38 @@ public class BookingsController {
 		
 		return ResponseEntity.ok(rs);
 	}
+	
+	
+	/**
+	 * Update building material.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the response entity
+	 */
+	@PostMapping("_update")
+	private ResponseEntity<?> updateBuildingMaterial(
+			@RequestBody BookingsRequest bookingsRequest) {
+		
+		bookingsFieldsValidator.validateAction(bookingsRequest.getBookingsModel().getBkAction());
+		//bookingsFieldsValidator.validateBusinessService(bookingsRequest.getBookingsModel().getBusinessService());
+		bookingsFieldsValidator.validateTenantId(bookingsRequest.getBookingsModel().getTenantId());
+		//enrichmentService.enrichTLCreateRequest(bookingsRequest);
+		BookingsModel bookingsModel = bookingsService
+				.update(bookingsRequest);
+		ResponseModel rs = new ResponseModel();
+		rs.setStatus("200");
+		rs.setMessage("Data submitted successfully");
+		rs.setData(bookingsModel);
+		
+		return ResponseEntity.ok(rs);
+	}
+	
 
+	/**
+	 * Gets the all building material.
+	 *
+	 * @return the all building material
+	 */
 	@GetMapping("_getAllBookingData")
 	private ResponseEntity<?> getAllBuildingMaterial() {
 		List<BookingsModel> bookingsModel = bookingsService.getAllBuildingMaterial();
@@ -65,6 +103,12 @@ public class BookingsController {
 	}
 		
 	
+	/**
+	 * Gets the building material by id.
+	 *
+	 * @param id the id
+	 * @return the building material by id
+	 */
 	@GetMapping("_getBookingDataById/{id}")
 	private ResponseEntity<?> getBuildingMaterialById(@PathVariable Long id) {
 		BookingsModel bookingsModel = bookingsService.getBuildingMaterialById(id);

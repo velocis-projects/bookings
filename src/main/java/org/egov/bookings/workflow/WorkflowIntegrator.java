@@ -99,7 +99,7 @@ public class WorkflowIntegrator {
 		osbmApproverModel = osbmApproverRepository.findBySector(bookingsRequest.getBookingsModel().getBkSector());
 		JSONObject obj = new JSONObject();
 		Map<String, String> uuidmap = new HashMap<>();
-		uuidmap.put(UUIDKEY, osbmApproverModel.getUuid());
+		uuidmap.put(UUIDKEY, bkModel.getAssignee());
 		obj.put(BUSINESSIDKEY, bkModel.getBkApplicationNumber());
 		obj.put(TENANTIDKEY, wfTenantId);
 		obj.put(BUSINESSSERVICEKEY, config.getBusinessServiceValue());
@@ -155,9 +155,8 @@ public class WorkflowIntegrator {
 			idStatusMap.put(instanceContext.read(BUSINESSIDJOSNKEY), instanceContext.read(STATUSJSONKEY));
 		});
 
-		// setting the status back to TL object from wf response
-		// tradeLicenseRequest.getLicenses()
-		// .forEach(tlObj ->
-		// tlObj.setStatus(idStatusMap.get(tlObj.getApplicationNumber())));
+		// setting the status back to booking object from wf response
+		bookingsRequest.getBookingsModel().setBkApplicationStatus(idStatusMap.get(bookingsRequest.getBookingsModel().getBkApplicationNumber()));
+		 
 	}
 }
