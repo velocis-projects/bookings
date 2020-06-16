@@ -9,6 +9,7 @@ import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsbmApproverRepository;
+import org.egov.bookings.utils.WorkFlowConfigs;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +103,10 @@ public class WorkflowIntegrator {
 		uuidmap.put(UUIDKEY, bkModel.getAssignee());
 		obj.put(BUSINESSIDKEY, bkModel.getBkApplicationNumber());
 		obj.put(TENANTIDKEY, wfTenantId);
-		obj.put(BUSINESSSERVICEKEY, config.getBusinessServiceValue());
+		if (bkModel.getBkBookingType().equalsIgnoreCase(WorkFlowConfigs.BWT))
+			obj.put(BUSINESSSERVICEKEY, WorkFlowConfigs.BWT);
+		else if (bkModel.getBkBookingType().equalsIgnoreCase(WorkFlowConfigs.OSBM))
+			obj.put(BUSINESSSERVICEKEY, WorkFlowConfigs.OSBM);
 		obj.put(MODULENAMEKEY, MODULENAMEVALUE);
 		obj.put(ACTIONKEY, bkModel.getBkAction());
 		obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());
@@ -156,7 +160,8 @@ public class WorkflowIntegrator {
 		});
 
 		// setting the status back to booking object from wf response
-		bookingsRequest.getBookingsModel().setBkApplicationStatus(idStatusMap.get(bookingsRequest.getBookingsModel().getBkApplicationNumber()));
-		 
+		bookingsRequest.getBookingsModel()
+				.setBkApplicationStatus(idStatusMap.get(bookingsRequest.getBookingsModel().getBkApplicationNumber()));
+
 	}
 }
