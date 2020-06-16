@@ -29,6 +29,10 @@ public class WorkFlowConfigs {
 	public static final String STATUS_RESOLVED = "resolved";
 	public static final String STATUS_REASSIGN_REQUESTED = "reassignrequested";
 	
+	
+	public static final String BWT = "BWT";
+	public static final String OSBM = "OSBM";
+	
 	private WorkFlowConfigs() {}
 
 	private static Map<String, String> actionStatusMap = prepareStatusMap();
