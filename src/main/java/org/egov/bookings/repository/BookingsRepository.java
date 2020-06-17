@@ -15,6 +15,15 @@ import org.springframework.stereotype.Repository;
 public interface BookingsRepository
 		extends CrudRepository<BookingsModel, Long> {
 	
+	
+	/**
+	 * Count by tenant id and uuid.
+	 *
+	 * @param tenantId the tenant id
+	 * @param uuId the uu id
+	 * @return the int
+	 */
+	int countByTenantIdAndUuid( String tenantId, String uuId );
 	/**
 	 * Find by tenant id and uu id.
 	 *
@@ -173,6 +182,17 @@ public interface BookingsRepository
 	 * @return the list
 	 */
 	List<BookingsModel> findByTenantIdAndUuidAndBkDateCreatedBetween( String tenantId, String uuId, Date fromDate, Date toDate );
+	
+	
+	/**
+	 * Count by tenant id and bk application number in.
+	 *
+	 * @param tenantId the tenant id
+	 * @param applicationNumberList the application number list
+	 * @return the int
+	 */
+	int countByTenantIdAndBkApplicationNumberIn( String tenantId, List< String > applicationNumberList );
+	
 	
 	/**
 	 * Find by tenant id and bk application number in.

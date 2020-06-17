@@ -2,16 +2,38 @@ package org.egov.bookings.service;
 
 import java.util.List;
 
+import org.egov.bookings.contract.Booking;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.web.models.BookingsRequest;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface BookingsService.
+ */
 public interface BookingsService {
 
+	/**
+	 * Save.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the bookings model
+	 */
 	public BookingsModel save(BookingsRequest bookingsRequest);
 
+	/**
+	 * Gets the all building material.
+	 *
+	 * @return the all building material
+	 */
 	public List<BookingsModel> getAllBuildingMaterial();
 
+	/**
+	 * Gets the building material by id.
+	 *
+	 * @param id the id
+	 * @return the building material by id
+	 */
 	public BookingsModel getBuildingMaterialById(Long id);
 	
 	/**
@@ -20,7 +42,7 @@ public interface BookingsService {
 	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @return the citizen search booking
 	 */
-	public List<BookingsModel> getCitizenSearchBooking( SearchCriteriaFieldsDTO searchCriteriaFieldsDTO );
+	public Booking getCitizenSearchBooking( SearchCriteriaFieldsDTO searchCriteriaFieldsDTO );
 	
 	/**
 	 * Gets the employee search booking.
@@ -28,7 +50,7 @@ public interface BookingsService {
 	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @return the employee search booking
 	 */
-	public List<BookingsModel> getEmployeeSearchBooking( SearchCriteriaFieldsDTO searchCriteriaFieldsDTO );
+	public Booking getEmployeeSearchBooking( SearchCriteriaFieldsDTO searchCriteriaFieldsDTO );
 
 	/**
 	 * Update.
