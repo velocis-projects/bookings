@@ -22,4 +22,8 @@ public class WorkflowQueryBuilder {
 	/** The Constant FIND_APPLICATION_NUMBER. */
 	public static final String FIND_APPLICATION_NUMBER = "select businessid from eg_wf_processinstance_v2 where assignee = :uuid";
 	
+	
+	/** The Constant FIND_SECTOR_LIST. */
+	public static final String FIND_SECTOR_LIST = "select sector from tt_osbm_approver where uuid = :uuid";
+	
 }

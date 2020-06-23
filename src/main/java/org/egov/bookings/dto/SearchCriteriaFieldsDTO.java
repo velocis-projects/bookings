@@ -42,6 +42,9 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 	/** The sector. */
 	private String sector;
 	
+	/** The booking type. */
+	private String bookingType;
+	
 	/**
 	 * Gets the tenant id.
 	 *
@@ -220,6 +223,24 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 	 */
 	public void setSector(String sector) {
 		this.sector = sector;
+	}
+
+	/**
+	 * Gets the booking type.
+	 *
+	 * @return the booking type
+	 */
+	public String getBookingType() {
+		return bookingType;
+	}
+
+	/**
+	 * Sets the booking type.
+	 *
+	 * @param bookingType the new booking type
+	 */
+	public void setBookingType(String bookingType) {
+		this.bookingType = bookingType;
 	}
 
 }
