@@ -1,6 +1,9 @@
 package org.egov.bookings.controller;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.egov.bookings.common.model.ResponseModel;
@@ -19,22 +22,31 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.ResourceAccessException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BookingsController.
+ */
 @RestController
 @RequestMapping("/api")
 public class BookingsController {
 
+	/** The bookings service. */
 	@Autowired
 	private BookingsService bookingsService;
 	
+	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The enrichment service. */
 	@Autowired
 	private EnrichmentService enrichmentService;
 	
+	/** The bookings fields validator. */
 	@Autowired
 	BookingsFieldsValidator bookingsFieldsValidator;
 	
@@ -148,26 +160,109 @@ public class BookingsController {
 	/**
 	 * Gets the employee search booking.
 	 *
-	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
+	 * @param tenantId the tenant id
+	 * @param uuid the uuid
+	 * @param bookingType the booking type
+	 * @param applicationNumber the application number
+	 * @param applicationStatus the application status
+	 * @param mobileNumber the mobile number
+	 * @param fromDate the from date
+	 * @param toDate the to date
 	 * @return the employee search booking
 	 */
-	@PostMapping(value = "/_employee/_search")
-	public ResponseEntity<?> getEmployeeSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
+//	@PostMapping(value = "/_employee/_search")
+//	public ResponseEntity<?> getEmployeeSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
+//	{
+//		Booking booking = new Booking();
+//		if( searchCriteriaFieldsDTO == null )
+//		{
+//			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+//		}
+//		if( searchCriteriaFieldsDTO.getTenantId() == null || searchCriteriaFieldsDTO.getTenantId() == "" )
+//		{
+//			throw new IllegalArgumentException("Invalid tentantId");
+//		}
+//		if( searchCriteriaFieldsDTO.getUuId() == null || searchCriteriaFieldsDTO.getUuId() == "" )
+//		{
+//			throw new IllegalArgumentException("Invalid user uuId");
+//		}
+//		String bookingType = searchCriteriaFieldsDTO.getBookingType();
+//		if( bookingType == null || bookingType == "" )
+//		{
+//			throw new IllegalArgumentException("Invalid booking type");
+//		}
+//		booking = bookingsService.getEmployeeSearchBooking( searchCriteriaFieldsDTO );
+//		return ResponseEntity.ok(booking);
+//	}
+	
+	@GetMapping(value = "/_employee/_search")
+	public ResponseEntity<?> getEmployeeSearchBooking( @RequestParam( value = "tenantId", required = true ) String tenantId,
+			@RequestParam( value = "uuid", required = true ) String uuid, @RequestParam( value = "bookingType", required = true ) String bookingType,
+			@RequestParam( value = "applicationNumber", required = false ) String applicationNumber, @RequestParam( value = "applicationStatus", required = false ) String applicationStatus,
+			@RequestParam( value = "mobileNumber", required = false ) String mobileNumber, @RequestParam( value = "fromDate", required = false ) Date fromDate,
+			@RequestParam( value = "toDate", required = false ) Date toDate )
 	{
 		Booking booking = new Booking();
-		if( searchCriteriaFieldsDTO == null )
-		{
-			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
-		}
-		if( searchCriteriaFieldsDTO.getTenantId() == null || searchCriteriaFieldsDTO.getTenantId() == "" )
+		if( tenantId == null || tenantId == "" )
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
 		}
-		if( searchCriteriaFieldsDTO.getUuId() == null || searchCriteriaFieldsDTO.getUuId() == "" )
+		if( uuid == null || uuid == "" )
 		{
 			throw new IllegalArgumentException("Invalid user uuId");
 		}
-		booking = bookingsService.getEmployeeSearchBooking( searchCriteriaFieldsDTO );
+		if( bookingType == null || bookingType == "" )
+		{
+			throw new IllegalArgumentException("Invalid booking type");
+		}
+		booking = bookingsService.getEmployeeSearchBooking( tenantId, uuid, bookingType, applicationNumber, applicationStatus,
+				mobileNumber, fromDate, toDate );
 		return ResponseEntity.ok(booking);
+	}
+	
+	/**
+	 * Gets the all employee records.
+	 *
+	 * @param tenantId the tenant id
+	 * @param uuid the uuid
+	 * @return the all employee records
+	 */
+	@GetMapping(value = "/getAllEmployeeRecords")
+	public ResponseEntity<?> getAllEmployeeRecords( @RequestParam( value = "tenantId", required = true ) String tenantId,  @RequestParam( value = "uuid", required = true ) String uuid )
+	{
+		Map< String, Integer > bookingCountMap = new HashMap<>();
+		if( tenantId == null || tenantId == "" )
+		{
+			throw new IllegalArgumentException("Invalid tentantId");
+		}
+		if( uuid == null || uuid == "" )
+		{
+			throw new IllegalArgumentException("Invalid user uuId");
+		}
+		bookingCountMap = bookingsService.getAllEmployeeRecords( tenantId, uuid );
+		return ResponseEntity.ok( bookingCountMap );
+	}
+	
+	/**
+	 * Gets the all citizen records.
+	 *
+	 * @param tenantId the tenant id
+	 * @param uuid the uuid
+	 * @return the all citizen records
+	 */
+	@GetMapping(value = "/getAllCitizenRecords")
+	public ResponseEntity<?> getAllCitizenRecords( @RequestParam( value = "tenantId", required = true ) String tenantId,  @RequestParam( value = "uuid", required = true ) String uuid )
+	{
+		Map< String, Integer > bookingCountMap = new HashMap<>();
+		if( tenantId == null || tenantId == "" )
+		{
+			throw new IllegalArgumentException("Invalid tentantId");
+		}
+		if( uuid == null || uuid == "" )
+		{
+			throw new IllegalArgumentException("Invalid user uuId");
+		}
+		bookingCountMap = bookingsService.getAllCitizenRecords( tenantId, uuid );
+		return ResponseEntity.ok( bookingCountMap );
 	}
 }

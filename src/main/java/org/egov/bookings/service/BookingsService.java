@@ -1,13 +1,14 @@
 package org.egov.bookings.service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.egov.bookings.contract.Booking;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.web.models.BookingsRequest;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface BookingsService.
  */
@@ -51,6 +52,22 @@ public interface BookingsService {
 	 * @return the employee search booking
 	 */
 	public Booking getEmployeeSearchBooking( SearchCriteriaFieldsDTO searchCriteriaFieldsDTO );
+	
+	/**
+	 * Gets the employee search booking.
+	 *
+	 * @param tenantId the tenant id
+	 * @param uuid the uuid
+	 * @param bookingType the booking type
+	 * @param applicationNumber the application number
+	 * @param applicationStatus the application status
+	 * @param mobileNumber the mobile number
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @return the employee search booking
+	 */
+	public Booking getEmployeeSearchBooking( String tenantId, String uuid, String bookingType, String applicationNumber, String applicationStatus,
+			String mobileNumber, Date fromDate, Date toDate );
 
 	/**
 	 * Update.
@@ -59,4 +76,23 @@ public interface BookingsService {
 	 * @return the bookings model
 	 */
 	public BookingsModel update(BookingsRequest bookingsRequest);
+	
+	/**
+	 * Gets the all employee records.
+	 *
+	 * @param tenantId the tenant id
+	 * @param uuid the uuid
+	 * @return the all employee records
+	 */
+	public Map< String, Integer > getAllEmployeeRecords( String tenantId, String uuid );
+	
+	/**
+	 * Gets the all citizen records.
+	 *
+	 * @param tenantId the tenant id
+	 * @param uuid the uuid
+	 * @return the all citizen records
+	 */
+	public Map< String, Integer > getAllCitizenRecords( String tenantId, String uuid );
+	
 }
