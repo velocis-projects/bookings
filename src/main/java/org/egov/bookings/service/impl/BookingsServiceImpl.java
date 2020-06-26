@@ -107,7 +107,7 @@ public class BookingsServiceImpl implements BookingsService {
 	{
 		Booking booking = new Booking();
 		List<BookingsModel> myBookingList = new ArrayList<>();
-		if( searchCriteriaFieldsDTO == null )
+		if( BookingsFieldsValidator.isNullOrEmpty( searchCriteriaFieldsDTO ) )
 		{
 			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
 		}
@@ -118,76 +118,76 @@ public class BookingsServiceImpl implements BookingsService {
 		String mobileNumber = searchCriteriaFieldsDTO.getMobileNumber();
 		Date fromDate = searchCriteriaFieldsDTO.getFromDate();
 		Date toDate = searchCriteriaFieldsDTO.getToDate();
-		String uuId = searchCriteriaFieldsDTO.getUuId();
+		String uuid = searchCriteriaFieldsDTO.getUuid();
 		String bookingType = searchCriteriaFieldsDTO.getBookingType();
 		
-		if( tenantId == null || tenantId == "" )
+		if( BookingsFieldsValidator.isNullOrEmpty( tenantId ) )
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
 		}
-		if( uuId == null || uuId == "" )
+		if( BookingsFieldsValidator.isNullOrEmpty( uuid ) )
 		{
 			throw new IllegalArgumentException("Invalid user uuId");
 		}
 		if( BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && BookingsFieldsValidator.isNullOrEmpty( bookingType ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndUuid( tenantId, uuId );
+			myBookingList =  bookingsRepository.findByTenantIdAndUuid( tenantId, uuid );
 		}
 		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndUuidAndBkBookingType( tenantId, uuId, bookingType );
+			myBookingList =  bookingsRepository.findByTenantIdAndUuidAndBkBookingType( tenantId, uuid, bookingType );
 		}
 		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndUuidAndBkBookingType( tenantId, applicationNumber, uuId, bookingType );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndUuidAndBkBookingType( tenantId, applicationNumber, uuid, bookingType );
 		}
 		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && !BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && ( BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndUuidAndBkBookingType( tenantId, applicationNumber, applicationStatus, uuId, bookingType );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndUuidAndBkBookingType( tenantId, applicationNumber, applicationStatus, uuid, bookingType );
 		}
 		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && !BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && ( BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingType( tenantId, applicationNumber, applicationStatus, mobileNumber, uuId, bookingType );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingType( tenantId, applicationNumber, applicationStatus, mobileNumber, uuid, bookingType );
 		}
 		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && !BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && !BookingsFieldsValidator.isNullOrEmpty( fromDate ) && !BookingsFieldsValidator.isNullOrEmpty( toDate ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( tenantId, applicationNumber, applicationStatus, mobileNumber, uuId, bookingType, fromDate, toDate );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( tenantId, applicationNumber, applicationStatus, mobileNumber, uuid, bookingType, fromDate, toDate );
 		}
 		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuidAndBkBookingType( tenantId, applicationNumber, mobileNumber, uuId, bookingType );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuidAndBkBookingType( tenantId, applicationNumber, mobileNumber, uuid, bookingType );
 		}
 		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && !BookingsFieldsValidator.isNullOrEmpty( fromDate ) && !BookingsFieldsValidator.isNullOrEmpty( toDate ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( tenantId, applicationNumber, mobileNumber, uuId, bookingType, fromDate, toDate );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( tenantId, applicationNumber, mobileNumber, uuid, bookingType, fromDate, toDate );
 		}
 		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && !BookingsFieldsValidator.isNullOrEmpty( fromDate ) && !BookingsFieldsValidator.isNullOrEmpty( toDate ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( tenantId, applicationNumber, uuId, bookingType, fromDate, toDate );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( tenantId, applicationNumber, uuid, bookingType, fromDate, toDate );
 		}
 		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && !BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndUuidAndBkBookingType( tenantId, applicationStatus, uuId, bookingType );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndUuidAndBkBookingType( tenantId, applicationStatus, uuid, bookingType );
 		}
 		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && !BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingType( tenantId, applicationStatus, mobileNumber, uuId, bookingType );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingType( tenantId, applicationStatus, mobileNumber, uuid, bookingType );
 		}
 		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && !BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && !BookingsFieldsValidator.isNullOrEmpty( fromDate ) && !BookingsFieldsValidator.isNullOrEmpty( toDate ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( tenantId, applicationStatus, mobileNumber, uuId, bookingType, fromDate, toDate );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( tenantId, applicationStatus, mobileNumber, uuid, bookingType, fromDate, toDate );
 		}
 		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkMobileNumberAndUuidAndBkBookingType( tenantId, mobileNumber, uuId, bookingType );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkMobileNumberAndUuidAndBkBookingType( tenantId, mobileNumber, uuid, bookingType );
 		}
 		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && !BookingsFieldsValidator.isNullOrEmpty( fromDate ) && !BookingsFieldsValidator.isNullOrEmpty( toDate ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( tenantId, mobileNumber, uuId, bookingType, fromDate, toDate );
+			myBookingList =  bookingsRepository.findByTenantIdAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( tenantId, mobileNumber, uuid, bookingType, fromDate, toDate );
 		}
 		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && !BookingsFieldsValidator.isNullOrEmpty( fromDate ) && !BookingsFieldsValidator.isNullOrEmpty( toDate ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) ) )
 		{
-			myBookingList =  bookingsRepository.findByTenantIdAndUuidAndBkBookingTypeAndBkDateCreatedBetween( tenantId, uuId, bookingType, fromDate, toDate );
+			myBookingList =  bookingsRepository.findByTenantIdAndUuidAndBkBookingTypeAndBkDateCreatedBetween( tenantId, uuid, bookingType, fromDate, toDate );
 		}
 		booking.setBookingsModelList( myBookingList );
 		booking.setBookingsCount( myBookingList.size() );
@@ -205,7 +205,7 @@ public class BookingsServiceImpl implements BookingsService {
 	{
 		Booking booking = new Booking();
 		List<BookingsModel> bookingsList = new ArrayList<>();
-		if( searchCriteriaFieldsDTO == null )
+		if( BookingsFieldsValidator.isNullOrEmpty( searchCriteriaFieldsDTO ) )
 		{
 			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
 		}
@@ -216,214 +216,84 @@ public class BookingsServiceImpl implements BookingsService {
 		String mobileNumber = searchCriteriaFieldsDTO.getMobileNumber();
 		Date fromDate = searchCriteriaFieldsDTO.getFromDate();
 		Date toDate = searchCriteriaFieldsDTO.getToDate();
-		String uuid = searchCriteriaFieldsDTO.getUuId();
+		String uuid = searchCriteriaFieldsDTO.getUuid();
 		String bookingType = searchCriteriaFieldsDTO.getBookingType();
-		if( tenantId == null || tenantId == "" )
+		if( BookingsFieldsValidator.isNullOrEmpty( tenantId ) )
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
 		}
-		if( uuid == null || uuid == "" )
+		if( BookingsFieldsValidator.isNullOrEmpty( uuid ) )
 		{
 			throw new IllegalArgumentException("Invalid user uuId");
 		}
-//		if( bookingType == null || bookingType == "" )
-//		{
-//			throw new IllegalArgumentException("Invalid booking type");
-//		}
-		
 		List< String > sectorList = commonRepository.findSectorList( uuid );
 		if( sectorList == null || sectorList.isEmpty() )
 		{
 			return booking;
 		}
-		int bookingsCount = bookingsRepository.countByTenantIdAndBkBookingTypeAndBkSectorIn( tenantId, bookingType, sectorList );
-		if( applicationNumber == null && applicationStatus == null && mobileNumber == null && fromDate == null && toDate == null )
-		{
-			bookingsList =  bookingsRepository.findByTenantIdAndBkBookingTypeAndBkSectorIn( tenantId, bookingType, sectorList );
-		}
-		else if( applicationNumber != null && applicationNumber != "" 
-				&& (applicationStatus == null && mobileNumber == null && fromDate == null && toDate == null ) )
-		{
-			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkBookingTypeAndBkSectorIn( tenantId, applicationNumber, bookingType, sectorList );
-		}
-		else if( applicationNumber != null && applicationNumber != "" 
-				&& applicationStatus != null && applicationStatus != "" && (mobileNumber == null && fromDate == null && toDate == null ) )
-		{
-			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkBookingTypeAndBkSectorIn( tenantId, applicationNumber, applicationStatus, bookingType, sectorList );
-		}
-		else if( applicationNumber != null && applicationNumber != "" && applicationStatus != null 
-				&& applicationStatus != "" && mobileNumber != null && mobileNumber != "" && (fromDate == null && toDate == null ) )
-		{
-			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorIn( tenantId, applicationNumber, applicationStatus, mobileNumber, bookingType, sectorList );
-		}
-		else if( applicationNumber != null && applicationNumber != "" && applicationStatus != null 
-				&& applicationStatus != "" && mobileNumber != null && mobileNumber != "" && fromDate != null && toDate != null )
-		{
-			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( tenantId, applicationNumber, applicationStatus, mobileNumber, bookingType, sectorList, fromDate, toDate );
-		}
-		else if( applicationNumber != null && applicationNumber != "" && mobileNumber != null 
-				&& mobileNumber != "" && (applicationStatus == null && fromDate == null && toDate == null ) )
-		{
-			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkBookingTypeAndBkSectorIn( tenantId, applicationNumber, mobileNumber, bookingType, sectorList );
-		}
-		else if( applicationNumber != null && applicationNumber != "" && mobileNumber != null 
-				&& mobileNumber != "" && fromDate != null && toDate != null && (applicationStatus == null ) )
-		{
-			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( tenantId, applicationNumber, mobileNumber, bookingType, sectorList, fromDate, toDate );
-		}
-		else if( applicationNumber != null && applicationNumber != "" 
-				&& fromDate != null && toDate != null && (applicationStatus == null && mobileNumber == null ) )
-		{
-			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( tenantId, applicationNumber, bookingType, sectorList, fromDate, toDate );
-		}
-		else if( applicationStatus != null && applicationStatus != "" 
-				&& (applicationNumber == null && mobileNumber == null && fromDate == null && toDate == null ) )
-		{
-			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkBookingTypeAndBkSectorIn( tenantId, applicationStatus, bookingType, sectorList );
-		}
-		else if( applicationStatus != null && applicationStatus != "" && mobileNumber != null && mobileNumber != "" 
-				&& (applicationNumber == null && fromDate == null && toDate == null ) )
-		{
-			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorIn( tenantId, applicationStatus, mobileNumber, bookingType, sectorList );
-		}
-		else if( applicationStatus != null && applicationStatus != "" && mobileNumber != null && mobileNumber != "" 
-				&& fromDate != null && toDate != null && (applicationNumber == null ) )
-		{
-			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( tenantId, applicationStatus, mobileNumber, bookingType, sectorList, fromDate, toDate );
-		}
-		else if( mobileNumber != null && mobileNumber != "" 
-				&& (applicationStatus == null && applicationNumber == null && fromDate == null && toDate == null ) )
-		{
-			bookingsList =  bookingsRepository.findByTenantIdAndBkMobileNumberAndBkBookingTypeAndBkSectorIn( tenantId, mobileNumber, bookingType, sectorList );
-		}
-		else if( mobileNumber != null && mobileNumber != "" && fromDate != null && toDate != null 
-				&& (applicationNumber == null && applicationStatus == null  ) )
-		{
-			bookingsList =  bookingsRepository.findByTenantIdAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( tenantId, mobileNumber, bookingType, sectorList, fromDate, toDate );
-		}
-		else if( fromDate != null && toDate != null && (applicationNumber == null && applicationStatus == null && mobileNumber == null ) )
-		{
-			bookingsList =  bookingsRepository.findByTenantIdAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( tenantId, bookingType, sectorList, fromDate, toDate );
-		}
-		else if( applicationNumber == null && applicationStatus == null && mobileNumber == null && bookingType == null && fromDate == null && toDate == null )
+		if( BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && BookingsFieldsValidator.isNullOrEmpty( bookingType ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkSectorIn( tenantId, sectorList );
 		}
-		booking.setBookingsModelList(bookingsList);
-		booking.setBookingsCount(bookingsCount);
-		return booking;
-	
-	}
-	
-	
-	/**
-	 * Gets the employee search booking.
-	 *
-	 * @param tenantId the tenant id
-	 * @param uuid the uuid
-	 * @param bookingType the booking type
-	 * @param applicationNumber the application number
-	 * @param applicationStatus the application status
-	 * @param mobileNumber the mobile number
-	 * @param fromDate the from date
-	 * @param toDate the to date
-	 * @return the employee search booking
-	 */
-	@Override
-	public Booking getEmployeeSearchBooking( String tenantId, String uuid, String bookingType, String applicationNumber, String applicationStatus,
-			String mobileNumber, Date fromDate, Date toDate ) 
-	{
-		Booking booking = new Booking();
-		List<BookingsModel> bookingsList = new ArrayList<>();
-		if( tenantId == null || tenantId == "" )
-		{
-			throw new IllegalArgumentException("Invalid tentantId");
-		}
-		if( uuid == null || uuid == "" )
-		{
-			throw new IllegalArgumentException("Invalid user uuId");
-		}
-		if( bookingType == null || bookingType == "" )
-		{
-			throw new IllegalArgumentException("Invalid booking type");
-		}
-		
-		List< String > sectorList = commonRepository.findSectorList( uuid );
-		if( sectorList == null || sectorList.isEmpty() )
-		{
-			return booking;
-		}
-		int bookingsCount = bookingsRepository.countByTenantIdAndBkBookingTypeAndBkSectorIn( tenantId, bookingType, sectorList );
-		if( applicationNumber == null && applicationStatus == null && mobileNumber == null && fromDate == null && toDate == null )
+		else if( !BookingsFieldsValidator.isNullOrEmpty( bookingType ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkBookingTypeAndBkSectorIn( tenantId, bookingType, sectorList );
 		}
-		else if( applicationNumber != null && applicationNumber != "" 
-				&& (applicationStatus == null && mobileNumber == null && fromDate == null && toDate == null ) )
+		else if( !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkBookingTypeAndBkSectorIn( tenantId, applicationNumber, bookingType, sectorList );
 		}
-		else if( applicationNumber != null && applicationNumber != "" 
-				&& applicationStatus != null && applicationStatus != "" && (mobileNumber == null && fromDate == null && toDate == null ) )
+		else if( !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && !BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && ( BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkBookingTypeAndBkSectorIn( tenantId, applicationNumber, applicationStatus, bookingType, sectorList );
 		}
-		else if( applicationNumber != null && applicationNumber != "" && applicationStatus != null 
-				&& applicationStatus != "" && mobileNumber != null && mobileNumber != "" && (fromDate == null && toDate == null ) )
+		else if( !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && !BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && ( BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorIn( tenantId, applicationNumber, applicationStatus, mobileNumber, bookingType, sectorList );
 		}
-		else if( applicationNumber != null && applicationNumber != "" && applicationStatus != null 
-				&& applicationStatus != "" && mobileNumber != null && mobileNumber != "" && fromDate != null && toDate != null )
+		else if( !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && !BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && !BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( tenantId, applicationNumber, applicationStatus, mobileNumber, bookingType, sectorList, fromDate, toDate );
 		}
-		else if( applicationNumber != null && applicationNumber != "" && mobileNumber != null 
-				&& mobileNumber != "" && (applicationStatus == null && fromDate == null && toDate == null ) )
+		else if( !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkBookingTypeAndBkSectorIn( tenantId, applicationNumber, mobileNumber, bookingType, sectorList );
 		}
-		else if( applicationNumber != null && applicationNumber != "" && mobileNumber != null 
-				&& mobileNumber != "" && fromDate != null && toDate != null && (applicationStatus == null ) )
+		else if( !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && !BookingsFieldsValidator.isNullOrEmpty( fromDate ) && !BookingsFieldsValidator.isNullOrEmpty( toDate ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( tenantId, applicationNumber, mobileNumber, bookingType, sectorList, fromDate, toDate );
 		}
-		else if( applicationNumber != null && applicationNumber != "" 
-				&& fromDate != null && toDate != null && (applicationStatus == null && mobileNumber == null ) )
+		else if( !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) 
+				&& !BookingsFieldsValidator.isNullOrEmpty( fromDate ) && !BookingsFieldsValidator.isNullOrEmpty( toDate ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( tenantId, applicationNumber, bookingType, sectorList, fromDate, toDate );
 		}
-		else if( applicationStatus != null && applicationStatus != "" 
-				&& (applicationNumber == null && mobileNumber == null && fromDate == null && toDate == null ) )
+		else if( !BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkBookingTypeAndBkSectorIn( tenantId, applicationStatus, bookingType, sectorList );
 		}
-		else if( applicationStatus != null && applicationStatus != "" && mobileNumber != null && mobileNumber != "" 
-				&& (applicationNumber == null && fromDate == null && toDate == null ) )
+		else if( !BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorIn( tenantId, applicationStatus, mobileNumber, bookingType, sectorList );
 		}
-		else if( applicationStatus != null && applicationStatus != "" && mobileNumber != null && mobileNumber != "" 
-				&& fromDate != null && toDate != null && (applicationNumber == null ) )
+		else if( !BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && !BookingsFieldsValidator.isNullOrEmpty( fromDate ) && !BookingsFieldsValidator.isNullOrEmpty( toDate ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( tenantId, applicationStatus, mobileNumber, bookingType, sectorList, fromDate, toDate );
 		}
-		else if( mobileNumber != null && mobileNumber != "" 
-				&& (applicationStatus == null && applicationNumber == null && fromDate == null && toDate == null ) )
+		else if( !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkMobileNumberAndBkBookingTypeAndBkSectorIn( tenantId, mobileNumber, bookingType, sectorList );
 		}
-		else if( mobileNumber != null && mobileNumber != "" && fromDate != null && toDate != null 
-				&& (applicationNumber == null && applicationStatus == null  ) )
+		else if( !BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && !BookingsFieldsValidator.isNullOrEmpty( fromDate ) && !BookingsFieldsValidator.isNullOrEmpty( toDate ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( tenantId, mobileNumber, bookingType, sectorList, fromDate, toDate );
 		}
-		if( fromDate != null && toDate != null && (applicationNumber == null && applicationStatus == null && mobileNumber == null ) )
+		else if( !BookingsFieldsValidator.isNullOrEmpty( fromDate ) && !BookingsFieldsValidator.isNullOrEmpty( toDate ) && ( BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) ) )
 		{
 			bookingsList =  bookingsRepository.findByTenantIdAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( tenantId, bookingType, sectorList, fromDate, toDate );
 		}
-		booking.setBookingsModelList(bookingsList);
-		booking.setBookingsCount(bookingsCount);
+		booking.setBookingsModelList( bookingsList );
+		booking.setBookingsCount( bookingsList.size() );
 		return booking;
 	
 	}

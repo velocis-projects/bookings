@@ -141,15 +141,15 @@ public class BookingsController {
 	public ResponseEntity<?> getCitizenSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
 		Booking booking = new Booking();
-		if( searchCriteriaFieldsDTO == null )
+		if( BookingsFieldsValidator.isNullOrEmpty( searchCriteriaFieldsDTO ) )
 		{
 			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
 		}
-		if( searchCriteriaFieldsDTO.getTenantId() == null || searchCriteriaFieldsDTO.getTenantId() == "" )
+		if( BookingsFieldsValidator.isNullOrEmpty( searchCriteriaFieldsDTO.getTenantId() ) )
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
 		}
-		if( searchCriteriaFieldsDTO.getUuId() == null || searchCriteriaFieldsDTO.getUuId() == "" )
+		if( BookingsFieldsValidator.isNullOrEmpty( searchCriteriaFieldsDTO.getUuid() ) )
 		{
 			throw new IllegalArgumentException("Invalid user uuId");
 		}
@@ -170,72 +170,41 @@ public class BookingsController {
 	 * @param toDate the to date
 	 * @return the employee search booking
 	 */
-//	@PostMapping(value = "/_employee/_search")
-//	public ResponseEntity<?> getEmployeeSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
-//	{
-//		Booking booking = new Booking();
-//		if( searchCriteriaFieldsDTO == null )
-//		{
-//			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
-//		}
-//		if( searchCriteriaFieldsDTO.getTenantId() == null || searchCriteriaFieldsDTO.getTenantId() == "" )
-//		{
-//			throw new IllegalArgumentException("Invalid tentantId");
-//		}
-//		if( searchCriteriaFieldsDTO.getUuId() == null || searchCriteriaFieldsDTO.getUuId() == "" )
-//		{
-//			throw new IllegalArgumentException("Invalid user uuId");
-//		}
-//		String bookingType = searchCriteriaFieldsDTO.getBookingType();
-//		if( bookingType == null || bookingType == "" )
-//		{
-//			throw new IllegalArgumentException("Invalid booking type");
-//		}
-//		booking = bookingsService.getEmployeeSearchBooking( searchCriteriaFieldsDTO );
-//		return ResponseEntity.ok(booking);
-//	}
-	
-	@GetMapping(value = "/_employee/_search")
-	public ResponseEntity<?> getEmployeeSearchBooking( @RequestParam( value = "tenantId", required = true ) String tenantId,
-			@RequestParam( value = "uuid", required = true ) String uuid, @RequestParam( value = "bookingType", required = true ) String bookingType,
-			@RequestParam( value = "applicationNumber", required = false ) String applicationNumber, @RequestParam( value = "applicationStatus", required = false ) String applicationStatus,
-			@RequestParam( value = "mobileNumber", required = false ) String mobileNumber, @RequestParam( value = "fromDate", required = false ) Date fromDate,
-			@RequestParam( value = "toDate", required = false ) Date toDate )
+	@PostMapping(value = "/_employee/_search")
+	public ResponseEntity<?> getEmployeeSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
 		Booking booking = new Booking();
-		if( tenantId == null || tenantId == "" )
+		if( BookingsFieldsValidator.isNullOrEmpty( searchCriteriaFieldsDTO ) )
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if( BookingsFieldsValidator.isNullOrEmpty( searchCriteriaFieldsDTO.getTenantId() ) )
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
 		}
-		if( uuid == null || uuid == "" )
+		if( BookingsFieldsValidator.isNullOrEmpty( searchCriteriaFieldsDTO.getUuid() ) )
 		{
 			throw new IllegalArgumentException("Invalid user uuId");
 		}
-		if( bookingType == null || bookingType == "" )
-		{
-			throw new IllegalArgumentException("Invalid booking type");
-		}
-		booking = bookingsService.getEmployeeSearchBooking( tenantId, uuid, bookingType, applicationNumber, applicationStatus,
-				mobileNumber, fromDate, toDate );
+		booking = bookingsService.getEmployeeSearchBooking( searchCriteriaFieldsDTO );
 		return ResponseEntity.ok(booking);
 	}
 	
-	/**
-	 * Gets the all employee records.
-	 *
-	 * @param tenantId the tenant id
-	 * @param uuid the uuid
-	 * @return the all employee records
-	 */
-	@GetMapping(value = "/getAllEmployeeRecords")
-	public ResponseEntity<?> getAllEmployeeRecords( @RequestParam( value = "tenantId", required = true ) String tenantId,  @RequestParam( value = "uuid", required = true ) String uuid )
+	@PostMapping(value = "/getAllEmployeeRecords")
+	public ResponseEntity<?> getAllEmployeeRecords( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
 		Map< String, Integer > bookingCountMap = new HashMap<>();
-		if( tenantId == null || tenantId == "" )
+		if( searchCriteriaFieldsDTO == null )
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		String tenantId = searchCriteriaFieldsDTO.getTenantId();
+		String uuid = searchCriteriaFieldsDTO.getUuid();
+		if( BookingsFieldsValidator.isNullOrEmpty( tenantId ) )
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
 		}
-		if( uuid == null || uuid == "" )
+		if( BookingsFieldsValidator.isNullOrEmpty( uuid ) )
 		{
 			throw new IllegalArgumentException("Invalid user uuId");
 		}
@@ -243,22 +212,36 @@ public class BookingsController {
 		return ResponseEntity.ok( bookingCountMap );
 	}
 	
-	/**
-	 * Gets the all citizen records.
-	 *
-	 * @param tenantId the tenant id
-	 * @param uuid the uuid
-	 * @return the all citizen records
-	 */
-	@GetMapping(value = "/getAllCitizenRecords")
-	public ResponseEntity<?> getAllCitizenRecords( @RequestParam( value = "tenantId", required = true ) String tenantId,  @RequestParam( value = "uuid", required = true ) String uuid )
+//	@PostMapping(value = "/getAllEmployeeRecords")
+//	public ResponseEntity<?> getAllEmployeeRecords( @RequestParam( value = "tenantId", required = true ) String tenantId,  @RequestParam( value = "uuid", required = true ) String uuid )
+//	{
+//		Map< String, Integer > bookingCountMap = new HashMap<>();
+//		if( tenantId == null || tenantId == "" )
+//		{
+//			throw new IllegalArgumentException("Invalid tentantId");
+//		}
+//		if( uuid == null || uuid == "" )
+//		{
+//			throw new IllegalArgumentException("Invalid user uuId");
+//		}
+//		bookingCountMap = bookingsService.getAllEmployeeRecords( tenantId, uuid );
+//		return ResponseEntity.ok( bookingCountMap );
+//	}
+	@PostMapping(value = "/getAllCitizenRecords")
+	public ResponseEntity<?> getAllCitizenRecords( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
 		Map< String, Integer > bookingCountMap = new HashMap<>();
-		if( tenantId == null || tenantId == "" )
+		if( searchCriteriaFieldsDTO == null )
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		String tenantId = searchCriteriaFieldsDTO.getTenantId();
+		String uuid = searchCriteriaFieldsDTO.getUuid();
+		if( BookingsFieldsValidator.isNullOrEmpty( tenantId ) )
 		{
 			throw new IllegalArgumentException("Invalid tentantId");
 		}
-		if( uuid == null || uuid == "" )
+		if( BookingsFieldsValidator.isNullOrEmpty( uuid ) )
 		{
 			throw new IllegalArgumentException("Invalid user uuId");
 		}

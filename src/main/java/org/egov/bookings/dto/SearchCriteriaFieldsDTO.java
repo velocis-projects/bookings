@@ -37,7 +37,7 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 	private int userId;
 	
 	/** The uu id. */
-	private String uuId;
+	private String uuid;
 	
 	/** The sector. */
 	private String sector;
@@ -189,23 +189,6 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 		this.userId = userId;
 	}
 
-	/**
-	 * Gets the uu id.
-	 *
-	 * @return the uu id
-	 */
-	public String getUuId() {
-		return uuId;
-	}
-
-	/**
-	 * Sets the uu id.
-	 *
-	 * @param uuId the new uu id
-	 */
-	public void setUuId(String uuId) {
-		this.uuId = uuId;
-	}
 
 	/**
 	 * Gets the sector.
@@ -223,6 +206,24 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 	 */
 	public void setSector(String sector) {
 		this.sector = sector;
+	}
+
+	/**
+	 * Gets the uuid.
+	 *
+	 * @return the uuid
+	 */
+	public String getUuid() {
+		return uuid;
+	}
+
+	/**
+	 * Sets the uuid.
+	 *
+	 * @param uuid the new uuid
+	 */
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	/**
