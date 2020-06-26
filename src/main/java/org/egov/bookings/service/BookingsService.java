@@ -54,22 +54,6 @@ public interface BookingsService {
 	public Booking getEmployeeSearchBooking( SearchCriteriaFieldsDTO searchCriteriaFieldsDTO );
 	
 	/**
-	 * Gets the employee search booking.
-	 *
-	 * @param tenantId the tenant id
-	 * @param uuid the uuid
-	 * @param bookingType the booking type
-	 * @param applicationNumber the application number
-	 * @param applicationStatus the application status
-	 * @param mobileNumber the mobile number
-	 * @param fromDate the from date
-	 * @param toDate the to date
-	 * @return the employee search booking
-	 */
-	public Booking getEmployeeSearchBooking( String tenantId, String uuid, String bookingType, String applicationNumber, String applicationStatus,
-			String mobileNumber, Date fromDate, Date toDate );
-
-	/**
 	 * Update.
 	 *
 	 * @param bookingsRequest the bookings request
