@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.egov.bookings.config.BookingsConfiguration;
+import org.egov.bookings.enums.BookingTypeEnum;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsbmApproverRepository;
+import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.utils.WorkFlowConfigs;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.tracer.model.CustomException;
@@ -72,6 +74,9 @@ public class WorkflowIntegrator {
 	private OsbmApproverRepository osbmApproverRepository;
 
 	@Autowired
+	private BookingsUtils bookingsUtils;
+	
+	@Autowired
 	public WorkflowIntegrator(RestTemplate rest, BookingsConfiguration config) {
 		this.rest = rest;
 		this.config = config;
@@ -92,10 +97,13 @@ public class WorkflowIntegrator {
 
 		JSONArray array = new JSONArray();
 		BookingsModel bkModel = bookingsRequest.getBookingsModel();
+		
 		/*
 		 * uuid = commonRepository.findAssigneeUuid(wfTenantId, bkModel.getBkAction(),
 		 * bkModel.getBusinessService(), wfTenantId);
 		 */
+		
+		 Object mdmsData = bookingsUtils.prepareMdMsRequestForBooking(bookingsRequest);
 		OsbmApproverModel osbmApproverModel = null;
 		osbmApproverModel = osbmApproverRepository.findBySector(bookingsRequest.getBookingsModel().getBkSector());
 		JSONObject obj = new JSONObject();
@@ -103,13 +111,13 @@ public class WorkflowIntegrator {
 		uuidmap.put(UUIDKEY, bkModel.getAssignee());
 		obj.put(BUSINESSIDKEY, bkModel.getBkApplicationNumber());
 		obj.put(TENANTIDKEY, wfTenantId);
-		if (bkModel.getBkBookingType().equalsIgnoreCase(WorkFlowConfigs.BWT))
-			obj.put(BUSINESSSERVICEKEY, WorkFlowConfigs.BWT);
-		else if (bkModel.getBkBookingType().equalsIgnoreCase(WorkFlowConfigs.OSBM))
-			obj.put(BUSINESSSERVICEKEY, WorkFlowConfigs.OSBM);
+		if (BookingTypeEnum.WATER_TANKER.getName().equals(bkModel.getBkBookingType()))
+			obj.put(BUSINESSSERVICEKEY, BookingTypeEnum.WATER_TANKER.getName());
+		else if (BookingTypeEnum.OPEN_SPACE_FOR_BUILDING_METERIAL.getName().equals(bkModel.getBkBookingType()))
+			obj.put(BUSINESSSERVICEKEY, BookingTypeEnum.OPEN_SPACE_FOR_BUILDING_METERIAL.getName());
 		obj.put(MODULENAMEKEY, MODULENAMEVALUE);
 		obj.put(ACTIONKEY, bkModel.getBkAction());
-		obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());
+		//obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());
 		if (!StringUtils.isEmpty(bkModel.getAssignee()))
 			obj.put(ASSIGNEEKEY, uuidmap);
 		obj.put(DOCUMENTSKEY, bkModel.getWfDocuments());

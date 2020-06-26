@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,6 +29,7 @@ import org.egov.bookings.model.ActionInfo;
 import org.egov.bookings.model.AuditDetails;
 import org.egov.bookings.model.Service;
 import org.egov.bookings.repository.impl.ServiceRequestRepository;
+import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -583,5 +585,75 @@ public class BookingsUtils {
 		} else
 			errors.add(errorMsg);
 	}
+	
+	private ModuleDetail getBookingType() {
+
+		// master details for TL module
+		List<MasterDetail> tlMasterDetails = new ArrayList<>();
+
+		// filter to only get code field from master data
+
+		final String filterCodeForUom = "null";
+
+		tlMasterDetails
+				.add(MasterDetail.builder().name("BookingType").build());
+
+		ModuleDetail tlModuleDtls = ModuleDetail.builder().masterDetails(tlMasterDetails)
+				.moduleName("Booking").build();
+
+		/*
+		 * MdmsCriteria mdmsCriteria =
+		 * MdmsCriteria.builder().moduleDetails(Collections.singletonList(tlModuleDtls))
+		 * .tenantId(tenantId) .build();
+		 */
+
+		return tlModuleDtls;
+	}
+	
+	
+	private MdmsCriteriaReq getMDMSRequest(RequestInfo requestInfo, String tenantId) {
+		
+		
+		
+		
+		ModuleDetail getBookingTypes = getBookingType();
+
+		List<ModuleDetail> moduleDetails = new LinkedList<>();
+		moduleDetails.add(getBookingTypes);
+		
+		MdmsCriteria mdmsCriteria = MdmsCriteria.builder().moduleDetails(moduleDetails).tenantId(tenantId).build();
+		log.info("Mdms Criteria : "+mdmsCriteria);
+		MdmsCriteriaReq mdmsCriteriaReq = MdmsCriteriaReq.builder().mdmsCriteria(mdmsCriteria)
+				.requestInfo(requestInfo)
+				.build();
+		
+		log.info("Mdms Criteria Req: "+mdmsCriteriaReq);
+		return mdmsCriteriaReq;
+	}
+	
+	public Object prepareMdMsRequestForBooking(BookingsRequest bookingsRequest) {
+		
+		RequestInfo requestInfo = bookingsRequest.getRequestInfo();
+		String tenantId = bookingsRequest.getBookingsModel().getTenantId();
+		MdmsCriteriaReq mdmsCriteriaReq = getMDMSRequest(requestInfo, tenantId);
+		StringBuilder uri = new StringBuilder(mdmsHost).append(mdmsEndpoint);
+		Object result = serviceRequestRepository.fetchResult(uri, mdmsCriteriaReq);
+		return result;
+		
+		/*
+		uri.append(mdmsHost).append(mdmsEndpoint);
+		MasterDetail masterDetail = org.egov.mdms.model.MasterDetail.builder()
+				.name(BookingsConstants.MDMS_DESIGNATION_MASTERS_MASTER_NAME).filter("[?(@.code=='" + code + "')].name")
+				.build();
+		List<MasterDetail> masterDetails = new ArrayList<>();
+		masterDetails.add(masterDetail);
+		ModuleDetail moduleDetail = ModuleDetail.builder().moduleName(BookingsConstants.MDMS_COMMON_MASTERS_MODULE_NAME)
+				.masterDetails(masterDetails).build();
+		List<ModuleDetail> moduleDetails = new ArrayList<>();
+		moduleDetails.add(moduleDetail);
+		MdmsCriteria mdmsCriteria = MdmsCriteria.builder().tenantId(tenantId).moduleDetails(moduleDetails).build();
+		return MdmsCriteriaReq.builder().requestInfo(requestInfo).mdmsCriteria(mdmsCriteria).build();*/
+	}
+	
 
 }
