@@ -103,7 +103,7 @@ public class WorkflowIntegrator {
 		 * bkModel.getBusinessService(), wfTenantId);
 		 */
 		
-		 Object mdmsData = bookingsUtils.prepareMdMsRequestForBooking(bookingsRequest);
+		 Object mdmsData = bookingsUtils.prepareMdMsRequestForBooking(bookingsRequest.getRequestInfo());
 		OsbmApproverModel osbmApproverModel = null;
 		osbmApproverModel = osbmApproverRepository.findBySector(bookingsRequest.getBookingsModel().getBkSector());
 		JSONObject obj = new JSONObject();
