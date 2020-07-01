@@ -113,8 +113,8 @@ public class WorkflowIntegrator {
 		obj.put(TENANTIDKEY, wfTenantId);
 		if (BookingTypeEnum.WATER_TANKER.getName().equals(bkModel.getBkBookingType()))
 			obj.put(BUSINESSSERVICEKEY, BookingTypeEnum.WATER_TANKER.getName());
-		else if (BookingTypeEnum.OPEN_SPACE_FOR_BUILDING_METERIAL.getName().equals(bkModel.getBkBookingType()))
-			obj.put(BUSINESSSERVICEKEY, BookingTypeEnum.OPEN_SPACE_FOR_BUILDING_METERIAL.getName());
+		else if (BookingTypeEnum.OPEN_SPACE_FOR_BUILDING_MATERIAL.getName().equals(bkModel.getBkBookingType()))
+			obj.put(BUSINESSSERVICEKEY, BookingTypeEnum.OPEN_SPACE_FOR_BUILDING_MATERIAL.getName());
 		obj.put(MODULENAMEKEY, MODULENAMEVALUE);
 		obj.put(ACTIONKEY, bkModel.getBkAction());
 		//obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());

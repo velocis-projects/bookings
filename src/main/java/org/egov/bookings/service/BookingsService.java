@@ -1,6 +1,5 @@
 package org.egov.bookings.service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +8,7 @@ import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.web.models.BookingsRequest;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface BookingsService.
  */
@@ -66,17 +66,19 @@ public interface BookingsService {
 	 *
 	 * @param tenantId the tenant id
 	 * @param uuid the uuid
+	 * @param bookingsRequest the bookings request
 	 * @return the all employee records
 	 */
-	public Map< String, Integer > getAllEmployeeRecords( String tenantId, String uuid );
+	public Map< String, Integer > getAllEmployeeRecords( String tenantId, String uuid, BookingsRequest bookingsRequest );
 	
 	/**
 	 * Gets the all citizen records.
 	 *
 	 * @param tenantId the tenant id
 	 * @param uuid the uuid
+	 * @param bookingsRequest the bookings request
 	 * @return the all citizen records
 	 */
-	public Map< String, Integer > getAllCitizenRecords( String tenantId, String uuid );
+	public Map< String, Integer > getAllCitizenRecords( String tenantId, String uuid, BookingsRequest bookingsRequest );
 	
 }
