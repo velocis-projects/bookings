@@ -140,7 +140,7 @@ public class BookingsController {
 	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @return the citizen search booking
 	 */
-	@PostMapping(value = "/_citizen/_search")
+	@PostMapping(value = "/citizen/_search")
 	public ResponseEntity<?> getCitizenSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
 		Booking booking = new Booking();
@@ -173,7 +173,7 @@ public class BookingsController {
 	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @return the employee search booking
 	 */
-	@PostMapping(value = "/_employee/_search")
+	@PostMapping(value = "/employee/_search")
 	public ResponseEntity<?> getEmployeeSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
 		Booking booking = new Booking();
@@ -201,14 +201,14 @@ public class BookingsController {
 	}
 	
 	/**
-	 * Gets the all employee records.
+	 * Employee records count.
 	 *
 	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @param bookingsRequest the bookings request
-	 * @return the all employee records
+	 * @return the response entity
 	 */
-	@PostMapping(value = "/getAllEmployeeRecords")
-	public ResponseEntity<?> getAllEmployeeRecords( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO, @RequestBody BookingsRequest bookingsRequest )
+	@PostMapping(value = "/employee/records/_count")
+	public ResponseEntity<?> employeeRecordsCount( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO, @RequestBody BookingsRequest bookingsRequest )
 	{
 		Map< String, Integer > bookingCountMap = new HashMap<>();
 		try
@@ -231,24 +231,24 @@ public class BookingsController {
 			{
 				throw new IllegalArgumentException("Invalid uuId");
 			}
-			bookingCountMap = bookingsService.getAllEmployeeRecords(tenantId, uuid, bookingsRequest);
+			bookingCountMap = bookingsService.employeeRecordsCount(tenantId, uuid, bookingsRequest);
 		}
 		catch(Exception e)
 		{
-			LOGGER.error("Exception occur in the getAllEmployeeRecords " + e);
+			LOGGER.error("Exception occur in the employeeRecordsCount " + e);
 		}
 		return ResponseEntity.ok( bookingCountMap );
 	}
 	
 	/**
-	 * Gets the all citizen records.
+	 * Citizen records count.
 	 *
 	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @param bookingsRequest the bookings request
-	 * @return the all citizen records
+	 * @return the response entity
 	 */
-	@PostMapping(value = "/getAllCitizenRecords")
-	public ResponseEntity<?> getAllCitizenRecords( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO, @RequestBody BookingsRequest bookingsRequest )
+	@PostMapping(value = "/citizen/records/_count")
+	public ResponseEntity<?> citizenRecordsCount( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO, @RequestBody BookingsRequest bookingsRequest )
 	{
 		Map< String, Integer > bookingCountMap = new HashMap<>();
 		try
@@ -271,11 +271,11 @@ public class BookingsController {
 			{
 				throw new IllegalArgumentException("Invalid uuId");
 			}
-			bookingCountMap = bookingsService.getAllCitizenRecords(tenantId, uuid, bookingsRequest);
+			bookingCountMap = bookingsService.citizenRecordsCount(tenantId, uuid, bookingsRequest);
 		}
 		catch(Exception e)
 		{
-			LOGGER.error("Exception occur in the getAllCitizenRecords " + e);
+			LOGGER.error("Exception occur in the citizenRecordsCount " + e);
 		}
 		return ResponseEntity.ok( bookingCountMap );
 	}
