@@ -62,23 +62,23 @@ public interface BookingsService {
 	public BookingsModel update(BookingsRequest bookingsRequest);
 	
 	/**
-	 * Gets the all employee records.
+	 * Employee records count.
 	 *
 	 * @param tenantId the tenant id
 	 * @param uuid the uuid
 	 * @param bookingsRequest the bookings request
-	 * @return the all employee records
+	 * @return the map
 	 */
-	public Map< String, Integer > getAllEmployeeRecords( String tenantId, String uuid, BookingsRequest bookingsRequest );
+	public Map< String, Integer > employeeRecordsCount( String tenantId, String uuid, BookingsRequest bookingsRequest );
 	
 	/**
-	 * Gets the all citizen records.
+	 * Citizen records count.
 	 *
 	 * @param tenantId the tenant id
 	 * @param uuid the uuid
 	 * @param bookingsRequest the bookings request
-	 * @return the all citizen records
+	 * @return the map
 	 */
-	public Map< String, Integer > getAllCitizenRecords( String tenantId, String uuid, BookingsRequest bookingsRequest );
+	public Map< String, Integer > citizenRecordsCount( String tenantId, String uuid, BookingsRequest bookingsRequest );
 	
 }
