@@ -641,6 +641,11 @@ public class BookingsUtils {
 		return result;
 		
 	}
+
+	public java.sql.Date getCurrentSqlDate() {
+		 long millis=System.currentTimeMillis();  
+	        return new java.sql.Date(millis);  
+	}
 	
 
 }

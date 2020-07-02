@@ -1,5 +1,6 @@
 package org.egov.bookings.service.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -70,6 +71,10 @@ public class BookingsServiceImpl implements BookingsService {
 	@Autowired
 	ObjectMapper objectMapper;
 	
+	/** The enrichment service. */
+	@Autowired
+	private EnrichmentService enrichmentService;
+	
 	/** The Constant LOGGER. */
 	   private static final Logger LOGGER = LogManager.getLogger( BookingsServiceImpl.class.getName() );
 	   
@@ -85,7 +90,7 @@ public class BookingsServiceImpl implements BookingsService {
 		if (config.getIsExternalWorkFlowEnabled())
 			workflowIntegrator.callWorkFlow(bookingsRequest);
 		//bookingsProducer.push(saveTopic, bookingsRequest.getBookingsModel());
-		bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
+		 enrichmentService.enrichBookingsDetails(bookingsRequest);
 		 bookingsRepository.save(bookingsRequest.getBookingsModel());
 		 return bookingsRequest.getBookingsModel();
 		

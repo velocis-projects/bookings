@@ -23,7 +23,7 @@ import org.egov.tracer.model.CustomException;
 public class EnrichmentService {
 
 	@Autowired
-	private BookingsUtils bookingsUtil;
+	private BookingsUtils bookingsUtils;
 
 	@Autowired
 	private BookingsConfiguration config;
@@ -31,7 +31,7 @@ public class EnrichmentService {
 	@Autowired
 	private IdGenRepository idGenRepository;
 
-	public void enrichTLCreateRequest(BookingsRequest bookingsRequest) {
+	public void enrichBookingsCreateRequest(BookingsRequest bookingsRequest) {
 		RequestInfo requestInfo = bookingsRequest.getRequestInfo();
 		/*AuditDetails auditDetails = bookingsUtil
 				.getAuditDetails(requestInfo.getUserInfo().getUuid(), true);*/
@@ -70,6 +70,12 @@ public class EnrichmentService {
 			throw new CustomException("IDGEN ERROR", "No ids returned from idgen Service");
 
 		return idResponses.stream().map(IdResponse::getId).collect(Collectors.toList());
+	}
+
+	public void enrichBookingsDetails(BookingsRequest bookingsRequest) {
+		bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
+		java.sql.Date date = bookingsUtils.getCurrentSqlDate();
+		bookingsRequest.getBookingsModel().setBkDateCreated(date);
 	}
 
 }
