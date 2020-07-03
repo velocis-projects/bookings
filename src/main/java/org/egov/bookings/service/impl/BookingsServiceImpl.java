@@ -28,7 +28,9 @@ import org.egov.mdms.model.MdmsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import net.minidev.json.JSONArray;
 
 // TODO: Auto-generated Javadoc
@@ -129,6 +131,8 @@ public class BookingsServiceImpl implements BookingsService {
 	{
 		Booking booking = new Booking();
 		List<BookingsModel> myBookingList = new ArrayList<>();
+		List< ? > documentList = new ArrayList<>();
+		Map< String, String > documentMap = new HashMap<>();
 		try
 		{
 			if( BookingsFieldsValidator.isNullOrEmpty( searchCriteriaFieldsDTO ) )
@@ -215,6 +219,7 @@ public class BookingsServiceImpl implements BookingsService {
 			}
 			else if( !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && ( BookingsFieldsValidator.isNullOrEmpty( bookingType ) && BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 			{
+				documentList = commonRepository.findDocumentList( applicationNumber );
 				myBookingList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndUuid( tenantId, applicationNumber, uuid );
 			}
 			else if( !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && !BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && ( BookingsFieldsValidator.isNullOrEmpty( bookingType ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
@@ -265,6 +270,19 @@ public class BookingsServiceImpl implements BookingsService {
 			{
 				myBookingList =  bookingsRepository.findByTenantIdAndUuidAndBkDateCreatedBetween( tenantId, uuid, fromDate, toDate );
 			}
+			if( !BookingsFieldsValidator.isNullOrEmpty( documentList ) )
+			{
+				for( Object documentObject : documentList )
+				{
+					String jsonString = objectMapper.writeValueAsString(documentObject);
+					String[] documentStrArray = jsonString.split(",");
+					String[] strArray = documentStrArray[1].split("/"); 
+					String fileStoreId = documentStrArray[0].substring(2, documentStrArray[0].length()-1 );
+					String document = strArray[strArray.length-1].substring(13, ( strArray[strArray.length-1].length()-2 ) );
+					documentMap.put(fileStoreId, document);
+				}
+			}
+			booking.setDocumentMap(documentMap);
 			booking.setBookingsModelList( myBookingList );
 			booking.setBookingsCount( myBookingList.size() );
 		}
@@ -286,13 +304,14 @@ public class BookingsServiceImpl implements BookingsService {
 	{
 		Booking booking = new Booking();
 		List<BookingsModel> bookingsList = new ArrayList<>();
+		List< ? > documentList = new ArrayList<>();
+		Map< String, String > documentMap = new HashMap<>();
 		try
 		{
 			if( BookingsFieldsValidator.isNullOrEmpty( searchCriteriaFieldsDTO ) )
 			{
 				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
 			}
-			
 			String tenantId = searchCriteriaFieldsDTO.getTenantId();
 			String applicationNumber = searchCriteriaFieldsDTO.getApplicationNumber();
 			String applicationStatus = searchCriteriaFieldsDTO.getApplicationStatus();
@@ -376,6 +395,7 @@ public class BookingsServiceImpl implements BookingsService {
 			}
 			else if( !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && ( BookingsFieldsValidator.isNullOrEmpty( bookingType ) && BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
 			{
+				documentList = commonRepository.findDocumentList( applicationNumber );
 				bookingsList =  bookingsRepository.findByTenantIdAndBkApplicationNumberAndBkSectorIn( tenantId, applicationNumber, sectorList );
 			}
 			else if( !BookingsFieldsValidator.isNullOrEmpty( applicationNumber ) && !BookingsFieldsValidator.isNullOrEmpty( applicationStatus ) && ( BookingsFieldsValidator.isNullOrEmpty( bookingType ) && BookingsFieldsValidator.isNullOrEmpty( mobileNumber ) && BookingsFieldsValidator.isNullOrEmpty( fromDate ) && BookingsFieldsValidator.isNullOrEmpty( toDate ) ) )
@@ -426,6 +446,19 @@ public class BookingsServiceImpl implements BookingsService {
 			{
 				bookingsList =  bookingsRepository.findByTenantIdAndBkSectorInAndBkDateCreatedBetween( tenantId, sectorList, fromDate, toDate );
 			}
+			if( !BookingsFieldsValidator.isNullOrEmpty( documentList ) )
+			{
+				for( Object documentObject : documentList )
+				{
+					String jsonString = objectMapper.writeValueAsString(documentObject);
+					String[] documentStrArray = jsonString.split(",");
+					String[] strArray = documentStrArray[1].split("/"); 
+					String fileStoreId = documentStrArray[0].substring(2, documentStrArray[0].length()-1 );
+					String document = strArray[strArray.length-1].substring(13, ( strArray[strArray.length-1].length()-2 ) );
+					documentMap.put(fileStoreId, document);
+				}
+			}
+			booking.setDocumentMap(documentMap);
 			booking.setBookingsModelList( bookingsList );
 			booking.setBookingsCount( bookingsList.size() );
 		}

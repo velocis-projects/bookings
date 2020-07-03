@@ -2,6 +2,7 @@ package org.egov.bookings.contract;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.egov.bookings.model.BookingsModel;
 
@@ -19,6 +20,9 @@ public class Booking implements Serializable {
 	
 	/** The bookings count. */
 	private int bookingsCount;
+	
+	/** The document map. */
+	private Map< String, String > documentMap;
 	
 	/**
 	 * Gets the bookings model list.
@@ -55,4 +59,23 @@ public class Booking implements Serializable {
 	public void setBookingsCount(int bookingsCount) {
 		this.bookingsCount = bookingsCount;
 	}
+
+	/**
+	 * Gets the document map.
+	 *
+	 * @return the document map
+	 */
+	public Map< String, String > getDocumentMap() {
+		return documentMap;
+	}
+
+	/**
+	 * Sets the document map.
+	 *
+	 * @param documentMap the document map
+	 */
+	public void setDocumentMap(Map< String, String > documentMap) {
+		this.documentMap = documentMap;
+	}
+
 }
