@@ -413,4 +413,7 @@ public class BookingsConstants {
 	/** The Constant UUID. */
 	public static final String UUID = "uuid";
 	
+	/** The Constant APPLICATION_NUMBER. */
+	public static final String APPLICATION_NUMBER = "applicationNumber";
+	
 }

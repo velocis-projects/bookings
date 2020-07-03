@@ -49,6 +49,15 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	@Query(value = WorkflowQueryBuilder.FIND_SECTOR_LIST, nativeQuery = true)
 	public List< String > findSectorList(@Param(BookingsConstants.UUID) String uuid);
 	
+	/**
+	 * Find document list.
+	 *
+	 * @param applicationNumber the application number
+	 * @return the list
+	 */
+	@Query(value = WorkflowQueryBuilder.FIND_DOCUMENT_LIST, nativeQuery = true)
+	public List< ? > findDocumentList(@Param(BookingsConstants.APPLICATION_NUMBER) String applicationNumber);
+	
 	
 
 }
