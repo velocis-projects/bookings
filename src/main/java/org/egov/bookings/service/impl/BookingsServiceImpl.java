@@ -448,6 +448,7 @@ public class BookingsServiceImpl implements BookingsService {
 					String jsonString = objectMapper.writeValueAsString(documentObject);
 					String[] documentStrArray = jsonString.split(",");
 					String[] strArray = documentStrArray[1].split("/"); 
+					booking.setBusinessService(documentStrArray[2].substring(1, documentStrArray[2].length()-2));
 					String fileStoreId = documentStrArray[0].substring(2, documentStrArray[0].length()-1 );
 					String document = strArray[strArray.length-1].substring(13, ( strArray[strArray.length-1].length()-2 ) );
 					documentMap.put(fileStoreId, document);
