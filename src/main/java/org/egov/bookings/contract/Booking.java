@@ -24,6 +24,9 @@ public class Booking implements Serializable {
 	/** The document map. */
 	private Map< String, String > documentMap;
 	
+	/** The business service. */
+	private String businessService;
+	
 	/**
 	 * Gets the bookings model list.
 	 *
@@ -76,6 +79,24 @@ public class Booking implements Serializable {
 	 */
 	public void setDocumentMap(Map< String, String > documentMap) {
 		this.documentMap = documentMap;
+	}
+
+	/**
+	 * Gets the business service.
+	 *
+	 * @return the business service
+	 */
+	public String getBusinessService() {
+		return businessService;
+	}
+
+	/**
+	 * Sets the business service.
+	 *
+	 * @param businessService the new business service
+	 */
+	public void setBusinessService(String businessService) {
+		this.businessService = businessService;
 	}
 
 }
