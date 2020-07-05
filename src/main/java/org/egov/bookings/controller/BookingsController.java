@@ -9,6 +9,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.common.model.ResponseModel;
 import org.egov.bookings.contract.Booking;
+import org.egov.bookings.contract.BookingsModelRequest;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.service.BookingsService;
@@ -49,6 +50,7 @@ public class BookingsController {
 	/** The bookings fields validator. */
 	@Autowired
 	BookingsFieldsValidator bookingsFieldsValidator;
+	
 	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger( BookingsController.class.getName() );

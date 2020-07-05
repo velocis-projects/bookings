@@ -893,4 +893,6 @@ public interface BookingsRepository
 	List<BookingsModel> findByTenantIdAndBkSectorInAndBkDateCreatedBetween( String tenantId, List< String > sectorList, Date fromDate, Date toDate );
 	 
 	
+	
+	BookingsModel findByBkApplicationNumber(String bkApplicationNumber);
 }

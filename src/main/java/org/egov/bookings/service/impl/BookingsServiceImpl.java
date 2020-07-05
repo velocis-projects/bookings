@@ -482,8 +482,12 @@ public class BookingsServiceImpl implements BookingsService {
 			workflowIntegrator.callWorkFlow(bookingsRequest);
 		//bookingsProducer.push(saveTopic, bookingsRequest.getBookingsModel());
 		//bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
-		 bookingsRepository.save(bookingsRequest.getBookingsModel());
-		 return bookingsRequest.getBookingsModel();
+		BookingsModel bookingsModel = bookingsRepository.findByBkApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
+		bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
+		bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
+		bookingsModel.setBookingsRemarks(bookingsRequest.getBookingsModel().getBookingsRemarks());
+		bookingsRepository.save(bookingsModel);
+		return bookingsModel;
 	}
 
 	/**
