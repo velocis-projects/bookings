@@ -24,27 +24,28 @@ public interface BookingsRepository
 	 * @return the int
 	 */
 	int countByTenantIdAndUuid( String tenantId, String uuId );
+	
 	/**
-	 * Find by tenant id and uu id.
+	 * Find by tenant id and uuid order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param uuId the uu id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndUuid( String tenantId, String uuId );
+	List<BookingsModel> findByTenantIdAndUuidOrderByBkApplicationNumberDesc( String tenantId, String uuId );
 	
 	/**
-	 * Find by tenant id and bk application number and uu id.
+	 * Find by tenant id and bk application number and uuid order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
 	 * @param uuId the uu id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndUuid( String tenantId, String applicationNumber, String uuId );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndUuidOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String uuId );
 	
 	/**
-	 * Find by tenant id and bk application number and bk application status and uu id.
+	 * Find by tenant id and bk application number and bk application status and uuid order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -52,10 +53,10 @@ public interface BookingsRepository
 	 * @param uuId the uu id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndUuid( String tenantId, String applicationNumber, String applicationStatus, String uuId );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndUuidOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String applicationStatus, String uuId );
 	
 	/**
-	 * Find by tenant id and bk application number and bk application status and bk mobile number and uu id.
+	 * Find by tenant id and bk application number and bk application status and bk mobile number and uuid order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -64,10 +65,10 @@ public interface BookingsRepository
 	 * @param uuId the uu id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuid( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String uuId );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuidOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String uuId );
 	
 	/**
-	 * Find by tenant id and bk application number and bk application status and bk mobile number and uu id and bk date created between.
+	 * Find by tenant id and bk application number and bk application status and bk mobile number and uuid and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -78,10 +79,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkDateCreatedBetween( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String uuId, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String uuId, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk application number and bk mobile number and uu id.
+	 * Find by tenant id and bk application number and bk mobile number and uuid order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -89,10 +90,10 @@ public interface BookingsRepository
 	 * @param uuId the uu id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuid(String tenantId, String applicationNumber, String mobileNumber, String uuId );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuidOrderByBkApplicationNumberDesc(String tenantId, String applicationNumber, String mobileNumber, String uuId );
 	
 	/**
-	 * Find by tenant id and bk application number and bk mobile number and uu id and bk date created between.
+	 * Find by tenant id and bk application number and bk mobile number and uuid and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -102,10 +103,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuidAndBkDateCreatedBetween( String tenantId, String applicationNumber, String mobileNumber, String uuId, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuidAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String mobileNumber, String uuId, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk application number and uu id and bk date created between.
+	 * Find by tenant id and bk application number and uuid and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -114,10 +115,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndUuidAndBkDateCreatedBetween( String tenantId, String applicationNumber, String uuId, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndUuidAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String uuId, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk application status and uu id.
+	 * Find by tenant id and bk application status and uuid.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationStatus the application status
@@ -127,7 +128,7 @@ public interface BookingsRepository
 	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndUuid( String tenantId, String applicationStatus, String uuId );
 	
 	/**
-	 * Find by tenant id and bk application status and bk mobile number and uu id.
+	 * Find by tenant id and bk application status and bk mobile number and uuid.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationStatus the application status
@@ -138,7 +139,7 @@ public interface BookingsRepository
 	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuid( String tenantId, String applicationStatus, String mobileNumber, String uuId );
 	
 	/**
-	 * Find by tenant id and bk application status and bk mobile number and uu id and bk date created between.
+	 * Find by tenant id and bk application status and bk mobile number and uuid and bk date created between.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationStatus the application status
@@ -151,17 +152,17 @@ public interface BookingsRepository
 	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkDateCreatedBetween( String tenantId, String applicationStatus, String mobileNumber, String uuId, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk mobile number and uu id.
+	 * Find by tenant id and bk mobile number and uuid order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param mobileNumber the mobile number
 	 * @param uuId the uu id
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkMobileNumberAndUuid( String tenantId,String mobileNumber, String uuId );
+	List<BookingsModel> findByTenantIdAndBkMobileNumberAndUuidOrderByBkApplicationNumberDesc( String tenantId,String mobileNumber, String uuId );
 	
 	/**
-	 * Find by tenant id and bk mobile number and uu id and bk date created between.
+	 * Find by tenant id and bk mobile number and uuid and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param mobileNumber the mobile number
@@ -170,10 +171,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkMobileNumberAndUuidAndBkDateCreatedBetween( String tenantId, String mobileNumber, String uuId, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkMobileNumberAndUuidAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String mobileNumber, String uuId, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and uu id and bk date created between.
+	 * Find by tenant id and uuid and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param uuId the uu id
@@ -181,8 +182,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndUuidAndBkDateCreatedBetween( String tenantId, String uuId, Date fromDate, Date toDate );
-	
+	List<BookingsModel> findByTenantIdAndUuidAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String uuId, Date fromDate, Date toDate );
 	
 	/**
 	 * Count by tenant id and bk sector in.
@@ -202,8 +202,7 @@ public interface BookingsRepository
 	 * @return the int
 	 */
 	int countByTenantIdAndBkBookingTypeAndBkSectorIn( String tenantId, String bookingType , List< String > sectorList );
-	
-	
+
 	/**
 	 * Count by tenant id and bk application number in.
 	 *
@@ -212,7 +211,6 @@ public interface BookingsRepository
 	 * @return the int
 	 */
 	int countByTenantIdAndBkApplicationNumberIn( String tenantId, List< String > applicationNumberList );
-	
 	
 	/**
 	 * Find by tenant id and bk application number in.
@@ -373,20 +371,18 @@ public interface BookingsRepository
 	 */
 	List<BookingsModel> findByTenantIdAndBkMobileNumberAndBkApplicationNumberInAndBkDateCreatedBetween( String tenantId, String mobileNumber, List< String > applicationNumberList, Date fromDate, Date toDate );
 	
-	
-	
 	/**
-	 * Find by tenant id and bk booking type and bk sector in.
+	 * Find by tenant id and bk booking type and bk sector in order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param bookingType the booking type
 	 * @param sectorList the sector list
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkBookingTypeAndBkSectorIn( String tenantId, String bookingType, List< String > sectorList );
+	List< BookingsModel > findByTenantIdAndBkBookingTypeAndBkSectorInOrderByBkApplicationNumberDesc( String tenantId, String bookingType, List< String > sectorList );
 	
 	/**
-	 * Find by tenant id and bk application number and bk booking type and bk sector in.
+	 * Find by tenant id and bk application number and bk booking type and bk sector in order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -394,10 +390,10 @@ public interface BookingsRepository
 	 * @param sectorList the sector list
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkApplicationNumberAndBkBookingTypeAndBkSectorIn( String tenantId, String applicationNumber, String bookingType, List< String > sectorList );
+	List< BookingsModel > findByTenantIdAndBkApplicationNumberAndBkBookingTypeAndBkSectorInOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String bookingType, List< String > sectorList );
 	
 	/**
-	 * Find by tenant id and bk application number and bk application status and bk booking type and bk sector in.
+	 * Find by tenant id and bk application number and bk application status and bk booking type and bk sector in order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -406,10 +402,10 @@ public interface BookingsRepository
 	 * @param sectorList the sector list
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkBookingTypeAndBkSectorIn( String tenantId, String applicationNumber, String applicationStatus, String bookingType, List< String > sectorList );
+	List< BookingsModel > findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkBookingTypeAndBkSectorInOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String applicationStatus, String bookingType, List< String > sectorList );
 	
 	/**
-	 * Find by tenant id and bk application number and bk application status and bk mobile number and bk booking type and bk sector in.
+	 * Find by tenant id and bk application number and bk application status and bk mobile number and bk booking type and bk sector in order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -419,10 +415,10 @@ public interface BookingsRepository
 	 * @param sectorList the sector list
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorIn( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String bookingType, List< String > sectorList );
+	List< BookingsModel > findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorInOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String bookingType, List< String > sectorList );
 	
 	/**
-	 * Find by tenant id and bk application number and bk application status and bk mobile number and bk booking type and bk sector in and bk date created between.
+	 * Find by tenant id and bk application number and bk application status and bk mobile number and bk booking type and bk sector in and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -434,10 +430,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String bookingType, List< String > sectorList, Date fromDate, Date toDate ); 
+	List< BookingsModel > findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String bookingType, List< String > sectorList, Date fromDate, Date toDate ); 
 	
 	/**
-	 * Find by tenant id and bk application number and bk mobile number and bk booking type and bk sector in.
+	 * Find by tenant id and bk application number and bk mobile number and bk booking type and bk sector in order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -446,10 +442,10 @@ public interface BookingsRepository
 	 * @param sectorList the sector list
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkBookingTypeAndBkSectorIn( String tenantId, String applicationNumber, String mobileNumber, String bookingType, List< String > sectorList );
+	List< BookingsModel > findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkBookingTypeAndBkSectorInOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String mobileNumber, String bookingType, List< String > sectorList );
 	
 	/**
-	 * Find by tenant id and bk application number and bk mobile number and bk booking type and bk sector in and bk date created between.
+	 * Find by tenant id and bk application number and bk mobile number and bk booking type and bk sector in and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -460,10 +456,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( String tenantId, String applicationNumber, String mobileNumber, String bookingType, List< String > sectorList, Date fromDate, Date toDate );
+	List< BookingsModel > findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String mobileNumber, String bookingType, List< String > sectorList, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk application number and bk booking type and bk sector in and bk date created between.
+	 * Find by tenant id and bk application number and bk booking type and bk sector in and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -473,10 +469,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkApplicationNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( String tenantId, String applicationNumber, String bookingType, List< String > sectorList, Date fromDate, Date toDate );
+	List< BookingsModel > findByTenantIdAndBkApplicationNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String bookingType, List< String > sectorList, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk application status and bk booking type and bk sector in.
+	 * Find by tenant id and bk application status and bk booking type and bk sector in order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationStatus the application status
@@ -484,10 +480,10 @@ public interface BookingsRepository
 	 * @param sectorList the sector list
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkApplicationStatusAndBkBookingTypeAndBkSectorIn( String tenantId, String applicationStatus, String bookingType, List< String > sectorList );
+	List< BookingsModel > findByTenantIdAndBkApplicationStatusAndBkBookingTypeAndBkSectorInOrderByBkApplicationNumberDesc( String tenantId, String applicationStatus, String bookingType, List< String > sectorList );
 	
 	/**
-	 * Find by tenant id and bk application status and bk mobile number and bk booking type and bk sector in.
+	 * Find by tenant id and bk application status and bk mobile number and bk booking type and bk sector in order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationStatus the application status
@@ -496,10 +492,10 @@ public interface BookingsRepository
 	 * @param sectorList the sector list
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorIn( String tenantId, String applicationStatus, String mobileNumber, String bookingType, List< String > sectorList );
+	List< BookingsModel > findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorInOrderByBkApplicationNumberDesc( String tenantId, String applicationStatus, String mobileNumber, String bookingType, List< String > sectorList );
 	
 	/**
-	 * Find by tenant id and bk application status and bk mobile number and bk booking type and bk sector in and bk date created between.
+	 * Find by tenant id and bk application status and bk mobile number and bk booking type and bk sector in and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationStatus the application status
@@ -510,10 +506,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( String tenantId, String applicationStatus, String mobileNumber, String bookingType, List< String > sectorList, Date fromDate, Date toDate );
+	List< BookingsModel > findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String applicationStatus, String mobileNumber, String bookingType, List< String > sectorList, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk mobile number and bk booking type and bk sector in.
+	 * Find by tenant id and bk mobile number and bk booking type and bk sector in order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param mobileNumber the mobile number
@@ -521,10 +517,10 @@ public interface BookingsRepository
 	 * @param sectorList the sector list
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkMobileNumberAndBkBookingTypeAndBkSectorIn( String tenantId, String mobileNumber, String bookingType, List< String > sectorList );
+	List< BookingsModel > findByTenantIdAndBkMobileNumberAndBkBookingTypeAndBkSectorInOrderByBkApplicationNumberDesc( String tenantId, String mobileNumber, String bookingType, List< String > sectorList );
 	
 	/**
-	 * Find by tenant id and bk mobile number and bk booking type and bk sector in and bk date created between.
+	 * Find by tenant id and bk mobile number and bk booking type and bk sector in and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param mobileNumber the mobile number
@@ -534,10 +530,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( String tenantId, String mobileNumber, String bookingType, List< String > sectorList, Date fromDate, Date toDate );
+	List< BookingsModel > findByTenantIdAndBkMobileNumberAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String mobileNumber, String bookingType, List< String > sectorList, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk booking type and bk sector in and bk date created between.
+	 * Find by tenant id and bk booking type and bk sector in and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param bookingType the booking type
@@ -546,7 +542,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetween( String tenantId, String bookingType, List< String > sectorList, Date fromDate, Date toDate );
+	List< BookingsModel > findByTenantIdAndBkBookingTypeAndBkSectorInAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String bookingType, List< String > sectorList, Date fromDate, Date toDate );
 	
 	/**
 	 * Count by tenant id and bk booking type and uuid.
@@ -558,18 +554,17 @@ public interface BookingsRepository
 	 */
 	int countByTenantIdAndBkBookingTypeAndUuid( String tenantId, String bookingType, String uuid );
 	
-	
 	/**
-	 * Find by tenant id and bk sector in.
+	 * Find by tenant id and bk sector in order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param sectorList the sector list
 	 * @return the list
 	 */
-	List< BookingsModel > findByTenantIdAndBkSectorIn( String tenantId, List< String > sectorList );
+	List< BookingsModel > findByTenantIdAndBkSectorInOrderByBkApplicationNumberDesc( String tenantId, List< String > sectorList );
 	
 	/**
-	 * Find by tenant id and bk application number and uuid and bk booking type.
+	 * Find by tenant id and bk application number and uuid and bk booking type order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -577,20 +572,20 @@ public interface BookingsRepository
 	 * @param bookingType the booking type
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndUuidAndBkBookingType( String tenantId, String applicationNumber, String uuId, String bookingType );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndUuidAndBkBookingTypeOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String uuId, String bookingType );
 	
 	/**
-	 * Find by tenant id and uuid and bk booking type.
+	 * Find by tenant id and uuid and bk booking type order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param uuId the uu id
 	 * @param bookingType the booking type
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndUuidAndBkBookingType( String tenantId, String uuId, String bookingType );
+	List<BookingsModel> findByTenantIdAndUuidAndBkBookingTypeOrderByBkApplicationNumberDesc( String tenantId, String uuId, String bookingType );
 	
 	/**
-	 * Find by tenant id and bk application number and bk application status and uuid and bk booking type.
+	 * Find by tenant id and bk application number and bk application status and uuid and bk booking type order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -599,10 +594,10 @@ public interface BookingsRepository
 	 * @param bookingType the booking type
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndUuidAndBkBookingType( String tenantId, String applicationNumber, String applicationStatus, String uuId, String bookingType );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndUuidAndBkBookingTypeOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String applicationStatus, String uuId, String bookingType );
 	
 	/**
-	 * Find by tenant id and bk application number and bk application status and bk mobile number and uuid and bk booking type.
+	 * Find by tenant id and bk application number and bk application status and bk mobile number and uuid and bk booking type order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -612,10 +607,10 @@ public interface BookingsRepository
 	 * @param bookingType the booking type
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingType( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String uuId, String bookingType );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingTypeOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String uuId, String bookingType );
 
 	/**
-	 * Find by tenant id and bk application number and bk application status and bk mobile number and uuid and bk booking type and bk date created between.
+	 * Find by tenant id and bk application number and bk application status and bk mobile number and uuid and bk booking type and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -627,10 +622,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String uuId, String bookingType, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, String uuId, String bookingType, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk application number and bk mobile number and uuid and bk booking type.
+	 * Find by tenant id and bk application number and bk mobile number and uuid and bk booking type order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -639,10 +634,10 @@ public interface BookingsRepository
 	 * @param bookingType the booking type
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuidAndBkBookingType(String tenantId, String applicationNumber, String mobileNumber, String uuId, String bookingType );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuidAndBkBookingTypeOrderByBkApplicationNumberDesc(String tenantId, String applicationNumber, String mobileNumber, String uuId, String bookingType );
 
 	/**
-	 * Find by tenant id and bk application number and bk mobile number and uuid and bk booking type and bk date created between.
+	 * Find by tenant id and bk application number and bk mobile number and uuid and bk booking type and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -653,10 +648,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( String tenantId, String applicationNumber, String mobileNumber, String uuId, String bookingType, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String mobileNumber, String uuId, String bookingType, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk application number and uuid and bk booking type and bk date created between.
+	 * Find by tenant id and bk application number and uuid and bk booking type and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -666,10 +661,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( String tenantId, String applicationNumber, String uuId, String bookingType, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String uuId, String bookingType, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk application status and uuid and bk booking type.
+	 * Find by tenant id and bk application status and uuid and bk booking type order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationStatus the application status
@@ -677,10 +672,10 @@ public interface BookingsRepository
 	 * @param bookingType the booking type
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndUuidAndBkBookingType( String tenantId, String applicationStatus, String uuId, String bookingType );
+	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndUuidAndBkBookingTypeOrderByBkApplicationNumberDesc( String tenantId, String applicationStatus, String uuId, String bookingType );
 	
 	/**
-	 * Find by tenant id and bk application status and bk mobile number and uuid and bk booking type.
+	 * Find by tenant id and bk application status and bk mobile number and uuid and bk booking type order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationStatus the application status
@@ -689,10 +684,10 @@ public interface BookingsRepository
 	 * @param bookingType the booking type
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingType( String tenantId, String applicationStatus, String mobileNumber, String uuId, String bookingType );
+	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingTypeOrderByBkApplicationNumberDesc( String tenantId, String applicationStatus, String mobileNumber, String uuId, String bookingType );
 	
 	/**
-	 * Find by tenant id and bk application status and bk mobile number and uuid and bk booking type and bk date created between.
+	 * Find by tenant id and bk application status and bk mobile number and uuid and bk booking type and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationStatus the application status
@@ -703,10 +698,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( String tenantId, String applicationStatus, String mobileNumber, String uuId, String bookingType, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String applicationStatus, String mobileNumber, String uuId, String bookingType, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk mobile number and uuid and bk booking type.
+	 * Find by tenant id and bk mobile number and uuid and bk booking type order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param mobileNumber the mobile number
@@ -714,10 +709,10 @@ public interface BookingsRepository
 	 * @param bookingType the booking type
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkMobileNumberAndUuidAndBkBookingType( String tenantId,String mobileNumber, String uuId, String bookingType );
+	List<BookingsModel> findByTenantIdAndBkMobileNumberAndUuidAndBkBookingTypeOrderByBkApplicationNumberDesc( String tenantId,String mobileNumber, String uuId, String bookingType );
 	
 	/**
-	 * Find by tenant id and bk mobile number and uuid and bk booking type and bk date created between.
+	 * Find by tenant id and bk mobile number and uuid and bk booking type and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param mobileNumber the mobile number
@@ -727,10 +722,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetween( String tenantId, String mobileNumber, String uuId, String bookingType, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkMobileNumberAndUuidAndBkBookingTypeAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String mobileNumber, String uuId, String bookingType, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and uuid and bk booking type and bk date created between.
+	 * Find by tenant id and uuid and bk booking type and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param uuId the uu id
@@ -739,21 +734,20 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndUuidAndBkBookingTypeAndBkDateCreatedBetween( String tenantId, String uuId, String bookingType, Date fromDate, Date toDate );
-	
+	List<BookingsModel> findByTenantIdAndUuidAndBkBookingTypeAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String uuId, String bookingType, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk application number and bk sector in.
+	 * Find by tenant id and bk application number and bk sector in order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
 	 * @param sectorList the sector list
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkSectorIn( String tenantId, String applicationNumber, List< String > sectorList );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkSectorInOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, List< String > sectorList );
 	
 	/**
-	 * Find by tenant id and bk application number and bk application status and bk sector in.
+	 * Find by tenant id and bk application number and bk application status and bk sector in order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -761,10 +755,10 @@ public interface BookingsRepository
 	 * @param sectorList the sector list
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkSectorIn( String tenantId, String applicationNumber, String applicationStatus, List< String > sectorList );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkSectorInOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String applicationStatus, List< String > sectorList );
 	
 	/**
-	 * Find by tenant id and bk application number and bk application status and bk mobile number and bk sector in.
+	 * Find by tenant id and bk application number and bk application status and bk mobile number and bk sector in order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -773,10 +767,10 @@ public interface BookingsRepository
 	 * @param sectorList the sector list
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkSectorIn( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, List< String > sectorList );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkSectorInOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, List< String > sectorList );
 	
 	/**
-	 * Find by tenant id and bk application number and bk application status and bk mobile number and bk sector in and bk date created between.
+	 * Find by tenant id and bk application number and bk application status and bk mobile number and bk sector in and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -787,10 +781,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkSectorInAndBkDateCreatedBetween( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, List< String > sectorList, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkApplicationStatusAndBkMobileNumberAndBkSectorInAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber, List< String > sectorList, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk application number and bk mobile number and bk sector in.
+	 * Find by tenant id and bk application number and bk mobile number and bk sector in order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -798,10 +792,10 @@ public interface BookingsRepository
 	 * @param sectorList the sector list
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkSectorIn( String tenantId, String applicationNumber, String mobileNumber, List< String > sectorList );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkSectorInOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String mobileNumber, List< String > sectorList );
 	
 	/**
-	 * Find by tenant id and bk application number and bk mobile number and bk sector in and bk date created between.
+	 * Find by tenant id and bk application number and bk mobile number and bk sector in and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -811,10 +805,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkSectorInAndBkDateCreatedBetween( String tenantId, String applicationNumber, String mobileNumber, List< String > sectorList, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkMobileNumberAndBkSectorInAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, String mobileNumber, List< String > sectorList, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk application number and bk sector in and bk date created between.
+	 * Find by tenant id and bk application number and bk sector in and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -823,7 +817,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkSectorInAndBkDateCreatedBetween( String tenantId, String applicationNumber, List< String > sectorList, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkApplicationNumberAndBkSectorInAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String applicationNumber, List< String > sectorList, Date fromDate, Date toDate );
 	
 	/**
 	 * Find by tenant id and bk application status and bk sector in.
@@ -860,17 +854,17 @@ public interface BookingsRepository
 	List<BookingsModel> findByTenantIdAndBkApplicationStatusAndBkMobileNumberAndBkSectorInAndBkDateCreatedBetween( String tenantId, String applicationStatus, String mobileNumber, List< String > sectorList, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk mobile number and bk sector in.
+	 * Find by tenant id and bk mobile number and bk sector in order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param mobileNumber the mobile number
 	 * @param sectorList the sector list
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkMobileNumberAndBkSectorIn( String tenantId, String mobileNumber, List< String > sectorList );
+	List<BookingsModel> findByTenantIdAndBkMobileNumberAndBkSectorInOrderByBkApplicationNumberDesc( String tenantId, String mobileNumber, List< String > sectorList );
 	
 	/**
-	 * Find by tenant id and bk mobile number and bk sector in and bk date created between.
+	 * Find by tenant id and bk mobile number and bk sector in and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param mobileNumber the mobile number
@@ -879,10 +873,10 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkMobileNumberAndBkSectorInAndBkDateCreatedBetween( String tenantId, String mobileNumber, List< String > sectorList, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkMobileNumberAndBkSectorInAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, String mobileNumber, List< String > sectorList, Date fromDate, Date toDate );
 	
 	/**
-	 * Find by tenant id and bk sector in and bk date created between.
+	 * Find by tenant id and bk sector in and bk date created between order by bk application number desc.
 	 *
 	 * @param tenantId the tenant id
 	 * @param sectorList the sector list
@@ -890,7 +884,7 @@ public interface BookingsRepository
 	 * @param toDate the to date
 	 * @return the list
 	 */
-	List<BookingsModel> findByTenantIdAndBkSectorInAndBkDateCreatedBetween( String tenantId, List< String > sectorList, Date fromDate, Date toDate );
+	List<BookingsModel> findByTenantIdAndBkSectorInAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, List< String > sectorList, Date fromDate, Date toDate );
 	 
 	
 	
