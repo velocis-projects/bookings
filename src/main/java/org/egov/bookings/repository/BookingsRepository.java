@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.egov.bookings.model.BookingsModel;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 // TODO: Auto-generated Javadoc
@@ -885,6 +887,35 @@ public interface BookingsRepository
 	 * @return the list
 	 */
 	List<BookingsModel> findByTenantIdAndBkSectorInAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, List< String > sectorList, Date fromDate, Date toDate );
+	
+	
+	@Query(
+			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
+					+ "AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_SECTOR IN (?6) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
+			nativeQuery = true )
+			List<BookingsModel> getEmployeeSearchBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
+					, String bookingType, List< String > sectorList );
+
+	@Query(
+			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
+					+ "AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_SECTOR IN (?6) AND TB.BK_DATE_CREATED BETWEEN (?7) AND (?8) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
+			nativeQuery = true )
+			List<BookingsModel> getEmployeeSearchBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
+					, String bookingType, List< String > sectorList, Date fromDate, Date toDate );
+	
+	@Query(
+			value = "SELECT * FROM TT_BOOKINGS WHERE TENANT_ID = (?1) AND BK_APPLICATION_NUMBER LIKE (%?2%) AND BK_APPLICATION_STATUS LIKE (%?3%) "
+					+ "AND BK_MOBILE_NUMBER LIKE (%?4%) AND BK_BOOKING_TYPE LIKE (%?5%) AND UUID LIKE (?6) ORDER BY BK_APPLICATION_NUMBER DESC",
+			nativeQuery = true )
+			List<BookingsModel> getCitizenSearchBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
+					, String bookingType, String uuid );
+
+	@Query(
+			value = "SELECT * FROM TT_BOOKINGS WHERE TENANT_ID = (?1) AND BK_APPLICATION_NUMBER LIKE (%?2%) AND BK_APPLICATION_STATUS LIKE (%?3%) "
+					+ "AND BK_MOBILE_NUMBER LIKE (%?4%) AND BK_BOOKING_TYPE LIKE (%?5%) AND UUID LIKE (?6) AND BK_DATE_CREATED BETWEEN (?7) AND (?8) ORDER BY BK_APPLICATION_NUMBER DESC",
+			nativeQuery = true )
+			List<BookingsModel> getCitizenSearchBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
+					, String bookingType, String uuid, Date fromDate, Date toDate );
 	 
 	
 }

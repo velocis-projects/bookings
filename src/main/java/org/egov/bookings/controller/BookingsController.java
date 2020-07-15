@@ -1,24 +1,32 @@
 package org.egov.bookings.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.common.model.ResponseModel;
 import org.egov.bookings.contract.Booking;
+import org.egov.bookings.contract.ProcessInstanceSearchCriteria;
+import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.service.BookingsService;
 import org.egov.bookings.service.impl.EnrichmentService;
 import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
+import org.egov.bookings.web.models.ProcessInstance;
+import org.egov.bookings.web.models.ProcessInstanceRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -253,7 +261,7 @@ public class BookingsController {
 		Map< String, Integer > bookingCountMap = new HashMap<>();
 		try
 		{
-			if (searchCriteriaFieldsDTO == null) 
+			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO) ) 
 			{
 				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
 			}
@@ -278,5 +286,36 @@ public class BookingsController {
 			LOGGER.error("Exception occur in the citizenRecordsCount " + e);
 		}
 		return ResponseEntity.ok( bookingCountMap );
+	}
+	
+	/**
+	 * Gets the workflow process instances.
+	 *
+	 * @param requestInfoWrapper the request info wrapper
+	 * @param criteria the criteria
+	 * @return the workflow process instances
+	 */
+	@PostMapping( value = "egov-workflow/process/_search")
+	public ResponseEntity<?> getWorkflowProcessInstances( @Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
+            @Valid @ModelAttribute ProcessInstanceSearchCriteria criteria )
+	{
+		Object result = new Object();
+		try
+		{
+			if (BookingsFieldsValidator.isNullOrEmpty(requestInfoWrapper)) 
+			{
+				throw new IllegalArgumentException("Invalid requestInfoWrapper");
+			}
+			if (BookingsFieldsValidator.isNullOrEmpty(criteria)) 
+			{
+				throw new IllegalArgumentException("Invalid criteria");
+			}
+			result = bookingsService.getWorkflowProcessInstances(requestInfoWrapper, criteria);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the getWorkflowProcessInstances " + e);
+		}
+		return ResponseEntity.ok( result );
 	}
 }
