@@ -1,5 +1,6 @@
 package org.egov.bookings.config;
 
+import java.math.BigDecimal;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
@@ -242,6 +243,17 @@ public class BookingsConfiguration {
 
 	@Value("${egov.usr.events.pay.triggers}")
 	private String payTriggers;
-
+	
+	@Value("${egov.demand.create.endpoint}")
+	private String demandCreateEndpoint;
+	
+	
+	@Value("${egov.billingservice.host}")
+	private String billingHost;
+	
+	
+	@Value("${egov.demand.minimum.payable.amount}")
+    private BigDecimal minimumPayableAmount;
+	
 
 }

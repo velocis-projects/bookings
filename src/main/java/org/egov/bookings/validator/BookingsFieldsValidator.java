@@ -4,6 +4,9 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 
+import org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria;
+import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
+import org.egov.bookings.contract.OsbmSearchCriteria;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -79,4 +82,66 @@ public class BookingsFieldsValidator {
 	      }
 	      return false;
 	   }
+
+
+	/**
+	 * Validate osbm search criteria.
+	 *
+	 * @param osbmSearchCriteria the osbm search criteria
+	 */
+	public void validateOsbmSearchCriteria(OsbmSearchCriteria osbmSearchCriteria) {
+		
+		if(null == osbmSearchCriteria) {
+			throw new IllegalArgumentException("Invalid Search Criteria Field");
+		}
+		else if(null == osbmSearchCriteria.getConstructionType() || osbmSearchCriteria.getConstructionType() == "") {
+			throw new IllegalArgumentException("Invalid constructionType");
+		}
+		
+		else if(null == osbmSearchCriteria.getDurationInMonths() || osbmSearchCriteria.getDurationInMonths() == "") {
+			throw new IllegalArgumentException("Invalid durationInMonths");
+		}
+		
+		else if(null == osbmSearchCriteria.getResidentialCommercial() || osbmSearchCriteria.getResidentialCommercial() == "") {
+			throw new IllegalArgumentException("Invalid residentialCommercial");
+		}
+		
+		
+		else if(null == osbmSearchCriteria.getStorage() || osbmSearchCriteria.getStorage() == "") {
+			throw new IllegalArgumentException("Invalid getStorage");
+		}
+		
+		else if(null == osbmSearchCriteria.getVillageCity() || osbmSearchCriteria.getVillageCity() == "") {
+			throw new IllegalArgumentException("Invalid villageCity");
+		}
+		
+	}
+
+
+	public void validateCommercialGroundCriteria(CommercialGroundFeeSearchCriteria commercialGroundFeeSearchCriteria) {
+		if(null == commercialGroundFeeSearchCriteria) {
+			throw new IllegalArgumentException("Invalid Commercial Ground Fee Search Criteria");
+		}
+		else if(null == commercialGroundFeeSearchCriteria.getCategory() || commercialGroundFeeSearchCriteria.getCategory() == "") {
+			throw new IllegalArgumentException("Invalid Category");
+		}
+		
+		else if(null == commercialGroundFeeSearchCriteria.getLocality() || commercialGroundFeeSearchCriteria.getLocality() == "") {
+			throw new IllegalArgumentException("Invalid Locality");
+		}
+	}
+
+
+	public void validateCommercialGroundAvailabilityCriteria(
+			CommercialGroundAvailabiltySearchCriteria commercialGroundAvailabiltySearchCriteria) {
+		if(null == commercialGroundAvailabiltySearchCriteria) {
+			throw new IllegalArgumentException("Invalid Commercial Ground Availability Search Criteria");
+		}
+		/*else if(null == commercialGroundAvailabiltySearchCriteria.getDate()) {
+			throw new IllegalArgumentException("Invalid Commercial Ground Date");
+		}*/
+		else if(null == commercialGroundAvailabiltySearchCriteria.getBookingVenue()) {
+			throw new IllegalArgumentException("Invalid Commercial Ground Booking Venue");
+		}
+	}
 }

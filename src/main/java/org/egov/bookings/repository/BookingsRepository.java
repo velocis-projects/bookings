@@ -889,4 +889,5 @@ public interface BookingsRepository
 	
 	
 	BookingsModel findByBkApplicationNumber(String bkApplicationNumber);
+
 }

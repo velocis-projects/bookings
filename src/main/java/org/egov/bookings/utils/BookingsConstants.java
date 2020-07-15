@@ -415,5 +415,12 @@ public class BookingsConstants {
 	
 	/** The Constant APPLICATION_NUMBER. */
 	public static final String APPLICATION_NUMBER = "applicationNumber";
+
+	public static final String BOOKING_VENUE = "bookingVenue";
+
+	public static final String BOOKING_TYPE = "bookingType";
+
+	/** The Constant DATE. */
+	public static final String DATE = "date";
 	
 }

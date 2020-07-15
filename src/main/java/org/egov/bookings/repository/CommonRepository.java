@@ -1,5 +1,6 @@
 package org.egov.bookings.repository;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.egov.bookings.model.BookingsModel;
@@ -18,10 +19,10 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	/**
 	 * Find assignee uuid.
 	 *
-	 * @param tenantId the tenant id
-	 * @param action the action
+	 * @param tenantId        the tenant id
+	 * @param action          the action
 	 * @param businessservice the businessservice
-	 * @param role_tenantId the role tenant id
+	 * @param role_tenantId   the role tenant id
 	 * @return the string
 	 */
 	@Query(value = WorkflowQueryBuilder.FIND_ASSIGNEE_UUID, nativeQuery = true)
@@ -29,8 +30,7 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 			@Param(BookingsConstants.ACTION) String action,
 			@Param(BookingsConstants.BUSINESS_SERVICE) String businessservice,
 			@Param(BookingsConstants.ROLE_TENANT_ID) String role_tenantId);
-	
-	
+
 	/**
 	 * Find application number.
 	 *
@@ -38,8 +38,8 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 * @return the list
 	 */
 	@Query(value = WorkflowQueryBuilder.FIND_APPLICATION_NUMBER, nativeQuery = true)
-	public List< String > findApplicationNumber(@Param(BookingsConstants.UUID) String uuid);
-	
+	public List<String> findApplicationNumber(@Param(BookingsConstants.UUID) String uuid);
+
 	/**
 	 * Find sector list.
 	 *
@@ -47,8 +47,8 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 * @return the list
 	 */
 	@Query(value = WorkflowQueryBuilder.FIND_SECTOR_LIST, nativeQuery = true)
-	public List< String > findSectorList(@Param(BookingsConstants.UUID) String uuid);
-	
+	public List<String> findSectorList(@Param(BookingsConstants.UUID) String uuid);
+
 	/**
 	 * Find document list.
 	 *
@@ -56,8 +56,8 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 * @return the list
 	 */
 	@Query(value = WorkflowQueryBuilder.FIND_DOCUMENT_LIST, nativeQuery = true)
-	public List< ? > findDocumentList(@Param(BookingsConstants.APPLICATION_NUMBER) String applicationNumber);
-	
+	public List<?> findDocumentList(@Param(BookingsConstants.APPLICATION_NUMBER) String applicationNumber);
+
 	/**
 	 * Find business service.
 	 *
@@ -66,7 +66,10 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 */
 	@Query(value = WorkflowQueryBuilder.FIND_BUSINESS_SERVICE, nativeQuery = true)
 	public String findBusinessService(@Param(BookingsConstants.APPLICATION_NUMBER) String applicationNumber);
-	
-	
+
+	@Query(value = WorkflowQueryBuilder.CHECK_COMMERCIAL_GROUND_AVAILABILITY, nativeQuery = true)
+	public List<BookingsModel> findAllByBkBookingVenueAndBetweenToDateAndFromDate(
+			@Param(BookingsConstants.BOOKING_VENUE) String bookingVenue,
+			@Param(BookingsConstants.BOOKING_TYPE) String bookingType, @Param(BookingsConstants.DATE) Date date);
 
 }
