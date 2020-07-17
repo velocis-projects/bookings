@@ -4,9 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.egov.bookings.contract.Booking;
+import org.egov.bookings.contract.ProcessInstanceSearchCriteria;
+import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.web.models.BookingsRequest;
+import org.egov.bookings.web.models.ProcessInstance;
+import org.egov.bookings.web.models.ProcessInstanceRequest;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -81,4 +85,12 @@ public interface BookingsService {
 	 */
 	public Map< String, Integer > citizenRecordsCount( String tenantId, String uuid, BookingsRequest bookingsRequest );
 	
+	/**
+	 * Gets the workflow process instances.
+	 *
+	 * @param requestInfoWrapper the request info wrapper
+	 * @param criteria the criteria
+	 * @return the workflow process instances
+	 */
+	public Object getWorkflowProcessInstances(RequestInfoWrapper requestInfoWrapper, ProcessInstanceSearchCriteria criteria);
 }

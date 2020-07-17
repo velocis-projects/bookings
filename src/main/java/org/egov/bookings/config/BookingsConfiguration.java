@@ -86,6 +86,10 @@ public class BookingsConfiguration {
 
     @Value("${egov.idgen.tl.licensenumber.format}")
     private String licenseNumberIdgenFormat;
+    
+    
+    
+    
 
 
 
@@ -221,9 +225,13 @@ public class BookingsConfiguration {
     @Value("${workflow.businessservice.search.path}")
     private String wfBusinessServiceSearchPath;
 
-
     @Value("${is.external.workflow.enabled}")
     private Boolean isExternalWorkFlowEnabled;
+    
+    @Value("${workflow.process.search.path}")
+    private String workflowProcessInstancePath;
+    
+    
 
     //USER EVENTS
 	@Value("${egov.ui.app.host}")

@@ -102,7 +102,7 @@ public class EnrichmentService {
 		List<Demand> demands = new LinkedList<>();
 		List<DemandDetail> demandDetails = new LinkedList<>();
 
-		if (bookingsRequest.getBookingsModel().getBusinessService() == "OSBM") {
+		if (bookingsRequest.getBookingsModel().getBusinessService().equals("OSBM")) {
 
 			String constructionType = bookingsRequest.getBookingsModel().getBkConstructionType();
 			String durationInMonths = bookingsRequest.getBookingsModel().getBkDuration();
@@ -117,13 +117,49 @@ public class EnrichmentService {
 			 
 			 BigDecimal tAmount = new BigDecimal(osbmFeeModel.getAmount()*1.18);
 			 
-			// BigDecimal taxAmount = new BigDecimal(tAmount+collectionAmount);
+			 BigDecimal taxAmount = collectionAmount.add(tAmount);
 			 
 			 
 			 
-			demandDetails.add(DemandDetail.builder().taxAmount(new BigDecimal(118.0))
+			demandDetails.add(DemandDetail.builder().taxAmount(taxAmount)
 					.taxHeadMasterCode(bookingsRequest.getBookingsModel().getBusinessService())
-					.collectionAmount(new BigDecimal(100.0))
+					.collectionAmount(collectionAmount)
+					.tenantId(bookingsRequest.getRequestInfo().getUserInfo().getTenantId()).build());
+
+			Long taxPeriodFrom = 1554057000000L;
+			Long taxPeriodTo = 1869676199000L;
+			List<String> combinedBillingSlabs = new LinkedList<>();
+
+			Demand singleDemand = Demand.builder().status(StatusEnum.ACTIVE)
+					.consumerCode(bookingsRequest.getBookingsModel().getBkApplicationNumber())
+					.demandDetails(demandDetails).payer(bookingsRequest.getRequestInfo().getUserInfo())
+					.minimumAmountPayable(config.getMinimumPayableAmount())
+					.tenantId(bookingsRequest.getRequestInfo().getUserInfo().getTenantId()).taxPeriodFrom(taxPeriodFrom)
+					.taxPeriodTo(taxPeriodTo).consumerType("bookings")
+					.businessService(bookingsRequest.getBookingsModel().getBusinessService())
+					.additionalDetails(Collections.singletonMap("calculationDes1cription", combinedBillingSlabs))
+					.build();
+			demands.add(singleDemand);
+			DemandRequest demandRequest = new DemandRequest(bookingsRequest.getRequestInfo(), demands);
+			bookingsCalculatorService.createDemand(demandRequest);
+		}
+		
+		else if (bookingsRequest.getBookingsModel().getBusinessService().equals("BWT")) {
+
+
+
+			 
+			 BigDecimal collectionAmount = new BigDecimal(350);
+			 
+			 BigDecimal tAmount =   collectionAmount.multiply(new BigDecimal(1.18));
+			 
+			 BigDecimal taxAmount = collectionAmount.add(tAmount);
+			 
+			 
+			 
+			demandDetails.add(DemandDetail.builder().taxAmount(taxAmount)
+					.taxHeadMasterCode(bookingsRequest.getBookingsModel().getBusinessService())
+					.collectionAmount(collectionAmount)
 					.tenantId(bookingsRequest.getRequestInfo().getUserInfo().getTenantId()).build());
 
 			Long taxPeriodFrom = 1554057000000L;
