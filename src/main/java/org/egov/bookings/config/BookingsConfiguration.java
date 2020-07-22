@@ -87,11 +87,11 @@ public class BookingsConfiguration {
     @Value("${egov.idgen.tl.licensenumber.format}")
     private String licenseNumberIdgenFormat;
     
-    
-    
+    @Value("${egov.demand.update.endpoint}")
+	private String demandUpdateEndPoint;
     
 
-
+   
 
 
     //Persister Config
@@ -256,6 +256,8 @@ public class BookingsConfiguration {
 	private String demandCreateEndpoint;
 	
 	
+	
+	
 	@Value("${egov.billingservice.host}")
 	private String billingHost;
 	
@@ -263,5 +265,7 @@ public class BookingsConfiguration {
 	@Value("${egov.demand.minimum.payable.amount}")
     private BigDecimal minimumPayableAmount;
 	
+    @Value("${egov.demand.search.endpoint}")
+    private String demandSearchEndpoint;
 
 }

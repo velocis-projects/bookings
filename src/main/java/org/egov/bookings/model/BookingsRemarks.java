@@ -33,9 +33,6 @@ public class BookingsRemarks {
 	@Column(name = "BK_REMARKS_ID")
 	private Long bkRemarksId;
 
-	@Column(name = "BK_APPLICATION_NUMBER")
-	private String bkApplicationNumber;
-
 	@Column(name = "BK_REMARKS")
 	private String bkRemarks;
 

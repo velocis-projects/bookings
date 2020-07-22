@@ -19,6 +19,7 @@ import org.egov.mdms.model.MasterDetail;
 import org.egov.mdms.model.MdmsCriteria;
 import org.egov.mdms.model.MdmsCriteriaReq;
 import org.egov.mdms.model.ModuleDetail;
+import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.CountResponse;
 import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.contract.SearcherRequest;
@@ -107,6 +108,9 @@ public class BookingsUtils {
 
 	@Autowired
 	private ServiceRequestRepository serviceRequestRepository;
+
+	@Autowired
+	private BookingsConfiguration config;
 	
 	private static final String MODULE_NAME = "{moduleName}";
 
@@ -646,6 +650,21 @@ public class BookingsUtils {
 		 long millis=System.currentTimeMillis();  
 	        return new java.sql.Date(millis);  
 	}
+	
+	 public String getDemandSearchURL(){
+	        StringBuilder url = new StringBuilder(config.getBillingHost());
+	        url.append(config.getDemandSearchEndpoint());
+	        url.append("?");
+	        url.append("tenantId=");
+	        url.append("{1}");
+	        url.append("&");
+	        url.append("businessService=");
+	        url.append("{2}");
+	        url.append("&");
+	        url.append("consumerCode=");
+	        url.append("{3}");
+	        return url.toString();
+	    }
 	
 
 }

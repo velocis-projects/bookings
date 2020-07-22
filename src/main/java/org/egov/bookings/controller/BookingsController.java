@@ -76,8 +76,6 @@ public class BookingsController {
 		bookingsFieldsValidator.validateAction(bookingsRequest.getBookingsModel().getBkAction());
 		bookingsFieldsValidator.validateBusinessService(bookingsRequest.getBookingsModel().getBusinessService());
 		bookingsFieldsValidator.validateTenantId(bookingsRequest.getBookingsModel().getTenantId());
-		enrichmentService.enrichBookingsCreateRequest(bookingsRequest);
-		enrichmentService.generateDemand(bookingsRequest);
 		BookingsModel bookingsModel = bookingsService
 				.save(bookingsRequest);
 		ResponseModel rs = new ResponseModel();

@@ -103,9 +103,9 @@ public class WorkflowIntegrator {
 		 * bkModel.getBusinessService(), wfTenantId);
 		 */
 		
-		 Object mdmsData = bookingsUtils.prepareMdMsRequestForBooking(bookingsRequest.getRequestInfo());
-		OsbmApproverModel osbmApproverModel = null;
-		osbmApproverModel = osbmApproverRepository.findBySector(bookingsRequest.getBookingsModel().getBkSector());
+		// Object mdmsData = bookingsUtils.prepareMdMsRequestForBooking(bookingsRequest.getRequestInfo());
+	//	OsbmApproverModel osbmApproverModel = null;
+		//osbmApproverModel = osbmApproverRepository.findBySector(bookingsRequest.getBookingsModel().getBkSector());
 		JSONObject obj = new JSONObject();
 		Map<String, String> uuidmap = new HashMap<>();
 		uuidmap.put(UUIDKEY, bkModel.getAssignee());
@@ -114,7 +114,8 @@ public class WorkflowIntegrator {
 		obj.put(BUSINESSSERVICEKEY, bookingsRequest.getBookingsModel().getBusinessService());
 		obj.put(MODULENAMEKEY, MODULENAMEVALUE);
 		obj.put(ACTIONKEY, bkModel.getBkAction());
-		//obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());
+		if(bkModel.getBookingsRemarks() != null)
+		obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());
 		if (!StringUtils.isEmpty(bkModel.getAssignee()))
 			obj.put(ASSIGNEEKEY, uuidmap);
 		obj.put(DOCUMENTSKEY, bkModel.getWfDocuments());

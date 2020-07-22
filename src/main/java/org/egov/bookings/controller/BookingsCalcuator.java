@@ -27,7 +27,7 @@ public class BookingsCalcuator {
 	@Autowired
 	BookingsCalculatorService bookingsCalculatorService;
 	
-	@PostMapping("/_create")
+	/*@PostMapping("/_create")
 	private ResponseEntity<?> createDemand(@RequestHeader HttpHeaders headers, @RequestBody @Valid DemandRequest demandRequest) {
 		
 		List<Demand> demands = bookingsCalculatorService
@@ -38,7 +38,7 @@ public class BookingsCalcuator {
 		rs.setData(demands);
 		
 		return ResponseEntity.ok(rs);
-	}
+	}*/
 	
 
 }

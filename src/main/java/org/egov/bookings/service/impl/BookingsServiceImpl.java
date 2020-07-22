@@ -36,6 +36,7 @@ import org.egov.tracer.model.ServiceCallException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -110,8 +111,17 @@ public class BookingsServiceImpl implements BookingsService {
 	@Override
 	public BookingsModel save(BookingsRequest bookingsRequest) {
 		
-		if (config.getIsExternalWorkFlowEnabled())
+		boolean flag = isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
+		
+		if(!flag)
+		enrichmentService.enrichBookingsCreateRequest(bookingsRequest);
+		enrichmentService.generateDemand(bookingsRequest);
+		
+		
+		if (config.getIsExternalWorkFlowEnabled()) {
+			if(!flag)
 			workflowIntegrator.callWorkFlow(bookingsRequest);
+		}
 		//bookingsProducer.push(saveTopic, bookingsRequest.getBookingsModel());
 		 enrichmentService.enrichBookingsDetails(bookingsRequest);
 		 bookingsRepository.save(bookingsRequest.getBookingsModel());
@@ -119,6 +129,19 @@ public class BookingsServiceImpl implements BookingsService {
 		
 		
 	}
+	
+	public boolean isBookingExists(String bkApplicationnumber) {
+
+		BookingsModel bookingsModel = bookingsRepository.findByBkApplicationNumber(bkApplicationnumber);
+
+		if (null == bookingsModel) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+	
 
 	/**
 	 * Gets the all building material.
@@ -558,14 +581,20 @@ public class BookingsServiceImpl implements BookingsService {
 	public BookingsModel update(BookingsRequest bookingsRequest) {
 		if (config.getIsExternalWorkFlowEnabled())
 			workflowIntegrator.callWorkFlow(bookingsRequest);
-		//bookingsProducer.push(saveTopic, bookingsRequest.getBookingsModel());
-		//bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
-		BookingsModel bookingsModel = bookingsRepository.findByBkApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
-		bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
-		bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
-		bookingsModel.setBookingsRemarks(bookingsRequest.getBookingsModel().getBookingsRemarks());
-		bookingsRepository.save(bookingsModel);
-		return bookingsModel;
+		// bookingsProducer.push(saveTopic, bookingsRequest.getBookingsModel());
+		// bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
+		if (!bookingsRequest.getBookingsModel().getBkAction().equals("APPLY")) {
+			BookingsModel bookingsModel = bookingsRepository
+					.findByBkApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
+			bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
+			bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
+			bookingsModel.setBookingsRemarks(bookingsRequest.getBookingsModel().getBookingsRemarks());
+			bookingsRepository.save(bookingsModel);
+			return bookingsModel;
+		} else {
+			bookingsRepository.save(bookingsRequest.getBookingsModel());
+			return bookingsRequest.getBookingsModel();
+		}
 	}
 
 	/**
