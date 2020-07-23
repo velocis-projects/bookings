@@ -282,6 +282,10 @@ public class BookingsModel {
 	@Column(name = "BUSINESS_SERVICE")
 	private String businessService;
 	
+	@Column(name = "APPROVER_NAME")
+	private String bkApproverName;
+
+	
 	@Size(max = 64)
 	@JsonProperty("assignee")
 	@Transient
