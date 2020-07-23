@@ -93,4 +93,6 @@ public interface BookingsService {
 	 * @return the workflow process instances
 	 */
 	public Object getWorkflowProcessInstances(RequestInfoWrapper requestInfoWrapper, ProcessInstanceSearchCriteria criteria);
+
+	public boolean isBookingExists(String bkApplicationNumber);
 }

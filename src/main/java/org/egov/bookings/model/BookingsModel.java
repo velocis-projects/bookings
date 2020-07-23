@@ -276,8 +276,10 @@ public class BookingsModel {
 	@Column(name = "BK_ACTION")
 	private String bkAction;
 
+	@Column(name = "BK_CONSTRUCTION_TYPE")
+	private String bkConstructionType;
 	
-	@Transient
+	@Column(name = "BUSINESS_SERVICE")
 	private String businessService;
 	
 	@Size(max = 64)

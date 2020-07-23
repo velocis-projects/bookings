@@ -58,6 +58,7 @@ public class BookingsController {
 	@Autowired
 	BookingsFieldsValidator bookingsFieldsValidator;
 	
+	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger( BookingsController.class.getName() );
 	
@@ -75,7 +76,6 @@ public class BookingsController {
 		bookingsFieldsValidator.validateAction(bookingsRequest.getBookingsModel().getBkAction());
 		bookingsFieldsValidator.validateBusinessService(bookingsRequest.getBookingsModel().getBusinessService());
 		bookingsFieldsValidator.validateTenantId(bookingsRequest.getBookingsModel().getTenantId());
-		enrichmentService.enrichTLCreateRequest(bookingsRequest);
 		BookingsModel bookingsModel = bookingsService
 				.save(bookingsRequest);
 		ResponseModel rs = new ResponseModel();

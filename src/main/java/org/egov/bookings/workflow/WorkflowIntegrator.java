@@ -103,21 +103,19 @@ public class WorkflowIntegrator {
 		 * bkModel.getBusinessService(), wfTenantId);
 		 */
 		
-		 Object mdmsData = bookingsUtils.prepareMdMsRequestForBooking(bookingsRequest.getRequestInfo());
-		OsbmApproverModel osbmApproverModel = null;
-		osbmApproverModel = osbmApproverRepository.findBySector(bookingsRequest.getBookingsModel().getBkSector());
+		// Object mdmsData = bookingsUtils.prepareMdMsRequestForBooking(bookingsRequest.getRequestInfo());
+	//	OsbmApproverModel osbmApproverModel = null;
+		//osbmApproverModel = osbmApproverRepository.findBySector(bookingsRequest.getBookingsModel().getBkSector());
 		JSONObject obj = new JSONObject();
 		Map<String, String> uuidmap = new HashMap<>();
 		uuidmap.put(UUIDKEY, bkModel.getAssignee());
 		obj.put(BUSINESSIDKEY, bkModel.getBkApplicationNumber());
 		obj.put(TENANTIDKEY, wfTenantId);
-		if (BookingTypeEnum.WATER_TANKER.getName().equals(bkModel.getBkBookingType()))
-			obj.put(BUSINESSSERVICEKEY, BookingTypeEnum.WATER_TANKER.getName());
-		else if (BookingTypeEnum.OPEN_SPACE_FOR_BUILDING_MATERIAL.getName().equals(bkModel.getBkBookingType()))
-			obj.put(BUSINESSSERVICEKEY, BookingTypeEnum.OPEN_SPACE_FOR_BUILDING_MATERIAL.getName());
+		obj.put(BUSINESSSERVICEKEY, bookingsRequest.getBookingsModel().getBusinessService());
 		obj.put(MODULENAMEKEY, MODULENAMEVALUE);
 		obj.put(ACTIONKEY, bkModel.getBkAction());
-		//obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());
+		if(bkModel.getBookingsRemarks() != null)
+		obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());
 		if (!StringUtils.isEmpty(bkModel.getAssignee()))
 			obj.put(ASSIGNEEKEY, uuidmap);
 		obj.put(DOCUMENTSKEY, bkModel.getWfDocuments());

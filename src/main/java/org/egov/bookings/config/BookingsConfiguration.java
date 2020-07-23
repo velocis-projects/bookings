@@ -1,5 +1,6 @@
 package org.egov.bookings.config;
 
+import java.math.BigDecimal;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
@@ -86,11 +87,11 @@ public class BookingsConfiguration {
     @Value("${egov.idgen.tl.licensenumber.format}")
     private String licenseNumberIdgenFormat;
     
-    
-    
+    @Value("${egov.demand.update.endpoint}")
+	private String demandUpdateEndPoint;
     
 
-
+   
 
 
     //Persister Config
@@ -250,6 +251,21 @@ public class BookingsConfiguration {
 
 	@Value("${egov.usr.events.pay.triggers}")
 	private String payTriggers;
-
+	
+	@Value("${egov.demand.create.endpoint}")
+	private String demandCreateEndpoint;
+	
+	
+	
+	
+	@Value("${egov.billingservice.host}")
+	private String billingHost;
+	
+	
+	@Value("${egov.demand.minimum.payable.amount}")
+    private BigDecimal minimumPayableAmount;
+	
+    @Value("${egov.demand.search.endpoint}")
+    private String demandSearchEndpoint;
 
 }

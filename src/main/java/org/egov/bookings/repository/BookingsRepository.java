@@ -966,4 +966,8 @@ public interface BookingsRepository
 					, String bookingType, String uuid, Date fromDate, Date toDate );
 	 
 	
+	
+	BookingsModel findByBkApplicationNumber(String bkApplicationNumber);
+
+
 }
