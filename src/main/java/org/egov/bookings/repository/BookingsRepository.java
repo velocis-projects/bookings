@@ -902,7 +902,7 @@ public interface BookingsRepository
 	 */
 	@Query(
 			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
-					+ "AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_SECTOR IN (?6) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
+					+ "AND TB.BK_APPLICATION_STATUS != 'INITIATED' AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_SECTOR IN (?6) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
 			nativeQuery = true )
 			List<BookingsModel> getEmployeeSearchBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
 					, String bookingType, List< String > sectorList );
@@ -922,7 +922,7 @@ public interface BookingsRepository
 	 */
 	@Query(
 			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
-					+ "AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_SECTOR IN (?6) AND TB.BK_DATE_CREATED BETWEEN (?7) AND (?8) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
+					+ "AND TB.BK_APPLICATION_STATUS != 'INITIATED' AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_SECTOR IN (?6) AND TB.BK_DATE_CREATED BETWEEN (?7) AND (?8) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
 			nativeQuery = true )
 			List<BookingsModel> getEmployeeSearchBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
 					, String bookingType, List< String > sectorList, Date fromDate, Date toDate );

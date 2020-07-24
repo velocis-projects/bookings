@@ -1,6 +1,5 @@
 package org.egov.bookings.service.impl;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,7 +12,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.Booking;
-import org.egov.bookings.contract.IdGenerationResponse;
 import org.egov.bookings.contract.MdmsJsonFields;
 import org.egov.bookings.contract.ProcessInstanceSearchCriteria;
 import org.egov.bookings.contract.RequestInfoWrapper;
@@ -27,17 +25,11 @@ import org.egov.bookings.service.BookingsService;
 import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
-import org.egov.bookings.web.models.ProcessInstance;
-import org.egov.bookings.web.models.ProcessInstanceRequest;
 import org.egov.bookings.workflow.WorkflowIntegrator;
 import org.egov.mdms.model.MdmsResponse;
-import org.egov.tracer.model.CustomException;
-import org.egov.tracer.model.ServiceCallException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
