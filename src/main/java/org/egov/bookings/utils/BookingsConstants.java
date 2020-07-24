@@ -416,11 +416,31 @@ public class BookingsConstants {
 	/** The Constant APPLICATION_NUMBER. */
 	public static final String APPLICATION_NUMBER = "applicationNumber";
 
+	/** The Constant BOOKING_VENUE. */
 	public static final String BOOKING_VENUE = "bookingVenue";
 
+	/** The Constant BOOKING_TYPE. */
 	public static final String BOOKING_TYPE = "bookingType";
 
 	/** The Constant DATE. */
 	public static final String DATE = "date";
+	
+	/** The Constant OSBM. */
+	public static final String OSBM = "OSBM";
+	
+	/** The Constant OSBM_TAXHEAD_CODE_1. */
+	public static final String OSBM_TAXHEAD_CODE_1 = "OSBM";
+	
+	/** The Constant OSBM_TAX. */
+	public static final String OSBM_TAXHEAD_CODE_2 = "OSBM_TAX";
+	
+	/** The Constant BWT. */
+	public static final String BWT = "BWT";
+	
+	/** The Constant BWT_TAXHEAD_CODE_1. */
+	public static final String BWT_TAXHEAD_CODE_1 = "BWT";
+	
+	/** The Constant BWT_TAXHEAD_CODE_2. */
+	public static final String BWT_TAXHEAD_CODE_2 = "BWT_TAX";
 	
 }

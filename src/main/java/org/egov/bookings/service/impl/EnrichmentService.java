@@ -50,6 +50,9 @@ public class EnrichmentService {
 	
 	@Autowired
 	BookingsService bookingsService;
+	
+	@Autowired
+	DemandServiceImpl demandService;
 
 	public void enrichBookingsCreateRequest(BookingsRequest bookingsRequest) {
 		RequestInfo requestInfo = bookingsRequest.getRequestInfo();
@@ -106,14 +109,14 @@ public class EnrichmentService {
 
 		if (bookingsRequest.getBookingsModel().getBusinessService().equals("OSBM")) {
 			if(!bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
-				bookingsCalculatorService.createDemand(bookingsRequest);
+				demandService.createDemand(bookingsRequest);
 			} else
-				bookingsCalculatorService.updateDemand(bookingsRequest);
+				demandService.updateDemand(bookingsRequest);
 		}
 
 		else if (bookingsRequest.getBookingsModel().getBusinessService().equals("BWT")) {
 			if(!bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
-				bookingsCalculatorService.createDemand(bookingsRequest);
+				demandService.createDemand(bookingsRequest);
 			}
 		}
 

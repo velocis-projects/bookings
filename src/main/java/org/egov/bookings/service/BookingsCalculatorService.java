@@ -9,8 +9,6 @@ import org.egov.bookings.web.models.BookingsRequest;
 
 public interface BookingsCalculatorService {
 
-	public  List<Demand> createDemand(BookingsRequest bookingsRequest);
 	
-	public  List<Demand> updateDemand(BookingsRequest bookingsRequest);
 
 }

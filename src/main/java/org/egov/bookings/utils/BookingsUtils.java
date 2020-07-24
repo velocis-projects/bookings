@@ -599,11 +599,9 @@ public class BookingsUtils {
 
 		final String filterCodeForUom = "null";
 
-		tlMasterDetails
-				.add(MasterDetail.builder().name("BookingType").build());
+		tlMasterDetails.add(MasterDetail.builder().name("BookingType").build());
 
-		ModuleDetail tlModuleDtls = ModuleDetail.builder().masterDetails(tlMasterDetails)
-				.moduleName("Booking").build();
+		ModuleDetail tlModuleDtls = ModuleDetail.builder().masterDetails(tlMasterDetails).moduleName("Booking").build();
 
 		/*
 		 * MdmsCriteria mdmsCriteria =
@@ -613,6 +611,32 @@ public class BookingsUtils {
 
 		return tlModuleDtls;
 	}
+	
+	
+	private ModuleDetail getTaxHeadMasterType() {
+
+		// master details for TL module
+		List<MasterDetail> tlMasterDetails = new ArrayList<>();
+
+		// filter to only get code field from master data
+
+		final String filterCodeForUom = "null";
+
+		tlMasterDetails
+				.add(MasterDetail.builder().name("TaxHeadMaster").build());
+
+		ModuleDetail tlModuleDtls = ModuleDetail.builder().masterDetails(tlMasterDetails)
+				.moduleName("BillingService").build();
+
+		/*
+		 * MdmsCriteria mdmsCriteria =
+		 * MdmsCriteria.builder().moduleDetails(Collections.singletonList(tlModuleDtls))
+		 * .tenantId(tenantId) .build();
+		 */
+
+		return tlModuleDtls;
+	}
+	
 	
 	
 	private MdmsCriteriaReq getMDMSRequest(RequestInfo requestInfo, String tenantId) {
@@ -645,6 +669,36 @@ public class BookingsUtils {
 		return result;
 		
 	}
+	
+	
+	private MdmsCriteriaReq getMDMSRequestForTaxHeadMaster(RequestInfo requestInfo, String tenantId) {
+
+		ModuleDetail taxHeadMaster = getTaxHeadMasterType();
+
+		List<ModuleDetail> moduleDetails = new LinkedList<>();
+		moduleDetails.add(taxHeadMaster);
+
+		MdmsCriteria mdmsCriteria = MdmsCriteria.builder().moduleDetails(moduleDetails).tenantId(tenantId).build();
+		log.info("Mdms Criteria : " + mdmsCriteria);
+		MdmsCriteriaReq mdmsCriteriaReq = MdmsCriteriaReq.builder().mdmsCriteria(mdmsCriteria).requestInfo(requestInfo)
+				.build();
+
+		log.info("Mdms Criteria Req: " + mdmsCriteriaReq);
+		return mdmsCriteriaReq;
+	}
+	
+	
+	
+	
+	public Object prepareMdMsRequestForTaxHeadMaster(RequestInfo requestInfo) {
+		String tenantId = requestInfo.getUserInfo().getTenantId();
+		MdmsCriteriaReq mdmsCriteriaReq = getMDMSRequestForTaxHeadMaster(requestInfo, tenantId);
+		StringBuilder uri = new StringBuilder(mdmsHost).append(mdmsEndpoint);
+		Object result = serviceRequestRepository.fetchResult(uri, mdmsCriteriaReq);
+		return result;
+		
+	}
+	
 
 	public java.sql.Date getCurrentSqlDate() {
 		 long millis=System.currentTimeMillis();  
