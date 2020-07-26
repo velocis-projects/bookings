@@ -14,19 +14,33 @@ import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DemandRepository.
+ */
 @Repository
 public class DemandRepository {
 
 	
+	/** The config. */
 	@Autowired
 	private BookingsConfiguration config;
 	
+	/** The service request repository. */
 	@Autowired
 	ServiceRequestRepository serviceRequestRepository;
 	
-	 @Autowired
+	 /** The mapper. */
+ 	@Autowired
 	    private ObjectMapper mapper;
 	
+	/**
+	 * Save demand.
+	 *
+	 * @param requestInfo the request info
+	 * @param demands the demands
+	 * @return the list
+	 */
 	public List<Demand> saveDemand(RequestInfo requestInfo, List<Demand> demands) {
 		StringBuilder url = new StringBuilder(config.getBillingHost());
         url.append(config.getDemandCreateEndpoint());
@@ -42,6 +56,13 @@ public class DemandRepository {
         return response.getDemands();
 	}
 	
+	/**
+	 * Update demand.
+	 *
+	 * @param requestInfo the request info
+	 * @param demands the demands
+	 * @return the list
+	 */
 	public List<Demand> updateDemand(RequestInfo requestInfo, List<Demand> demands) {
 		StringBuilder url = new StringBuilder(config.getBillingHost());
 		 url.append(config.getDemandUpdateEndPoint());

@@ -428,6 +428,8 @@ public class BookingsConstants {
 	/** The Constant OSBM. */
 	public static final String OSBM = "OSBM";
 	
+	public static final String APPLY = "APPLY";
+	
 	/** The Constant OSBM_TAXHEAD_CODE_1. */
 	public static final String OSBM_TAXHEAD_CODE_1 = "OSBM";
 	
@@ -442,5 +444,6 @@ public class BookingsConstants {
 	
 	/** The Constant BWT_TAXHEAD_CODE_2. */
 	public static final String BWT_TAXHEAD_CODE_2 = "BWT_TAX";
+
 	
 }

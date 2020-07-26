@@ -30,33 +30,48 @@ import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DemandServiceImpl.
+ */
 @Service
 public class DemandServiceImpl implements DemandService {
 
+	/** The demand repository. */
 	@Autowired
 	DemandRepository demandRepository;
 
+	/** The config. */
 	@Autowired
 	private BookingsConfiguration config;
 
+	/** The osbm fee repository. */
 	@Autowired
 	private OsbmFeeRepository osbmFeeRepository;
 
+	/** The bookings calculator service. */
 	@Autowired
 	BookingsCalculatorService bookingsCalculatorService;
 
+	/** The bookings utils. */
 	@Autowired
 	BookingsUtils bookingsUtils;
 
+	/** The service request repository. */
 	@Autowired
 	ServiceRequestRepository serviceRequestRepository;
 
+	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
 
+	/** The bookings calculator. */
 	@Autowired
 	BookingsCalculatorServiceImpl bookingsCalculator;
 
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.DemandService#createDemand(org.egov.bookings.web.models.BookingsRequest)
+	 */
 	@Override
 	public List<Demand> createDemand(BookingsRequest bookingsRequest) {
 
@@ -72,6 +87,9 @@ public class DemandServiceImpl implements DemandService {
 		return demandRepository.saveDemand(bookingsRequest.getRequestInfo(), demands);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.DemandService#updateDemand(org.egov.bookings.web.models.BookingsRequest)
+	 */
 	@Override
 	public List<Demand> updateDemand(BookingsRequest bookingsRequest) {
 		
@@ -81,6 +99,15 @@ public class DemandServiceImpl implements DemandService {
 		return demandRepository.updateDemand(bookingsRequest.getRequestInfo(), demands);
 	}
 	
+	/**
+	 * Search demand.
+	 *
+	 * @param tenantId the tenant id
+	 * @param consumerCodes the consumer codes
+	 * @param requestInfo the request info
+	 * @param businessService the business service
+	 * @return the list
+	 */
 	public List<Demand> searchDemand(String tenantId, Set<String> consumerCodes, RequestInfo requestInfo,
 			String businessService) {
 		String uri = bookingsUtils.getDemandSearchURL();

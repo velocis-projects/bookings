@@ -889,20 +889,55 @@ public interface BookingsRepository
 	List<BookingsModel> findByTenantIdAndBkSectorInAndBkDateCreatedBetweenOrderByBkApplicationNumberDesc( String tenantId, List< String > sectorList, Date fromDate, Date toDate );
 	
 	
+	/**
+	 * Gets the employee search booking.
+	 *
+	 * @param tenantId the tenant id
+	 * @param applicationNumber the application number
+	 * @param applicationStatus the application status
+	 * @param mobileNumber the mobile number
+	 * @param bookingType the booking type
+	 * @param sectorList the sector list
+	 * @return the employee search booking
+	 */
 	@Query(
 			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
-					+ "AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_SECTOR IN (?6) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
+					+ "AND TB.BK_APPLICATION_STATUS != 'INITIATED' AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_SECTOR IN (?6) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
 			nativeQuery = true )
 			List<BookingsModel> getEmployeeSearchBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
 					, String bookingType, List< String > sectorList );
 
+	/**
+	 * Gets the employee search booking.
+	 *
+	 * @param tenantId the tenant id
+	 * @param applicationNumber the application number
+	 * @param applicationStatus the application status
+	 * @param mobileNumber the mobile number
+	 * @param bookingType the booking type
+	 * @param sectorList the sector list
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @return the employee search booking
+	 */
 	@Query(
 			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
-					+ "AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_SECTOR IN (?6) AND TB.BK_DATE_CREATED BETWEEN (?7) AND (?8) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
+					+ "AND TB.BK_APPLICATION_STATUS != 'INITIATED' AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_SECTOR IN (?6) AND TB.BK_DATE_CREATED BETWEEN (?7) AND (?8) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
 			nativeQuery = true )
 			List<BookingsModel> getEmployeeSearchBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
 					, String bookingType, List< String > sectorList, Date fromDate, Date toDate );
 	
+	/**
+	 * Gets the citizen search booking.
+	 *
+	 * @param tenantId the tenant id
+	 * @param applicationNumber the application number
+	 * @param applicationStatus the application status
+	 * @param mobileNumber the mobile number
+	 * @param bookingType the booking type
+	 * @param uuid the uuid
+	 * @return the citizen search booking
+	 */
 	@Query(
 			value = "SELECT * FROM TT_BOOKINGS WHERE TENANT_ID = (?1) AND BK_APPLICATION_NUMBER LIKE (%?2%) AND BK_APPLICATION_STATUS LIKE (%?3%) "
 					+ "AND BK_MOBILE_NUMBER LIKE (%?4%) AND BK_BOOKING_TYPE LIKE (%?5%) AND UUID LIKE (?6) ORDER BY BK_APPLICATION_NUMBER DESC",
@@ -910,6 +945,19 @@ public interface BookingsRepository
 			List<BookingsModel> getCitizenSearchBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
 					, String bookingType, String uuid );
 
+	/**
+	 * Gets the citizen search booking.
+	 *
+	 * @param tenantId the tenant id
+	 * @param applicationNumber the application number
+	 * @param applicationStatus the application status
+	 * @param mobileNumber the mobile number
+	 * @param bookingType the booking type
+	 * @param uuid the uuid
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @return the citizen search booking
+	 */
 	@Query(
 			value = "SELECT * FROM TT_BOOKINGS WHERE TENANT_ID = (?1) AND BK_APPLICATION_NUMBER LIKE (%?2%) AND BK_APPLICATION_STATUS LIKE (%?3%) "
 					+ "AND BK_MOBILE_NUMBER LIKE (%?4%) AND BK_BOOKING_TYPE LIKE (%?5%) AND UUID LIKE (?6) AND BK_DATE_CREATED BETWEEN (?7) AND (?8) ORDER BY BK_APPLICATION_NUMBER DESC",

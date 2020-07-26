@@ -17,6 +17,7 @@ import org.egov.bookings.models.demand.Demand;
 import org.egov.bookings.models.demand.Demand.StatusEnum;
 import org.egov.bookings.models.demand.DemandDetail;
 import org.egov.bookings.models.demand.DemandRequest;
+import org.egov.bookings.repository.BookingsRepository;
 import org.egov.bookings.repository.OsbmFeeRepository;
 import org.egov.bookings.repository.impl.IdGenRepository;
 import org.egov.bookings.service.BookingsCalculatorService;
@@ -30,30 +31,50 @@ import org.springframework.util.CollectionUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class EnrichmentService.
+ */
 @Service
 public class EnrichmentService {
 
+	/** The bookings utils. */
 	@Autowired
 	private BookingsUtils bookingsUtils;
 
+	/** The config. */
 	@Autowired
 	private BookingsConfiguration config;
 
+	/** The id gen repository. */
 	@Autowired
 	private IdGenRepository idGenRepository;
 
+	/** The osbm fee repository. */
 	@Autowired
 	private OsbmFeeRepository osbmFeeRepository;
 
+	/** The bookings calculator service. */
 	@Autowired
 	BookingsCalculatorService bookingsCalculatorService;
 	
+	/** The bookings service. */
 	@Autowired
 	BookingsService bookingsService;
 	
+	/** The demand service. */
 	@Autowired
 	DemandServiceImpl demandService;
+	
+	/** The bookings repository. */
+	@Autowired
+	private BookingsRepository bookingsRepository;
 
+	/**
+	 * Enrich bookings create request.
+	 *
+	 * @param bookingsRequest the bookings request
+	 */
 	public void enrichBookingsCreateRequest(BookingsRequest bookingsRequest) {
 		RequestInfo requestInfo = bookingsRequest.getRequestInfo();
 		/*
@@ -66,6 +87,11 @@ public class EnrichmentService {
 		// boundaryService.getAreaType(tradeLicenseRequest,config.getHierarchyTypeCode());
 	}
 
+	/**
+	 * Sets the idgen ids.
+	 *
+	 * @param bookingsRequest the new idgen ids
+	 */
 	private void setIdgenIds(BookingsRequest bookingsRequest) {
 		RequestInfo requestInfo = bookingsRequest.getRequestInfo();
 		String tenantId = bookingsRequest.getBookingsModel().getTenantId();
@@ -90,6 +116,15 @@ public class EnrichmentService {
 		bookingsModel.setBkApplicationNumber(itr.next());
 	}
 
+	/**
+	 * Gets the id list.
+	 *
+	 * @param requestInfo the request info
+	 * @param tenantId the tenant id
+	 * @param idKey the id key
+	 * @param idformat the idformat
+	 * @return the id list
+	 */
 	private List<String> getIdList(RequestInfo requestInfo, String tenantId, String idKey, String idformat) {
 		List<IdResponse> idResponses = idGenRepository.getId(requestInfo, tenantId, idKey, idformat).getIdResponses();
 
@@ -99,12 +134,22 @@ public class EnrichmentService {
 		return idResponses.stream().map(IdResponse::getId).collect(Collectors.toList());
 	}
 
+	/**
+	 * Enrich bookings details.
+	 *
+	 * @param bookingsRequest the bookings request
+	 */
 	public void enrichBookingsDetails(BookingsRequest bookingsRequest) {
 		bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
 		java.sql.Date date = bookingsUtils.getCurrentSqlDate();
 		bookingsRequest.getBookingsModel().setBkDateCreated(date);
 	}
 
+	/**
+	 * Generate demand.
+	 *
+	 * @param bookingsRequest the bookings request
+	 */
 	public void generateDemand(BookingsRequest bookingsRequest) {
 
 		if (bookingsRequest.getBookingsModel().getBusinessService().equals("OSBM")) {
@@ -120,6 +165,49 @@ public class EnrichmentService {
 			}
 		}
 
+	}
+
+	/**
+	 * Enrich osbm details.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the bookings model
+	 */
+	public BookingsModel enrichOsbmDetails(BookingsRequest bookingsRequest) {
+		BookingsModel bookingsModel = null;
+		try {
+			bookingsModel = bookingsRepository
+					.findByBkApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
+			bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
+			bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
+			bookingsModel.setBookingsRemarks(bookingsRequest.getBookingsModel().getBookingsRemarks());
+		} catch (Exception e) {
+			throw new CustomException("OSBM UPDATE ERROR", "ERROR WHILE UPDATING OSBM DETAILS ");
+		}
+		return bookingsModel;
+	}
+	
+	/**
+	 * Enrich bwt details.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the bookings model
+	 */
+	public BookingsModel enrichBwtDetails(BookingsRequest bookingsRequest) {
+		BookingsModel bookingsModel = null;
+		try {
+			bookingsModel = bookingsRepository
+					.findByBkApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
+			bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
+			bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
+			bookingsModel.setBookingsRemarks(bookingsRequest.getBookingsModel().getBookingsRemarks());
+			bookingsModel.setBkContactNo(bookingsRequest.getBookingsModel().getBkContactNo());
+			bookingsModel.setBkDriverName(bookingsRequest.getBookingsModel().getBkDriverName());
+			bookingsModel.setBkApproverName(bookingsRequest.getBookingsModel().getBkApproverName());
+		} catch (Exception e) {
+			throw new CustomException("WATER TANKER UPDATE ERROR", "ERROR WHILE UPDATING BWT DETAILS ");
+		}
+		return bookingsModel;
 	}
 
 }
