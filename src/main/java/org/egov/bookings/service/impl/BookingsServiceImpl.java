@@ -12,6 +12,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.Booking;
+import org.egov.bookings.contract.Difference;
 import org.egov.bookings.contract.MdmsJsonFields;
 import org.egov.bookings.contract.ProcessInstanceSearchCriteria;
 import org.egov.bookings.contract.RequestInfoWrapper;
@@ -22,6 +23,7 @@ import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsbmApproverRepository;
 import org.egov.bookings.repository.impl.ServiceRequestRepository;
 import org.egov.bookings.service.BookingsService;
+import org.egov.bookings.service.notification.EditNotificationService;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.validator.BookingsFieldsValidator;
@@ -88,7 +90,11 @@ public class BookingsServiceImpl implements BookingsService {
 	/** The service request repository. */
 	@Autowired
 	private ServiceRequestRepository serviceRequestRepository;
-
+	
+	/** The sms notification service. */
+	@Autowired
+	private SMSNotificationService smsNotificationService;
+	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger(BookingsServiceImpl.class.getName());
 
@@ -100,7 +106,7 @@ public class BookingsServiceImpl implements BookingsService {
 	 */
 	@Override
 	public BookingsModel save(BookingsRequest bookingsRequest) {
-
+		BookingsModel bookingsModel = new BookingsModel();
 		boolean flag = isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 
 		if (!flag)
@@ -113,11 +119,80 @@ public class BookingsServiceImpl implements BookingsService {
 		}
 		// bookingsProducer.push(saveTopic, bookingsRequest.getBookingsModel());
 		enrichmentService.enrichBookingsDetails(bookingsRequest);
-		bookingsRepository.save(bookingsRequest.getBookingsModel());
+		bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
+		bookingsRequest.setBookingsModel(bookingsModel);
+		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel))
+		{
+			Map< String, MdmsJsonFields > mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
+			String notificationMsg = prepareSMSNotificationMessage(bookingsModel, mdmsJsonFieldsMap);
+			smsNotificationService.sendSMS(notificationMsg);
+		}
 		return bookingsRequest.getBookingsModel();
 
 	}
-
+	
+	
+	/**
+	 * Mdms json field.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the map
+	 */
+	private Map< String, MdmsJsonFields > mdmsJsonField(BookingsRequest bookingsRequest)
+	{
+		JSONArray mdmsArrayList = null;
+		Map< String, MdmsJsonFields > mdmsJsonFieldsMap = new HashMap<>();
+		try
+		{
+			if(!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest) && !BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getRequestInfo()))
+			{
+				Object mdmsData = bookingsUtils.prepareMdMsRequestForBooking(bookingsRequest.getRequestInfo());
+				String jsonString = objectMapper.writeValueAsString(mdmsData);
+				MdmsResponse mdmsResponse = objectMapper.readValue(jsonString, MdmsResponse.class);
+				Map<String, Map<String, JSONArray>> mdmsResMap = mdmsResponse.getMdmsRes();
+				Map<String, JSONArray> mdmsRes = mdmsResMap.get("Booking");
+				mdmsArrayList = mdmsRes.get("BookingType");
+				for (int i = 0; i < mdmsArrayList.size(); i++) 
+				{
+					jsonString = objectMapper.writeValueAsString(mdmsArrayList.get(i));
+					MdmsJsonFields mdmsJsonFields = objectMapper.readValue(jsonString, MdmsJsonFields.class);
+					mdmsJsonFieldsMap.put(mdmsJsonFields.getCode(), mdmsJsonFields);
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur during mdmsJsonField " + e);
+		}
+		return mdmsJsonFieldsMap;
+	}
+	
+	/**
+	 * Prepare SMS notification message.
+	 *
+	 * @param bookingsModel the bookings model
+	 * @param mdmsJsonFieldsMap the mdms json fields map
+	 * @return the string
+	 */
+	private String prepareSMSNotificationMessage(BookingsModel bookingsModel, Map< String, MdmsJsonFields > mdmsJsonFieldsMap)
+	{
+		String notificationMsg = "";
+		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel) && !BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap))
+		{
+			notificationMsg = "Dear " + bookingsModel.getBkApplicantName() + ", Your " + mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName()
+					+ " booking has became successful. And your application number is " + bookingsModel.getBkApplicationNumber();
+		}
+		return notificationMsg;
+	}
+	
+	
+	
+	/**
+	 * Checks if is booking exists.
+	 *
+	 * @param bkApplicationnumber the bk applicationnumber
+	 * @return true, if is booking exists
+	 */
 	/* (non-Javadoc)
 	 * @see org.egov.bookings.service.BookingsService#isBookingExists(java.lang.String)
 	 */
