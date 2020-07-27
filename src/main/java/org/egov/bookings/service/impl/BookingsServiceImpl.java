@@ -179,8 +179,8 @@ public class BookingsServiceImpl implements BookingsService {
 		String notificationMsg = "";
 		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel) && !BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap))
 		{
-			notificationMsg = "Dear " + bookingsModel.getBkApplicantName() + ", Your " + mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName()
-					+ " booking has became successful. And your application number is " + bookingsModel.getBkApplicationNumber();
+			notificationMsg = "Dear " + bookingsModel.getBkApplicantName() + ", You have booked " + mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName()
+					+ " successfully. And your application number is " + bookingsModel.getBkApplicationNumber() + ".";
 		}
 		return notificationMsg;
 	}

@@ -18,7 +18,7 @@ import com.twilio.sdk.resource.instance.Message;
 public class SMSNotificationService {
 	
 	public static final String ACCOUNT_SID = "AC1972d9d3dc8c2988a1e3b12c2a182d02";
-	public static final String AUTH_TOKEN = "d6a43beb5502a7706ed4346e4c95614f";
+	public static final String AUTH_TOKEN = "3b827cb740669edb543287f01f659e6d";
 	public static final String TWILIO_NUMBER = "+17609907083";
 	public static final String USER_NUMBER = "+918115566943";
 	public static final String BODY = "Body";
