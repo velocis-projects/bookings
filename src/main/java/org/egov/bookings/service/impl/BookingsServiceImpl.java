@@ -124,7 +124,7 @@ public class BookingsServiceImpl implements BookingsService {
 		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel))
 		{
 			Map< String, MdmsJsonFields > mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
-			String notificationMsg = prepareSMSNotificationMessage(bookingsModel, mdmsJsonFieldsMap);
+			String notificationMsg = prepareSMSNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
 			smsNotificationService.sendSMS(notificationMsg);
 		}
 		return bookingsRequest.getBookingsModel();
@@ -174,18 +174,34 @@ public class BookingsServiceImpl implements BookingsService {
 	 * @param mdmsJsonFieldsMap the mdms json fields map
 	 * @return the string
 	 */
-	private String prepareSMSNotificationMessage(BookingsModel bookingsModel, Map< String, MdmsJsonFields > mdmsJsonFieldsMap)
+	private String prepareSMSNotifMsgForCreate(BookingsModel bookingsModel, Map< String, MdmsJsonFields > mdmsJsonFieldsMap)
 	{
 		String notificationMsg = "";
 		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel) && !BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap))
 		{
 			notificationMsg = "Dear " + bookingsModel.getBkApplicantName() + ", You have booked " + mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName()
-					+ " successfully. And your application number is " + bookingsModel.getBkApplicationNumber() + ".";
+					+ " successfully. Your application number is " + bookingsModel.getBkApplicationNumber() + ".";
 		}
 		return notificationMsg;
 	}
 	
-	
+	/**
+	 * Prepare SMS notif msg for update.
+	 *
+	 * @param bookingsModel the bookings model
+	 * @param mdmsJsonFieldsMap the mdms json fields map
+	 * @return the string
+	 */
+	private String prepareSMSNotifMsgForUpdate(BookingsModel bookingsModel, Map< String, MdmsJsonFields > mdmsJsonFieldsMap)
+	{
+		String notificationMsg = "";
+		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel) && !BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap))
+		{
+			notificationMsg = "Dear " + bookingsModel.getBkApplicantName() + ", Your " + mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName()
+					+ " booking have modified. Your application number is " + bookingsModel.getBkApplicationNumber() +  ".";
+		}
+		return notificationMsg;
+	}
 	
 	/**
 	 * Checks if is booking exists.
@@ -381,7 +397,7 @@ public class BookingsServiceImpl implements BookingsService {
 					&& bookingsRequest.getBookingsModel().getBusinessService().equals(BookingsConstants.OSBM)) {
 
 				bookingsModel = enrichmentService.enrichOsbmDetails(bookingsRequest);
-				bookingsRepository.save(bookingsModel);
+				bookingsModel = bookingsRepository.save(bookingsModel);
 
 			}
 
@@ -389,12 +405,18 @@ public class BookingsServiceImpl implements BookingsService {
 					&& bookingsRequest.getBookingsModel().getBusinessService().equals(BookingsConstants.BWT)) {
 
 				bookingsModel = enrichmentService.enrichBwtDetails(bookingsRequest);
-				bookingsRepository.save(bookingsModel);
+				bookingsModel = bookingsRepository.save(bookingsModel);
 
 			} else {
-				bookingsRepository.save(bookingsRequest.getBookingsModel());
+				bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
 				bookingsModel = bookingsRequest.getBookingsModel();
 
+			}
+			if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel))
+			{
+				Map< String, MdmsJsonFields > mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
+				String notificationMsg = prepareSMSNotifMsgForUpdate(bookingsModel, mdmsJsonFieldsMap);
+				smsNotificationService.sendSMS(notificationMsg);
 			}
 		} catch (Exception e) {
 			LOGGER.error("Exception occur while updating booking " + e);

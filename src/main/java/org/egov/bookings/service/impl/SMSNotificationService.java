@@ -6,6 +6,8 @@ import java.util.Random;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.egov.bookings.model.BookingsModel;
 import org.springframework.stereotype.Service;
 
@@ -14,21 +16,46 @@ import com.twilio.sdk.TwilioRestException;
 import com.twilio.sdk.resource.factory.MessageFactory;
 import com.twilio.sdk.resource.instance.Message;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SMSNotificationService.
+ */
 @Service
 public class SMSNotificationService {
 	
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER = LogManager.getLogger(SMSNotificationService.class.getName());
+	
+	/** The Constant ACCOUNT_SID. */
 	public static final String ACCOUNT_SID = "AC1972d9d3dc8c2988a1e3b12c2a182d02";
+	
+	/** The Constant AUTH_TOKEN. */
 	public static final String AUTH_TOKEN = "3b827cb740669edb543287f01f659e6d";
+	
+	/** The Constant TWILIO_NUMBER. */
 	public static final String TWILIO_NUMBER = "+17609907083";
+	
+	/** The Constant USER_NUMBER. */
 	public static final String USER_NUMBER = "+918115566943";
+	
+	/** The Constant BODY. */
 	public static final String BODY = "Body";
+	
+	/** The Constant TO. */
 	public static final String TO = "To";
+	
+	/** The Constant FROM. */
 	public static final String FROM = "From";
 	
 	
 	
 	
-	public String sendSMS( String notificationMsg )
+	/**
+	 * Send SMS.
+	 *
+	 * @param notificationMsg the notification msg
+	 */
+	public void sendSMS( String notificationMsg )
 	{
 		try
 		{
@@ -39,12 +66,10 @@ public class SMSNotificationService {
 			params.add(new BasicNameValuePair(FROM, TWILIO_NUMBER));
 			MessageFactory messageFactory = client.getAccount().getMessageFactory();
 			Message message = messageFactory.create(params);
-			System.out.println( message.getSid() );
 		}
 		catch ( TwilioRestException e )
 		{
-			System.out.println( e.getErrorMessage() );
+			LOGGER.error("Exception occur during sendSMS " + e);
 		}
-		return null;
 	}
 }
