@@ -3,9 +3,12 @@ package org.egov.bookings.repository;
 import java.sql.Date;
 import java.util.List;
 
+import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.model.user.UserResponse;
 import org.egov.bookings.repository.querybuilder.WorkflowQueryBuilder;
 import org.egov.bookings.utils.BookingsConstants;
+import org.egov.common.contract.request.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -71,5 +74,16 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	public List<BookingsModel> findAllByBkBookingVenueAndBetweenToDateAndFromDate(
 			@Param(BookingsConstants.BOOKING_VENUE) String bookingVenue,
 			@Param(BookingsConstants.BOOKING_TYPE) String bookingType, @Param(BookingsConstants.DATE) Date date);
+	
+	
+	/**
+	 * Fetch all approver.
+	 *
+	 * @return the list
+	 */
+//	@Query(value = "select u.username,u.mobilenumber,u.name,u.uuid,u.id from eg_user u where u.type =:type",nativeQuery = true)
+	//List<?> fetchAllApprover( @Param(BookingsConstants.TYPE) String type);
+
+
 
 }

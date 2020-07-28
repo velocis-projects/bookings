@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.egov.bookings.contract.Booking;
+import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.ProcessInstanceSearchCriteria;
 import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
@@ -94,5 +95,19 @@ public interface BookingsService {
 	 */
 	public Object getWorkflowProcessInstances(RequestInfoWrapper requestInfoWrapper, ProcessInstanceSearchCriteria criteria);
 
+	/**
+	 * Checks if is booking exists.
+	 *
+	 * @param bkApplicationNumber the bk application number
+	 * @return true, if is booking exists
+	 */
 	public boolean isBookingExists(String bkApplicationNumber);
+
+
+	/**
+	 * Fetch all approver.
+	 *
+	 * @return the list
+	 */
+	//public List<BookingApprover> fetchAllApprover();
 }

@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.utils.BookingsConstants;
+import org.egov.common.contract.request.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -967,7 +969,15 @@ public interface BookingsRepository
 	 
 	
 	
+	/**
+	 * Find by bk application number.
+	 *
+	 * @param bkApplicationNumber the bk application number
+	 * @return the bookings model
+	 */
 	BookingsModel findByBkApplicationNumber(String bkApplicationNumber);
+
+	
 
 
 }
