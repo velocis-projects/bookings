@@ -95,6 +95,9 @@ public class BookingsServiceImpl implements BookingsService {
 	@Autowired
 	private SMSNotificationService smsNotificationService;
 	
+	@Autowired
+	private MailNotificationService mailNotificationService;
+	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger(BookingsServiceImpl.class.getName());
 
@@ -126,6 +129,7 @@ public class BookingsServiceImpl implements BookingsService {
 			Map< String, MdmsJsonFields > mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
 			String notificationMsg = prepareSMSNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
 			smsNotificationService.sendSMS(notificationMsg);
+			mailNotificationService.sendMail(bookingsModel.getBkEmail(), notificationMsg, "Booking Status");
 		}
 		return bookingsRequest.getBookingsModel();
 
@@ -417,6 +421,7 @@ public class BookingsServiceImpl implements BookingsService {
 				Map< String, MdmsJsonFields > mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
 				String notificationMsg = prepareSMSNotifMsgForUpdate(bookingsModel, mdmsJsonFieldsMap);
 				smsNotificationService.sendSMS(notificationMsg);
+				mailNotificationService.sendMail(bookingsModel.getBkEmail(), notificationMsg, "Booking Status");
 			}
 		} catch (Exception e) {
 			LOGGER.error("Exception occur while updating booking " + e);
