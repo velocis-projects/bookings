@@ -12,7 +12,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.Booking;
-import org.egov.bookings.contract.Difference;
+import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.MdmsJsonFields;
 import org.egov.bookings.contract.ProcessInstanceSearchCriteria;
 import org.egov.bookings.contract.RequestInfoWrapper;
@@ -23,16 +23,17 @@ import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsbmApproverRepository;
 import org.egov.bookings.repository.impl.ServiceRequestRepository;
 import org.egov.bookings.service.BookingsService;
-import org.egov.bookings.service.notification.EditNotificationService;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.workflow.WorkflowIntegrator;
 import org.egov.mdms.model.MdmsResponse;
+import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -549,5 +550,66 @@ public class BookingsServiceImpl implements BookingsService {
 			LOGGER.error("Exception occur in the getWorkflowProcessInstances " + e);
 		}
 		return result;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.BookingsService#fetchAllApprover()
+	 */
+	@Override
+	public List<BookingApprover> fetchAllApprover() {
+
+		List<BookingApprover> bookingApprover1 = new ArrayList<>();
+		List<?> userList = new ArrayList<>();
+		try {
+
+			String type = "EMPLOYEE";
+			userList = commonRepository.fetchAllApprover(type);
+			if (null == userList || CollectionUtils.isEmpty(userList)) {
+				throw new CustomException("APPROVER_ERROR", "NO APPROVER EXISTS IN EG_USER TABLE");
+			} else {
+				if (!BookingsFieldsValidator.isNullOrEmpty(userList)) {
+					for (Object userObject : userList) {
+						BookingApprover bookingApprover = new BookingApprover();
+						String jsonString = objectMapper.writeValueAsString(userObject);
+						String approverDetails = jsonString.substring(1, (jsonString.length() - 1));
+						String[] documentStrArray = approverDetails.split(",");
+						for (int i = 0; i < documentStrArray.length; i++) {
+							switch (i) {
+							case 0:
+								bookingApprover.setUserName(
+										documentStrArray[i].substring(1, documentStrArray[i].length() - 1));
+								break;
+							case 1:
+								bookingApprover.setMobileNumber(
+										documentStrArray[i].substring(1, documentStrArray[i].length() - 1));
+								break;
+							case 2:
+								bookingApprover
+										.setName(documentStrArray[i].substring(1, documentStrArray[i].length() - 1));
+								break;
+							case 3:
+								bookingApprover
+										.setUuid(documentStrArray[i].substring(1, documentStrArray[i].length() - 1));
+								break;
+							case 4:
+								bookingApprover.setId(Long.parseLong(documentStrArray[i]));
+								break;
+							default:
+								break;
+							}
+
+						}
+						bookingApprover1.add(bookingApprover);
+
+					}
+				}
+			}
+		}
+
+		catch (Exception e) {
+			throw new CustomException("APPROVER_ERROR", e.getLocalizedMessage());
+		}
+		return bookingApprover1;
 	}
 }

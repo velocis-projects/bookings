@@ -16,6 +16,7 @@ import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -114,7 +115,7 @@ public class WorkflowIntegrator {
 		obj.put(BUSINESSSERVICEKEY, bookingsRequest.getBookingsModel().getBusinessService());
 		obj.put(MODULENAMEKEY, MODULENAMEVALUE);
 		obj.put(ACTIONKEY, bkModel.getBkAction());
-		if(bkModel.getBookingsRemarks() != null)
+		if(null != bkModel.getBookingsRemarks() && !CollectionUtils.isEmpty(bkModel.getBookingsRemarks()) )
 		obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());
 		if (!StringUtils.isEmpty(bkModel.getAssignee()))
 			obj.put(ASSIGNEEKEY, uuidmap);

@@ -71,5 +71,15 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	public List<BookingsModel> findAllByBkBookingVenueAndBetweenToDateAndFromDate(
 			@Param(BookingsConstants.BOOKING_VENUE) String bookingVenue,
 			@Param(BookingsConstants.BOOKING_TYPE) String bookingType, @Param(BookingsConstants.DATE) Date date);
+	
+	
+	/**
+	 * Fetch all approver.
+	 *
+	 * @return the list
+	 */
+	@Query(value = "select u.username,u.mobilenumber,u.name,u.uuid,u.id from eg_user u where u.type =:type",nativeQuery = true)
+	List<?> fetchAllApprover( @Param(BookingsConstants.TYPE) String type);
+
 
 }
