@@ -1,6 +1,8 @@
 package org.egov.bookings.service.impl;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -178,9 +180,17 @@ public class EnrichmentService {
 		try {
 			bookingsModel = bookingsRepository
 					.findByBkApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
-			bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
-			bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
-			bookingsModel.setBookingsRemarks(bookingsRequest.getBookingsModel().getBookingsRemarks());
+			if (null != bookingsModel) {
+				LocalDate bkFromDate = LocalDate.now();
+				Date fromDate = java.sql.Date.valueOf(bkFromDate);
+				LocalDate bkToDate = LocalDate.now().plusMonths(Integer.valueOf(bookingsModel.getBkDuration()));
+				Date toDate = java.sql.Date.valueOf(bkToDate);
+				bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
+				bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
+				bookingsModel.setBookingsRemarks(bookingsRequest.getBookingsModel().getBookingsRemarks());
+				bookingsModel.setBkFromDate(fromDate);
+				bookingsModel.setBkToDate(toDate);
+			}
 		} catch (Exception e) {
 			throw new CustomException("OSBM UPDATE ERROR", "ERROR WHILE UPDATING OSBM DETAILS ");
 		}

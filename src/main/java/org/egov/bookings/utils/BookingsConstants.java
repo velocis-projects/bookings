@@ -431,6 +431,9 @@ public class BookingsConstants {
 	/** The Constant APPLY. */
 	public static final String APPLY = "APPLY";
 	
+	/** The Constant APPROVE. */
+	public static final String APPROVE = "APPROVE";
+	
 	/** The Constant OSBM_TAXHEAD_CODE_1. */
 	public static final String OSBM_TAXHEAD_CODE_1 = "OSBM";
 	
