@@ -96,6 +96,9 @@ public class BookingsServiceImpl implements BookingsService {
 	@Autowired
 	private SMSNotificationService smsNotificationService;
 	
+	@Autowired
+	private MailNotificationService mailNotificationService;
+	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger(BookingsServiceImpl.class.getName());
 
@@ -122,12 +125,14 @@ public class BookingsServiceImpl implements BookingsService {
 		enrichmentService.enrichBookingsDetails(bookingsRequest);
 		bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
 		bookingsRequest.setBookingsModel(bookingsModel);
-		/*if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel))
+		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel))
 		{
 			Map< String, MdmsJsonFields > mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
 			String notificationMsg = prepareSMSNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
 			smsNotificationService.sendSMS(notificationMsg);
-		}*/
+			notificationMsg = prepareMailNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
+			mailNotificationService.sendMail(bookingsModel.getBkEmail(), notificationMsg, "Booking Status");
+		}
 		return bookingsRequest.getBookingsModel();
 
 	}
@@ -186,6 +191,17 @@ public class BookingsServiceImpl implements BookingsService {
 		return notificationMsg;
 	}
 	
+	private String prepareMailNotifMsgForCreate(BookingsModel bookingsModel, Map< String, MdmsJsonFields > mdmsJsonFieldsMap)
+	{
+		String notificationMsg = "";
+		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel) && !BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap))
+		{
+			notificationMsg = "Dear " + bookingsModel.getBkApplicantName() + "," + "\n" + "\n" + "You have booked " + mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName()
+					+ " successfully. Your application number is " + bookingsModel.getBkApplicationNumber() + "." + "\n" + "\n" + "Thanks,";
+			
+		}
+		return notificationMsg;
+	}
 	/**
 	 * Prepare SMS notif msg for update.
 	 *
@@ -200,6 +216,17 @@ public class BookingsServiceImpl implements BookingsService {
 		{
 			notificationMsg = "Dear " + bookingsModel.getBkApplicantName() + ", Your " + mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName()
 					+ " Application no. " + bookingsModel.getBkApplicationNumber() +  " has been updated with status " + bookingsModel.getBkApplicationStatus() + ".";
+		}
+		return notificationMsg;
+	}
+	
+	private String prepareMailNotifMsgForUpdate(BookingsModel bookingsModel, Map< String, MdmsJsonFields > mdmsJsonFieldsMap)
+	{
+		String notificationMsg = "";
+		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel) && !BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap))
+		{
+			notificationMsg = "Dear " + bookingsModel.getBkApplicantName() + "," + "\n" + "\n" + "Your " + mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName()
+					+ " Application no. " + bookingsModel.getBkApplicationNumber() +  " has been updated with status " + bookingsModel.getBkApplicationStatus() + "." + "\n" + "\n" + "Thanks,";
 		}
 		return notificationMsg;
 	}
@@ -418,6 +445,8 @@ public class BookingsServiceImpl implements BookingsService {
 				Map< String, MdmsJsonFields > mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
 				String notificationMsg = prepareSMSNotifMsgForUpdate(bookingsModel, mdmsJsonFieldsMap);
 				smsNotificationService.sendSMS(notificationMsg);
+				notificationMsg = prepareMailNotifMsgForUpdate(bookingsModel, mdmsJsonFieldsMap);
+				mailNotificationService.sendMail(bookingsModel.getBkEmail(), notificationMsg, "Booking Status");
 			}
 		} catch (Exception e) {
 			LOGGER.error("Exception occur while updating booking " + e);
