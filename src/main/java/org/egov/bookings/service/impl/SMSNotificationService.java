@@ -7,6 +7,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.springframework.stereotype.Service;
 
 import com.twilio.sdk.TwilioRestClient;
@@ -26,7 +27,7 @@ public class SMSNotificationService {
 	public static final String ACCOUNT_SID = "AC1972d9d3dc8c2988a1e3b12c2a182d02";
 	
 	/** The Constant AUTH_TOKEN. */
-	public static final String AUTH_TOKEN = "3b827cb740669edb543287f01f659e6d";
+	public static final String AUTH_TOKEN = "915c417c4efeb87eaa75a0d67c1f4d52";
 	
 	/** The Constant TWILIO_NUMBER. */
 	public static final String TWILIO_NUMBER = "+17609907083";
@@ -50,6 +51,10 @@ public class SMSNotificationService {
 	 */
 	public void sendSMS( String notificationMsg )
 	{
+		if(BookingsFieldsValidator.isNullOrEmpty(notificationMsg))
+		{
+			throw new IllegalArgumentException("Invalid notificationMsg");
+		}
 		try
 		{
 			TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
