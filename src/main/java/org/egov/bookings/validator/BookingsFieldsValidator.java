@@ -6,7 +6,9 @@ import java.util.Map;
 
 import org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria;
 import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
+import org.egov.bookings.contract.OsbmApproverRequest;
 import org.egov.bookings.contract.OsbmSearchCriteria;
+import org.egov.bookings.model.ViewPdfDetailsModel;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -132,16 +134,54 @@ public class BookingsFieldsValidator {
 	}
 
 
+	/**
+	 * Validate commercial ground availability criteria.
+	 *
+	 * @param commercialGroundAvailabiltySearchCriteria the commercial ground availabilty search criteria
+	 */
 	public void validateCommercialGroundAvailabilityCriteria(
 			CommercialGroundAvailabiltySearchCriteria commercialGroundAvailabiltySearchCriteria) {
 		if(null == commercialGroundAvailabiltySearchCriteria) {
 			throw new IllegalArgumentException("Invalid Commercial Ground Availability Search Criteria");
 		}
-		/*else if(null == commercialGroundAvailabiltySearchCriteria.getDate()) {
-			throw new IllegalArgumentException("Invalid Commercial Ground Date");
-		}*/
 		else if(null == commercialGroundAvailabiltySearchCriteria.getBookingVenue()) {
 			throw new IllegalArgumentException("Invalid Commercial Ground Booking Venue");
 		}
+	}
+
+
+	/**
+	 * Validate osbm approver body.
+	 *
+	 * @param osbmApproverRequest the osbm approver request
+	 */
+	public void validateOsbmApproverBody(OsbmApproverRequest osbmApproverRequest) {
+		if(null == osbmApproverRequest) {
+			throw new IllegalArgumentException("Invalid Osbm Approver Request Body");
+		}
+		else if(null == osbmApproverRequest.getSector() || osbmApproverRequest.getSector().equals("")) {
+			throw new IllegalArgumentException("Invalid Sector");
+		}
+		else if(null == osbmApproverRequest.getUuid() || osbmApproverRequest.getUuid().equals("")) {
+			throw new IllegalArgumentException("Invalid Uuid");
+		}
+	}
+
+
+	public void validatePdfDetails(ViewPdfDetailsModel viewPdfDetailsModel) {
+		
+		if(null == viewPdfDetailsModel) {
+			throw new IllegalArgumentException("Invalid Pdf Details Request Body");
+		}
+		else if(null == viewPdfDetailsModel.getBkApplicationNumber() || viewPdfDetailsModel.getBkApplicationNumber().equals("")) {
+			throw new IllegalArgumentException("Invalid application number");
+		}
+		else if(null == viewPdfDetailsModel.getFileStoreId() || viewPdfDetailsModel.getFileStoreId().equals("")) {
+			throw new IllegalArgumentException("Invalid File Store Id");
+		}
+		else if(null == viewPdfDetailsModel.getKey() || viewPdfDetailsModel.getKey().equals("")) {
+			throw new IllegalArgumentException("Invalid Key");
+		}
+	
 	}
 }

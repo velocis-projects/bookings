@@ -2,13 +2,11 @@ package org.egov.bookings.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.egov.bookings.model.BookingsModel;
 import org.springframework.stereotype.Service;
 
 import com.twilio.sdk.TwilioRestClient;

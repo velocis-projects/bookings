@@ -28,7 +28,6 @@ import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.workflow.WorkflowIntegrator;
-import org.egov.common.contract.request.User;
 import org.egov.mdms.model.MdmsResponse;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,12 +122,12 @@ public class BookingsServiceImpl implements BookingsService {
 		enrichmentService.enrichBookingsDetails(bookingsRequest);
 		bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
 		bookingsRequest.setBookingsModel(bookingsModel);
-		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel))
+		/*if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel))
 		{
 			Map< String, MdmsJsonFields > mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
 			String notificationMsg = prepareSMSNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
 			smsNotificationService.sendSMS(notificationMsg);
-		}
+		}*/
 		return bookingsRequest.getBookingsModel();
 
 	}
@@ -549,37 +548,63 @@ public class BookingsServiceImpl implements BookingsService {
 	}
 
 
-/*	@Override
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.BookingsService#fetchAllApprover()
+	 */
+	@Override
 	public List<BookingApprover> fetchAllApprover() {
-		BookingApprover bookingApprover = null;
+
 		List<BookingApprover> bookingApprover1 = new ArrayList<>();
 		List<?> userList = new ArrayList<>();
 		try {
-			
-			
+
 			String type = "EMPLOYEE";
-			 userList = commonRepository.fetchAllApprover(type);
-			if(null == userList || CollectionUtils.isEmpty(userList)) {
-				throw new CustomException("APPROVER_ERROR","NO APPROVER EXISTS IN EG_USER TABLE");
-			}
-			else {
+			userList = commonRepository.fetchAllApprover(type);
+			if (null == userList || CollectionUtils.isEmpty(userList)) {
+				throw new CustomException("APPROVER_ERROR", "NO APPROVER EXISTS IN EG_USER TABLE");
+			} else {
 				if (!BookingsFieldsValidator.isNullOrEmpty(userList)) {
 					for (Object userObject : userList) {
+						BookingApprover bookingApprover = new BookingApprover();
 						String jsonString = objectMapper.writeValueAsString(userObject);
-						String[] documentStrArray = jsonString.split(",");
-						String[] strArray = documentStrArray[1].split("/");
-						String fileStoreId = documentStrArray[0].substring(2, documentStrArray[0].length() - 1);
-						String document = strArray[strArray.length - 1].substring(13,
-								(strArray[strArray.length - 1].length() - 2));
-						
+						String approverDetails = jsonString.substring(1, (jsonString.length() - 1));
+						String[] documentStrArray = approverDetails.split(",");
+						for (int i = 0; i < documentStrArray.length; i++) {
+							switch (i) {
+							case 0:
+								bookingApprover.setUserName(
+										documentStrArray[i].substring(1, documentStrArray[i].length() - 1));
+								break;
+							case 1:
+								bookingApprover.setMobileNumber(
+										documentStrArray[i].substring(1, documentStrArray[i].length() - 1));
+								break;
+							case 2:
+								bookingApprover
+										.setName(documentStrArray[i].substring(1, documentStrArray[i].length() - 1));
+								break;
+							case 3:
+								bookingApprover
+										.setUuid(documentStrArray[i].substring(1, documentStrArray[i].length() - 1));
+								break;
+							case 4:
+								bookingApprover.setId(Long.parseLong(documentStrArray[i]));
+								break;
+							default:
+								break;
+							}
+
+						}
+						bookingApprover1.add(bookingApprover);
+
 					}
 				}
 			}
 		}
-		
+
 		catch (Exception e) {
-			throw new CustomException("APPROVER_ERROR",e.getLocalizedMessage());
+			throw new CustomException("APPROVER_ERROR", e.getLocalizedMessage());
 		}
 		return bookingApprover1;
 	}
-*/}
+}
