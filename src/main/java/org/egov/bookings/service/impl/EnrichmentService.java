@@ -24,6 +24,7 @@ import org.egov.bookings.repository.OsbmFeeRepository;
 import org.egov.bookings.repository.impl.IdGenRepository;
 import org.egov.bookings.service.BookingsCalculatorService;
 import org.egov.bookings.service.BookingsService;
+import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.web.models.AuditDetails;
 import org.egov.bookings.web.models.BookingsRequest;
@@ -181,15 +182,19 @@ public class EnrichmentService {
 			bookingsModel = bookingsRepository
 					.findByBkApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 			if (null != bookingsModel) {
-				LocalDate bkFromDate = LocalDate.now();
-				Date fromDate = java.sql.Date.valueOf(bkFromDate);
-				LocalDate bkToDate = LocalDate.now().plusMonths(Integer.valueOf(bookingsModel.getBkDuration()));
-				Date toDate = java.sql.Date.valueOf(bkToDate);
+
 				bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
 				bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
 				bookingsModel.setBookingsRemarks(bookingsRequest.getBookingsModel().getBookingsRemarks());
-				bookingsModel.setBkFromDate(fromDate);
-				bookingsModel.setBkToDate(toDate);
+				if (bookingsRequest.getBookingsModel().getBkAction().equals(BookingsConstants.APPROVE)) {
+					LocalDate bkFromDate = LocalDate.now();
+					Date fromDate = java.sql.Date.valueOf(bkFromDate);
+					LocalDate bkToDate = LocalDate.now().plusMonths(Integer.valueOf(bookingsModel.getBkDuration()));
+					Date toDate = java.sql.Date.valueOf(bkToDate);
+					bookingsModel.setBkFromDate(fromDate);
+					bookingsModel.setBkToDate(toDate);
+				}
+
 			}
 		} catch (Exception e) {
 			throw new CustomException("OSBM UPDATE ERROR", "ERROR WHILE UPDATING OSBM DETAILS ");
