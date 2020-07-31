@@ -3,6 +3,7 @@ package org.egov.bookings.service.impl;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.commons.lang3.CharEncoding;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.validator.BookingsFieldsValidator;
@@ -23,8 +24,6 @@ public class MailNotificationService
 	
 	public void sendMail(String emailId, String emailMessage, String emailSubject) 
 	{
-		MimeMessage message = sender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(message);
 		if(BookingsFieldsValidator.isNullOrEmpty(emailId))
 		{
 			throw new IllegalArgumentException("Invalid emailId");
@@ -37,11 +36,13 @@ public class MailNotificationService
 		{
 			throw new IllegalArgumentException("Invalid emailSubject");
 		}
+		MimeMessage message = sender.createMimeMessage();
 		try 
 		{
+			MimeMessageHelper helper = new MimeMessageHelper(message, true, CharEncoding.UTF_8);
 			helper.setFrom("ck066114@gmail.com");
 			helper.setTo(emailId);
-			helper.setText(emailMessage);
+			helper.setText(emailMessage, true);
 			helper.setSubject(emailSubject);
 		} 
 		catch (MessagingException e) 
