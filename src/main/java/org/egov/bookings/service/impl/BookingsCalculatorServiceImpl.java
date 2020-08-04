@@ -13,8 +13,10 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.egov.bookings.config.BookingsConfiguration;
+import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
 import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.contract.TaxHeadMasterFields;
+import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.models.demand.Demand;
 import org.egov.bookings.models.demand.DemandDetail;
@@ -28,6 +30,7 @@ import org.egov.bookings.repository.impl.DemandRepository;
 import org.egov.bookings.repository.impl.IdGenRepository;
 import org.egov.bookings.repository.impl.ServiceRequestRepository;
 import org.egov.bookings.service.BookingsCalculatorService;
+import org.egov.bookings.service.CommercialGroundService;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.web.models.BookingsRequest;
@@ -80,6 +83,9 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	@Autowired
 	private ObjectMapper mapper;
 
+	@Autowired
+	CommercialGroundService commercialGroundService;
+	
 	/**
 	 * Search demand.
 	 *
@@ -114,52 +120,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 
 	}
 
-	/**
-	 * Creates the and get calculation and demand for osbm.
-	 *
-	 * @param bookingsRequest the bookings request
-	 * @return the list
-	 */
-	public List<Demand> createAndGetCalculationAndDemandForOsbm(BookingsRequest bookingsRequest) {
-
-		List<Demand> demands = new LinkedList<>();
-		List<DemandDetail> demandDetails = new LinkedList<>();
-		try {
-			String tenantId = bookingsRequest.getRequestInfo().getUserInfo().getTenantId();
-
-			String taxHeadCode1 = BookingsConstants.OSBM_TAXHEAD_CODE_1;
-
-			String taxHeadCode2 = BookingsConstants.OSBM_TAXHEAD_CODE_2;
-
-			List<TaxHeadEstimate> taxHeadEstimate1 = getTaxHeadEstimate(bookingsRequest, taxHeadCode1, taxHeadCode2);
-
-			taxHeadEstimate1.forEach(taxHeadEstimate -> {
-				demandDetails.add(DemandDetail.builder().taxAmount(taxHeadEstimate.getEstimateAmount())
-						.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).collectionAmount(BigDecimal.ZERO)
-						.tenantId(tenantId).build());
-			});
-
-			Long taxPeriodFrom = 1554057000000L;
-			Long taxPeriodTo = 1869676199000L;
-			List<String> combinedBillingSlabs = new LinkedList<>();
-
-			Demand singleDemand = Demand.builder().status(StatusEnum.ACTIVE)
-					.consumerCode(bookingsRequest.getBookingsModel().getBkApplicationNumber())
-					.demandDetails(demandDetails).payer(bookingsRequest.getRequestInfo().getUserInfo())
-					.minimumAmountPayable(config.getMinimumPayableAmount())
-					.tenantId(bookingsRequest.getRequestInfo().getUserInfo().getTenantId()).taxPeriodFrom(taxPeriodFrom)
-					.taxPeriodTo(taxPeriodTo).consumerType("bookings")
-					.businessService(bookingsRequest.getBookingsModel().getBusinessService())
-					.additionalDetails(Collections.singletonMap("calculationDes1cription", combinedBillingSlabs))
-					.build();
-
-			demands.add(singleDemand);
-		} catch (Exception e) {
-			throw new CustomException("DEMAND_ERROR", "Error while creating demand request body");
-		}
-		return demands;
-
-	}
+	
 
 	/**
 	 * Gets the tax head estimate.
@@ -169,7 +130,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	 * @param taxHeadCode2 the tax head code 2
 	 * @return the tax head estimate
 	 */
-	private List<TaxHeadEstimate> getTaxHeadEstimate(BookingsRequest bookingsRequest, String taxHeadCode1,
+	public List<TaxHeadEstimate> getTaxHeadEstimate(BookingsRequest bookingsRequest, String taxHeadCode1,
 			String taxHeadCode2) {
 		List<TaxHeadEstimate> taxHeadEstimate1 = new ArrayList<>();
 		String bussinessService = bookingsRequest.getBookingsModel().getBusinessService();
@@ -202,6 +163,21 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 				if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
 							bwtAmount.multiply((taxHeadEstimate.getTaxAmount().divide(new BigDecimal(100)))),
+							taxHeadEstimate.getCategory()));
+				}
+
+			}
+			break;
+		case BookingsConstants.GFCP:
+			BigDecimal commercialAmount = getCommercialAmount(bookingsRequest);
+			for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
+				if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
+					taxHeadEstimate1.add(
+							new TaxHeadEstimate(taxHeadEstimate.getCode(), commercialAmount, taxHeadEstimate.getCategory()));
+				}
+				if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
+					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+							commercialAmount.multiply((taxHeadEstimate.getTaxAmount().divide(new BigDecimal(100)))),
 							taxHeadEstimate.getCategory()));
 				}
 
@@ -268,6 +244,25 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 		return new BigDecimal(osbmFeeModel.getAmount());
 	}
 
+	
+	
+	private BigDecimal getCommercialAmount(BookingsRequest bookingsRequest) {
+
+		CommercialGroundFeeModel commercialGroundFeeModel = null;
+		try {
+			String category = bookingsRequest.getBookingsModel().getBkCategory();
+			String locality = bookingsRequest.getBookingsModel().getBkSector();
+			CommercialGroundFeeSearchCriteria commercialGroundFeeSearchCriteria = CommercialGroundFeeSearchCriteria.builder().category(category).locality(locality).build();
+			commercialGroundFeeModel = commercialGroundService
+					.searchCommercialGroundFee(commercialGroundFeeSearchCriteria);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Exception while fetching osbm amount from database");
+		}
+		return new BigDecimal(commercialGroundFeeModel.getRatePerDay());
+	}
+
+	
+	
 	/**
 	 * Update and get calculation and demand for osbm.
 	 *
@@ -306,14 +301,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 		});*/
 		
 		
-		Demand singleDemand = Demand.builder().status(StatusEnum.ACTIVE)
-				.consumerCode(bookingsRequest.getBookingsModel().getBkApplicationNumber()).demandDetails(demandDetails)
-				.payer(bookingsRequest.getRequestInfo().getUserInfo())
-				.minimumAmountPayable(config.getMinimumPayableAmount())
-				.tenantId(bookingsRequest.getRequestInfo().getUserInfo().getTenantId())
-				.taxPeriodFrom(demand.getTaxPeriodFrom()).taxPeriodTo(demand.getTaxPeriodTo()).consumerType("bookings")
-				.businessService(demand.getBusinessService()).id(demand.getId())
-				.additionalDetails(demand.getAdditionalDetails()).build();
+		
 		
 		//demands.add(demands);
 
@@ -375,50 +363,6 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
         return combinedBillDetials;
     }
 
-	/**
-	 * Creates the and get calculation and demand for bwt.
-	 *
-	 * @param bookingsRequest the bookings request
-	 * @return the list
-	 */
-	public List<Demand> createAndGetCalculationAndDemandForBwt(BookingsRequest bookingsRequest) {
-
-		List<Demand> demands = new LinkedList<>();
-		List<DemandDetail> demandDetails = new LinkedList<>();
-		try {
-			String tenantId = bookingsRequest.getRequestInfo().getUserInfo().getTenantId();
-
-			String taxHeadCode1 = BookingsConstants.BWT_TAXHEAD_CODE_1;
-
-			String taxHeadCode2 = BookingsConstants.BWT_TAXHEAD_CODE_2;
-			List<TaxHeadEstimate> taxHeadEstimate1 = getTaxHeadEstimate(bookingsRequest, taxHeadCode1, taxHeadCode2);
-
-			taxHeadEstimate1.forEach(taxHeadEstimate -> {
-				demandDetails.add(DemandDetail.builder().taxAmount(taxHeadEstimate.getEstimateAmount())
-						.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).collectionAmount(BigDecimal.ZERO)
-						.tenantId(tenantId).build());
-			});
-
-			Long taxPeriodFrom = 1554057000000L;
-			Long taxPeriodTo = 1869676199000L;
-			List<String> combinedBillingSlabs = new LinkedList<>();
-
-			Demand singleDemand = Demand.builder().status(StatusEnum.ACTIVE)
-					.consumerCode(bookingsRequest.getBookingsModel().getBkApplicationNumber())
-					.demandDetails(demandDetails).payer(bookingsRequest.getRequestInfo().getUserInfo())
-					.minimumAmountPayable(config.getMinimumPayableAmount())
-					.tenantId(bookingsRequest.getRequestInfo().getUserInfo().getTenantId()).taxPeriodFrom(taxPeriodFrom)
-					.taxPeriodTo(taxPeriodTo).consumerType("bookings")
-					.businessService(bookingsRequest.getBookingsModel().getBusinessService())
-					.additionalDetails(Collections.singletonMap("calculationDes1cription", combinedBillingSlabs))
-					.build();
-
-			demands.add(singleDemand);
-		} catch (Exception e) {
-			throw new CustomException("DEMAND_ERROR", "Error while creating demand request body");
-		}
-		return demands;
-
-	}
+	
 
 }

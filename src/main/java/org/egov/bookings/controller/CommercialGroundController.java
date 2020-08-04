@@ -1,5 +1,6 @@
 package org.egov.bookings.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.egov.bookings.common.model.ResponseModel;
@@ -61,7 +62,7 @@ public class CommercialGroundController {
 		
 		bookingsFieldsValidator.validateCommercialGroundAvailabilityCriteria(commercialGroundAvailabiltySearchCriteria);
 		
-		List<BookingsModel> res = commercialGroundService.searchCommercialGroundAvailabilty(commercialGroundAvailabiltySearchCriteria);
+		List<LocalDate> res = commercialGroundService.searchCommercialGroundAvailabilty(commercialGroundAvailabiltySearchCriteria);
 		
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");

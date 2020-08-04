@@ -1,5 +1,6 @@
 package org.egov.bookings.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria;
@@ -22,7 +23,7 @@ public interface CommercialGroundService {
 	CommercialGroundFeeModel searchCommercialGroundFee(
 			CommercialGroundFeeSearchCriteria commercialGroundFeeSearchCriteria);
 
-	List<BookingsModel> searchCommercialGroundAvailabilty(
+	List<LocalDate> searchCommercialGroundAvailabilty(
 			CommercialGroundAvailabiltySearchCriteria commercialGroundAvailabiltySearchCriteria);
 
 }

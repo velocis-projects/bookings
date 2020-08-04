@@ -155,19 +155,34 @@ public class EnrichmentService {
 	 */
 	public void generateDemand(BookingsRequest bookingsRequest) {
 
-		if (bookingsRequest.getBookingsModel().getBusinessService().equals("OSBM")) {
+		
+		
+		switch(bookingsRequest.getBookingsModel().getBusinessService()) {
+		 
+		case BookingsConstants.OSBM :
+			
+
 			if(!bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
 				demandService.createDemand(bookingsRequest);
 			} else
 				demandService.updateDemand(bookingsRequest);
-		}
+		break;
+		
+		case BookingsConstants.BWT : 
+			
 
-		else if (bookingsRequest.getBookingsModel().getBusinessService().equals("BWT")) {
 			if(!bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
 				demandService.createDemand(bookingsRequest);
 			}
+		break ;
+		
+		case BookingsConstants.GFCP :
+			if(!bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
+				demandService.createDemand(bookingsRequest);
+			} else
+				demandService.updateDemand(bookingsRequest);
+			break;
 		}
-
 	}
 
 	/**
@@ -186,7 +201,7 @@ public class EnrichmentService {
 				bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
 				bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
 				bookingsModel.setBookingsRemarks(bookingsRequest.getBookingsModel().getBookingsRemarks());
-				if (bookingsRequest.getBookingsModel().getBkAction().equals(BookingsConstants.APPROVE)) {
+				if (bookingsRequest.getBookingsModel().getBkAction().equals(BookingsConstants.PAY)) {
 					LocalDate bkFromDate = LocalDate.now();
 					Date fromDate = java.sql.Date.valueOf(bkFromDate);
 					LocalDate bkToDate = LocalDate.now().plusMonths(Integer.valueOf(bookingsModel.getBkDuration()));

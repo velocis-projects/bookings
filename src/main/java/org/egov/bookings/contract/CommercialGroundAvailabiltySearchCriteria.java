@@ -36,8 +36,11 @@ public class CommercialGroundAvailabiltySearchCriteria implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -6489944586553914355L;
 
-	/** The date. */
-	private Date date;
+	/** The from date. */
+	private Date fromDate;
+	
+	/** The to date. */
+	private Date toDate;
 	
 	/** The booking type. */
 	private String bookingType;
