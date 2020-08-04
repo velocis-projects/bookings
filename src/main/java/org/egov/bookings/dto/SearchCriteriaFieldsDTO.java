@@ -3,6 +3,8 @@ package org.egov.bookings.dto;
 import java.io.Serializable;
 import java.sql.Date;
 
+import org.egov.common.contract.request.RequestInfo;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class SearchCriteriaFieldsDTO.
@@ -44,6 +46,9 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 	
 	/** The booking type. */
 	private String bookingType;
+	
+	/** The request info. */
+	private RequestInfo requestInfo;
 	
 	/**
 	 * Gets the tenant id.
@@ -242,6 +247,24 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 	 */
 	public void setBookingType(String bookingType) {
 		this.bookingType = bookingType;
+	}
+
+	/**
+	 * Gets the request info.
+	 *
+	 * @return the request info
+	 */
+	public RequestInfo getRequestInfo() {
+		return requestInfo;
+	}
+
+	/**
+	 * Sets the request info.
+	 *
+	 * @param requestInfo the new request info
+	 */
+	public void setRequestInfo(RequestInfo requestInfo) {
+		this.requestInfo = requestInfo;
 	}
 
 }
