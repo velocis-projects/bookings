@@ -2,6 +2,7 @@ package org.egov.bookings.repository;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.repository.querybuilder.WorkflowQueryBuilder;
@@ -38,7 +39,7 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 * @return the list
 	 */
 	@Query(value = WorkflowQueryBuilder.FIND_APPLICATION_NUMBER, nativeQuery = true)
-	public List<String> findApplicationNumber(@Param(BookingsConstants.UUID) String uuid);
+	public Set<String> findApplicationNumber(@Param(BookingsConstants.ROLES) String roles);
 
 	/**
 	 * Find sector list.

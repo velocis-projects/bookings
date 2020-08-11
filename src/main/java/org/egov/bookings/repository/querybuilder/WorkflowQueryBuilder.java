@@ -20,8 +20,10 @@ public class WorkflowQueryBuilder {
 			+ "action_v2.\"action\" = :action) and euv.role_tenantid = :role_tenantId));";
 
 	/** The Constant FIND_APPLICATION_NUMBER. */
-	public static final String FIND_APPLICATION_NUMBER = "select businessid from eg_wf_processinstance_v2 where assignee = :uuid";
-	
+	public static final String FIND_APPLICATION_NUMBER = "select businessid from eg_wf_processinstance_v2 as ewpv "
+			+ "inner join eg_wf_state_v2 as ewsv on ewsv.uuid = ewpv.status " 
+			+ "inner join eg_wf_action_v2 as ewav on ewav.currentstate = ewsv.uuid "
+			+ "and ewav.roles = :roles where ewpv.action != 'INITIATE'";
 	
 	/** The Constant FIND_SECTOR_LIST. */
 	public static final String FIND_SECTOR_LIST = "select sector from tt_osbm_approver where uuid = :uuid";
