@@ -3,8 +3,10 @@ package org.egov.bookings.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -18,6 +20,7 @@ import org.egov.bookings.contract.Message;
 import org.egov.bookings.contract.MessagesResponse;
 import org.egov.bookings.contract.ProcessInstanceSearchCriteria;
 import org.egov.bookings.contract.RequestInfoWrapper;
+import org.egov.bookings.contract.RoleFields;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.repository.BookingsRepository;
@@ -37,7 +40,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -87,10 +89,6 @@ public class BookingsServiceImpl implements BookingsService {
 	@Autowired
 	private EnrichmentService enrichmentService;
 
-	/** The rest template. */
-	@Autowired
-	private RestTemplate restTemplate;
-
 	/** The service request repository. */
 	@Autowired
 	private ServiceRequestRepository serviceRequestRepository;
@@ -99,6 +97,7 @@ public class BookingsServiceImpl implements BookingsService {
 	@Autowired
 	private SMSNotificationService smsNotificationService;
 	
+	/** The mail notification service. */
 	@Autowired
 	private MailNotificationService mailNotificationService;
 	
@@ -147,7 +146,12 @@ public class BookingsServiceImpl implements BookingsService {
 
 	}
 	
-	
+	/**
+	 * Gets the localization message.
+	 *
+	 * @param requestInfo the request info
+	 * @return the localization message
+	 */
 	private MessagesResponse getLocalizationMessage(RequestInfo requestInfo)
 	{
 		Object result = new Object();
@@ -269,11 +273,13 @@ public class BookingsServiceImpl implements BookingsService {
 		}
 		return notificationMsg;
 	}
+	
 	/**
 	 * Prepare SMS notif msg for update.
 	 *
 	 * @param bookingsModel the bookings model
 	 * @param mdmsJsonFieldsMap the mdms json fields map
+	 * @param bkApplicationStatus the bk application status
 	 * @return the string
 	 */
 	private String prepareSMSNotifMsgForUpdate(BookingsModel bookingsModel, Map< String, MdmsJsonFields > mdmsJsonFieldsMap, String bkApplicationStatus)
@@ -310,6 +316,7 @@ public class BookingsServiceImpl implements BookingsService {
 	 *
 	 * @param bookingsModel the bookings model
 	 * @param mdmsJsonFieldsMap the mdms json fields map
+	 * @param bkApplicationStatus the bk application status
 	 * @return the string
 	 */
 	private String prepareMailNotifMsgForUpdate(BookingsModel bookingsModel, Map< String, MdmsJsonFields > mdmsJsonFieldsMap, String bkApplicationStatus)
@@ -438,6 +445,7 @@ public class BookingsServiceImpl implements BookingsService {
 		List<BookingsModel> bookingsList = new ArrayList<>();
 		List<?> documentList = new ArrayList<>();
 		Map<String, String> documentMap = new HashMap<>();
+		Set<String> applicationNumberSet = new HashSet<>();
 		try {
 			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) {
 				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
@@ -450,23 +458,79 @@ public class BookingsServiceImpl implements BookingsService {
 			Date toDate = searchCriteriaFieldsDTO.getToDate();
 			String uuid = searchCriteriaFieldsDTO.getUuid();
 			String bookingType = searchCriteriaFieldsDTO.getBookingType();
+			List< RoleFields > roles = searchCriteriaFieldsDTO.getRoles();
 			if (BookingsFieldsValidator.isNullOrEmpty(tenantId)) {
 				throw new IllegalArgumentException("Invalid tentantId");
 			}
 			if (BookingsFieldsValidator.isNullOrEmpty(uuid)) {
 				throw new IllegalArgumentException("Invalid uuId");
 			}
-			List<String> sectorList = commonRepository.findSectorList(uuid);
-			if (sectorList == null || sectorList.isEmpty()) {
-				return booking;
+			
+			if (BookingsFieldsValidator.isNullOrEmpty(roles)) {
+				throw new IllegalArgumentException("Invalid roles");
 			}
-			if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-				bookingsList = bookingsRepository.getEmployeeSearchBooking(tenantId, applicationNumber,
-						applicationStatus, mobileNumber, bookingType, sectorList);
-			} else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate)
-					&& !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-				bookingsList = bookingsRepository.getEmployeeSearchBooking(tenantId, applicationNumber,
-						applicationStatus, mobileNumber, bookingType, sectorList, fromDate, toDate);
+			for (RoleFields roleFields : roles) {
+				if(!BookingsConstants.CITIZEN.equals(roleFields.getCode()) && !BookingsConstants.EMPLOYEE.equals(roleFields.getCode())) {
+					applicationNumberSet.addAll(commonRepository.findApplicationNumber(roleFields.getCode()));
+				}
+			}
+			boolean flag = false;
+			if (!BookingsFieldsValidator.isNullOrEmpty(applicationNumber)) {
+				if(applicationNumberSet.contains(applicationNumber))
+				{
+					flag = true;
+					applicationNumberSet.clear();
+					applicationNumberSet.add(applicationNumber);
+				}
+				if(!flag)
+				{
+					return booking;
+				}
+			}
+			for (RoleFields roleFields : roles) {
+				if(!BookingsConstants.CITIZEN.equals(roleFields.getCode()) && !BookingsConstants.EMPLOYEE.equals(roleFields.getCode()) ) {
+					
+					if(BookingsConstants.OSBM_APPROVER.equals(roleFields.getCode()))
+					{
+						List<String> sectorList = commonRepository.findSectorList(uuid);
+						if (sectorList == null || sectorList.isEmpty()) {
+							return booking;
+						}
+						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
+							bookingsList.addAll( bookingsRepository.getEmployeeSearchOSBMBooking(tenantId, applicationNumber,
+									applicationStatus, mobileNumber, bookingType, sectorList, applicationNumberSet));
+						}
+						else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
+							bookingsList.addAll( bookingsRepository.getEmployeeSearchOSBMBooking(tenantId, applicationNumber,
+									applicationStatus, mobileNumber, bookingType, sectorList, fromDate, toDate, applicationNumberSet));
+						}
+					}
+					else if(BookingsConstants.MCC_HELPDESK_USER.equals(roleFields.getCode()))
+					{
+						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
+							bookingsList.addAll( bookingsRepository.getEmployeeSearchBWTBooking(tenantId, applicationNumber,
+									applicationStatus, mobileNumber, bookingType, applicationNumberSet));
+						}
+						else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
+							bookingsList.addAll( bookingsRepository.getEmployeeSearchBWTBooking(tenantId, applicationNumber,
+									applicationStatus, mobileNumber, bookingType, applicationNumberSet, fromDate, toDate));
+						}
+					}
+					else if(BookingsConstants.COMMERCIAL_FROUND_VIEWER.equals(roleFields.getCode()))
+					{
+						if(BookingsFieldsValidator.isNullOrEmpty(bookingType)) {
+							bookingType = BookingsConstants.GROUND_FOR_COMMERCIAL_PURPOSE;
+						}
+						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
+							bookingsList.addAll( bookingsRepository.getEmployeeSearchGFCPBooking(tenantId, applicationNumber,
+									applicationStatus, mobileNumber, bookingType));
+						}
+						else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
+							bookingsList.addAll( bookingsRepository.getEmployeeSearchGFCPBooking(tenantId, applicationNumber,
+									applicationStatus, mobileNumber, bookingType, fromDate, toDate));
+						}
+					}
+				}
 			}
 			if (!BookingsFieldsValidator.isNullOrEmpty(applicationNumber)) {
 				documentList = commonRepository.findDocumentList(applicationNumber);
@@ -680,6 +744,11 @@ public class BookingsServiceImpl implements BookingsService {
 	}
 
 
+	/**
+	 * Fetch all approver.
+	 *
+	 * @return the list
+	 */
 	/* (non-Javadoc)
 	 * @see org.egov.bookings.service.BookingsService#fetchAllApprover()
 	 */

@@ -451,6 +451,28 @@ public class BookingsConstants {
 
 	/** The Constant EMPLOYEE. */
 	public static final String TYPE = "type";
+	
+	/** The Constant ROLES. */
+	public static final String ROLES = "roles";
+	
+	/** The Constant CITIZEN. */
+	public static final String CITIZEN = "CITIZEN";
+	
+	/** The Constant EMPLOYEE. */
+	public static final String EMPLOYEE = "EMPLOYEE";
+	
+	/** The Constant OSBM_APPROVER. */
+	public static final String OSBM_APPROVER = "OSBM_APPROVER";
+	
+	/** The Constant MCC_HELPDESK_USER. */
+	public static final String MCC_HELPDESK_USER = "MCC_HELPDESK_USER";
+	
+	/** The Constant COMMERCIAL_FROUND_VIEWER. */
+	public static final String COMMERCIAL_FROUND_VIEWER = "COMMERCIAL_FROUND_VIEWER";
+	
+	/** The Constant GROUND_FOR_COMMERCIAL_PURPOSE. */
+	public static final String GROUND_FOR_COMMERCIAL_PURPOSE = "GROUND_FOR_COMMERCIAL_PURPOSE";
+	
 
 	
 
