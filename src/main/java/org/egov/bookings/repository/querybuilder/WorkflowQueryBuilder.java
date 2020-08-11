@@ -39,4 +39,6 @@ public class WorkflowQueryBuilder {
 	
 	public static final String CHECK_COMMERCIAL_GROUND_AVAILABILITY = "select * from tt_bookings where (bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType  and bk_to_date >= :date   and bk_from_date <= :date and bk_action =:APPLY) or (bk_from_date >= :date and bk_action =:APPLY) ";
 	
+	public static final String FIND_JURISDICTION_AMOUNT = "select * from tt_osujm_fee where area_from <= :area and area_to >= :area and sector = :sector";
+	
 }

@@ -31,10 +31,13 @@ public class OsujmFeeModel {
 	@Column(name = "SLAB")
 	private String slab;
 	
-	@Column(name = "AREA")
-	private String area;
+	@Column(name = "AREA_FROM")
+	private Long areaFrom;
+	
+	@Column(name = "AREA_TO")
+	private Long areaTo;
 	
 	@Column(name = "RATE_PER_SQR_FEET_PER_DAY")
-	private String ratePerSqrFeetPerDay;
+	private Long ratePerSqrFeetPerDay;
 	
 }

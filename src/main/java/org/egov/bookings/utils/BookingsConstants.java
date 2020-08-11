@@ -473,6 +473,10 @@ public class BookingsConstants {
 	/** The Constant GROUND_FOR_COMMERCIAL_PURPOSE. */
 	public static final String GROUND_FOR_COMMERCIAL_PURPOSE = "GROUND_FOR_COMMERCIAL_PURPOSE";
 	
+	public static final String AREA = "area";
+	
+	public static final String SECTOR = "sector";
+	
 
 	
 

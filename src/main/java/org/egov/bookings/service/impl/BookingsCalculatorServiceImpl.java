@@ -18,6 +18,7 @@ import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.contract.TaxHeadMasterFields;
 import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.OsbmFeeModel;
+import org.egov.bookings.model.OsujmFeeModel;
 import org.egov.bookings.models.demand.Demand;
 import org.egov.bookings.models.demand.DemandDetail;
 import org.egov.bookings.models.demand.DemandRequest;
@@ -26,13 +27,16 @@ import org.egov.bookings.models.demand.TaxHeadEstimate;
 import org.egov.bookings.models.demand.TaxHeadMaster;
 import org.egov.bookings.models.demand.Demand.StatusEnum;
 import org.egov.bookings.repository.OsbmFeeRepository;
+import org.egov.bookings.repository.OsujmFeeRepository;
 import org.egov.bookings.repository.impl.DemandRepository;
 import org.egov.bookings.repository.impl.IdGenRepository;
 import org.egov.bookings.repository.impl.ServiceRequestRepository;
 import org.egov.bookings.service.BookingsCalculatorService;
 import org.egov.bookings.service.CommercialGroundService;
+import org.egov.bookings.service.OsujmFeeService;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.BookingsUtils;
+import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.demands.model.enums.Category;
@@ -57,7 +61,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 
 	/** The demand repository. */
 	@Autowired
-	DemandRepository demandRepository;
+	private DemandRepository demandRepository;
 
 	/** The config. */
 	@Autowired
@@ -69,23 +73,26 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 
 	/** The bookings calculator service. */
 	@Autowired
-	BookingsCalculatorService bookingsCalculatorService;
+	private BookingsCalculatorService bookingsCalculatorService;
 
 	/** The bookings utils. */
 	@Autowired
-	BookingsUtils bookingsUtils;
+	private BookingsUtils bookingsUtils;
 
 	/** The service request repository. */
 	@Autowired
-	ServiceRequestRepository serviceRequestRepository;
+	private ServiceRequestRepository serviceRequestRepository;
 
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
 
 	@Autowired
-	CommercialGroundService commercialGroundService;
+	private CommercialGroundService commercialGroundService;
 
+	@Autowired
+	private OsujmFeeService osujmFeeService;
+	
 	/**
 	 * Search demand.
 	 *
@@ -182,7 +189,8 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 			}
 			break;
 		case BookingsConstants.BUSINESS_SERVICE_OSUJM:
-			BigDecimal mccJurisdictionAmount = getCommercialAmount(bookingsRequest);
+			//BigDecimal mccJurisdictionAmount = getJurisdicationAmount(bookingsRequest);
+			BigDecimal mccJurisdictionAmount = new BigDecimal(4400);
 			for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
 				if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(), mccJurisdictionAmount,
@@ -198,6 +206,26 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 			break;
 		}
 		return taxHeadEstimate1;
+	}
+
+	private BigDecimal getJurisdicationAmount(BookingsRequest bookingsRequest) {
+
+		OsujmFeeModel osujmFeeModel = null;
+		Long area = null;
+		try {
+			area = Long.valueOf(bookingsRequest.getBookingsModel().getBkAreaRequired());
+			/*OsujmFeeModel commercialGroundFeeSearchCriteria = CommercialGroundFeeSearchCriteria
+					.builder().bookingVenue(bookingVenue).category(category).build();*/
+			osujmFeeModel = osujmFeeService
+					.findJurisdictionFee(bookingsRequest);
+			if(BookingsFieldsValidator.isNullOrEmpty(osujmFeeModel)) {
+				throw new CustomException("DATA_NOT_FOUND","There is not any amount for this commercial ground criteria in database");
+			}
+			
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Exception while fetching osbm amount from database");
+		}
+		return new BigDecimal(osujmFeeModel.getRatePerSqrFeetPerDay()*area);
 	}
 
 	/**
@@ -251,6 +279,10 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 			osbmFeeModel = osbmFeeRepository
 					.findByVillageCityAndResidentialCommercialAndStorageAndDurationInMonthsAndConstructionType(
 							villageCity, residentialCommercial, storage, durationInMonths, constructionType);
+		if(BookingsFieldsValidator.isNullOrEmpty(osbmFeeModel)) {
+			throw new CustomException("DATA_NOT_FOUND","There is not any amount for this osbm criteria in database");
+		}
+			
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Exception while fetching osbm amount from database");
 		}
@@ -273,6 +305,9 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 					.builder().bookingVenue(bookingVenue).category(category).build();
 			commercialGroundFeeModel = commercialGroundService
 					.searchCommercialGroundFee(commercialGroundFeeSearchCriteria);
+			if(BookingsFieldsValidator.isNullOrEmpty(commercialGroundFeeModel)) {
+				throw new CustomException("DATA_NOT_FOUND","There is not any amount for this commercial ground criteria in database");
+			}
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Exception while fetching osbm amount from database");
 		}
