@@ -85,13 +85,13 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 
 	@Autowired
 	CommercialGroundService commercialGroundService;
-	
+
 	/**
 	 * Search demand.
 	 *
-	 * @param tenantId the tenant id
-	 * @param consumerCodes the consumer codes
-	 * @param requestInfo the request info
+	 * @param tenantId        the tenant id
+	 * @param consumerCodes   the consumer codes
+	 * @param requestInfo     the request info
 	 * @param businessService the business service
 	 * @return the list
 	 */
@@ -120,14 +120,12 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 
 	}
 
-	
-
 	/**
 	 * Gets the tax head estimate.
 	 *
 	 * @param bookingsRequest the bookings request
-	 * @param taxHeadCode1 the tax head code 1
-	 * @param taxHeadCode2 the tax head code 2
+	 * @param taxHeadCode1    the tax head code 1
+	 * @param taxHeadCode2    the tax head code 2
 	 * @return the tax head estimate
 	 */
 	public List<TaxHeadEstimate> getTaxHeadEstimate(BookingsRequest bookingsRequest, String taxHeadCode1,
@@ -138,7 +136,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 
 		switch (bussinessService) {
 
-		case BookingsConstants.OSBM:
+		case BookingsConstants.BUSINESS_SERVICE_OSBM:
 			BigDecimal osbmAmount = getOsbmAmount(bookingsRequest);
 			for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
 				if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
@@ -153,7 +151,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 
 			}
 			break;
-		case BookingsConstants.BWT:
+		case BookingsConstants.BUSINESS_SERVICE_BWT:
 			BigDecimal bwtAmount = taxHeadMasterFieldList.get(0).getTaxAmount();
 			for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
 				if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
@@ -168,16 +166,31 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 
 			}
 			break;
-		case BookingsConstants.GFCP:
+		case BookingsConstants.BUSINESS_SERVICE_GFCP:
 			BigDecimal commercialAmount = getCommercialAmount(bookingsRequest);
 			for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
 				if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
-					taxHeadEstimate1.add(
-							new TaxHeadEstimate(taxHeadEstimate.getCode(), commercialAmount, taxHeadEstimate.getCategory()));
+					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(), commercialAmount,
+							taxHeadEstimate.getCategory()));
 				}
 				if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
 							commercialAmount.multiply((taxHeadEstimate.getTaxAmount().divide(new BigDecimal(100)))),
+							taxHeadEstimate.getCategory()));
+				}
+
+			}
+			break;
+		case BookingsConstants.BUSINESS_SERVICE_OSUJM:
+			BigDecimal mccJurisdictionAmount = getCommercialAmount(bookingsRequest);
+			for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
+				if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
+					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(), mccJurisdictionAmount,
+							taxHeadEstimate.getCategory()));
+				}
+				if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
+					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+							mccJurisdictionAmount.multiply((taxHeadEstimate.getTaxAmount().divide(new BigDecimal(100)))),
 							taxHeadEstimate.getCategory()));
 				}
 
@@ -190,7 +203,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	/**
 	 * Gets the tax head master data.
 	 *
-	 * @param bookingsRequest the bookings request
+	 * @param bookingsRequest  the bookings request
 	 * @param bussinessService the bussiness service
 	 * @return the tax head master data
 	 */
@@ -244,15 +257,20 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 		return new BigDecimal(osbmFeeModel.getAmount());
 	}
 
-	
-	
+	/**
+	 * Gets the commercial amount.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the commercial amount
+	 */
 	private BigDecimal getCommercialAmount(BookingsRequest bookingsRequest) {
 
 		CommercialGroundFeeModel commercialGroundFeeModel = null;
 		try {
 			String category = bookingsRequest.getBookingsModel().getBkCategory();
-			String locality = bookingsRequest.getBookingsModel().getBkSector();
-			CommercialGroundFeeSearchCriteria commercialGroundFeeSearchCriteria = CommercialGroundFeeSearchCriteria.builder().category(category).locality(locality).build();
+			String bookingVenue = bookingsRequest.getBookingsModel().getBkBookingVenue();
+			CommercialGroundFeeSearchCriteria commercialGroundFeeSearchCriteria = CommercialGroundFeeSearchCriteria
+					.builder().bookingVenue(bookingVenue).category(category).build();
 			commercialGroundFeeModel = commercialGroundService
 					.searchCommercialGroundFee(commercialGroundFeeSearchCriteria);
 		} catch (Exception e) {
@@ -260,109 +278,5 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 		}
 		return new BigDecimal(commercialGroundFeeModel.getRatePerDay());
 	}
-
-	
-	
-	/**
-	 * Update and get calculation and demand for osbm.
-	 *
-	 * @param bookingsRequest the bookings request
-	 * @return the list
-	 */
-	public List<Demand> updateAndGetCalculationAndDemandForOsbm(BookingsRequest bookingsRequest) {
-		List<Demand> demands = new LinkedList<>();
-			String tenantId = bookingsRequest.getRequestInfo().getUserInfo().getTenantId();
-
-			String taxHeadCode1 = BookingsConstants.OSBM_TAXHEAD_CODE_1;
-
-			String taxHeadCode2 = BookingsConstants.OSBM_TAXHEAD_CODE_2;
-
-			List<TaxHeadEstimate> taxHeadEstimate1 = getTaxHeadEstimate(bookingsRequest, taxHeadCode1, taxHeadCode2);
-
-			
-
-			
-			RequestInfo requestInfo = bookingsRequest.getRequestInfo();
-
-		List<Demand> searchResult = searchDemand(requestInfo.getUserInfo().getTenantId(),
-				Collections.singleton(bookingsRequest.getBookingsModel().getBkApplicationNumber()), requestInfo,
-				bookingsRequest.getBookingsModel().getBusinessService());
-		
-		 Demand demand = searchResult.get(0);
-         List<DemandDetail> demandDetails = demand.getDemandDetails();
-         List<DemandDetail> updatedDemandDetails = getUpdatedDemandDetails(taxHeadEstimate1,demandDetails);
-         demand.setDemandDetails(updatedDemandDetails);
-         demands.add(demand);
-		
-		/*taxHeadEstimate1.forEach(taxHeadEstimate -> {
-			demandDetails.add(DemandDetail.builder().taxAmount(taxHeadEstimate.getEstimateAmount())
-					.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).collectionAmount(BigDecimal.ZERO)
-					.tenantId(tenantId).build());
-		});*/
-		
-		
-		
-		
-		//demands.add(demands);
-
-	
-		if (CollectionUtils.isEmpty(searchResult)) {
-			throw new CustomException("INVALID UPDATE", "No demand exists for applicationNumber: "
-					+ bookingsRequest.getBookingsModel().getBkApplicationNumber());
-		}
-		return demands;
-	}
-
-	private List<DemandDetail> getUpdatedDemandDetails(List<TaxHeadEstimate> taxHeadEstimate1,
-			List<DemandDetail> demandDetails) {
-
-        List<DemandDetail> newDemandDetails = new ArrayList<>();
-        Map<String, List<DemandDetail>> taxHeadToDemandDetail = new HashMap<>();
-
-        demandDetails.forEach(demandDetail -> {
-            if(!taxHeadToDemandDetail.containsKey(demandDetail.getTaxHeadMasterCode())){
-                List<DemandDetail> demandDetailList = new LinkedList<>();
-                demandDetailList.add(demandDetail);
-                taxHeadToDemandDetail.put(demandDetail.getTaxHeadMasterCode(),demandDetailList);
-            }
-            else
-              taxHeadToDemandDetail.get(demandDetail.getTaxHeadMasterCode()).add(demandDetail);
-        });
-
-        BigDecimal diffInTaxAmount;
-        List<DemandDetail> demandDetailList;
-        BigDecimal total;
-
-        for(TaxHeadEstimate taxHeadEstimate : taxHeadEstimate1){
-            if(!taxHeadToDemandDetail.containsKey(taxHeadEstimate.getTaxHeadCode()))
-                newDemandDetails.add(
-                        DemandDetail.builder()
-                                .taxAmount(taxHeadEstimate.getEstimateAmount())
-                                .taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode())
-                                .tenantId("ch")
-                                .collectionAmount(BigDecimal.ZERO)
-                                .build());
-            else {
-                 demandDetailList = taxHeadToDemandDetail.get(taxHeadEstimate.getTaxHeadCode());
-                 total = demandDetailList.stream().map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-                 diffInTaxAmount = taxHeadEstimate.getEstimateAmount().subtract(total);
-                 if(diffInTaxAmount.compareTo(BigDecimal.ZERO)!=0) {
-                     newDemandDetails.add(
-                             DemandDetail.builder()
-                                     .taxAmount(diffInTaxAmount)
-                                     .taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode())
-                                     .tenantId("ch")
-                                     .collectionAmount(BigDecimal.ZERO)
-                                     .build());
-                 }
-            }
-        }
-        List<DemandDetail> combinedBillDetials = new LinkedList<>(demandDetails);
-        combinedBillDetials.addAll(newDemandDetails);
-      //  addRoundOffTaxHead(calculation.getTenantId(),combinedBillDetials);
-        return combinedBillDetials;
-    }
-
-	
 
 }

@@ -21,4 +21,6 @@ public interface CommercialGroundRepository extends CrudRepository<CommercialGro
 	 */
 	CommercialGroundFeeModel findByLocalityAndCategory(String locality, String category);
 
+	CommercialGroundFeeModel findByBookingVenueAndCategory(String bookingVenue, String category);
+
 }

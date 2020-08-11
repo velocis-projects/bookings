@@ -9,7 +9,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 // TODO: Auto-generated Javadoc
-/* (non-Javadoc)
+/**
+ * The Class CommercialGroundAvailabiltySearchCriteria.
+ */
+/*
+ * (non-Javadoc)
+ * 
+ * @see java.lang.Object#toString()
+ */
+
+/*
+ * (non-Javadoc)
+ * 
  * @see java.lang.Object#toString()
  */
 @Data
@@ -17,7 +28,15 @@ import lombok.NoArgsConstructor;
 /**
  * Instantiates a new commercial ground availabilty search criteria.
  *
- * @param date the date
+ * @param date         the date
+ * @param bookingVenue the booking venue
+ */
+
+/**
+ * Instantiates a new commercial ground availabilty search criteria.
+ *
+ * @param date         the date
+ * @param bookingType  the booking type
  * @param bookingVenue the booking venue
  */
 @AllArgsConstructor
@@ -25,9 +44,21 @@ import lombok.NoArgsConstructor;
 /**
  * Instantiates a new commercial ground availabilty search criteria.
  */
+
+/**
+ * Instantiates a new commercial ground availabilty search criteria.
+ */
 @NoArgsConstructor
 
-/* (non-Javadoc)
+/*
+ * (non-Javadoc)
+ * 
+ * @see java.lang.Object#toString()
+ */
+
+/*
+ * (non-Javadoc)
+ * 
  * @see java.lang.Object#toString()
  */
 @Builder
@@ -36,16 +67,10 @@ public class CommercialGroundAvailabiltySearchCriteria implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -6489944586553914355L;
 
-	/** The from date. */
-	private Date fromDate;
-	
-	/** The to date. */
-	private Date toDate;
-	
 	/** The booking type. */
 	private String bookingType;
-	
+
 	/** The booking venue. */
 	private String bookingVenue;
-	
+
 }

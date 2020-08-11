@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,20 +20,11 @@ import lombok.Setter;
 @Builder
 public class BookingsRequest {
 
-	
-	 
-	 @JsonProperty("Booking")
-     @Valid
-     private BookingsModel bookingsModel = null;
-	 
-	 
-	 @JsonProperty("RequestInfo")
-     private RequestInfo requestInfo = null;
-	 
-	 
-	/* 
-	 @JsonProperty("ProcessInstanceRequest")
-     @Valid
-     @NotNull
-     private ProcessInstanceRequest processInstanceRequest;*/
+	@JsonProperty("Booking")
+	@Valid
+	private BookingsModel bookingsModel = null;
+
+	@JsonProperty("RequestInfo")
+	private RequestInfo requestInfo = null;
+
 }

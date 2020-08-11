@@ -128,8 +128,8 @@ public class BookingsFieldsValidator {
 			throw new IllegalArgumentException("Invalid Category");
 		}
 		
-		else if(null == commercialGroundFeeSearchCriteria.getLocality() || commercialGroundFeeSearchCriteria.getLocality() == "") {
-			throw new IllegalArgumentException("Invalid Locality");
+		else if(null == commercialGroundFeeSearchCriteria.getBookingVenue() || commercialGroundFeeSearchCriteria.getBookingVenue() == "") {
+			throw new IllegalArgumentException("Invalid Booking Venue");
 		}
 	}
 

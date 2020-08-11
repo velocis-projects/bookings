@@ -35,6 +35,6 @@ public class WorkflowQueryBuilder {
 	public static final String FIND_BUSINESS_SERVICE = "select businessservice from eg_wf_processinstance_v2 "
 			+ " where businessid = :applicationNumber";
 	
-	public static final String CHECK_COMMERCIAL_GROUND_AVAILABILITY = "select * from tt_bookings where bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType and :date between bk_to_date and bk_from_date ";
+	public static final String CHECK_COMMERCIAL_GROUND_AVAILABILITY = "select * from tt_bookings where (bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType  and bk_to_date >= :date   and bk_from_date <= :date and bk_action =:APPLY) or (bk_from_date >= :date and bk_action =:APPLY) ";
 	
 }

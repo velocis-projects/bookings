@@ -425,8 +425,6 @@ public class BookingsConstants {
 	/** The Constant DATE. */
 	public static final String DATE = "date";
 	
-	/** The Constant OSBM. */
-	public static final String OSBM = "OSBM";
 	
 	/** The Constant APPLY. */
 	public static final String APPLY = "APPLY";
@@ -437,35 +435,24 @@ public class BookingsConstants {
 	/** The Constant PAY. */
 	public static final String PAY = "PAY";
 	
-	/** The Constant OSBM_TAXHEAD_CODE_1. */
-	public static final String OSBM_TAXHEAD_CODE_1 = "OSBM";
+	/** The Constant BUSINESS_SERVICE_BWT. */
+	public static final String BUSINESS_SERVICE_OSBM = "OSBM";
 	
-	/** The Constant OSBM_TAX. */
-	public static final String OSBM_TAXHEAD_CODE_2 = "OSBM_TAX";
+	/** The Constant BUSINESS_SERVICE_BWT. */
+	public static final String BUSINESS_SERVICE_BWT = "BWT";
 	
+	/** The Constant BUSINESS_SERVICE_GFCP. */
+	public static final String BUSINESS_SERVICE_GFCP = "GFCP";
+
+	/** The Constant BUSINESS_SERVICE_OSUJM. */
+	public static final String BUSINESS_SERVICE_OSUJM = "OSUJM";
 	
-	/** The Constant GFCP_TAX. */
-	public static final String GFCP_TAX_CODE_2 = "GFCP_TAX";
-	
-	/** The Constant GFCP_ROUND_OFF. */
-	public static final String GFCP_ROUND_OFF = "GFCP_ROUND_OFF";
-	
-	/** The Constant BWT. */
-	public static final String BWT = "BWT";
-	
-	/** The Constant GFCP. */
-	public static final String GFCP = "GFCP";
-	
-	
-	/** The Constant BWT_TAXHEAD_CODE_1. */
-	public static final String BWT_TAXHEAD_CODE_1 = "BWT";
-	
-	/** The Constant BWT_TAXHEAD_CODE_2. */
-	public static final String BWT_TAXHEAD_CODE_2 = "BWT_TAX";
-	
-	
+	public static final String BUSINESS_SERVICE_NLUJM = "NLUJM";
+
 	/** The Constant EMPLOYEE. */
 	public static final String TYPE = "type";
+
+	
 
 	
 }

@@ -32,5 +32,6 @@ public class CommercialGroundFeeModel {
 	@Column(name = "RATE_PER_DAY")
 	private Long ratePerDay;
 	
-	
+	@Column(name = "BOOKING_VENUE")
+	private String bookingVenue;
 }
