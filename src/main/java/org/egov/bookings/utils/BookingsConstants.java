@@ -464,11 +464,14 @@ public class BookingsConstants {
 	/** The Constant MCC_HELPDESK_USER. */
 	public static final String MCC_HELPDESK_USER = "MCC_HELPDESK_USER";
 	
-	/** The Constant COMMERCIAL_FROUND_VIEWER. */
-	public static final String COMMERCIAL_FROUND_VIEWER = "COMMERCIAL_FROUND_VIEWER";
+	/** The Constant COMMERCIAL_GROUND_VIEWER. */
+	public static final String COMMERCIAL_GROUND_VIEWER = "COMMERCIAL_GROUND_VIEWER";
 	
 	/** The Constant GROUND_FOR_COMMERCIAL_PURPOSE. */
 	public static final String GROUND_FOR_COMMERCIAL_PURPOSE = "GROUND_FOR_COMMERCIAL_PURPOSE";
+	
+	/** The Constant MCC_APPROVER. */
+	public static final String MCC_APPROVER = "MCC_APPROVER";
 	
 
 	
