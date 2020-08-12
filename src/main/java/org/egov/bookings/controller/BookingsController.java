@@ -1,6 +1,5 @@
 package org.egov.bookings.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,11 +16,8 @@ import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.service.BookingsService;
-import org.egov.bookings.service.impl.EnrichmentService;
 import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
-import org.egov.bookings.web.models.ProcessInstance;
-import org.egov.bookings.web.models.ProcessInstanceRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
@@ -50,10 +46,6 @@ public class BookingsController {
 	@Autowired
 	private Environment env;
 
-	/** The enrichment service. */
-	@Autowired
-	private EnrichmentService enrichmentService;
-	
 	/** The bookings fields validator. */
 	@Autowired
 	BookingsFieldsValidator bookingsFieldsValidator;
