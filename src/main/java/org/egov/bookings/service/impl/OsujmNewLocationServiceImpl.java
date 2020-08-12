@@ -44,7 +44,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 	private static final Logger LOGGER = LogManager.getLogger(OsujmNewLocationServiceImpl.class.getName());
 	
 	@Override
-	public NewLocationRequest addNewLocation(NewLocationRequest newLocationRequest) {
+	public OsujmNewLocationModel addNewLocation(NewLocationRequest newLocationRequest) {
 		OsujmNewLocationModel osujmNewLocationModel = new OsujmNewLocationModel();
 		try
 		{
@@ -66,7 +66,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 		catch (Exception e) {
 			LOGGER.error("Exception occur during create booking " + e);
 		}
-		return newLocationRequest;
+		return newLocationRequest.getNewLocationModel();
 
 	}
 

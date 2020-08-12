@@ -34,6 +34,7 @@ import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.workflow.WorkflowIntegrator;
 import org.egov.common.contract.request.RequestInfo;
+import org.egov.common.contract.request.Role;
 import org.egov.mdms.model.MdmsResponse;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,12 +114,14 @@ public class BookingsServiceImpl implements BookingsService {
 	@Override
 	public BookingsModel save(BookingsRequest bookingsRequest) {
 		BookingsModel bookingsModel = new BookingsModel();
+		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
 		try
 		{
 			boolean flag = isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 
 			if (!flag)
 				enrichmentService.enrichBookingsCreateRequest(bookingsRequest);
+			if (!BookingsConstants.ACTION_SPECIAL_APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()))
 			enrichmentService.generateDemand(bookingsRequest);
 
 			if (config.getIsExternalWorkFlowEnabled()) {
@@ -458,7 +461,11 @@ public class BookingsServiceImpl implements BookingsService {
 			Date toDate = searchCriteriaFieldsDTO.getToDate();
 			String uuid = searchCriteriaFieldsDTO.getUuid();
 			String bookingType = searchCriteriaFieldsDTO.getBookingType();
-			List< RoleFields > roles = searchCriteriaFieldsDTO.getRoles();
+			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getRequestInfo()) 
+					|| BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getRequestInfo().getUserInfo())) {
+				throw new IllegalArgumentException("Invalid request info details");
+			}
+			List< Role > roles = searchCriteriaFieldsDTO.getRequestInfo().getUserInfo().getRoles();
 			if (BookingsFieldsValidator.isNullOrEmpty(tenantId)) {
 				throw new IllegalArgumentException("Invalid tentantId");
 			}
@@ -469,9 +476,9 @@ public class BookingsServiceImpl implements BookingsService {
 			if (BookingsFieldsValidator.isNullOrEmpty(roles)) {
 				throw new IllegalArgumentException("Invalid roles");
 			}
-			for (RoleFields roleFields : roles) {
-				if(!BookingsConstants.CITIZEN.equals(roleFields.getCode()) && !BookingsConstants.EMPLOYEE.equals(roleFields.getCode())) {
-					applicationNumberSet.addAll(commonRepository.findApplicationNumber(roleFields.getCode()));
+			for (Role role : roles) {
+				if(!BookingsConstants.CITIZEN.equals(role.getCode()) && !BookingsConstants.EMPLOYEE.equals(role.getCode())) {
+					applicationNumberSet.addAll(commonRepository.findApplicationNumber(role.getCode()));
 				}
 			}
 			boolean flag = false;
@@ -487,10 +494,10 @@ public class BookingsServiceImpl implements BookingsService {
 					return booking;
 				}
 			}
-			for (RoleFields roleFields : roles) {
-				if(!BookingsConstants.CITIZEN.equals(roleFields.getCode()) && !BookingsConstants.EMPLOYEE.equals(roleFields.getCode()) ) {
+			for (Role role : roles) {
+				if(!BookingsConstants.CITIZEN.equals(role.getCode()) && !BookingsConstants.EMPLOYEE.equals(role.getCode()) ) {
 					
-					if(BookingsConstants.OSBM_APPROVER.equals(roleFields.getCode()))
+					if(BookingsConstants.OSBM_APPROVER.equals(role.getCode()))
 					{
 						List<String> sectorList = commonRepository.findSectorList(uuid);
 						if (sectorList == null || sectorList.isEmpty()) {
@@ -505,18 +512,18 @@ public class BookingsServiceImpl implements BookingsService {
 									applicationStatus, mobileNumber, bookingType, sectorList, fromDate, toDate, applicationNumberSet));
 						}
 					}
-					else if(BookingsConstants.MCC_HELPDESK_USER.equals(roleFields.getCode()))
+					else if(BookingsConstants.MCC_HELPDESK_USER.equals(role.getCode()) || BookingsConstants.MCC_APPROVER.equals(role.getCode()))
 					{
 						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsList.addAll( bookingsRepository.getEmployeeSearchBWTBooking(tenantId, applicationNumber,
+							bookingsList.addAll( bookingsRepository.getEmployeeSearchBooking(tenantId, applicationNumber,
 									applicationStatus, mobileNumber, bookingType, applicationNumberSet));
 						}
 						else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsList.addAll( bookingsRepository.getEmployeeSearchBWTBooking(tenantId, applicationNumber,
+							bookingsList.addAll( bookingsRepository.getEmployeeSearchBooking(tenantId, applicationNumber,
 									applicationStatus, mobileNumber, bookingType, applicationNumberSet, fromDate, toDate));
 						}
 					}
-					else if(BookingsConstants.COMMERCIAL_FROUND_VIEWER.equals(roleFields.getCode()))
+					else if(BookingsConstants.COMMERCIAL_GROUND_VIEWER.equals(role.getCode()))
 					{
 						if(BookingsFieldsValidator.isNullOrEmpty(bookingType)) {
 							bookingType = BookingsConstants.GROUND_FOR_COMMERCIAL_PURPOSE;

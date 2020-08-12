@@ -5,7 +5,7 @@ import org.egov.bookings.web.models.NewLocationRequest;
 
 public interface OsujmNewLocationService {
 
-	public NewLocationRequest addNewLocation(NewLocationRequest newLocationRequest);
+	public OsujmNewLocationModel addNewLocation(NewLocationRequest newLocationRequest);
 
 	public OsujmNewLocationModel updateNewLocation(NewLocationRequest newLocationRequest);
 

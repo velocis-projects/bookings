@@ -44,7 +44,7 @@ public class OsujmNewLocationController {
 			@RequestBody NewLocationRequest newLocationRequest) {
 		
 		
-		NewLocationRequest response = newLocationService
+		OsujmNewLocationModel response = newLocationService
 				.addNewLocation(newLocationRequest);
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");
