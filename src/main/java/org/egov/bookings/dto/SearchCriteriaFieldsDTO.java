@@ -2,10 +2,10 @@ package org.egov.bookings.dto;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.List;
 
-import org.egov.bookings.contract.RoleFields;
 import org.egov.common.contract.request.RequestInfo;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -50,10 +50,8 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 	private String bookingType;
 	
 	/** The request info. */
+	@JsonProperty("RequestInfo")
 	private RequestInfo requestInfo;
-	
-	/** The roles. */
-	private List< RoleFields > roles;
 	
 	/**
 	 * Gets the tenant id.
@@ -270,24 +268,6 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 	 */
 	public void setRequestInfo(RequestInfo requestInfo) {
 		this.requestInfo = requestInfo;
-	}
-
-	/**
-	 * Gets the roles.
-	 *
-	 * @return the roles
-	 */
-	public List< RoleFields > getRoles() {
-		return roles;
-	}
-
-	/**
-	 * Sets the roles.
-	 *
-	 * @param roles the new roles
-	 */
-	public void setRoles(List< RoleFields > roles) {
-		this.roles = roles;
 	}
 
 }
