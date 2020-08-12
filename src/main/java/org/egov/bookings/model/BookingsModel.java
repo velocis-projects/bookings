@@ -297,7 +297,9 @@ public class BookingsModel {
 	private List<Document> wfDocuments;
 	
 	
-	
+    @Size(max=64)
+    @JsonProperty("financialYear")
+    private String financialYear = null;
 	
 
 }

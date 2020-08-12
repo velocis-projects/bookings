@@ -1,8 +1,13 @@
 package org.egov.bookings.controller;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.egov.bookings.common.model.ResponseModel;
+import org.egov.bookings.contract.AvailabilityResponse;
 import org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria;
 import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
 import org.egov.bookings.model.BookingsModel;
@@ -55,17 +60,23 @@ public class CommercialGroundController {
 	}
 	
 	
+	/**
+	 * Search commercial ground availabilty.
+	 *
+	 * @param commercialGroundAvailabiltySearchCriteria the commercial ground availabilty search criteria
+	 * @return the response entity
+	 */
 	@PostMapping("/availability/_search")
 	private ResponseEntity<?> searchCommercialGroundAvailabilty(
 			@RequestBody CommercialGroundAvailabiltySearchCriteria commercialGroundAvailabiltySearchCriteria) {
 		
 		bookingsFieldsValidator.validateCommercialGroundAvailabilityCriteria(commercialGroundAvailabiltySearchCriteria);
 		
-		List<BookingsModel> res = commercialGroundService.searchCommercialGroundAvailabilty(commercialGroundAvailabiltySearchCriteria);
+		Set<AvailabilityResponse> res = commercialGroundService.searchCommercialGroundAvailabilty(commercialGroundAvailabiltySearchCriteria);
 		
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");
-		rs.setMessage("Data Found");
+		rs.setMessage("Already Booked Dates");
 		rs.setData(res);
 		
 		return ResponseEntity.ok(rs);

@@ -1,17 +1,26 @@
 package org.egov.bookings.service.impl;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections.map.HashedMap;
+import org.egov.bookings.contract.AvailabilityResponse;
 import org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria;
 import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.CommercialGroundFeeModel;
+import org.egov.bookings.repository.BookingsRepository;
 import org.egov.bookings.repository.CommercialGroundRepository;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.service.CommercialGroundService;
+import org.egov.bookings.utils.BookingsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +39,9 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 	@Autowired
 	CommonRepository commonRepository;
 
+	@Autowired
+	private BookingsRepository bookingsRepository;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -40,20 +52,29 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 	@Override
 	public CommercialGroundFeeModel searchCommercialGroundFee(
 			CommercialGroundFeeSearchCriteria commercialGroundFeeSearchCriteria) {
-		return commercialGroundRepository.findByLocalityAndCategory(commercialGroundFeeSearchCriteria.getLocality(),
+		return commercialGroundRepository.findByBookingVenueAndCategory(commercialGroundFeeSearchCriteria.getBookingVenue(),
 				commercialGroundFeeSearchCriteria.getCategory());
 	}
 
 	@Override
-	public List<BookingsModel> searchCommercialGroundAvailabilty(
+	public Set<AvailabilityResponse> searchCommercialGroundAvailabilty(
 			CommercialGroundAvailabiltySearchCriteria commercialGroundAvailabiltySearchCriteria) {
-		
-		Date date = commercialGroundAvailabiltySearchCriteria.getDate();
-		
-		return commonRepository.findAllByBkBookingVenueAndBetweenToDateAndFromDate(
+
+		// Date date = commercialGroundAvailabiltySearchCriteria.getDate();
+        LocalDate date = LocalDate.now();
+        Date date1 = Date.valueOf(date);
+        Set<AvailabilityResponse> bookedDates = new HashSet<>();
+        Set<BookingsModel> bookingsModel = commonRepository.findAllByBkBookingVenueAndBetweenToDateAndFromDate(
 				commercialGroundAvailabiltySearchCriteria.getBookingVenue(),
 				commercialGroundAvailabiltySearchCriteria.getBookingType(),
-				date);
+				date1,BookingsConstants.APPLY);
+		for(BookingsModel bkModel : bookingsModel) {
+			bookedDates.add(AvailabilityResponse.builder().fromDate(bkModel.getBkFromDate()).toDate(bkModel.getBkToDate()).build());
+		}
+		
+		return bookedDates;
+
+		
 	}
 
 }

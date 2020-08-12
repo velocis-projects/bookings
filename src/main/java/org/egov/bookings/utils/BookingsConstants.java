@@ -425,27 +425,30 @@ public class BookingsConstants {
 	/** The Constant DATE. */
 	public static final String DATE = "date";
 	
-	/** The Constant OSBM. */
-	public static final String OSBM = "OSBM";
 	
 	/** The Constant APPLY. */
 	public static final String APPLY = "APPLY";
 	
-	/** The Constant OSBM_TAXHEAD_CODE_1. */
-	public static final String OSBM_TAXHEAD_CODE_1 = "OSBM";
+	/** The Constant APPROVE. */
+	public static final String APPROVE = "APPROVE";
 	
-	/** The Constant OSBM_TAX. */
-	public static final String OSBM_TAXHEAD_CODE_2 = "OSBM_TAX";
+	/** The Constant PAY. */
+	public static final String PAY = "PAY";
 	
-	/** The Constant BWT. */
-	public static final String BWT = "BWT";
+	/** The Constant BUSINESS_SERVICE_BWT. */
+	public static final String BUSINESS_SERVICE_OSBM = "OSBM";
 	
-	/** The Constant BWT_TAXHEAD_CODE_1. */
-	public static final String BWT_TAXHEAD_CODE_1 = "BWT";
+	/** The Constant BUSINESS_SERVICE_BWT. */
+	public static final String BUSINESS_SERVICE_BWT = "BWT";
 	
-	/** The Constant BWT_TAXHEAD_CODE_2. */
-	public static final String BWT_TAXHEAD_CODE_2 = "BWT_TAX";
+	/** The Constant BUSINESS_SERVICE_GFCP. */
+	public static final String BUSINESS_SERVICE_GFCP = "GFCP";
+
+	/** The Constant BUSINESS_SERVICE_OSUJM. */
+	public static final String BUSINESS_SERVICE_OSUJM = "OSUJM";
 	
+	public static final String BUSINESS_SERVICE_NLUJM = "NLUJM";
+
 	/** The Constant EMPLOYEE. */
 	public static final String TYPE = "type";
 	
@@ -470,8 +473,15 @@ public class BookingsConstants {
 	/** The Constant GROUND_FOR_COMMERCIAL_PURPOSE. */
 	public static final String GROUND_FOR_COMMERCIAL_PURPOSE = "GROUND_FOR_COMMERCIAL_PURPOSE";
 	
+	public static final String AREA = "area";
+	
+	public static final String SECTOR = "sector";
+
 	/** The Constant MCC_APPROVER. */
 	public static final String MCC_APPROVER = "MCC_APPROVER";
+	
+	public static final String ACTION_SPECIAL_APPLY = "SPECIALAPPLY";
+	
 	
 
 	

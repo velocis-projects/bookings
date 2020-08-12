@@ -62,7 +62,7 @@ public class BookingsController {
 	 * @return the response entity
 	 */
 	@PostMapping("_create")
-	private ResponseEntity<?> saveBuildingMaterial(
+	private ResponseEntity<?> saveBooking(
 			@RequestBody BookingsRequest bookingsRequest) {
 		
 		bookingsFieldsValidator.validateAction(bookingsRequest.getBookingsModel().getBkAction());
@@ -104,35 +104,9 @@ public class BookingsController {
 	}
 	
 
-	/**
-	 * Gets the all building material.
-	 *
-	 * @return the all building material
-	 */
-	@GetMapping("_getAllBookingData")
-	private ResponseEntity<?> getAllBuildingMaterial() {
-		List<BookingsModel> bookingsModel = bookingsService.getAllBuildingMaterial();
-		
-		if (bookingsModel.size() == 0)
-			throw new ResourceAccessException(env.getProperty("NOT_FOUND"));
-		return ResponseEntity.ok(bookingsModel);
-	}
+	
 		
 	
-	/**
-	 * Gets the building material by id.
-	 *
-	 * @param id the id
-	 * @return the building material by id
-	 */
-	@GetMapping("_getBookingDataById/{id}")
-	private ResponseEntity<?> getBuildingMaterialById(@PathVariable Long id) {
-		BookingsModel bookingsModel = bookingsService.getBuildingMaterialById(id);
-		
-		Optional.ofNullable(bookingsModel).orElseThrow(() -> new ResourceAccessException(env.getProperty("NOT_FOUND")));
-		return ResponseEntity.ok(bookingsModel);
-		
-	}
 	
 	/**
 	 * Gets the citizen search booking.

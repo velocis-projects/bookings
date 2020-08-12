@@ -2,7 +2,7 @@ package org.egov.bookings.web.models;
 
 import javax.validation.Valid;
 
-import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.model.OsujmNewLocationModel;
 import org.egov.common.contract.request.RequestInfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,13 +18,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BookingsRequest {
+public class NewLocationRequest {
 
-	@JsonProperty("Booking")
+	
+	@JsonProperty("NewLocationDetails")
 	@Valid
-	private BookingsModel bookingsModel = null;
+	private OsujmNewLocationModel newLocationModel = null;
 
 	@JsonProperty("RequestInfo")
 	private RequestInfo requestInfo = null;
-
+	
 }

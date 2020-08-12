@@ -48,4 +48,6 @@ public class CommercialGroundFeeSearchCriteria implements Serializable {
 	/** The category. */
 	private String category;
 
+	
+	private String bookingVenue;
 }

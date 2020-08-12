@@ -975,6 +975,9 @@ public interface BookingsRepository
 	 */
 	BookingsModel findByBkApplicationNumber(String bkApplicationNumber);
 
+	BookingsModel findByBkBookingVenueAndBkToDateAndBkFromDateAndBkBookingType(String bookingVenue,
+			java.sql.Date toDate, java.sql.Date fromDate, String bookingType);
+
 	
 	/**
 	 * Gets the employee search OSBM booking.

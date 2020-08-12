@@ -28,21 +28,6 @@ public interface BookingsService {
 	public BookingsModel save(BookingsRequest bookingsRequest);
 
 	/**
-	 * Gets the all building material.
-	 *
-	 * @return the all building material
-	 */
-	public List<BookingsModel> getAllBuildingMaterial();
-
-	/**
-	 * Gets the building material by id.
-	 *
-	 * @param id the id
-	 * @return the building material by id
-	 */
-	public BookingsModel getBuildingMaterialById(Long id);
-	
-	/**
 	 * Gets the citizen search booking.
 	 *
 	 * @param searchCriteriaFieldsDTO the search criteria fields DTO

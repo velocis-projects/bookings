@@ -69,9 +69,9 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	public String findBusinessService(@Param(BookingsConstants.APPLICATION_NUMBER) String applicationNumber);
 
 	@Query(value = WorkflowQueryBuilder.CHECK_COMMERCIAL_GROUND_AVAILABILITY, nativeQuery = true)
-	public List<BookingsModel> findAllByBkBookingVenueAndBetweenToDateAndFromDate(
+	public Set<BookingsModel> findAllByBkBookingVenueAndBetweenToDateAndFromDate(
 			@Param(BookingsConstants.BOOKING_VENUE) String bookingVenue,
-			@Param(BookingsConstants.BOOKING_TYPE) String bookingType, @Param(BookingsConstants.DATE) Date date);
+			@Param(BookingsConstants.BOOKING_TYPE) String bookingType, @Param(BookingsConstants.DATE) Date date,@Param(BookingsConstants.APPLY) String APPLY);
 	
 	
 	/**

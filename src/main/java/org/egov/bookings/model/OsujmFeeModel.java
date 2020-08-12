@@ -8,30 +8,36 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "CommercialGroundFeeModel")
-@Table(name = "TT_COMMERCIAL_GROUND_FEE")
-public class CommercialGroundFeeModel {
-
+@NoArgsConstructor
+@Entity(name = "OsujmFeeModel")
+@Table(name = "TT_OSUJM_FEE")
+public class OsujmFeeModel {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "ID")
 	private Long id;
 	
-	@Column(name = "LOCALITY")
-	private String locality;
+	@Column(name = "SECTOR")
+	private String sector;
+
+	@Column(name = "SLAB")
+	private String slab;
 	
-	@Column(name = "CATEGORY")
-	private String category;
+	@Column(name = "AREA_FROM")
+	private Long areaFrom;
 	
-	@Column(name = "RATE_PER_DAY")
-	private Long ratePerDay;
+	@Column(name = "AREA_TO")
+	private Long areaTo;
 	
-	@Column(name = "BOOKING_VENUE")
-	private String bookingVenue;
+	@Column(name = "RATE_PER_SQR_FEET_PER_DAY")
+	private Long ratePerSqrFeetPerDay;
+	
 }

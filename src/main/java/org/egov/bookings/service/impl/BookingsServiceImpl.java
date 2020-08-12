@@ -119,6 +119,7 @@ public class BookingsServiceImpl implements BookingsService {
 
 			if (!flag)
 				enrichmentService.enrichBookingsCreateRequest(bookingsRequest);
+			if (!BookingsConstants.ACTION_SPECIAL_APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()))
 			enrichmentService.generateDemand(bookingsRequest);
 
 			if (config.getIsExternalWorkFlowEnabled()) {
@@ -367,27 +368,7 @@ public class BookingsServiceImpl implements BookingsService {
 
 	}
 
-	/**
-	 * Gets the all building material.
-	 *
-	 * @return the all building material
-	 */
-	@Override
-	public List<BookingsModel> getAllBuildingMaterial() {
-		return (List<BookingsModel>) bookingsRepository.findAll();
-	}
-
-	/**
-	 * Gets the building material by id.
-	 *
-	 * @param id the id
-	 * @return the building material by id
-	 */
-	@Override
-	public BookingsModel getBuildingMaterialById(Long id) {
-		return bookingsRepository.findOne(id);
-	}
-
+	
 	/**
 	 * Gets the citizen search booking.
 	 *
@@ -590,6 +571,8 @@ public class BookingsServiceImpl implements BookingsService {
 	@Override
 	public BookingsModel update(BookingsRequest bookingsRequest) {
 
+		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
+		
 		if (config.getIsExternalWorkFlowEnabled())
 			workflowIntegrator.callWorkFlow(bookingsRequest);
 
@@ -597,16 +580,16 @@ public class BookingsServiceImpl implements BookingsService {
 		// bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
 		BookingsModel bookingsModel = null;
 		try {
-			if (!bookingsRequest.getBookingsModel().getBkAction().equals(BookingsConstants.APPLY)
-					&& bookingsRequest.getBookingsModel().getBusinessService().equals(BookingsConstants.OSBM)) {
+			if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
+					&& BookingsConstants.BUSINESS_SERVICE_OSBM.equals(businessService)) {
 
 				bookingsModel = enrichmentService.enrichOsbmDetails(bookingsRequest);
 				bookingsModel = bookingsRepository.save(bookingsModel);
 
 			}
 
-			else if (!bookingsRequest.getBookingsModel().getBkAction().equals(BookingsConstants.APPLY)
-					&& bookingsRequest.getBookingsModel().getBusinessService().equals(BookingsConstants.BWT)) {
+			else if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
+					&& BookingsConstants.BUSINESS_SERVICE_BWT.equals(businessService)) {
 
 				bookingsModel = enrichmentService.enrichBwtDetails(bookingsRequest);
 				bookingsModel = bookingsRepository.save(bookingsModel);
@@ -830,4 +813,5 @@ public class BookingsServiceImpl implements BookingsService {
 		}
 		return bookingApprover1;
 	}
+
 }
