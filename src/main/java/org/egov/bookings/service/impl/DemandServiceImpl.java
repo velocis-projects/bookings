@@ -12,12 +12,11 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.RequestInfoWrapper;
-import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.models.demand.Demand;
+import org.egov.bookings.models.demand.Demand.StatusEnum;
 import org.egov.bookings.models.demand.DemandDetail;
 import org.egov.bookings.models.demand.DemandResponse;
 import org.egov.bookings.models.demand.TaxHeadEstimate;
-import org.egov.bookings.models.demand.Demand.StatusEnum;
 import org.egov.bookings.repository.OsbmFeeRepository;
 import org.egov.bookings.repository.impl.DemandRepository;
 import org.egov.bookings.repository.impl.ServiceRequestRepository;
@@ -32,6 +31,7 @@ import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.egov.bookings.service.impl.MDMSService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -74,6 +74,9 @@ public class DemandServiceImpl implements DemandService {
 	@Autowired
 	BookingsCalculatorServiceImpl bookingsCalculator;
 
+	@Autowired
+	MDMSService mdmsService;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -131,8 +134,17 @@ public class DemandServiceImpl implements DemandService {
 						.tenantId(tenantId).build());
 			});
 
-			Long taxPeriodFrom = 1554057000000L;
-			Long taxPeriodTo = 1869676199000L;
+/*			Long taxPeriodFrom = 1554057000000L;
+			Long taxPeriodTo = 1869676199000L;*/
+			
+			 Object mdmsData = mdmsService.mDMSCall(bookingsRequest.getRequestInfo(), tenantId);
+
+	            Long taxPeriodFrom = System.currentTimeMillis();
+	            Long taxPeriodTo = System.currentTimeMillis();
+
+	            Map<String, Long> taxPeriods = mdmsService.getTaxPeriods(bookingsRequest.getRequestInfo(), bookingsRequest.getBookingsModel(), mdmsData);
+	            taxPeriodFrom = taxPeriods.get(BookingsCalculatorConstants.MDMS_STARTDATE);
+	            taxPeriodTo = taxPeriods.get(BookingsCalculatorConstants.MDMS_ENDDATE);
 			List<String> combinedBillingSlabs = new LinkedList<>();
 			//addRoundOffTaxHead(tenantId, demandDetails);
 			Demand singleDemand = Demand.builder().status(StatusEnum.ACTIVE)
@@ -179,8 +191,19 @@ public class DemandServiceImpl implements DemandService {
 						.tenantId(tenantId).build());
 			});
 
-			Long taxPeriodFrom = 1554057000000L;
+/*			Long taxPeriodFrom = 1554057000000L;
 			Long taxPeriodTo = 1869676199000L;
+*/			
+			 Object mdmsData = mdmsService.mDMSCall(bookingsRequest.getRequestInfo(), tenantId);
+
+	            Long taxPeriodFrom = System.currentTimeMillis();
+	            Long taxPeriodTo = System.currentTimeMillis();
+
+	            Map<String, Long> taxPeriods = mdmsService.getTaxPeriods(bookingsRequest.getRequestInfo(), bookingsRequest.getBookingsModel(), mdmsData);
+	            taxPeriodFrom = taxPeriods.get(BookingsCalculatorConstants.MDMS_STARTDATE);
+	            taxPeriodTo = taxPeriods.get(BookingsCalculatorConstants.MDMS_ENDDATE);
+
+			
 			List<String> combinedBillingSlabs = new LinkedList<>();
 
 			Demand singleDemand = Demand.builder().status(StatusEnum.ACTIVE)
@@ -226,8 +249,18 @@ public class DemandServiceImpl implements DemandService {
 						.tenantId(tenantId).build());
 			});
 
-			Long taxPeriodFrom = 1554057000000L;
+/*			Long taxPeriodFrom = 1554057000000L;
 			Long taxPeriodTo = 1869676199000L;
+*/			
+			 Object mdmsData = mdmsService.mDMSCall(bookingsRequest.getRequestInfo(), tenantId);
+
+            Long taxPeriodFrom = System.currentTimeMillis();
+            Long taxPeriodTo = System.currentTimeMillis();
+
+            Map<String, Long> taxPeriods = mdmsService.getTaxPeriods(bookingsRequest.getRequestInfo(), bookingsRequest.getBookingsModel(), mdmsData);
+            taxPeriodFrom = taxPeriods.get(BookingsCalculatorConstants.MDMS_STARTDATE);
+            taxPeriodTo = taxPeriods.get(BookingsCalculatorConstants.MDMS_ENDDATE);
+            
 			List<String> combinedBillingSlabs = new LinkedList<>();
 
 			Demand singleDemand = Demand.builder().status(StatusEnum.ACTIVE)
@@ -268,8 +301,18 @@ public class DemandServiceImpl implements DemandService {
 						.tenantId(tenantId).build());
 			});
 
-			Long taxPeriodFrom = 1554057000000L;
-			Long taxPeriodTo = 1869676199000L;
+			/*Long taxPeriodFrom = 1554057000000L;
+			Long taxPeriodTo = 1869676199000L;*/
+			
+			 Object mdmsData = mdmsService.mDMSCall(bookingsRequest.getRequestInfo(), tenantId);
+
+	            Long taxPeriodFrom = System.currentTimeMillis();
+	            Long taxPeriodTo = System.currentTimeMillis();
+
+	            Map<String, Long> taxPeriods = mdmsService.getTaxPeriods(bookingsRequest.getRequestInfo(), bookingsRequest.getBookingsModel(), mdmsData);
+	            taxPeriodFrom = taxPeriods.get(BookingsCalculatorConstants.MDMS_STARTDATE);
+	            taxPeriodTo = taxPeriods.get(BookingsCalculatorConstants.MDMS_ENDDATE);
+			
 			List<String> combinedBillingSlabs = new LinkedList<>();
 			addRoundOffTaxHead(tenantId, demandDetails);
 			Demand singleDemand = Demand.builder().status(StatusEnum.ACTIVE)

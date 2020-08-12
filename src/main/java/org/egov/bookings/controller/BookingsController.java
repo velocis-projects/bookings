@@ -70,7 +70,7 @@ public class BookingsController {
 	 * @return the response entity
 	 */
 	@PostMapping("_create")
-	private ResponseEntity<?> saveBuildingMaterial(
+	private ResponseEntity<?> saveBooking(
 			@RequestBody BookingsRequest bookingsRequest) {
 		
 		bookingsFieldsValidator.validateAction(bookingsRequest.getBookingsModel().getBkAction());

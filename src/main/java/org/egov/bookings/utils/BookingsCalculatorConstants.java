@@ -24,5 +24,15 @@ public class BookingsCalculatorConstants {
 	public static final String OSUJM_TAX_CODE_2 = "OSUJM_TAX";
 
 	public static final String OSUJM_ROUND_OFF = "OSUJM_ROUND_OFF";
+	
+	public static final String MDMS_FINANCIALYEAR  = "FinancialYear";
+	
+	public static final String MDMS_EGF_MASTER = "egf-master";
+	
+	public static final String MDMS_FINACIALYEAR_PATH = "$.MdmsRes.egf-master.FinancialYear[?(@.code==\"{}\")]";
 
+    public static final String MDMS_STARTDATE  = "startingDate";
+
+    public static final String MDMS_ENDDATE  = "endingDate";
+	
 }

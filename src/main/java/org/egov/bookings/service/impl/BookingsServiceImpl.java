@@ -113,7 +113,6 @@ public class BookingsServiceImpl implements BookingsService {
 	@Override
 	public BookingsModel save(BookingsRequest bookingsRequest) {
 		BookingsModel bookingsModel = new BookingsModel();
-		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
 		try
 		{
 			boolean flag = isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
