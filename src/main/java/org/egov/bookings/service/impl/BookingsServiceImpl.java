@@ -499,7 +499,7 @@ public class BookingsServiceImpl implements BookingsService {
 				}
 			}
 			boolean flag = false;
-			if (!BookingsFieldsValidator.isNullOrEmpty(applicationNumber)) {
+			if (!BookingsFieldsValidator.isNullOrEmpty(applicationNumber) && !BookingsFieldsValidator.isNullOrEmpty(applicationNumberSet)) {
 				if(applicationNumberSet.contains(applicationNumber))
 				{
 					flag = true;
