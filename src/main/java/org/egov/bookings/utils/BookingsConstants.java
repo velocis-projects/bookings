@@ -447,6 +447,7 @@ public class BookingsConstants {
 	/** The Constant BUSINESS_SERVICE_OSUJM. */
 	public static final String BUSINESS_SERVICE_OSUJM = "OSUJM";
 	
+	/** The Constant BUSINESS_SERVICE_NLUJM. */
 	public static final String BUSINESS_SERVICE_NLUJM = "NLUJM";
 
 	/** The Constant EMPLOYEE. */
@@ -473,16 +474,21 @@ public class BookingsConstants {
 	/** The Constant GROUND_FOR_COMMERCIAL_PURPOSE. */
 	public static final String GROUND_FOR_COMMERCIAL_PURPOSE = "GROUND_FOR_COMMERCIAL_PURPOSE";
 	
+	/** The Constant AREA. */
 	public static final String AREA = "area";
 	
+	/** The Constant SECTOR. */
 	public static final String SECTOR = "sector";
 
 	/** The Constant MCC_APPROVER. */
 	public static final String MCC_APPROVER = "MCC_APPROVER";
 	
+	/** The Constant ACTION_SPECIAL_APPLY. */
 	public static final String ACTION_SPECIAL_APPLY = "SPECIALAPPLY";
 	
 	public static final String ACTION_FAILURE_APPLY = "FAILUREAPPLY";
+	/** The Constant OSD_APPROVER. */
+	public static final String OSD_APPROVER = "OSD_APPROVER";
 	
 	
 
