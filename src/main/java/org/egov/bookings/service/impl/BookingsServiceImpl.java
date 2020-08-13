@@ -495,29 +495,29 @@ public class BookingsServiceImpl implements BookingsService {
 			for (Role role : roles) {
 				if(!BookingsConstants.CITIZEN.equals(role.getCode()) && !BookingsConstants.EMPLOYEE.equals(role.getCode()) ) {
 					
-					if(BookingsConstants.OSBM_APPROVER.equals(role.getCode()))
+					if(BookingsConstants.OSBM_APPROVER.equals(role.getCode()) || BookingsConstants.MCC_APPROVER.equals(role.getCode()))
 					{
 						List<String> sectorList = commonRepository.findSectorList(uuid);
 						if (sectorList == null || sectorList.isEmpty()) {
 							return booking;
 						}
 						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsList.addAll( bookingsRepository.getEmployeeSearchOSBMBooking(tenantId, applicationNumber,
+							bookingsList.addAll( bookingsRepository.getEmployeeSearchBooking(tenantId, applicationNumber,
 									applicationStatus, mobileNumber, bookingType, sectorList, applicationNumberSet));
 						}
 						else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsList.addAll( bookingsRepository.getEmployeeSearchOSBMBooking(tenantId, applicationNumber,
+							bookingsList.addAll( bookingsRepository.getEmployeeSearchBooking(tenantId, applicationNumber,
 									applicationStatus, mobileNumber, bookingType, sectorList, fromDate, toDate, applicationNumberSet));
 						}
 					}
-					else if(BookingsConstants.MCC_HELPDESK_USER.equals(role.getCode()) || BookingsConstants.MCC_APPROVER.equals(role.getCode()))
+					else if(BookingsConstants.MCC_HELPDESK_USER.equals(role.getCode()))
 					{
 						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsList.addAll( bookingsRepository.getEmployeeSearchBooking(tenantId, applicationNumber,
+							bookingsList.addAll( bookingsRepository.getEmployeeSearchBWTBooking(tenantId, applicationNumber,
 									applicationStatus, mobileNumber, bookingType, applicationNumberSet));
 						}
 						else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsList.addAll( bookingsRepository.getEmployeeSearchBooking(tenantId, applicationNumber,
+							bookingsList.addAll( bookingsRepository.getEmployeeSearchBWTBooking(tenantId, applicationNumber,
 									applicationStatus, mobileNumber, bookingType, applicationNumberSet, fromDate, toDate));
 						}
 					}

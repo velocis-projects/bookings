@@ -975,12 +975,21 @@ public interface BookingsRepository
 	 */
 	BookingsModel findByBkApplicationNumber(String bkApplicationNumber);
 
+	/**
+	 * Find by bk booking venue and bk to date and bk from date and bk booking type.
+	 *
+	 * @param bookingVenue the booking venue
+	 * @param toDate the to date
+	 * @param fromDate the from date
+	 * @param bookingType the booking type
+	 * @return the bookings model
+	 */
 	BookingsModel findByBkBookingVenueAndBkToDateAndBkFromDateAndBkBookingType(String bookingVenue,
 			java.sql.Date toDate, java.sql.Date fromDate, String bookingType);
 
 	
 	/**
-	 * Gets the employee search OSBM booking.
+	 * Gets the employee search booking.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -989,18 +998,18 @@ public interface BookingsRepository
 	 * @param bookingType the booking type
 	 * @param sectorList the sector list
 	 * @param applicationNumberSet the application number set
-	 * @return the employee search OSBM booking
+	 * @return the employee search booking
 	 */
 	@Query(
 			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
 					+ "AND TB.BK_APPLICATION_STATUS != 'INITIATED' AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_SECTOR IN (?6) AND TB.BK_APPLICATION_NUMBER IN (?7) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
 			nativeQuery = true )
-			List<BookingsModel> getEmployeeSearchOSBMBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
+			List<BookingsModel> getEmployeeSearchBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
 					, String bookingType, List< String > sectorList, Set< String > applicationNumberSet );
 	
 	
 	/**
-	 * Gets the employee search OSBM booking.
+	 * Gets the employee search booking.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -1011,17 +1020,17 @@ public interface BookingsRepository
 	 * @param fromDate the from date
 	 * @param toDate the to date
 	 * @param applicationNumberSet the application number set
-	 * @return the employee search OSBM booking
+	 * @return the employee search booking
 	 */
 	@Query(
 			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
 					+ "AND TB.BK_APPLICATION_STATUS != 'INITIATED' AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_SECTOR IN (?6) AND TB.BK_DATE_CREATED BETWEEN (?7) AND (?8) AND TB.BK_APPLICATION_NUMBER IN (?9) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
 			nativeQuery = true )
-			List<BookingsModel> getEmployeeSearchOSBMBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
+			List<BookingsModel> getEmployeeSearchBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
 					, String bookingType, List< String > sectorList, Date fromDate, Date toDate, Set< String > applicationNumberSet );
 	
 	/**
-	 * Gets the employee search booking.
+	 * Gets the employee search BWT booking.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -1029,17 +1038,17 @@ public interface BookingsRepository
 	 * @param mobileNumber the mobile number
 	 * @param bookingType the booking type
 	 * @param applicationNumberSet the application number set
-	 * @return the employee search booking
+	 * @return the employee search BWT booking
 	 */
 	@Query(
 			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
 					+ "AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_APPLICATION_NUMBER IN (?6) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
 			nativeQuery = true )
-			List<BookingsModel> getEmployeeSearchBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
+			List<BookingsModel> getEmployeeSearchBWTBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
 					, String bookingType, Set< String > applicationNumberSet );
 	
 	/**
-	 * Gets the employee search booking.
+	 * Gets the employee search BWT booking.
 	 *
 	 * @param tenantId the tenant id
 	 * @param applicationNumber the application number
@@ -1049,13 +1058,13 @@ public interface BookingsRepository
 	 * @param applicationNumberSet the application number set
 	 * @param fromDate the from date
 	 * @param toDate the to date
-	 * @return the employee search booking
+	 * @return the employee search BWT booking
 	 */
 	@Query(
 			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
 					+ "AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_APPLICATION_NUMBER IN (?6) AND TB.BK_DATE_CREATED BETWEEN (?7) AND (?8) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
 			nativeQuery = true )
-			List<BookingsModel> getEmployeeSearchBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
+			List<BookingsModel> getEmployeeSearchBWTBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
 					, String bookingType, Set< String > applicationNumberSet, Date fromDate, Date toDate );
 	
 	/**
