@@ -3,6 +3,8 @@ package org.egov.bookings.controller;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.common.model.ResponseModel;
+import org.egov.bookings.contract.Booking;
+import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
 import org.egov.bookings.service.BookingsService;
@@ -71,6 +73,70 @@ public class OsujmNewLocationController {
 		return ResponseEntity.ok(rs);
 	}
 	
+	/**
+	 * Gets the employee newlocation search.
+	 *
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
+	 * @return the employee newlocation search
+	 */
+	@PostMapping(value = "/employee/osujm/_search")
+	public ResponseEntity<?> getEmployeeNewlocationSearch( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
+	{
+		Booking booking = new Booking();
+		try
+		{
+			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
+			{
+				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+			}
+			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getTenantId())) 
+			{
+				throw new IllegalArgumentException("Invalid tentantId");
+			}
+			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getUuid())) 
+			{
+				throw new IllegalArgumentException("Invalid uuId");
+			}
+			booking = newLocationService.getEmployeeNewlocationSearch(searchCriteriaFieldsDTO);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the getEmployeeNewlocationSearch " + e);
+		}
+		return ResponseEntity.ok(booking);
+	}
 	
+	/**
+	 * Gets the citizen newlocation searchg.
+	 *
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
+	 * @return the citizen newlocation searchg
+	 */
+	@PostMapping(value = "/citizen/osujm/_search")
+	public ResponseEntity<?> getCitizenNewlocationSearchg( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
+	{
+		Booking booking = new Booking();
+		try
+		{
+			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
+			{
+				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+			}
+			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getTenantId())) 
+			{
+				throw new IllegalArgumentException("Invalid tentantId");
+			}
+			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getUuid())) 
+			{
+				throw new IllegalArgumentException("Invalid uuId");
+			}
+			booking = newLocationService.getCitizenNewlocationSearch(searchCriteriaFieldsDTO);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the getCitizenNewlocationSearch " + e);
+		}
+		return ResponseEntity.ok(booking);
+	}
 	
 }

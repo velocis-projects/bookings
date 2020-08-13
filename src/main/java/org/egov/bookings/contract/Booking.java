@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.model.OsujmNewLocationModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -26,6 +27,9 @@ public class Booking implements Serializable {
 	
 	/** The business service. */
 	private String businessService;
+	
+	/** The osujm new location model list. */
+	private List< OsujmNewLocationModel > osujmNewLocationModelList;
 	
 	/**
 	 * Gets the bookings model list.
@@ -97,6 +101,24 @@ public class Booking implements Serializable {
 	 */
 	public void setBusinessService(String businessService) {
 		this.businessService = businessService;
+	}
+
+	/**
+	 * Gets the osujm new location model list.
+	 *
+	 * @return the osujm new location model list
+	 */
+	public List< OsujmNewLocationModel > getOsujmNewLocationModelList() {
+		return osujmNewLocationModelList;
+	}
+
+	/**
+	 * Sets the osujm new location model list.
+	 *
+	 * @param osujmNewLocationModelList the new osujm new location model list
+	 */
+	public void setOsujmNewLocationModelList(List< OsujmNewLocationModel > osujmNewLocationModelList) {
+		this.osujmNewLocationModelList = osujmNewLocationModelList;
 	}
 
 }
