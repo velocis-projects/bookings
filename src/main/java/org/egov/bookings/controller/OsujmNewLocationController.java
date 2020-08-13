@@ -16,6 +16,7 @@ import org.egov.bookings.web.models.NewLocationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -107,13 +108,13 @@ public class OsujmNewLocationController {
 	}
 	
 	/**
-	 * Gets the citizen newlocation searchg.
+	 * Gets the citizen newlocation search.
 	 *
 	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
-	 * @return the citizen newlocation searchg
+	 * @return the citizen newlocation search
 	 */
 	@PostMapping(value = "/citizen/osujm/_search")
-	public ResponseEntity<?> getCitizenNewlocationSearchg( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
+	public ResponseEntity<?> getCitizenNewlocationSearch( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
 		Booking booking = new Booking();
 		try
@@ -139,4 +140,23 @@ public class OsujmNewLocationController {
 		return ResponseEntity.ok(booking);
 	}
 	
+	/**
+	 * Gets the all citizen newlocation.
+	 *
+	 * @return the all citizen newlocation
+	 */
+	@GetMapping(value = "/citizen/osujm/_all")
+	public ResponseEntity<?> getAllCitizenNewlocation()
+	{
+		Booking booking = new Booking();
+		try
+		{
+			booking = newLocationService.getAllCitizenNewlocation();
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the getAllCitizenNewlocation " + e);
+		}
+		return ResponseEntity.ok(booking);
+	}
 }

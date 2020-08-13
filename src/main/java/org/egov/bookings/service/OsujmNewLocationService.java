@@ -42,5 +42,12 @@ public interface OsujmNewLocationService {
 	 * @return the citizen newlocation search
 	 */
 	public Booking getCitizenNewlocationSearch(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO);
+	
+	/**
+	 * Gets the all citizen newlocation.
+	 *
+	 * @return the all citizen newlocation
+	 */
+	public Booking getAllCitizenNewlocation();
 
 }

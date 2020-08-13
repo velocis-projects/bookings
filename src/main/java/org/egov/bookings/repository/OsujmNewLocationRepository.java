@@ -92,6 +92,15 @@ public interface OsujmNewLocationRepository extends CrudRepository<OsujmNewLocat
 			List<OsujmNewLocationModel> getCitizenNewlocationSearch( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
 					, String uuid, Date fromDate, Date toDate );
 	
+	/**
+	 * Gets the all citizen newlocation.
+	 *
+	 * @return the all citizen newlocation
+	 */
+	@Query(
+			value = "SELECT * FROM TT_OSUJM_NEW_LOCATION AS TONL WHERE TONL.TENANT_ID = 'ch' AND TONL.APPLICATION_STATUS = 'PUBLISHED' ORDER BY TONL.APPLICATION_NUMBER DESC",
+			nativeQuery = true )
+			List<OsujmNewLocationModel> getAllCitizenNewlocation();
 	
 
 }

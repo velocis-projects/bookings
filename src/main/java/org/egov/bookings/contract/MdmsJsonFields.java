@@ -24,6 +24,9 @@ public class MdmsJsonFields implements Serializable
 	/** The tenant id. */
 	private String tenantId;
 	
+	/** The active. */
+	private boolean active;
+	
 	/**
 	 * Gets the name.
 	 *
@@ -113,7 +116,4 @@ public class MdmsJsonFields implements Serializable
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	
-	/** The active. */
-	private boolean active;
 }
