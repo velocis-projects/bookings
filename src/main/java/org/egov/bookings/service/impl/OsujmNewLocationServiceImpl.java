@@ -221,6 +221,12 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 		return booking;
 	}
 
+	/**
+	 * Gets the citizen newlocation search.
+	 *
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
+	 * @return the citizen newlocation search
+	 */
 	@Override
 	public Booking getCitizenNewlocationSearch(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
 		Booking booking = new Booking();
@@ -272,6 +278,58 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 			booking.setDocumentMap(documentMap);
 			booking.setOsujmNewLocationModelList(osujmNewLocationModelList);
 			booking.setBookingsCount(osujmNewLocationModelList.size());
+		} catch (Exception e) {
+			LOGGER.error("Exception occur in the getCitizenNewlocationSearch " + e);
+		}
+		return booking;
+	}
+
+	/**
+	 * Gets the all citizen newlocation.
+	 *
+	 * @return the all citizen newlocation
+	 */
+	@Override
+	public Booking getAllCitizenNewlocation() {
+		Booking booking = new Booking();
+		List< OsujmNewLocationModel > osujmNewLocationModelsList = new ArrayList<>();
+		List< MdmsJsonFields > newLocationList = null;
+		Map< String, List< MdmsJsonFields > > newLocationMap = new HashMap<>();
+		int count;
+		try {
+			osujmNewLocationModelsList = newLocationRepository.getAllCitizenNewlocation();
+			if (!BookingsFieldsValidator.isNullOrEmpty(osujmNewLocationModelsList)) {
+				for (OsujmNewLocationModel osujmNewLocationModel : osujmNewLocationModelsList) {
+					MdmsJsonFields mdmsJsonFields = new MdmsJsonFields();
+					if( newLocationMap.containsKey(osujmNewLocationModel.getSector())) {
+						count = 1;
+						newLocationList = newLocationMap.get(osujmNewLocationModel.getSector());
+						for (MdmsJsonFields mdmsJsonFields2 : newLocationList) {
+							if(count < mdmsJsonFields2.getId()) {
+								count = mdmsJsonFields2.getId();
+							}
+						}
+						mdmsJsonFields.setActive(true);
+						mdmsJsonFields.setCode(osujmNewLocationModel.getLocalityAddress());
+						mdmsJsonFields.setName(osujmNewLocationModel.getLocalityAddress());
+						mdmsJsonFields.setId(count+1);
+						mdmsJsonFields.setTenantId(osujmNewLocationModel.getTenantId());
+						newLocationList.add(mdmsJsonFields);
+					}
+					else {
+						newLocationList = new ArrayList<>();
+						count = 1;
+						mdmsJsonFields.setActive(true);
+						mdmsJsonFields.setCode(osujmNewLocationModel.getLocalityAddress());
+						mdmsJsonFields.setName(osujmNewLocationModel.getLocalityAddress());
+						mdmsJsonFields.setId(count);
+						mdmsJsonFields.setTenantId(osujmNewLocationModel.getTenantId());
+						newLocationList.add(mdmsJsonFields);
+					}
+					newLocationMap.put(osujmNewLocationModel.getSector(), newLocationList);
+				}
+			}
+			booking.setOsujmNewlocationMap(newLocationMap);
 		} catch (Exception e) {
 			LOGGER.error("Exception occur in the getCitizenNewlocationSearch " + e);
 		}
