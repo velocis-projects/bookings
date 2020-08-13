@@ -24,6 +24,7 @@ import org.egov.bookings.web.models.ProcessInstance;
 import org.egov.bookings.web.models.ProcessInstanceRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -72,17 +73,21 @@ public class BookingsController {
 	@PostMapping("_create")
 	private ResponseEntity<?> saveBooking(
 			@RequestBody BookingsRequest bookingsRequest) {
-		
+
 		bookingsFieldsValidator.validateAction(bookingsRequest.getBookingsModel().getBkAction());
 		bookingsFieldsValidator.validateBusinessService(bookingsRequest.getBookingsModel().getBusinessService());
 		bookingsFieldsValidator.validateTenantId(bookingsRequest.getBookingsModel().getTenantId());
-		BookingsModel bookingsModel = bookingsService
-				.save(bookingsRequest);
+		BookingsModel bookingsModel = bookingsService.save(bookingsRequest);
 		ResponseModel rs = new ResponseModel();
-		rs.setStatus("200");
-		rs.setMessage("Data submitted successfully");
-		rs.setData(bookingsModel);
-		
+		if (bookingsModel == null) {
+			rs.setStatus("400");
+			rs.setMessage("Failure while creating booking");
+			rs.setData(bookingsModel);
+		} else {
+			rs.setStatus("200");
+			rs.setMessage("Data submitted successfully");
+			rs.setData(bookingsModel);
+		}
 		return ResponseEntity.ok(rs);
 	}
 	
@@ -104,9 +109,15 @@ public class BookingsController {
 		BookingsModel bookingsModel = bookingsService
 				.update(bookingsRequest);
 		ResponseModel rs = new ResponseModel();
-		rs.setStatus("200");
-		rs.setMessage("Data submitted successfully");
-		rs.setData(bookingsModel);
+		if (bookingsModel == null) {
+			rs.setStatus("400");
+			rs.setMessage("Failure while creating booking");
+			rs.setData(bookingsModel);
+		} else {
+			rs.setStatus("200");
+			rs.setMessage("Data submitted successfully");
+			rs.setData(bookingsModel);
+		}
 		
 		return ResponseEntity.ok(rs);
 	}

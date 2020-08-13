@@ -75,7 +75,7 @@ public class WorkflowIntegrator {
 
 	@Autowired
 	private BookingsUtils bookingsUtils;
-	
+
 	@Autowired
 	public WorkflowIntegrator(RestTemplate rest, BookingsConfiguration config) {
 		this.rest = rest;
@@ -97,15 +97,17 @@ public class WorkflowIntegrator {
 
 		JSONArray array = new JSONArray();
 		BookingsModel bkModel = bookingsRequest.getBookingsModel();
-		
+
 		/*
 		 * uuid = commonRepository.findAssigneeUuid(wfTenantId, bkModel.getBkAction(),
 		 * bkModel.getBusinessService(), wfTenantId);
 		 */
-		
-		// Object mdmsData = bookingsUtils.prepareMdMsRequestForBooking(bookingsRequest.getRequestInfo());
-	//	OsbmApproverModel osbmApproverModel = null;
-		//osbmApproverModel = osbmApproverRepository.findBySector(bookingsRequest.getBookingsModel().getBkSector());
+
+		// Object mdmsData =
+		// bookingsUtils.prepareMdMsRequestForBooking(bookingsRequest.getRequestInfo());
+		// OsbmApproverModel osbmApproverModel = null;
+		// osbmApproverModel =
+		// osbmApproverRepository.findBySector(bookingsRequest.getBookingsModel().getBkSector());
 		JSONObject obj = new JSONObject();
 		Map<String, String> uuidmap = new HashMap<>();
 		uuidmap.put(UUIDKEY, bkModel.getAssignee());
@@ -114,8 +116,8 @@ public class WorkflowIntegrator {
 		obj.put(BUSINESSSERVICEKEY, bookingsRequest.getBookingsModel().getBusinessService());
 		obj.put(MODULENAMEKEY, MODULENAMEVALUE);
 		obj.put(ACTIONKEY, bkModel.getBkAction());
-		if(null != bkModel.getBookingsRemarks() && !CollectionUtils.isEmpty(bkModel.getBookingsRemarks()) )
-		obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());
+		if (null != bkModel.getBookingsRemarks() && !CollectionUtils.isEmpty(bkModel.getBookingsRemarks()))
+			obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());
 		if (!StringUtils.isEmpty(bkModel.getAssignee()))
 			obj.put(ASSIGNEEKEY, uuidmap);
 		obj.put(DOCUMENTSKEY, bkModel.getWfDocuments());
@@ -141,9 +143,9 @@ public class WorkflowIntegrator {
 			try {
 				errros = responseContext.read("$.Errors");
 			} catch (PathNotFoundException pnfe) {
-				log.error("EG_TL_WF_ERROR_KEY_NOT_FOUND",
+				log.error("EG_BOOKING_WF_ERROR_KEY_NOT_FOUND",
 						" Unable to read the json path in error object : " + pnfe.getMessage());
-				throw new CustomException("EG_TL_WF_ERROR_KEY_NOT_FOUND",
+				throw new CustomException("EG_BOOKING_WF_ERROR_KEY_NOT_FOUND",
 						" Unable to read the json path in error object : " + pnfe.getMessage());
 			}
 			throw new CustomException("EG_WF_ERROR", errros.toString());
@@ -177,15 +179,17 @@ public class WorkflowIntegrator {
 
 		JSONArray array = new JSONArray();
 		OsujmNewLocationModel newLocModel = newLocationRequest.getNewLocationModel();
-		
+
 		/*
 		 * uuid = commonRepository.findAssigneeUuid(wfTenantId, bkModel.getBkAction(),
 		 * bkModel.getBusinessService(), wfTenantId);
 		 */
-		
-		// Object mdmsData = bookingsUtils.prepareMdMsRequestForBooking(bookingsRequest.getRequestInfo());
-	//	OsbmApproverModel osbmApproverModel = null;
-		//osbmApproverModel = osbmApproverRepository.findBySector(bookingsRequest.getBookingsModel().getBkSector());
+
+		// Object mdmsData =
+		// bookingsUtils.prepareMdMsRequestForBooking(bookingsRequest.getRequestInfo());
+		// OsbmApproverModel osbmApproverModel = null;
+		// osbmApproverModel =
+		// osbmApproverRepository.findBySector(bookingsRequest.getBookingsModel().getBkSector());
 		JSONObject obj = new JSONObject();
 		Map<String, String> uuidmap = new HashMap<>();
 		uuidmap.put(UUIDKEY, newLocModel.getAssignee());
@@ -194,8 +198,8 @@ public class WorkflowIntegrator {
 		obj.put(BUSINESSSERVICEKEY, newLocModel.getBusinessService());
 		obj.put(MODULENAMEKEY, MODULENAMEVALUE);
 		obj.put(ACTIONKEY, newLocModel.getAction());
-		if(null != newLocModel.getBookingsRemarks() && !CollectionUtils.isEmpty(newLocModel.getBookingsRemarks()) )
-		obj.put(COMMENTKEY, newLocModel.getBookingsRemarks().get(0).getBkRemarks());
+		if (null != newLocModel.getBookingsRemarks() && !CollectionUtils.isEmpty(newLocModel.getBookingsRemarks()))
+			obj.put(COMMENTKEY, newLocModel.getBookingsRemarks().get(0).getBkRemarks());
 		if (!StringUtils.isEmpty(newLocModel.getAssignee()))
 			obj.put(ASSIGNEEKEY, uuidmap);
 		obj.put(DOCUMENTSKEY, newLocModel.getWfDocuments());
@@ -221,7 +225,7 @@ public class WorkflowIntegrator {
 			try {
 				errros = responseContext.read("$.Errors");
 			} catch (PathNotFoundException pnfe) {
-				log.error("EG_TL_WF_ERROR_KEY_NOT_FOUND",
+				log.error("EG_NEWLOCATIONMODEL_WF_ERROR_KEY_NOT_FOUND",
 						" Unable to read the json path in error object : " + pnfe.getMessage());
 				throw new CustomException("EG_TL_WF_ERROR_KEY_NOT_FOUND",
 						" Unable to read the json path in error object : " + pnfe.getMessage());
@@ -233,7 +237,7 @@ public class WorkflowIntegrator {
 		}
 
 		/*
-		 * on success result from work-flow read the data and set the status back to TL
+		 * on success result from work-flow read the data and set the status back to newLocationModel
 		 * object
 		 */
 		DocumentContext responseContext = JsonPath.parse(response);
@@ -245,7 +249,7 @@ public class WorkflowIntegrator {
 			idStatusMap.put(instanceContext.read(BUSINESSIDJOSNKEY), instanceContext.read(STATUSJSONKEY));
 		});
 
-		// setting the status back to booking object from wf response
+		// setting the status back to newLocalModel object from wf response
 		newLocationRequest.getNewLocationModel()
 				.setApplicationStatus(idStatusMap.get(newLocationRequest.getNewLocationModel().getApplicationNumber()));
 

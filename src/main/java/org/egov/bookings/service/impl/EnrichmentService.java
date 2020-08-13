@@ -179,9 +179,13 @@ public class EnrichmentService {
 	 * @param bookingsRequest the bookings request
 	 */
 	public void enrichBookingsDetails(BookingsRequest bookingsRequest) {
+		try {
 		bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
 		java.sql.Date date = bookingsUtils.getCurrentSqlDate();
 		bookingsRequest.getBookingsModel().setBkDateCreated(date);
+		}catch (Exception e) {
+			throw new CustomException("INVALID_BOOKING_DATA", e.getMessage());
+		}
 	}
 
 	/**
@@ -288,7 +292,7 @@ public class EnrichmentService {
 
 
 	public void enrichNewLocationDetails(NewLocationRequest newLocationRequest) {
-		//newLocationRequest.getNewLocationModel().setUuid(newLocationRequest.getRequestInfo().getUserInfo().getUuid());
+		newLocationRequest.getNewLocationModel().setUuid(newLocationRequest.getRequestInfo().getUserInfo().getUuid());
 		java.sql.Date date = bookingsUtils.getCurrentSqlDate();
 		newLocationRequest.getNewLocationModel().setDateCreated(date);
 	}

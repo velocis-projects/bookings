@@ -8,7 +8,9 @@ import org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria;
 import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
 import org.egov.bookings.contract.OsbmApproverRequest;
 import org.egov.bookings.contract.OsbmSearchCriteria;
+import org.egov.bookings.model.CommercialGrndAvailabilityModel;
 import org.egov.bookings.model.ViewPdfDetailsModel;
+import org.egov.bookings.web.models.NewLocationRequest;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -183,5 +185,125 @@ public class BookingsFieldsValidator {
 			throw new IllegalArgumentException("Invalid Key");
 		}
 	
+	}
+
+
+	public void validateNewLocationRequest(NewLocationRequest newLocationRequest) {
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest)) {
+			throw new IllegalArgumentException("Invalid New Location Request");
+		}
+		
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getRequestInfo())) {
+			throw new IllegalArgumentException("Invalid Request Info");
+		}
+		
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel())) {
+			throw new IllegalArgumentException("Invalid New NewLocationModel object");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getAction())) {
+			throw new IllegalArgumentException("Invalid Action");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getApplicantAddress())) {
+			throw new IllegalArgumentException("Invalid APPLICANT ADDRESS");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getApplicantName())) {
+			throw new IllegalArgumentException("Invalid APPLICANT NAME");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getAreaRequirement())) {
+			throw new IllegalArgumentException("Invalid AREA REQUIREMENT");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getBusinessService())) {
+			throw new IllegalArgumentException("Invalid BUSINESS SERVICE");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getContact())) {
+			throw new IllegalArgumentException("Invalid CONTACT");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getIdProof())) {
+			throw new IllegalArgumentException("Invalid ID PROOF");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getLandmark())) {
+			throw new IllegalArgumentException("Invalid LANDMARK");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getLocalityAddress())) {
+			throw new IllegalArgumentException("Invalid LOCALITY ADDRESS");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getMailAddress())) {
+			throw new IllegalArgumentException("Invalid MAIL ADDRESS");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getSector())) {
+			throw new IllegalArgumentException("Invalid SECTOR");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getTenantId())) {
+			throw new IllegalArgumentException("Invalid TENANT ID");
+		}
+	}
+
+
+	public void validateNewLocationRequestForUpdate(NewLocationRequest newLocationRequest) {
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest)) {
+			throw new IllegalArgumentException("Invalid New Location Request");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel())) {
+			throw new IllegalArgumentException("Invalid New NewLocationModel object");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getApplicationNumber())) {
+			throw new IllegalArgumentException("Invalid APPLICATION NUMBER");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getAction())) {
+			throw new IllegalArgumentException("Invalid Action");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getApplicantAddress())) {
+			throw new IllegalArgumentException("Invalid APPLICANT ADDRESS");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getApplicantName())) {
+			throw new IllegalArgumentException("Invalid APPLICANT NAME");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getAreaRequirement())) {
+			throw new IllegalArgumentException("Invalid AREA REQUIREMENT");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getBusinessService())) {
+			throw new IllegalArgumentException("Invalid BUSINESS SERVICE");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getContact())) {
+			throw new IllegalArgumentException("Invalid CONTACT");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getIdProof())) {
+			throw new IllegalArgumentException("Invalid ID PROOF");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getLandmark())) {
+			throw new IllegalArgumentException("Invalid LANDMARK");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getLocalityAddress())) {
+			throw new IllegalArgumentException("Invalid LOCALITY ADDRESS");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getMailAddress())) {
+			throw new IllegalArgumentException("Invalid MAIL ADDRESS");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getSector())) {
+			throw new IllegalArgumentException("Invalid SECTOR");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getTenantId())) {
+			throw new IllegalArgumentException("Invalid TENANT ID");
+		}
+	}
+
+
+	public void validateCommercialGroundAvailabilityModel(
+			CommercialGrndAvailabilityModel commercialGrndAvailabilityModel) {
+		if(BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel)) {
+			throw new IllegalArgumentException("Invalid commercialGrndAvailabilityModel object");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel.getBookingVenue())) {
+			throw new IllegalArgumentException("Invalid Booking Venue");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel.getFromDate())) {
+			throw new IllegalArgumentException("Invalid From Date");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel.getToDate())) {
+			throw new IllegalArgumentException("Invalid To Date");
+		}
+		if(BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel.isLocked())) {
+			throw new IllegalArgumentException("Invalid isLocked");
+		}
 	}
 }

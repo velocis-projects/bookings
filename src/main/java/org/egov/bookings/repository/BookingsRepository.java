@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface BookingsRepository
-		extends CrudRepository<BookingsModel, Long> {
+		extends CrudRepository<BookingsModel, String> {
 	
 	
 	/**

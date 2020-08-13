@@ -482,6 +482,8 @@ public class BookingsConstants {
 	
 	public static final String ACTION_SPECIAL_APPLY = "SPECIALAPPLY";
 	
+	public static final String ACTION_FAILURE_APPLY = "FAILUREAPPLY";
+	
 	
 
 	

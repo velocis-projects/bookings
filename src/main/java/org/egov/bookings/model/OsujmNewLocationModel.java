@@ -94,4 +94,7 @@ public class OsujmNewLocationModel {
 	@Column(name = "DATE_CREATED")
 	private Date dateCreated;
 	
+	@Column(name = "UUID")
+	private String uuid;
+	
 }

@@ -189,8 +189,8 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 			}
 			break;
 		case BookingsConstants.BUSINESS_SERVICE_OSUJM:
-			//BigDecimal mccJurisdictionAmount = getJurisdicationAmount(bookingsRequest);
-			BigDecimal mccJurisdictionAmount = new BigDecimal(4400);
+			BigDecimal mccJurisdictionAmount = getJurisdicationAmount(bookingsRequest);
+			//BigDecimal mccJurisdictionAmount = new BigDecimal(4400);
 			for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
 				if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(), mccJurisdictionAmount,
