@@ -145,7 +145,7 @@ public class OsujmNewLocationController {
 	 *
 	 * @return the all citizen newlocation
 	 */
-	@GetMapping(value = "/citizen/osujm/_all")
+	@PostMapping(value = "/citizen/osujm/_all")
 	public ResponseEntity<?> getAllCitizenNewlocation()
 	{
 		Booking booking = new Booking();
