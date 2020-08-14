@@ -480,6 +480,9 @@ public class BookingsConstants {
 	/** The Constant SECTOR. */
 	public static final String SECTOR = "sector";
 
+	
+	public static final String BK_SECTOR = "bkSector";
+	
 	/** The Constant MCC_APPROVER. */
 	public static final String MCC_APPROVER = "MCC_APPROVER";
 	

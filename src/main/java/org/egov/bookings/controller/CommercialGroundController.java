@@ -85,6 +85,12 @@ public class CommercialGroundController {
 	
 	
 	
+	/**
+	 * Lock commercial availability.
+	 *
+	 * @param commercialGrndAvailabilityModel the commercial grnd availability model
+	 * @return the response entity
+	 */
 	@PostMapping("/availability/_lock")
 	private ResponseEntity<?> lockCommercialAvailability(
 			@RequestBody CommercialGrndAvailabilityModel commercialGrndAvailabilityModel) {

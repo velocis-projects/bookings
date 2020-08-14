@@ -57,8 +57,12 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 	@Override
 	public CommercialGroundFeeModel searchCommercialGroundFee(
 			CommercialGroundFeeSearchCriteria commercialGroundFeeSearchCriteria) {
+		try {
 		return commercialGroundRepository.findByBookingVenueAndCategory(commercialGroundFeeSearchCriteria.getBookingVenue(),
 				commercialGroundFeeSearchCriteria.getCategory());
+		}catch (Exception e) {
+			throw new CustomException("DATABASE_FETCH_ERROR",e.getLocalizedMessage());
+		}
 	}
 
 	@Override

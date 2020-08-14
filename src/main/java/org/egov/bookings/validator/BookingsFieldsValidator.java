@@ -6,27 +6,48 @@ import java.util.Map;
 
 import org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria;
 import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
+import org.egov.bookings.contract.JurisdictionAvailabilityRequest;
 import org.egov.bookings.contract.OsbmApproverRequest;
 import org.egov.bookings.contract.OsbmSearchCriteria;
 import org.egov.bookings.model.CommercialGrndAvailabilityModel;
 import org.egov.bookings.model.ViewPdfDetailsModel;
+import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.web.models.NewLocationRequest;
 import org.springframework.stereotype.Component;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BookingsFieldsValidator.
+ */
 @Component
 public class BookingsFieldsValidator {
 
+	/**
+	 * Validate tenant id.
+	 *
+	 * @param tenantId the tenant id
+	 */
 	public void validateTenantId(String tenantId) {
 		if(tenantId == null || tenantId == "")
 		 throw new IllegalArgumentException("Invalid TenantId");
 	}
 	
 	
+	/**
+	 * Validate business service.
+	 *
+	 * @param businessService the business service
+	 */
 	public void validateBusinessService(String businessService) {
 		if(businessService == null || businessService == "")
 			 throw new IllegalArgumentException("Invalid businessService");
 	}
 	
+	/**
+	 * Validate action.
+	 *
+	 * @param action the action
+	 */
 	public void validateAction(String action) {
 		if(action == null || action == "")
 			 throw new IllegalArgumentException("Invalid Action");
@@ -34,6 +55,12 @@ public class BookingsFieldsValidator {
 	
 	
 	
+	/**
+	 * Checks if is null or empty.
+	 *
+	 * @param object the object
+	 * @return true, if is null or empty
+	 */
 	public static boolean isNullOrEmpty( final Object object )
 	   {
 	      if ( object == null )
@@ -122,6 +149,11 @@ public class BookingsFieldsValidator {
 	}
 
 
+	/**
+	 * Validate commercial ground criteria.
+	 *
+	 * @param commercialGroundFeeSearchCriteria the commercial ground fee search criteria
+	 */
 	public void validateCommercialGroundCriteria(CommercialGroundFeeSearchCriteria commercialGroundFeeSearchCriteria) {
 		if(null == commercialGroundFeeSearchCriteria) {
 			throw new IllegalArgumentException("Invalid Commercial Ground Fee Search Criteria");
@@ -170,6 +202,11 @@ public class BookingsFieldsValidator {
 	}
 
 
+	/**
+	 * Validate pdf details.
+	 *
+	 * @param viewPdfDetailsModel the view pdf details model
+	 */
 	public void validatePdfDetails(ViewPdfDetailsModel viewPdfDetailsModel) {
 		
 		if(null == viewPdfDetailsModel) {
@@ -188,6 +225,11 @@ public class BookingsFieldsValidator {
 	}
 
 
+	/**
+	 * Validate new location request.
+	 *
+	 * @param newLocationRequest the new location request
+	 */
 	public void validateNewLocationRequest(NewLocationRequest newLocationRequest) {
 		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest)) {
 			throw new IllegalArgumentException("Invalid New Location Request");
@@ -239,6 +281,11 @@ public class BookingsFieldsValidator {
 	}
 
 
+	/**
+	 * Validate new location request for update.
+	 *
+	 * @param newLocationRequest the new location request
+	 */
 	public void validateNewLocationRequestForUpdate(NewLocationRequest newLocationRequest) {
 		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest)) {
 			throw new IllegalArgumentException("Invalid New Location Request");
@@ -288,6 +335,11 @@ public class BookingsFieldsValidator {
 	}
 
 
+	/**
+	 * Validate commercial ground availability model.
+	 *
+	 * @param commercialGrndAvailabilityModel the commercial grnd availability model
+	 */
 	public void validateCommercialGroundAvailabilityModel(
 			CommercialGrndAvailabilityModel commercialGrndAvailabilityModel) {
 		if(BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel)) {
@@ -304,6 +356,47 @@ public class BookingsFieldsValidator {
 		}
 		if(BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel.isLocked())) {
 			throw new IllegalArgumentException("Invalid isLocked");
+		}
+	}
+
+
+	/**
+	 * Validate fee request.
+	 *
+	 * @param bookingsRequest the bookings request
+	 */
+	public void validateFeeRequest(BookingsRequest bookingsRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
+			throw new IllegalArgumentException("Invalid Bookings Request");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
+			throw new IllegalArgumentException("Invalid Booking object");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkAreaRequired())) {
+			throw new IllegalArgumentException("Invalid bkAreaRequired");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkSector())) {
+			throw new IllegalArgumentException("Invalid Sector");
+		}
+
+	}
+
+
+	/**
+	 * Validate jurisdiction availablity request.
+	 *
+	 * @param jurisdictionAvailabilityRequest the jurisdiction availability request
+	 */
+	public void validateJurisdictionAvailablityRequest(
+			JurisdictionAvailabilityRequest jurisdictionAvailabilityRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(jurisdictionAvailabilityRequest)) {
+			throw new IllegalArgumentException("Invalid Jurisdiction Availability Request");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(jurisdictionAvailabilityRequest.getBookingVenue())) {
+			throw new IllegalArgumentException("Invalid Booking Venue");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(jurisdictionAvailabilityRequest.getBkSector())) {
+			throw new IllegalArgumentException("Invalid Sector");
 		}
 	}
 }
