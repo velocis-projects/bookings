@@ -3,6 +3,7 @@ package org.egov.bookings.contract;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
@@ -18,6 +19,9 @@ public class Booking implements Serializable {
 	
 	/** The booking model list. */
 	private List< BookingsModel > bookingsModelList;
+	
+	/** The bookings model set. */
+	private Set< BookingsModel > bookingsModelSet;
 	
 	/** The bookings count. */
 	private int bookingsCount;
@@ -50,6 +54,24 @@ public class Booking implements Serializable {
 	 */
 	public void setBookingsModelList(List<BookingsModel> bookingsModelList) {
 		this.bookingsModelList = bookingsModelList;
+	}
+
+		/**
+	 * Gets the bookings model set.
+	 *
+	 * @return the bookings model set
+	 */
+	public Set< BookingsModel > getBookingsModelSet() {
+		return bookingsModelSet;
+	}
+
+	/**
+	 * Sets the bookings model set.
+	 *
+	 * @param bookingsModelSet the new bookings model set
+	 */
+	public void setBookingsModelSet(Set< BookingsModel > bookingsModelSet) {
+		this.bookingsModelSet = bookingsModelSet;
 	}
 
 	/**

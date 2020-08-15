@@ -451,7 +451,8 @@ public class BookingsServiceImpl implements BookingsService {
 	@Override
 	public Booking getEmployeeSearchBooking(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
 		Booking booking = new Booking();
-		List<BookingsModel> bookingsList = new ArrayList<>();
+//		List<BookingsModel> bookingsList = new ArrayList<>();
+		Set<BookingsModel> bookingsSet = new HashSet<>();
 		List<?> documentList = new ArrayList<>();
 		Map<String, String> documentMap = new HashMap<>();
 		Set<String> applicationNumberSet = new HashSet<>();
@@ -510,22 +511,22 @@ public class BookingsServiceImpl implements BookingsService {
 							return booking;
 						}
 						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsList.addAll( bookingsRepository.getEmployeeSearchBooking(tenantId, applicationNumber,
+							bookingsSet.addAll( bookingsRepository.getEmployeeSearchBooking(tenantId, applicationNumber,
 									applicationStatus, mobileNumber, bookingType, sectorList, applicationNumberSet));
 						}
 						else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsList.addAll( bookingsRepository.getEmployeeSearchBooking(tenantId, applicationNumber,
+							bookingsSet.addAll( bookingsRepository.getEmployeeSearchBooking(tenantId, applicationNumber,
 									applicationStatus, mobileNumber, bookingType, sectorList, fromDate, toDate, applicationNumberSet));
 						}
 					}
 					else if(BookingsConstants.MCC_HELPDESK_USER.equals(role.getCode()))
 					{
 						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsList.addAll( bookingsRepository.getEmployeeSearchBWTBooking(tenantId, applicationNumber,
+							bookingsSet.addAll( bookingsRepository.getEmployeeSearchBWTBooking(tenantId, applicationNumber,
 									applicationStatus, mobileNumber, bookingType, applicationNumberSet));
 						}
 						else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsList.addAll( bookingsRepository.getEmployeeSearchBWTBooking(tenantId, applicationNumber,
+							bookingsSet.addAll( bookingsRepository.getEmployeeSearchBWTBooking(tenantId, applicationNumber,
 									applicationStatus, mobileNumber, bookingType, applicationNumberSet, fromDate, toDate));
 						}
 					}
@@ -535,11 +536,11 @@ public class BookingsServiceImpl implements BookingsService {
 							bookingType = BookingsConstants.GROUND_FOR_COMMERCIAL_PURPOSE;
 						}
 						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsList.addAll( bookingsRepository.getEmployeeSearchGFCPBooking(tenantId, applicationNumber,
+							bookingsSet.addAll( bookingsRepository.getEmployeeSearchGFCPBooking(tenantId, applicationNumber,
 									applicationStatus, mobileNumber, bookingType));
 						}
 						else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsList.addAll( bookingsRepository.getEmployeeSearchGFCPBooking(tenantId, applicationNumber,
+							bookingsSet.addAll( bookingsRepository.getEmployeeSearchGFCPBooking(tenantId, applicationNumber,
 									applicationStatus, mobileNumber, bookingType, fromDate, toDate));
 						}
 					}
@@ -561,8 +562,8 @@ public class BookingsServiceImpl implements BookingsService {
 				}
 			}
 			booking.setDocumentMap(documentMap);
-			booking.setBookingsModelList(bookingsList);
-			booking.setBookingsCount(bookingsList.size());
+			booking.setBookingsModelSet(bookingsSet);
+			booking.setBookingsCount(bookingsSet.size());
 		} catch (Exception e) {
 			LOGGER.error("Exception occur in the getEmployeeSearchBooking " + e);
 		}
