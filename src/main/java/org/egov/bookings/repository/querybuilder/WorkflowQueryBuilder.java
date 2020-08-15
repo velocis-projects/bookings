@@ -30,7 +30,7 @@ public class WorkflowQueryBuilder {
 	public static final String FIND_SECTOR_LIST = "select sector from tt_osbm_approver where uuid = :uuid";
 	
 	/** The Constant FIND_DOCUMENT_LIST. */
-	public static final String FIND_DOCUMENT_LIST = "select ef.filestoreid, ef.filename from eg_filestoremap as ef"
+	public static final String FIND_DOCUMENT_LIST = "select distinct ef.filestoreid, ef.filename from eg_filestoremap as ef"
 			+ " inner join eg_wf_document_v2 as ewd on ewd.filestoreid = ef.filestoreid"
 			+ " inner join eg_wf_processinstance_v2 as ewp on ewp.id = ewd.processinstanceid and ewp.businessid = :applicationNumber";
 	
@@ -43,7 +43,7 @@ public class WorkflowQueryBuilder {
 	public static final String FIND_JURISDICTION_AMOUNT = "select * from tt_osujm_fee where area_from <= :area and area_to >= :area and bk_sector = :sector";
 	
 	/** The Constant FIND_DOCUMENTS. */
-	public static final String FIND_DOCUMENTS = "select ef.filestoreid, ef.filename, ewd.documenttype from eg_filestoremap as ef"
+	public static final String FIND_DOCUMENTS = "select distinct ef.filestoreid, ef.filename, ewd.documenttype from eg_filestoremap as ef"
 			+ " inner join eg_wf_document_v2 as ewd on ewd.filestoreid = ef.filestoreid"
 			+ " inner join eg_wf_processinstance_v2 as ewp on ewp.id = ewd.processinstanceid and ewp.businessid = :applicationNumber";
 	
