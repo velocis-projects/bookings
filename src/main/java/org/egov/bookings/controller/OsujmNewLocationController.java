@@ -1,9 +1,13 @@
 package org.egov.bookings.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.common.model.ResponseModel;
 import org.egov.bookings.contract.Booking;
+import org.egov.bookings.contract.DocumentFields;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
@@ -159,4 +163,38 @@ public class OsujmNewLocationController {
 		}
 		return ResponseEntity.ok(booking);
 	}
+	
+	/**
+	 * Gets the new location document.
+	 *
+	 * @param documentfields the documentfields
+	 * @return the new location document
+	 */
+	@PostMapping(value = "/osujm/_document")
+	public ResponseEntity<?> getNewLocationDocument(@RequestBody DocumentFields documentfields)
+	{
+		if (BookingsFieldsValidator.isNullOrEmpty(documentfields)) 
+		{
+			throw new IllegalArgumentException("Invalid documentfields");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(documentfields.getVenue())) 
+		{
+			throw new IllegalArgumentException("Invalid venue");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(documentfields.getSector())) 
+		{
+			throw new IllegalArgumentException("Invalid sector");
+		}
+		List<DocumentFields> documentsList = new ArrayList<>();
+		try
+		{
+			documentsList = newLocationService.getNewLocationDocument(documentfields.getVenue(), documentfields.getSector());
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the getNewLocationDocument " + e);
+		}
+		return ResponseEntity.ok(documentsList);
+	}
+	
 }

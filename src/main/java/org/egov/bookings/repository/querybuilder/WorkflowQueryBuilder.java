@@ -42,4 +42,9 @@ public class WorkflowQueryBuilder {
 	
 	public static final String FIND_JURISDICTION_AMOUNT = "select * from tt_osujm_fee where area_from <= :area and area_to >= :area and sector = :sector";
 	
+	/** The Constant FIND_DOCUMENTS. */
+	public static final String FIND_DOCUMENTS = "select ef.filestoreid, ef.filename, ewd.documenttype from eg_filestoremap as ef"
+			+ " inner join eg_wf_document_v2 as ewd on ewd.filestoreid = ef.filestoreid"
+			+ " inner join eg_wf_processinstance_v2 as ewp on ewp.id = ewd.processinstanceid and ewp.businessid = :applicationNumber";
+	
 }
