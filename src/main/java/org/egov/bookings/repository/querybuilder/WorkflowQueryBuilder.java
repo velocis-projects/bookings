@@ -43,4 +43,9 @@ public class WorkflowQueryBuilder {
 	public static final String FIND_JURISDICTION_AMOUNT = "select * from tt_osujm_fee where area_from <= :area and area_to >= :area and sector = :sector";
 	
 	public static final String CHECK_JURISDICTION_AVAILABILITY = "select * from tt_bookings where (bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType  and bk_sector = :bkSector  and bk_to_date >= :date   and bk_from_date <= :date and bk_action =:APPLY) or (bk_from_date >= :date and bk_action =:APPLY and bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType  and bk_sector = :bkSector) ";
+	/** The Constant FIND_DOCUMENTS. */
+	public static final String FIND_DOCUMENTS = "select ef.filestoreid, ef.filename, ewd.documenttype from eg_filestoremap as ef"
+			+ " inner join eg_wf_document_v2 as ewd on ewd.filestoreid = ef.filestoreid"
+			+ " inner join eg_wf_processinstance_v2 as ewp on ewp.id = ewd.processinstanceid and ewp.businessid = :applicationNumber";
+	
 }

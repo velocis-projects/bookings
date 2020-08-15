@@ -321,4 +321,20 @@ public class EnrichmentService {
 			}
 	}
 
+
+
+	public BookingsModel enrichOsujmDetails(BookingsRequest bookingsRequest) {
+		BookingsModel bookingsModel = null;
+		try {
+			bookingsModel = bookingsRepository
+					.findByBkApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
+			bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
+			bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
+			bookingsModel.setBookingsRemarks(bookingsRequest.getBookingsModel().getBookingsRemarks());
+		} catch (Exception e) {
+			throw new CustomException("OSUJM UPDATE ERROR", "ERROR WHILE UPDATING OSUJM DETAILS ");
+		}
+		return bookingsModel;
+	}
+
 }

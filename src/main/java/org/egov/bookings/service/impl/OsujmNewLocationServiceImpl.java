@@ -14,6 +14,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.Booking;
+import org.egov.bookings.contract.DocumentFields;
 import org.egov.bookings.contract.MdmsJsonFields;
 import org.egov.bookings.contract.Message;
 import org.egov.bookings.contract.MessagesResponse;
@@ -31,6 +32,7 @@ import org.egov.bookings.web.models.NewLocationRequest;
 import org.egov.bookings.workflow.WorkflowIntegrator;
 import org.egov.common.contract.request.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -337,6 +339,51 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 			LOGGER.error("Exception occur in the getCitizenNewlocationSearch " + e);
 		}
 		return booking;
+	}
+
+	/**
+	 * Gets the new location document.
+	 *
+	 * @param venue the venue
+	 * @param sector the sector
+	 * @return the new location document
+	 */
+	@Override
+	public List<DocumentFields> getNewLocationDocument(String venue, String sector) {
+		if (BookingsFieldsValidator.isNullOrEmpty(venue)) 
+		{
+			throw new IllegalArgumentException("Invalid venue");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(sector)) 
+		{
+			throw new IllegalArgumentException("Invalid sector");
+		}
+		List<DocumentFields> documentsList = new ArrayList<>();
+		String applicationNumber = "";
+		List<?> documentList = new ArrayList<>();
+		try
+		{
+			applicationNumber = newLocationRepository.findApplicationNumber(venue, sector);
+			if (!BookingsFieldsValidator.isNullOrEmpty(applicationNumber)) {
+				documentList = commonRepository.findDocuments(applicationNumber);
+			}
+			if (!BookingsFieldsValidator.isNullOrEmpty(documentList)) {
+				for (Object documentObject : documentList) {
+					String jsonString = objectMapper.writeValueAsString(documentObject);
+					String[] documentStrArray = jsonString.split(",");
+					DocumentFields documentFields = new DocumentFields();
+					documentFields.setFileStoreId(documentStrArray[0].substring(2,documentStrArray[0].length()-1));
+					documentFields.setFileName(documentStrArray[1].substring(1,documentStrArray[1].length()-1));
+					documentFields.setDocumentType(documentStrArray[2].substring(1,documentStrArray[2].length()-2));
+					documentsList.add(documentFields);
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the getNewLocationDocument " + e);
+		}
+		return documentsList;
 	}
 
 }

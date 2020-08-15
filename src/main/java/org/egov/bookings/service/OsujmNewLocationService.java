@@ -1,6 +1,10 @@
 package org.egov.bookings.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.egov.bookings.contract.Booking;
+import org.egov.bookings.contract.DocumentFields;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.OsujmNewLocationModel;
 import org.egov.bookings.web.models.NewLocationRequest;
@@ -49,5 +53,14 @@ public interface OsujmNewLocationService {
 	 * @return the all citizen newlocation
 	 */
 	public Booking getAllCitizenNewlocation();
+	
+	/**
+	 * Gets the new location document.
+	 *
+	 * @param venue the venue
+	 * @param location the location
+	 * @return the new location document
+	 */
+	public List<DocumentFields> getNewLocationDocument(String venue, String location);
 
 }

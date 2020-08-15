@@ -81,6 +81,15 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 */
 	@Query(value = "select u.username,u.mobilenumber,u.name,u.uuid,u.id from eg_user u where u.type =:type",nativeQuery = true)
 	List<?> fetchAllApprover( @Param(BookingsConstants.TYPE) String type);
+	
+	/**
+	 * Find documents.
+	 *
+	 * @param applicationNumber the application number
+	 * @return the list
+	 */
+	@Query(value = WorkflowQueryBuilder.FIND_DOCUMENTS, nativeQuery = true)
+	public List<?> findDocuments(@Param(BookingsConstants.APPLICATION_NUMBER) String applicationNumber);
 
 	@Query(value = WorkflowQueryBuilder.CHECK_JURISDICTION_AVAILABILITY, nativeQuery = true)
 	public Set<BookingsModel> searchJurisdictionAvailability(@Param(BookingsConstants.BOOKING_VENUE) String bookingVenue,@Param(BookingsConstants.BOOKING_TYPE) String bookingType, @Param(BookingsConstants.BK_SECTOR) String bkSector,

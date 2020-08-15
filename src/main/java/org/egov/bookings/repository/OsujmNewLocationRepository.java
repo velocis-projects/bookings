@@ -102,5 +102,18 @@ public interface OsujmNewLocationRepository extends CrudRepository<OsujmNewLocat
 			nativeQuery = true )
 			List<OsujmNewLocationModel> getAllCitizenNewlocation();
 	
+	
+	/**
+	 * Find application number.
+	 *
+	 * @param localityAddress the locality address
+	 * @param sector the sector
+	 * @return the string
+	 */
+	@Query(
+			value = "SELECT APPLICATION_NUMBER FROM TT_OSUJM_NEW_LOCATION AS TONL WHERE TONL.LOCALITY_ADDRESS = (?1) AND TONL.SECTOR = (?2)",
+			nativeQuery = true )
+			String findApplicationNumber(String localityAddress, String sector);
+	
 
 }

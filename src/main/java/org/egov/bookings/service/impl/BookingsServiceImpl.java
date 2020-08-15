@@ -596,7 +596,12 @@ public class BookingsServiceImpl implements BookingsService {
 				bookingsModel = enrichmentService.enrichBwtDetails(bookingsRequest);
 				bookingsModel = bookingsRepository.save(bookingsModel);
 
-			} 
+			}
+			else if(!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
+					&& BookingsConstants.BUSINESS_SERVICE_OSUJM.equals(businessService)){
+				bookingsModel = enrichmentService.enrichOsujmDetails(bookingsRequest);
+				bookingsModel = bookingsRepository.save(bookingsModel);
+			}
 			else {
 				bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
 			}
