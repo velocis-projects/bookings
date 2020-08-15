@@ -451,7 +451,6 @@ public class BookingsServiceImpl implements BookingsService {
 	@Override
 	public Booking getEmployeeSearchBooking(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
 		Booking booking = new Booking();
-//		List<BookingsModel> bookingsList = new ArrayList<>();
 		Set<BookingsModel> bookingsSet = new HashSet<>();
 		List<?> documentList = new ArrayList<>();
 		Map<String, String> documentMap = new HashMap<>();

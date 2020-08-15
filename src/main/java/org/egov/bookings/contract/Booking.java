@@ -35,6 +35,9 @@ public class Booking implements Serializable {
 	/** The osujm new location model list. */
 	private List< OsujmNewLocationModel > osujmNewLocationModelList;
 	
+	/** The osujm new location model set. */
+	private Set< OsujmNewLocationModel > osujmNewLocationModelSet;
+	
 	/** The osujm newlocation map. */
 	private Map< String, List< MdmsJsonFields > > osujmNewlocationMap;
 	
@@ -162,6 +165,24 @@ public class Booking implements Serializable {
 	 */
 	public void setOsujmNewlocationMap(Map< String, List< MdmsJsonFields > > osujmNewlocationMap) {
 		this.osujmNewlocationMap = osujmNewlocationMap;
+	}
+
+	/**
+	 * Gets the osujm new location model set.
+	 *
+	 * @return the osujm new location model set
+	 */
+	public Set< OsujmNewLocationModel > getOsujmNewLocationModelSet() {
+		return osujmNewLocationModelSet;
+	}
+
+	/**
+	 * Sets the osujm new location model set.
+	 *
+	 * @param osujmNewLocationModelSet the new osujm new location model set
+	 */
+	public void setOsujmNewLocationModelSet(Set< OsujmNewLocationModel > osujmNewLocationModelSet) {
+		this.osujmNewLocationModelSet = osujmNewLocationModelSet;
 	}
 
 
