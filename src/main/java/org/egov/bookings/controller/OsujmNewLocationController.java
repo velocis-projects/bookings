@@ -50,7 +50,7 @@ public class OsujmNewLocationController {
 	private ResponseEntity<?> addNewLocation(
 			@RequestBody NewLocationRequest newLocationRequest) {
 		
-		
+		bookingsFieldsValidator.validateNewLocationRequest(newLocationRequest);
 		OsujmNewLocationModel response = newLocationService
 				.addNewLocation(newLocationRequest);
 		ResponseModel rs = new ResponseModel();
@@ -67,7 +67,7 @@ public class OsujmNewLocationController {
 	private ResponseEntity<?> updateNewLocation(
 			@RequestBody NewLocationRequest newLocationRequest) {
 		
-		
+		bookingsFieldsValidator.validateNewLocationRequestForUpdate(newLocationRequest);
 		OsujmNewLocationModel response = newLocationService
 				.updateNewLocation(newLocationRequest);
 		ResponseModel rs = new ResponseModel();

@@ -112,15 +112,17 @@ public class BookingsServiceImpl implements BookingsService {
 	 */
 	@Override
 	public BookingsModel save(BookingsRequest bookingsRequest) {
-		BookingsModel bookingsModel = new BookingsModel();
-		try
-		{
+		BookingsModel bookingsModel = null;
+		try {
 			boolean flag = isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 
 			if (!flag)
 				enrichmentService.enrichBookingsCreateRequest(bookingsRequest);
-			if (!BookingsConstants.ACTION_SPECIAL_APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()))
-			enrichmentService.generateDemand(bookingsRequest);
+			if (!BookingsConstants.ACTION_SPECIAL_APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
+					&& !BookingsConstants.ACTION_FAILURE_APPLY
+							.equals(bookingsRequest.getBookingsModel().getBkAction())) {
+				enrichmentService.generateDemand(bookingsRequest);
+			}
 
 			if (config.getIsExternalWorkFlowEnabled()) {
 				if (!flag)
@@ -130,20 +132,25 @@ public class BookingsServiceImpl implements BookingsService {
 			enrichmentService.enrichBookingsDetails(bookingsRequest);
 			bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
 			bookingsRequest.setBookingsModel(bookingsModel);
-			if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel) && !"INITIATED".equals(bookingsModel.getBkApplicationStatus())) 
-			{
+		} catch (Exception e) {
+			LOGGER.error("Exception occur during create booking " + e);
+			throw new CustomException("CREATION_ERROR", e.getMessage());
+		}
+		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)
+				&& !"INITIATED".equals(bookingsModel.getBkApplicationStatus())) {
+			try {
 				Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
 				String notificationMsg = prepareSMSNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
 				smsNotificationService.sendSMS(notificationMsg);
 				String mailSubject = prepareMailSubjectForCreate(bookingsModel, mdmsJsonFieldsMap);
 				notificationMsg = prepareMailNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
 				mailNotificationService.sendMail(bookingsModel.getBkEmail(), notificationMsg, mailSubject);
+			} catch (Exception e) {
+				throw new CustomException("NOTIFICATION_ERROR", e.getMessage());
 			}
 		}
-		catch (Exception e) {
-			LOGGER.error("Exception occur during create booking " + e);
-		}
-		return bookingsRequest.getBookingsModel();
+
+		return bookingsModel;
 
 	}
 	
@@ -172,6 +179,7 @@ public class BookingsServiceImpl implements BookingsService {
 			}
 		} catch (Exception e) {
 			LOGGER.error("Exception occur during get localization message " + e);
+			throw new CustomException("Exception occur during get localization message",e.getLocalizedMessage());
 		}
 		return messageResponse;
 	}
@@ -579,7 +587,6 @@ public class BookingsServiceImpl implements BookingsService {
 		// bookingsProducer.push(saveTopic, bookingsRequest.getBookingsModel());
 		// bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
 		BookingsModel bookingsModel = null;
-		try {
 			if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
 					&& BookingsConstants.BUSINESS_SERVICE_OSBM.equals(businessService)) {
 
@@ -594,12 +601,14 @@ public class BookingsServiceImpl implements BookingsService {
 				bookingsModel = enrichmentService.enrichBwtDetails(bookingsRequest);
 				bookingsModel = bookingsRepository.save(bookingsModel);
 
-			} else {
+			} 
+			else {
 				bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
-				bookingsModel = bookingsRequest.getBookingsModel();
-
 			}
-			MessagesResponse messageResponse = getLocalizationMessage(bookingsRequest.getRequestInfo());
+		
+		
+			/*MessagesResponse messageResponse = getLocalizationMessage(bookingsRequest.getRequestInfo());
+
 			String bkApplicationStatus = "";
 			if(!BookingsFieldsValidator.isNullOrEmpty(messageResponse))
 			{
@@ -613,16 +622,19 @@ public class BookingsServiceImpl implements BookingsService {
 			}
 			if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel))
 			{
+				try {
 				Map< String, MdmsJsonFields > mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
 				String notificationMsg = prepareSMSNotifMsgForUpdate(bookingsModel, mdmsJsonFieldsMap, bkApplicationStatus);
 				smsNotificationService.sendSMS(notificationMsg);
 				String mailSubject = prepareMailSubjectForUpdate(bookingsModel, mdmsJsonFieldsMap);
 				notificationMsg = prepareMailNotifMsgForUpdate(bookingsModel, mdmsJsonFieldsMap, bkApplicationStatus);
 				mailNotificationService.sendMail(bookingsModel.getBkEmail(), notificationMsg, mailSubject);
+				}
+				catch (Exception e) {
+					throw new CustomException("NOTIFICATION_ERROR", e.getMessage());
+				}
 			}
-		} catch (Exception e) {
-			LOGGER.error("Exception occur while updating booking " + e);
-		}
+*/		
 		return bookingsModel;
 	}
 

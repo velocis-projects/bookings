@@ -480,12 +480,16 @@ public class BookingsConstants {
 	/** The Constant SECTOR. */
 	public static final String SECTOR = "sector";
 
+	
+	public static final String BK_SECTOR = "bkSector";
+	
 	/** The Constant MCC_APPROVER. */
 	public static final String MCC_APPROVER = "MCC_APPROVER";
 	
 	/** The Constant ACTION_SPECIAL_APPLY. */
 	public static final String ACTION_SPECIAL_APPLY = "SPECIALAPPLY";
 	
+	public static final String ACTION_FAILURE_APPLY = "FAILUREAPPLY";
 	/** The Constant OSD_APPROVER. */
 	public static final String OSD_APPROVER = "OSD_APPROVER";
 	

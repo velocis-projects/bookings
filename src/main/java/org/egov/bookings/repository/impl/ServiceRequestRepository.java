@@ -2,6 +2,7 @@ package org.egov.bookings.repository.impl;
 
 import java.util.Map;
 
+import org.egov.tracer.model.CustomException;
 import org.egov.tracer.model.ServiceCallException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -39,6 +40,7 @@ public class ServiceRequestRepository {
 			throw new ServiceCallException(e.getResponseBodyAsString());
 		}catch(Exception e) {
 			log.error("Exception while fetching from searcher: ",e);
+			throw new CustomException("Exception while fetching from searcher: ",e.getLocalizedMessage());
 		}
 		
 		return response;

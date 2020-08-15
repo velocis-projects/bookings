@@ -33,7 +33,7 @@ import org.egov.bookings.repository.impl.IdGenRepository;
 import org.egov.bookings.repository.impl.ServiceRequestRepository;
 import org.egov.bookings.service.BookingsCalculatorService;
 import org.egov.bookings.service.CommercialGroundService;
-import org.egov.bookings.service.OsujmFeeService;
+import org.egov.bookings.service.OsujmService;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.validator.BookingsFieldsValidator;
@@ -91,7 +91,10 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	private CommercialGroundService commercialGroundService;
 
 	@Autowired
-	private OsujmFeeService osujmFeeService;
+	private OsujmService osujmService;
+	
+	@Autowired
+	private EnrichmentService enrichmentService;
 	
 	/**
 	 * Search demand.
@@ -189,8 +192,8 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 			}
 			break;
 		case BookingsConstants.BUSINESS_SERVICE_OSUJM:
-			//BigDecimal mccJurisdictionAmount = getJurisdicationAmount(bookingsRequest);
-			BigDecimal mccJurisdictionAmount = new BigDecimal(4400);
+			BigDecimal mccJurisdictionAmount = getJurisdicationAmount(bookingsRequest);
+			//BigDecimal mccJurisdictionAmount = new BigDecimal(4400);
 			for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
 				if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(), mccJurisdictionAmount,
@@ -212,12 +215,15 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 
 		OsujmFeeModel osujmFeeModel = null;
 		Long area = null;
+		BigDecimal finalAmount = null;
 		try {
 			area = Long.valueOf(bookingsRequest.getBookingsModel().getBkAreaRequired());
 			/*OsujmFeeModel commercialGroundFeeSearchCriteria = CommercialGroundFeeSearchCriteria
 					.builder().bookingVenue(bookingVenue).category(category).build();*/
-			osujmFeeModel = osujmFeeService
+			osujmFeeModel = osujmService
 					.findJurisdictionFee(bookingsRequest);
+			BigDecimal days = enrichmentService.extractDaysBetweenTwoDates(bookingsRequest);
+			finalAmount = days.multiply(new BigDecimal(osujmFeeModel.getRatePerSqrFeetPerDay()*area));
 			if(BookingsFieldsValidator.isNullOrEmpty(osujmFeeModel)) {
 				throw new CustomException("DATA_NOT_FOUND","There is not any amount for this commercial ground criteria in database");
 			}
@@ -225,7 +231,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Exception while fetching osbm amount from database");
 		}
-		return new BigDecimal(osujmFeeModel.getRatePerSqrFeetPerDay()*area);
+		return finalAmount;
 	}
 
 	/**
@@ -298,6 +304,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	private BigDecimal getCommercialAmount(BookingsRequest bookingsRequest) {
 
 		CommercialGroundFeeModel commercialGroundFeeModel = null;
+		BigDecimal finalAmount = null;
 		try {
 			String category = bookingsRequest.getBookingsModel().getBkCategory();
 			String bookingVenue = bookingsRequest.getBookingsModel().getBkBookingVenue();
@@ -305,13 +312,15 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 					.builder().bookingVenue(bookingVenue).category(category).build();
 			commercialGroundFeeModel = commercialGroundService
 					.searchCommercialGroundFee(commercialGroundFeeSearchCriteria);
+			BigDecimal days = enrichmentService.extractDaysBetweenTwoDates(bookingsRequest);
+			 finalAmount = days.multiply(BigDecimal.valueOf(commercialGroundFeeModel.getRatePerDay())); 
 			if(BookingsFieldsValidator.isNullOrEmpty(commercialGroundFeeModel)) {
 				throw new CustomException("DATA_NOT_FOUND","There is not any amount for this commercial ground criteria in database");
 			}
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Exception while fetching osbm amount from database");
 		}
-		return new BigDecimal(commercialGroundFeeModel.getRatePerDay());
+		return finalAmount;
 	}
 
 }

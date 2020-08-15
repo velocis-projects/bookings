@@ -159,7 +159,7 @@ public class DemandServiceImpl implements DemandService {
 
 			demands.add(singleDemand);
 		} catch (Exception e) {
-			throw new CustomException("DEMAND_ERROR", "Error while creating demand request body");
+			throw new CustomException("DEMAND_ERROR", e.getLocalizedMessage());
 		}
 		return demands;
 
@@ -218,7 +218,7 @@ public class DemandServiceImpl implements DemandService {
 
 			demands.add(singleDemand);
 		} catch (Exception e) {
-			throw new CustomException("DEMAND_ERROR", "Error while creating demand request body");
+			throw new CustomException("DEMAND_ERROR", e.getLocalizedMessage());
 		}
 		return demands;
 
@@ -275,7 +275,7 @@ public class DemandServiceImpl implements DemandService {
 
 			demands.add(singleDemand);
 		} catch (Exception e) {
-			throw new CustomException("DEMAND_ERROR", "Error while creating demand request body");
+			throw new CustomException("DEMAND_ERROR", e.getLocalizedMessage());
 		}
 		return demands;
 
@@ -327,7 +327,7 @@ public class DemandServiceImpl implements DemandService {
 
 			demands.add(singleDemand);
 		} catch (Exception e) {
-			throw new CustomException("DEMAND_ERROR", "Error while creating demand request body");
+			throw new CustomException("DEMAND_ERROR", e.getLocalizedMessage());
 		}
 		return demands;
 

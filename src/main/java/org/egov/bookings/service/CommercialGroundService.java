@@ -10,6 +10,7 @@ import org.egov.bookings.contract.AvailabilityResponse;
 import org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria;
 import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
 import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.model.CommercialGrndAvailabilityModel;
 import org.egov.bookings.model.CommercialGroundFeeModel;
 
 // TODO: Auto-generated Javadoc
@@ -29,5 +30,8 @@ public interface CommercialGroundService {
 
 	Set<AvailabilityResponse> searchCommercialGroundAvailabilty(
 			CommercialGroundAvailabiltySearchCriteria commercialGroundAvailabiltySearchCriteria);
+
+	CommercialGrndAvailabilityModel lockCommercialAvailability(
+			CommercialGrndAvailabilityModel commercialGrndAvailabilityModel);
 
 }

@@ -1,7 +1,9 @@
 package org.egov.bookings.service.impl;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.IdResponse;
 import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
 import org.egov.bookings.repository.BookingsRepository;
 import org.egov.bookings.repository.OsbmFeeRepository;
@@ -179,9 +182,13 @@ public class EnrichmentService {
 	 * @param bookingsRequest the bookings request
 	 */
 	public void enrichBookingsDetails(BookingsRequest bookingsRequest) {
+		try {
 		bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
 		java.sql.Date date = bookingsUtils.getCurrentSqlDate();
 		bookingsRequest.getBookingsModel().setBkDateCreated(date);
+		}catch (Exception e) {
+			throw new CustomException("INVALID_BOOKING_DATA", e.getMessage());
+		}
 	}
 
 	/**
@@ -288,7 +295,7 @@ public class EnrichmentService {
 
 
 	public void enrichNewLocationDetails(NewLocationRequest newLocationRequest) {
-		//newLocationRequest.getNewLocationModel().setUuid(newLocationRequest.getRequestInfo().getUserInfo().getUuid());
+		newLocationRequest.getNewLocationModel().setUuid(newLocationRequest.getRequestInfo().getUserInfo().getUuid());
 		java.sql.Date date = bookingsUtils.getCurrentSqlDate();
 		newLocationRequest.getNewLocationModel().setDateCreated(date);
 	}
@@ -297,6 +304,21 @@ public class EnrichmentService {
 
 	public OsujmNewLocationModel enrichNlujmDetails(NewLocationRequest newLocationRequest) {
 		return null;
+	}
+
+
+
+	public BigDecimal extractDaysBetweenTwoDates(BookingsRequest bookingsRequest) {
+			try {
+				LocalDate dateBefore = LocalDate.parse(bookingsRequest.getBookingsModel().getBkFromDate()+"");
+				LocalDate dateAfter = LocalDate.parse(bookingsRequest.getBookingsModel().getBkToDate()+"");
+				long noOfDaysBetween = ChronoUnit.DAYS.between(dateBefore, dateAfter);
+				long totalDays = noOfDaysBetween+1;
+				BigDecimal finalAmount = BigDecimal.valueOf(totalDays);
+				return finalAmount;
+			}catch (Exception e) {
+				throw new CustomException("INVALID_REQUEST",e.getLocalizedMessage());
+			}
 	}
 
 }

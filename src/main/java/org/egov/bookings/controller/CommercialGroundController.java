@@ -11,6 +11,7 @@ import org.egov.bookings.contract.AvailabilityResponse;
 import org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria;
 import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
 import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.model.CommercialGrndAvailabilityModel;
 import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.service.CommercialGroundService;
 import org.egov.bookings.validator.BookingsFieldsValidator;
@@ -72,7 +73,31 @@ public class CommercialGroundController {
 		
 		bookingsFieldsValidator.validateCommercialGroundAvailabilityCriteria(commercialGroundAvailabiltySearchCriteria);
 		
+		
 		Set<AvailabilityResponse> res = commercialGroundService.searchCommercialGroundAvailabilty(commercialGroundAvailabiltySearchCriteria);
+		ResponseModel rs = new ResponseModel();
+		rs.setStatus("200");
+		rs.setMessage("Already Booked Dates");
+		rs.setData(res);
+		
+		return ResponseEntity.ok(rs);
+	}
+	
+	
+	
+	/**
+	 * Lock commercial availability.
+	 *
+	 * @param commercialGrndAvailabilityModel the commercial grnd availability model
+	 * @return the response entity
+	 */
+	@PostMapping("/availability/_lock")
+	private ResponseEntity<?> lockCommercialAvailability(
+			@RequestBody CommercialGrndAvailabilityModel commercialGrndAvailabilityModel) {
+		
+		bookingsFieldsValidator.validateCommercialGroundAvailabilityModel(commercialGrndAvailabilityModel);
+		
+		CommercialGrndAvailabilityModel res = commercialGroundService.lockCommercialAvailability(commercialGrndAvailabilityModel);
 		
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");
