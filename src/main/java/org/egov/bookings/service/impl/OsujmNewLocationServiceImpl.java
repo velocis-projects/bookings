@@ -108,8 +108,8 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 			if (!BookingsConstants.APPLY.equals(newLocationRequest.getNewLocationModel().getAction())
 					&& BookingsConstants.BUSINESS_SERVICE_NLUJM.equals(businessService)) {
 
-				//newLocaltionModel = enrichmentService.enrichNlujmDetails(newLocationRequest);
-				newLocaltionModel = newLocationRepository.save(newLocationRequest.getNewLocationModel());
+				newLocaltionModel = enrichmentService.enrichNlujmDetails(newLocationRequest);
+				newLocaltionModel = newLocationRepository.save(newLocaltionModel);
 			}
 
 			 else {

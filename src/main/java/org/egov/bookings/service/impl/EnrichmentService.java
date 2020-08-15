@@ -17,6 +17,7 @@ import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
 import org.egov.bookings.repository.BookingsRepository;
 import org.egov.bookings.repository.OsbmFeeRepository;
+import org.egov.bookings.repository.OsujmNewLocationRepository;
 import org.egov.bookings.repository.impl.IdGenRepository;
 import org.egov.bookings.service.BookingsCalculatorService;
 import org.egov.bookings.service.BookingsService;
@@ -68,6 +69,9 @@ public class EnrichmentService {
 	/** The bookings repository. */
 	@Autowired
 	private BookingsRepository bookingsRepository;
+	
+	@Autowired
+	private OsujmNewLocationRepository osujmNewLocationRepository;
 
 	/**
 	 * Enrich bookings create request.
@@ -303,7 +307,17 @@ public class EnrichmentService {
 
 
 	public OsujmNewLocationModel enrichNlujmDetails(NewLocationRequest newLocationRequest) {
-		return null;
+		OsujmNewLocationModel osujmNewLocationModel = null;
+		try {
+			osujmNewLocationModel = osujmNewLocationRepository
+					.findByApplicationNumber(newLocationRequest.getNewLocationModel().getApplicationNumber());
+			osujmNewLocationModel.setApplicationStatus(newLocationRequest.getNewLocationModel().getApplicationStatus());
+			osujmNewLocationModel.setAction(newLocationRequest.getNewLocationModel().getAction());
+			osujmNewLocationModel.setBookingsRemarks(newLocationRequest.getNewLocationModel().getBookingsRemarks());
+		} catch (Exception e) {
+			throw new CustomException("NLUJM UPDATE ERROR", "ERROR WHILE UPDATING NLUJM DETAILS ");
+		}
+		return osujmNewLocationModel;
 	}
 
 
