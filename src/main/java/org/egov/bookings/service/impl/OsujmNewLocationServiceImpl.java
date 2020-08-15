@@ -132,7 +132,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 	@Override
 	public Booking getEmployeeNewlocationSearch(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
 		Booking booking = new Booking();
-		List<OsujmNewLocationModel> osujmNewLocationModelList = new ArrayList<>();
+		Set<OsujmNewLocationModel> osujmNewLocationModelSet = new HashSet<>();
 		List<?> documentList = new ArrayList<>();
 		Map<String, String> documentMap = new HashMap<>();
 		Set<String> applicationNumberSet = new HashSet<>();
@@ -190,11 +190,11 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 							return booking;
 						}
 						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							osujmNewLocationModelList.addAll( newLocationRepository.getEmployeeNewlocationSearch(tenantId, applicationNumber,
+							osujmNewLocationModelSet.addAll( newLocationRepository.getEmployeeNewlocationSearch(tenantId, applicationNumber,
 									applicationStatus, mobileNumber, sectorList, applicationNumberSet));
 						}
 						else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							osujmNewLocationModelList.addAll( newLocationRepository.getEmployeeNewlocationSearch(tenantId, applicationNumber,
+							osujmNewLocationModelSet.addAll( newLocationRepository.getEmployeeNewlocationSearch(tenantId, applicationNumber,
 									applicationStatus, mobileNumber, sectorList, applicationNumberSet, fromDate, toDate ));
 						}
 					}
@@ -216,8 +216,8 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 				}
 			}
 			booking.setDocumentMap(documentMap);
-			booking.setOsujmNewLocationModelList(osujmNewLocationModelList);;
-			booking.setBookingsCount(osujmNewLocationModelList.size());
+			booking.setOsujmNewLocationModelSet(osujmNewLocationModelSet);;
+			booking.setBookingsCount(osujmNewLocationModelSet.size());
 		} catch (Exception e) {
 			LOGGER.error("Exception occur in the getEmployeeNewlocationSearch " + e);
 		}
