@@ -48,7 +48,7 @@ public class OsujmController {
 
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");
-		rs.setMessage("Data submitted in osbm table");
+		rs.setMessage("Fee Fetched");
 		rs.setData(osbmFeeModel);
 		return ResponseEntity.ok(rs);
 
@@ -69,7 +69,7 @@ public class OsujmController {
 
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");
-		rs.setMessage("Data submitted in osbm table");
+		rs.setMessage("Already Booked Dates");
 		rs.setData(res);
 		return ResponseEntity.ok(rs);
 

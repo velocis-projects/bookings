@@ -38,9 +38,9 @@ public class WorkflowQueryBuilder {
 	public static final String FIND_BUSINESS_SERVICE = "select businessservice from eg_wf_processinstance_v2 "
 			+ " where businessid = :applicationNumber";
 	
-	public static final String CHECK_COMMERCIAL_GROUND_AVAILABILITY = "select * from tt_bookings where (bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType  and bk_to_date >= :date   and bk_from_date <= :date and bk_action =:APPLY) or (bk_from_date >= :date and bk_action =:APPLY) ";
+	public static final String CHECK_COMMERCIAL_GROUND_AVAILABILITY = "select * from tt_bookings where (bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType  and bk_to_date >= :date   and bk_from_date <= :date and bk_action =:APPLY) or (bk_from_date >= :date and bk_action =:APPLY and bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType) ";
 	
-	public static final String FIND_JURISDICTION_AMOUNT = "select * from tt_osujm_fee where area_from <= :area and area_to >= :area and bk_sector = :sector";
+	public static final String FIND_JURISDICTION_AMOUNT = "select * from tt_osujm_fee where area_from <= :area and area_to >= :area and sector = :sector";
 	
-	public static final String CHECK_JURISDICTION_AVAILABILITY = "select * from tt_bookings where (bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType  and bk_sector = :bkSector  and bk_to_date >= :date   and bk_from_date <= :date and bk_action =:APPLY) or (bk_from_date >= :date and bk_action =:APPLY) ";
+	public static final String CHECK_JURISDICTION_AVAILABILITY = "select * from tt_bookings where (bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType  and bk_sector = :bkSector  and bk_to_date >= :date   and bk_from_date <= :date and bk_action =:APPLY) or (bk_from_date >= :date and bk_action =:APPLY and bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType  and bk_sector = :bkSector) ";
 }

@@ -32,7 +32,7 @@ public class Booking implements Serializable {
 	private List< OsujmNewLocationModel > osujmNewLocationModelList;
 	
 	/** The osujm newlocation map. */
-	private Map< String, List< MdmsJsonFields > > osujmNewlocationMap;
+	private Map< String, List< OsujmNewLocationFields > > osujmNewlocationMap;
 	
 	/**
 	 * Gets the bookings model list.
@@ -124,23 +124,15 @@ public class Booking implements Serializable {
 		this.osujmNewLocationModelList = osujmNewLocationModelList;
 	}
 
-	/**
-	 * Gets the osujm newlocation map.
-	 *
-	 * @return the osujm newlocation map
-	 */
-	public Map< String, List< MdmsJsonFields > > getOsujmNewlocationMap() {
+	public Map<String, List<OsujmNewLocationFields>> getOsujmNewlocationMap() {
 		return osujmNewlocationMap;
 	}
 
-	/**
-	 * Sets the osujm newlocation map.
-	 *
-	 * @param osujmNewlocationMap the osujm newlocation map
-	 */
-	public void setOsujmNewlocationMap(Map< String, List< MdmsJsonFields > > osujmNewlocationMap) {
+	public void setOsujmNewlocationMap(Map<String, List<OsujmNewLocationFields>> osujmNewlocationMap) {
 		this.osujmNewlocationMap = osujmNewlocationMap;
 	}
+
+
 
 
 }

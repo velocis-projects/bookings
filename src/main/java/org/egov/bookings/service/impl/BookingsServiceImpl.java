@@ -113,7 +113,6 @@ public class BookingsServiceImpl implements BookingsService {
 	@Override
 	public BookingsModel save(BookingsRequest bookingsRequest) {
 		BookingsModel bookingsModel = null;
-		try {
 			boolean flag = isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 
 			if (!flag)
@@ -132,10 +131,6 @@ public class BookingsServiceImpl implements BookingsService {
 			enrichmentService.enrichBookingsDetails(bookingsRequest);
 			bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
 			bookingsRequest.setBookingsModel(bookingsModel);
-		} catch (Exception e) {
-			LOGGER.error("Exception occur during create booking " + e);
-			throw new CustomException("CREATION_ERROR", e.getMessage());
-		}
 		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)
 				&& !"INITIATED".equals(bookingsModel.getBkApplicationStatus())) {
 			try {
