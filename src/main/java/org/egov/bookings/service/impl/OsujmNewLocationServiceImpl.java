@@ -132,6 +132,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 	@Override
 	public Booking getEmployeeNewlocationSearch(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
 		Booking booking = new Booking();
+		List<OsujmNewLocationModel> osujmNewLocationModelList = new ArrayList<>();
 		Set<OsujmNewLocationModel> osujmNewLocationModelSet = new HashSet<>();
 		List<?> documentList = new ArrayList<>();
 		Map<String, String> documentMap = new HashMap<>();
@@ -215,8 +216,9 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 					documentMap.put(fileStoreId, document);
 				}
 			}
+			osujmNewLocationModelList.addAll(osujmNewLocationModelSet);
 			booking.setDocumentMap(documentMap);
-			booking.setOsujmNewLocationModelSet(osujmNewLocationModelSet);;
+			booking.setOsujmNewLocationModelList(osujmNewLocationModelList);
 			booking.setBookingsCount(osujmNewLocationModelSet.size());
 		} catch (Exception e) {
 			LOGGER.error("Exception occur in the getEmployeeNewlocationSearch " + e);

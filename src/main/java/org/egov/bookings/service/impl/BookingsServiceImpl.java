@@ -446,6 +446,7 @@ public class BookingsServiceImpl implements BookingsService {
 	@Override
 	public Booking getEmployeeSearchBooking(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
 		Booking booking = new Booking();
+		List<BookingsModel> bookingsList = new ArrayList<>();
 		Set<BookingsModel> bookingsSet = new HashSet<>();
 		List<?> documentList = new ArrayList<>();
 		Map<String, String> documentMap = new HashMap<>();
@@ -555,8 +556,9 @@ public class BookingsServiceImpl implements BookingsService {
 					documentMap.put(fileStoreId, document);
 				}
 			}
+			bookingsList.addAll(bookingsSet);
 			booking.setDocumentMap(documentMap);
-			booking.setBookingsModelSet(bookingsSet);
+			booking.setBookingsModelList(bookingsList);
 			booking.setBookingsCount(bookingsSet.size());
 		} catch (Exception e) {
 			LOGGER.error("Exception occur in the getEmployeeSearchBooking " + e);
