@@ -20,9 +20,6 @@ public class Booking implements Serializable {
 	/** The booking model list. */
 	private List< BookingsModel > bookingsModelList;
 	
-	/** The bookings model set. */
-	private Set< BookingsModel > bookingsModelSet;
-	
 	/** The bookings count. */
 	private int bookingsCount;
 	
@@ -37,6 +34,9 @@ public class Booking implements Serializable {
 	
 	/** The osujm newlocation map. */
 	private Map< String, List< MdmsJsonFields > > osujmNewlocationMap;
+	
+	/** The document list. */
+	private List<DocumentFields> documentList;
 	
 	/**
 	 * Gets the bookings model list.
@@ -54,24 +54,6 @@ public class Booking implements Serializable {
 	 */
 	public void setBookingsModelList(List<BookingsModel> bookingsModelList) {
 		this.bookingsModelList = bookingsModelList;
-	}
-
-		/**
-	 * Gets the bookings model set.
-	 *
-	 * @return the bookings model set
-	 */
-	public Set< BookingsModel > getBookingsModelSet() {
-		return bookingsModelSet;
-	}
-
-	/**
-	 * Sets the bookings model set.
-	 *
-	 * @param bookingsModelSet the new bookings model set
-	 */
-	public void setBookingsModelSet(Set< BookingsModel > bookingsModelSet) {
-		this.bookingsModelSet = bookingsModelSet;
 	}
 
 	/**
@@ -162,6 +144,24 @@ public class Booking implements Serializable {
 	 */
 	public void setOsujmNewlocationMap(Map< String, List< MdmsJsonFields > > osujmNewlocationMap) {
 		this.osujmNewlocationMap = osujmNewlocationMap;
+	}
+
+	/**
+	 * Gets the document list.
+	 *
+	 * @return the document list
+	 */
+	public List<DocumentFields> getDocumentList() {
+		return documentList;
+	}
+
+	/**
+	 * Sets the document list.
+	 *
+	 * @param documentList the new document list
+	 */
+	public void setDocumentList(List<DocumentFields> documentList) {
+		this.documentList = documentList;
 	}
 
 }

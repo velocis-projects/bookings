@@ -134,7 +134,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 		List<OsujmNewLocationModel> osujmNewLocationModelList = new ArrayList<>();
 		Set<OsujmNewLocationModel> osujmNewLocationModelSet = new HashSet<>();
 		List<?> documentList = new ArrayList<>();
-		Map<String, String> documentMap = new HashMap<>();
+		List<DocumentFields> newLocationDocumentList = new ArrayList<>();
 		Set<String> applicationNumberSet = new HashSet<>();
 		try {
 			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) {
@@ -201,22 +201,26 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 				}
 			}
 			if (!BookingsFieldsValidator.isNullOrEmpty(applicationNumber)) {
-				documentList = commonRepository.findDocumentList(applicationNumber);
+				documentList = commonRepository.findDocuments(applicationNumber);
 				booking.setBusinessService(commonRepository.findBusinessService(applicationNumber));
 			}
 			if (!BookingsFieldsValidator.isNullOrEmpty(documentList)) {
 				for (Object documentObject : documentList) {
 					String jsonString = objectMapper.writeValueAsString(documentObject);
 					String[] documentStrArray = jsonString.split(",");
+					DocumentFields documentFields = new DocumentFields();
+					documentFields.setFileStoreId(documentStrArray[0].substring(2,documentStrArray[0].length()-1));
 					String[] strArray = documentStrArray[1].split("/");
-					String fileStoreId = documentStrArray[0].substring(2, documentStrArray[0].length() - 1);
-					String document = strArray[strArray.length - 1].substring(13,
-							(strArray[strArray.length - 1].length() - 2));
-					documentMap.put(fileStoreId, document);
+					documentFields.setFileName(strArray[strArray.length - 1].substring(13,(strArray[strArray.length - 1].length() - 2)));
+					if(!"null".equals(documentStrArray[2].substring(0,documentStrArray[2].length()-1)))
+					{
+						documentFields.setDocumentType(documentStrArray[2].substring(1,documentStrArray[2].length()-2));
+					}
+					newLocationDocumentList.add(documentFields);
 				}
 			}
 			osujmNewLocationModelList.addAll(osujmNewLocationModelSet);
-			booking.setDocumentMap(documentMap);
+			booking.setDocumentList(newLocationDocumentList);
 			booking.setOsujmNewLocationModelList(osujmNewLocationModelList);
 			booking.setBookingsCount(osujmNewLocationModelSet.size());
 		} catch (Exception e) {
@@ -236,7 +240,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 		Booking booking = new Booking();
 		List<OsujmNewLocationModel> osujmNewLocationModelList = new ArrayList<>();
 		List<?> documentList = new ArrayList<>();
-		Map<String, String> documentMap = new HashMap<>();
+		List<DocumentFields> newLocationDocumentList = new ArrayList<>();
 		try {
 			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) {
 				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
@@ -264,7 +268,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 						applicationStatus, mobileNumber, uuid, fromDate, toDate);
 			}
 			if (!BookingsFieldsValidator.isNullOrEmpty(applicationNumber)) {
-				documentList = commonRepository.findDocumentList(applicationNumber);
+				documentList = commonRepository.findDocuments(applicationNumber);
 				booking.setBusinessService(commonRepository.findBusinessService(applicationNumber));
 			}
 
@@ -272,14 +276,18 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 				for (Object documentObject : documentList) {
 					String jsonString = objectMapper.writeValueAsString(documentObject);
 					String[] documentStrArray = jsonString.split(",");
+					DocumentFields documentFields = new DocumentFields();
+					documentFields.setFileStoreId(documentStrArray[0].substring(2,documentStrArray[0].length()-1));
 					String[] strArray = documentStrArray[1].split("/");
-					String fileStoreId = documentStrArray[0].substring(2, documentStrArray[0].length() - 1);
-					String document = strArray[strArray.length - 1].substring(13,
-							(strArray[strArray.length - 1].length() - 2));
-					documentMap.put(fileStoreId, document);
+					documentFields.setFileName(strArray[strArray.length - 1].substring(13,(strArray[strArray.length - 1].length() - 2)));
+					if(!"null".equals(documentStrArray[2].substring(0,documentStrArray[2].length()-1)))
+					{
+						documentFields.setDocumentType(documentStrArray[2].substring(1,documentStrArray[2].length()-2));
+					}
+					newLocationDocumentList.add(documentFields);
 				}
 			}
-			booking.setDocumentMap(documentMap);
+			booking.setDocumentList(newLocationDocumentList);
 			booking.setOsujmNewLocationModelList(osujmNewLocationModelList);
 			booking.setBookingsCount(osujmNewLocationModelList.size());
 		} catch (Exception e) {
@@ -373,7 +381,10 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 					DocumentFields documentFields = new DocumentFields();
 					documentFields.setFileStoreId(documentStrArray[0].substring(2,documentStrArray[0].length()-1));
 					documentFields.setFileName(documentStrArray[1].substring(1,documentStrArray[1].length()-1));
-					documentFields.setDocumentType(documentStrArray[2].substring(1,documentStrArray[2].length()-2));
+					if(!"null".equals(documentStrArray[2].substring(0,documentStrArray[2].length()-1)))
+					{
+						documentFields.setDocumentType(documentStrArray[2].substring(1,documentStrArray[2].length()-2));
+					}
 					documentsList.add(documentFields);
 				}
 			}
