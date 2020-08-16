@@ -184,7 +184,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 			for (Role role : roles) {
 				if(!BookingsConstants.CITIZEN.equals(role.getCode()) && !BookingsConstants.EMPLOYEE.equals(role.getCode()) ) {
 					
-					if(BookingsConstants.MCC_APPROVER.equals(role.getCode()) || BookingsConstants.OSD_APPROVER.equals(role.getCode()))
+					if(BookingsConstants.MCC_APPROVER.equals(role.getCode()) || BookingsConstants.OSD_APPROVER.equals(role.getCode()) || BookingsConstants.ADMIN_APPROVER.equals(role.getCode()))
 					{
 						List<String> sectorList = commonRepository.findSectorList(uuid);
 						if (sectorList == null || sectorList.isEmpty()) {
