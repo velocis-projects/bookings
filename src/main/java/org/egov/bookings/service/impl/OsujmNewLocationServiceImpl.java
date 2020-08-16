@@ -18,6 +18,7 @@ import org.egov.bookings.contract.DocumentFields;
 import org.egov.bookings.contract.MdmsJsonFields;
 import org.egov.bookings.contract.Message;
 import org.egov.bookings.contract.MessagesResponse;
+import org.egov.bookings.contract.OsujmNewLocationFields;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
@@ -107,8 +108,8 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 			if (!BookingsConstants.APPLY.equals(newLocationRequest.getNewLocationModel().getAction())
 					&& BookingsConstants.BUSINESS_SERVICE_NLUJM.equals(businessService)) {
 
-				//newLocaltionModel = enrichmentService.enrichNlujmDetails(newLocationRequest);
-				newLocaltionModel = newLocationRepository.save(newLocationRequest.getNewLocationModel());
+				newLocaltionModel = enrichmentService.enrichNlujmDetails(newLocationRequest);
+				newLocaltionModel = newLocationRepository.save(newLocaltionModel);
 			}
 
 			 else {
@@ -305,38 +306,40 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 	public Booking getAllCitizenNewlocation() {
 		Booking booking = new Booking();
 		List< OsujmNewLocationModel > osujmNewLocationModelsList = new ArrayList<>();
-		List< MdmsJsonFields > newLocationList = null;
-		Map< String, List< MdmsJsonFields > > newLocationMap = new HashMap<>();
+		List< OsujmNewLocationFields > newLocationList = null;
+		Map< String, List< OsujmNewLocationFields > > newLocationMap = new HashMap<>();
 		int count;
 		try {
 			osujmNewLocationModelsList = newLocationRepository.getAllCitizenNewlocation();
 			if (!BookingsFieldsValidator.isNullOrEmpty(osujmNewLocationModelsList)) {
 				for (OsujmNewLocationModel osujmNewLocationModel : osujmNewLocationModelsList) {
-					MdmsJsonFields mdmsJsonFields = new MdmsJsonFields();
+					OsujmNewLocationFields osujmNewLocationFields = new OsujmNewLocationFields();
 					if( newLocationMap.containsKey(osujmNewLocationModel.getSector())) {
 						count = 1;
 						newLocationList = newLocationMap.get(osujmNewLocationModel.getSector());
-						for (MdmsJsonFields mdmsJsonFields2 : newLocationList) {
-							if(count < mdmsJsonFields2.getId()) {
-								count = mdmsJsonFields2.getId();
+						for (OsujmNewLocationFields osujmNewLocationFields2 : newLocationList) {
+							if(count < osujmNewLocationFields2.getId()) {
+								count = osujmNewLocationFields2.getId();
 							}
 						}
-						mdmsJsonFields.setActive(true);
-						mdmsJsonFields.setCode(osujmNewLocationModel.getLocalityAddress());
-						mdmsJsonFields.setName(osujmNewLocationModel.getLocalityAddress());
-						mdmsJsonFields.setId(count+1);
-						mdmsJsonFields.setTenantId(osujmNewLocationModel.getTenantId());
-						newLocationList.add(mdmsJsonFields);
+						osujmNewLocationFields.setActive(true);
+						osujmNewLocationFields.setCode(osujmNewLocationModel.getLocalityAddress());
+						osujmNewLocationFields.setName(osujmNewLocationModel.getLocalityAddress());
+						osujmNewLocationFields.setId(count+1);
+						osujmNewLocationFields.setTenantId(osujmNewLocationModel.getTenantId());
+						osujmNewLocationFields.setAreRequirement(osujmNewLocationModel.getAreaRequirement());
+						newLocationList.add(osujmNewLocationFields);
 					}
 					else {
 						newLocationList = new ArrayList<>();
 						count = 1;
-						mdmsJsonFields.setActive(true);
-						mdmsJsonFields.setCode(osujmNewLocationModel.getLocalityAddress());
-						mdmsJsonFields.setName(osujmNewLocationModel.getLocalityAddress());
-						mdmsJsonFields.setId(count);
-						mdmsJsonFields.setTenantId(osujmNewLocationModel.getTenantId());
-						newLocationList.add(mdmsJsonFields);
+						osujmNewLocationFields.setActive(true);
+						osujmNewLocationFields.setCode(osujmNewLocationModel.getLocalityAddress());
+						osujmNewLocationFields.setName(osujmNewLocationModel.getLocalityAddress());
+						osujmNewLocationFields.setId(count);
+						osujmNewLocationFields.setTenantId(osujmNewLocationModel.getTenantId());
+						osujmNewLocationFields.setAreRequirement(osujmNewLocationModel.getAreaRequirement());
+						newLocationList.add(osujmNewLocationFields);
 					}
 					newLocationMap.put(osujmNewLocationModel.getSector(), newLocationList);
 				}

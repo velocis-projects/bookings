@@ -47,7 +47,7 @@ public class OsbmFeeController {
 		
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");
-		rs.setMessage("Data submitted successfully");
+		rs.setMessage("Data Fetched successfully");
 		rs.setData(osbmFeeModel);
 		
 		return ResponseEntity.ok(rs);

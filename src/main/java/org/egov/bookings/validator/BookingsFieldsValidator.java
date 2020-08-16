@@ -299,35 +299,9 @@ public class BookingsFieldsValidator {
 		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getAction())) {
 			throw new IllegalArgumentException("Invalid Action");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getApplicantAddress())) {
-			throw new IllegalArgumentException("Invalid APPLICANT ADDRESS");
-		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getApplicantName())) {
-			throw new IllegalArgumentException("Invalid APPLICANT NAME");
-		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getAreaRequirement())) {
-			throw new IllegalArgumentException("Invalid AREA REQUIREMENT");
-		}
+		
 		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getBusinessService())) {
 			throw new IllegalArgumentException("Invalid BUSINESS SERVICE");
-		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getContact())) {
-			throw new IllegalArgumentException("Invalid CONTACT");
-		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getIdProof())) {
-			throw new IllegalArgumentException("Invalid ID PROOF");
-		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getLandmark())) {
-			throw new IllegalArgumentException("Invalid LANDMARK");
-		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getLocalityAddress())) {
-			throw new IllegalArgumentException("Invalid LOCALITY ADDRESS");
-		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getMailAddress())) {
-			throw new IllegalArgumentException("Invalid MAIL ADDRESS");
-		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getSector())) {
-			throw new IllegalArgumentException("Invalid SECTOR");
 		}
 		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getTenantId())) {
 			throw new IllegalArgumentException("Invalid TENANT ID");

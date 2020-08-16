@@ -3,7 +3,6 @@ package org.egov.bookings.contract;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
@@ -33,7 +32,7 @@ public class Booking implements Serializable {
 	private List< OsujmNewLocationModel > osujmNewLocationModelList;
 	
 	/** The osujm newlocation map. */
-	private Map< String, List< MdmsJsonFields > > osujmNewlocationMap;
+	private Map< String, List< OsujmNewLocationFields > > osujmNewlocationMap;
 	
 	/** The document list. */
 	private List<DocumentFields> documentList;
@@ -128,21 +127,11 @@ public class Booking implements Serializable {
 		this.osujmNewLocationModelList = osujmNewLocationModelList;
 	}
 
-	/**
-	 * Gets the osujm newlocation map.
-	 *
-	 * @return the osujm newlocation map
-	 */
-	public Map< String, List< MdmsJsonFields > > getOsujmNewlocationMap() {
+	public Map<String, List<OsujmNewLocationFields>> getOsujmNewlocationMap() {
 		return osujmNewlocationMap;
 	}
 
-	/**
-	 * Sets the osujm newlocation map.
-	 *
-	 * @param osujmNewlocationMap the osujm newlocation map
-	 */
-	public void setOsujmNewlocationMap(Map< String, List< MdmsJsonFields > > osujmNewlocationMap) {
+	public void setOsujmNewlocationMap(Map<String, List<OsujmNewLocationFields>> osujmNewlocationMap) {
 		this.osujmNewlocationMap = osujmNewlocationMap;
 	}
 
@@ -163,5 +152,4 @@ public class Booking implements Serializable {
 	public void setDocumentList(List<DocumentFields> documentList) {
 		this.documentList = documentList;
 	}
-
 }
