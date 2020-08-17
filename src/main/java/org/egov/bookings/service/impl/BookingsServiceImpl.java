@@ -1,6 +1,8 @@
 package org.egov.bookings.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +31,7 @@ import org.egov.bookings.repository.impl.ServiceRequestRepository;
 import org.egov.bookings.service.BookingsService;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.BookingsUtils;
+import org.egov.bookings.utils.CreateDateComparator;
 import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.workflow.WorkflowIntegrator;
@@ -557,6 +560,8 @@ public class BookingsServiceImpl implements BookingsService {
 				}
 			}
 			bookingsList.addAll(bookingsSet);
+			Collections.sort(bookingsList,new CreateDateComparator());  
+			Collections.reverse(bookingsList);
 			booking.setDocumentMap(documentMap);
 			booking.setBookingsModelList(bookingsList);
 			booking.setBookingsCount(bookingsSet.size());
