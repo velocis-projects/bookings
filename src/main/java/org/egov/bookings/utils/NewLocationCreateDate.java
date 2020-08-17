@@ -9,6 +9,6 @@ public class NewLocationCreateDate implements Comparator<Object> {
 		OsujmNewLocationModel osujmNewLocationModel1 =(OsujmNewLocationModel)o1;  
 		OsujmNewLocationModel osujmNewLocationModel2 =(OsujmNewLocationModel)o2;  
 		  
-		return osujmNewLocationModel1.getDateCreated().compareTo(osujmNewLocationModel2.getDateCreated());  
+		return osujmNewLocationModel1.getApplicationNumber().compareTo(osujmNewLocationModel2.getApplicationNumber());  
 		}  
 }
