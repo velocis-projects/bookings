@@ -9,7 +9,7 @@ public class CreateDateComparator implements Comparator<Object>{
 		BookingsModel bookingModel1 =(BookingsModel)o1;  
 		BookingsModel bookingModel2 =(BookingsModel)o2;  
 		  
-		return bookingModel1.getBkDateCreated().compareTo(bookingModel2.getBkDateCreated());  
+		return bookingModel1.getBkApplicationNumber().compareTo(bookingModel2.getBkApplicationNumber());  
 		}  
 
 }
