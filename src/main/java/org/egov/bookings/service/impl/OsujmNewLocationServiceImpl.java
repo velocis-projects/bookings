@@ -1,6 +1,7 @@
 package org.egov.bookings.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +24,8 @@ import org.egov.bookings.repository.OsujmNewLocationRepository;
 import org.egov.bookings.service.BookingsService;
 import org.egov.bookings.service.OsujmNewLocationService;
 import org.egov.bookings.utils.BookingsConstants;
+import org.egov.bookings.utils.CreateDateComparator;
+import org.egov.bookings.utils.NewLocationCreateDate;
 import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.NewLocationRequest;
 import org.egov.bookings.workflow.WorkflowIntegrator;
@@ -216,6 +219,8 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 				}
 			}
 			osujmNewLocationModelList.addAll(osujmNewLocationModelSet);
+			Collections.sort(osujmNewLocationModelList,new NewLocationCreateDate());  
+			Collections.reverse(osujmNewLocationModelList);
 			booking.setDocumentList(newLocationDocumentList);
 			booking.setOsujmNewLocationModelList(osujmNewLocationModelList);
 			booking.setBookingsCount(osujmNewLocationModelSet.size());
