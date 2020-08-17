@@ -73,7 +73,7 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
         LocalDate date = LocalDate.now();
         Date date1 = Date.valueOf(date);
         Set<AvailabilityResponse> bookedDates = new HashSet<>();
-        Set<BookingsModel> bookingsModel = commonRepository.findAllByBkBookingVenueAndBetweenToDateAndFromDate(
+        Set<BookingsModel> bookingsModel = commonRepository.findAllBookedVenuesFromNow(
 				commercialGroundAvailabiltySearchCriteria.getBookingVenue(),
 				commercialGroundAvailabiltySearchCriteria.getBookingType(),
 				date1,BookingsConstants.APPLY);

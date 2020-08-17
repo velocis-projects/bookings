@@ -21,16 +21,25 @@ import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OsujmServiceImpl.
+ */
 @Service
 @Transactional
 public class OsujmServiceImpl implements OsujmService {
 
+	/** The osujm fee repository. */
 	@Autowired
 	private OsujmFeeRepository osujmFeeRepository;
 
+	/** The common repository. */
 	@Autowired
 	private CommonRepository commonRepository;
 	
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.OsujmService#findJurisdictionFee(org.egov.bookings.web.models.BookingsRequest)
+	 */
 	@Override
 	public OsujmFeeModel findJurisdictionFee(BookingsRequest bookingsRequest) {
 		OsujmFeeModel osujmFeeModel = null;
@@ -46,17 +55,19 @@ public class OsujmServiceImpl implements OsujmService {
 			
 		}
 		catch (Exception e) {
-			throw new CustomException("DATABASE_ERROR","Error while fetching data from osujmFee table");
+			throw new CustomException("INVALID_REQUEST",e.getLocalizedMessage());
 		}
 		
 		return osujmFeeModel;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.OsujmService#searchJurisdictionAvailability(org.egov.bookings.contract.JurisdictionAvailabilityRequest)
+	 */
 	@Override
 	public Set<AvailabilityResponse> searchJurisdictionAvailability(
 			JurisdictionAvailabilityRequest jurisdictionAvailabilityRequest) {
 
-		// Date date = commercialGroundAvailabiltySearchCriteria.getDate();
         LocalDate date = LocalDate.now();
         Date date1 = Date.valueOf(date);
         Set<AvailabilityResponse> bookedDates = new HashSet<>();

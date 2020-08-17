@@ -47,9 +47,16 @@ public class OsujmController {
 		OsujmFeeModel osbmFeeModel = osujmService.findJurisdictionFee(bookingsRequest);
 
 		ResponseModel rs = new ResponseModel();
-		rs.setStatus("200");
-		rs.setMessage("Fee Fetched");
-		rs.setData(osbmFeeModel);
+		if (osbmFeeModel == null) {
+			rs.setStatus("400");
+			rs.setMessage("Failure while Fetching Fee");
+			rs.setData(osbmFeeModel);
+		} else {
+			rs.setStatus("200");
+			rs.setMessage("Fee Fetched successfully");
+			rs.setData(osbmFeeModel);
+		}
+
 		return ResponseEntity.ok(rs);
 
 	}

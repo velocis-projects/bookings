@@ -68,8 +68,17 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	@Query(value = WorkflowQueryBuilder.FIND_BUSINESS_SERVICE, nativeQuery = true)
 	public String findBusinessService(@Param(BookingsConstants.APPLICATION_NUMBER) String applicationNumber);
 
+	/**
+	 * Find all booked venues from now.
+	 *
+	 * @param bookingVenue the booking venue
+	 * @param bookingType the booking type
+	 * @param date the date
+	 * @param APPLY the apply
+	 * @return the sets the
+	 */
 	@Query(value = WorkflowQueryBuilder.CHECK_COMMERCIAL_GROUND_AVAILABILITY, nativeQuery = true)
-	public Set<BookingsModel> findAllByBkBookingVenueAndBetweenToDateAndFromDate(
+	public Set<BookingsModel> findAllBookedVenuesFromNow(
 			@Param(BookingsConstants.BOOKING_VENUE) String bookingVenue,
 			@Param(BookingsConstants.BOOKING_TYPE) String bookingType, @Param(BookingsConstants.DATE) Date date,@Param(BookingsConstants.APPLY) String APPLY);
 	
@@ -91,6 +100,16 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	@Query(value = WorkflowQueryBuilder.FIND_DOCUMENTS, nativeQuery = true)
 	public List<?> findDocuments(@Param(BookingsConstants.APPLICATION_NUMBER) String applicationNumber);
 
+	/**
+	 * Search jurisdiction availability.
+	 *
+	 * @param bookingVenue the booking venue
+	 * @param bookingType the booking type
+	 * @param bkSector the bk sector
+	 * @param date the date
+	 * @param APPLY the apply
+	 * @return the sets the
+	 */
 	@Query(value = WorkflowQueryBuilder.CHECK_JURISDICTION_AVAILABILITY, nativeQuery = true)
 	public Set<BookingsModel> searchJurisdictionAvailability(@Param(BookingsConstants.BOOKING_VENUE) String bookingVenue,@Param(BookingsConstants.BOOKING_TYPE) String bookingType, @Param(BookingsConstants.BK_SECTOR) String bkSector,
 			@Param(BookingsConstants.DATE) 	Date date, @Param(BookingsConstants.APPLY) String APPLY);
