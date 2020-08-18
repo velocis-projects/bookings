@@ -39,7 +39,7 @@ public class OsujmNewLocationController {
 	BookingsFieldsValidator bookingsFieldsValidator;
 	
 	
-	private static final Logger LOGGER = LogManager.getLogger( BookingsController.class.getName() );
+	private static final Logger LOGGER = LogManager.getLogger( OsujmNewLocationController.class.getName() );
 	
 	
 	@PostMapping("_create")
