@@ -1,5 +1,6 @@
 package org.egov.bookings.service;
 
+import java.sql.Date;
 import java.util.Set;
 
 import org.egov.bookings.contract.AvailabilityResponse;
@@ -29,5 +30,7 @@ public interface OsujmService {
 	 */
 	Set<AvailabilityResponse> searchJurisdictionAvailability(
 			JurisdictionAvailabilityRequest jurisdictionAvailabilityRequest);
+
+	Set<Date> fetchBookedDates(BookingsRequest bookingsRequest);
 
 }

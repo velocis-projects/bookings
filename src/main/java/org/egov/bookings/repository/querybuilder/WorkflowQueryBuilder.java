@@ -47,5 +47,7 @@ public class WorkflowQueryBuilder {
 	public static final String FIND_DOCUMENTS = "select distinct ef.filestoreid, ef.filename, ewd.documenttype from eg_filestoremap as ef"
 			+ " inner join eg_wf_document_v2 as ewd on ewd.filestoreid = ef.filestoreid"
 			+ " inner join eg_wf_processinstance_v2 as ewp on ewp.id = ewd.processinstanceid and ewp.businessid = :applicationNumber";
+
+	public static final String FETCH_COMMERCIAL_GROUND_BOOKED_DATES = "select * from tt_bookings where (bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType  and bk_to_date >= :date   and bk_from_date <= :date and bk_action =:APPLY) or (bk_from_date >= :date and bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType and bk_action =:APPLY) ";
 	
 }

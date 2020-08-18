@@ -4,13 +4,17 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 import org.egov.bookings.config.BookingsConfiguration;
+import org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria;
 import org.egov.bookings.contract.IdResponse;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.CommercialGroundFeeModel;
@@ -349,6 +353,41 @@ public class EnrichmentService {
 			throw new CustomException("OSUJM UPDATE ERROR", "ERROR WHILE UPDATING OSUJM DETAILS ");
 		}
 		return bookingsModel;
+	}
+
+
+
+	public List<LocalDate> enrichBookedDates(Set<BookingsModel> bookingsModel) {
+		List<LocalDate> listOfDates = new ArrayList<>();
+		try {
+
+			for (BookingsModel bookingsModel1 : bookingsModel) {
+				LocalDate startDate = LocalDate.parse(bookingsModel1.getBkFromDate() + "");
+				LocalDate endDate = LocalDate.parse(bookingsModel1.getBkToDate() + "");
+				long numOfDays = ChronoUnit.DAYS.between(startDate, endDate);
+
+				List<LocalDate>listOfDates2 = LongStream.range(0, numOfDays).mapToObj(startDate::plusDays)
+						.collect(Collectors.toList());
+				listOfDates.addAll(listOfDates2);
+				listOfDates.add(endDate);
+			}
+
+		} catch (Exception e) {
+			throw new CustomException("INVALID_REQUEST_BODY", e.getLocalizedMessage());
+		}
+		return listOfDates;
+	}
+
+	public List<LocalDate> extractAllDatesBetweenTwoDates(BookingsRequest bookingsRequest) {
+		LocalDate startDate = LocalDate.parse(bookingsRequest.getBookingsModel().getBkFromDate() + "");
+		LocalDate endDate = LocalDate.parse(bookingsRequest.getBookingsModel().getBkToDate() + "");
+		long numOfDays = ChronoUnit.DAYS.between(startDate, endDate);
+
+		List<LocalDate> listOfDates2 = LongStream.range(0, numOfDays).mapToObj(startDate::plusDays)
+				.collect(Collectors.toList());
+		listOfDates2.add(endDate);
+		return listOfDates2;
+
 	}
 
 }

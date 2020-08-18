@@ -1,5 +1,6 @@
 package org.egov.bookings.controller;
 
+import java.sql.Date;
 import java.util.Set;
 
 import org.egov.bookings.common.model.ResponseModel;
@@ -73,6 +74,22 @@ public class OsujmController {
 
 		bookingsFieldsValidator.validateJurisdictionAvailablityRequest(jurisdictionAvailabilityRequest);
 		Set<AvailabilityResponse> res = osujmService.searchJurisdictionAvailability(jurisdictionAvailabilityRequest);
+
+		ResponseModel rs = new ResponseModel();
+		rs.setStatus("200");
+		rs.setMessage("Already Booked Dates");
+		rs.setData(res);
+		return ResponseEntity.ok(rs);
+
+	}
+	
+	
+	@PostMapping("/availability/dates/_fetch")
+	public ResponseEntity<?> fetchBookedDates(
+			@RequestBody BookingsRequest bookingsRequest) {
+
+		bookingsFieldsValidator.validateJurisdictionAvailablityRqst(bookingsRequest);
+		Set<Date> res = osujmService.fetchBookedDates(bookingsRequest);
 
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");

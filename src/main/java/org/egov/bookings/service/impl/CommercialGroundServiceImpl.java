@@ -3,10 +3,13 @@ package org.egov.bookings.service.impl;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.transaction.Transactional;
 
@@ -23,6 +26,7 @@ import org.egov.bookings.repository.CommercialGroundRepository;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.service.CommercialGroundService;
 import org.egov.bookings.utils.BookingsConstants;
+import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,13 +43,21 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 	@Autowired
 	private CommercialGroundRepository commercialGroundRepository;
 
+	/** The common repository. */
 	@Autowired
 	CommonRepository commonRepository;
 
+	/** The bookings repository. */
 	@Autowired
 	private BookingsRepository bookingsRepository;
 	
+	/** The commercial grnd availability repository. */
+	@Autowired
 	private CommercialGrndAvailabilityRepository commercialGrndAvailabilityRepository;
+	
+	/** The enrichment service. */
+	@Autowired
+	private EnrichmentService enrichmentService;
 
 	/*
 	 * (non-Javadoc)
@@ -65,6 +77,9 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.CommercialGroundService#searchCommercialGroundAvailabilty(org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria)
+	 */
 	@Override
 	public Set<AvailabilityResponse> searchCommercialGroundAvailabilty(
 			CommercialGroundAvailabiltySearchCriteria commercialGroundAvailabiltySearchCriteria) {
@@ -86,6 +101,9 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.CommercialGroundService#lockCommercialAvailability(org.egov.bookings.model.CommercialGrndAvailabilityModel)
+	 */
 	@Override
 	public CommercialGrndAvailabilityModel lockCommercialAvailability(
 			CommercialGrndAvailabilityModel commercialGrndAvailabilityModel) {
@@ -96,6 +114,37 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 		}catch (Exception e) {
 			throw new CustomException("DATABASE_ERROR",e.getLocalizedMessage());
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.CommercialGroundService#fetchBookedDates(org.egov.bookings.web.models.BookingsRequest)
+	 */
+	@Override
+	public Set<Date> fetchBookedDates(
+			BookingsRequest bookingsRequest) {
+
+		// Date date = commercialGroundAvailabiltySearchCriteria.getDate();
+		LocalDate date = LocalDate.now();
+		Date date1 = Date.valueOf(date);
+		SortedSet<Date> bookedDates = new TreeSet<>();
+
+		Set<BookingsModel> bookingsModel = commonRepository.findAllBookedVenuesFromNow(
+				bookingsRequest.getBookingsModel().getBkBookingVenue(),
+				bookingsRequest.getBookingsModel().getBkBookingType(), date1, BookingsConstants.APPLY);
+		List<LocalDate> fetchBookedDates = enrichmentService.enrichBookedDates(bookingsModel);
+		List<LocalDate> toBeBooked = enrichmentService.extractAllDatesBetweenTwoDates(bookingsRequest);
+		for (LocalDate toBeBooked1 : toBeBooked) {
+
+			for (LocalDate fetchBookedDates1 : fetchBookedDates) {
+				if (toBeBooked1.equals(fetchBookedDates1)) {
+					bookedDates.add(Date.valueOf(toBeBooked1));
+				}
+			}
+
+		}
+
+		return bookedDates;
+
 	}
 
 }

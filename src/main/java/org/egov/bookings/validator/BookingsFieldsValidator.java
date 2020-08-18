@@ -372,5 +372,50 @@ public class BookingsFieldsValidator {
 		if (BookingsFieldsValidator.isNullOrEmpty(jurisdictionAvailabilityRequest.getBkSector())) {
 			throw new IllegalArgumentException("Invalid Sector");
 		}
+		
+	}
+
+
+	public void validateGrndAvailabilityRequest(BookingsRequest bookingsRequest) {
+
+		if(BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
+			throw new IllegalArgumentException("Invalid Booking Request");
+		}
+		
+		if(BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
+			throw new IllegalArgumentException("Invalid Booking Model object");
+		}
+		
+		if(BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkBookingVenue())) {
+			throw new IllegalArgumentException("Invalid Booking Venue");
+		}
+		
+		if(BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkBookingType())) {
+			throw new IllegalArgumentException("Invalid Booking Type");
+		}
+		
+	}
+
+
+	public void validateJurisdictionAvailablityRqst(BookingsRequest bookingsRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
+			throw new IllegalArgumentException("Invalid Booking Request");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
+			throw new IllegalArgumentException("Invalid Booking Model object");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkBookingVenue())) {
+			throw new IllegalArgumentException("Invalid Booking Venue");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkBookingType())) {
+			throw new IllegalArgumentException("Invalid Booking Type");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkSector())) {
+			throw new IllegalArgumentException("Invalid Booking Sector");
+		}
 	}
 }

@@ -114,5 +114,4 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	public Set<BookingsModel> searchJurisdictionAvailability(@Param(BookingsConstants.BOOKING_VENUE) String bookingVenue,@Param(BookingsConstants.BOOKING_TYPE) String bookingType, @Param(BookingsConstants.BK_SECTOR) String bkSector,
 			@Param(BookingsConstants.DATE) 	Date date, @Param(BookingsConstants.APPLY) String APPLY);
 
-
 }

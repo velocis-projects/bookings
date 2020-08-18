@@ -3,7 +3,10 @@ package org.egov.bookings.service.impl;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.transaction.Transactional;
 
@@ -36,6 +39,9 @@ public class OsujmServiceImpl implements OsujmService {
 	/** The common repository. */
 	@Autowired
 	private CommonRepository commonRepository;
+	
+	@Autowired
+	private EnrichmentService enrichmentService;
 	
 	/* (non-Javadoc)
 	 * @see org.egov.bookings.service.OsujmService#findJurisdictionFee(org.egov.bookings.web.models.BookingsRequest)
@@ -83,6 +89,35 @@ public class OsujmServiceImpl implements OsujmService {
 		return bookedDates;
 
 		
+	}
+
+	@Override
+	public Set<Date> fetchBookedDates(BookingsRequest bookingsRequest) {
+
+		// Date date = commercialGroundAvailabiltySearchCriteria.getDate();
+		LocalDate date = LocalDate.now();
+		Date date1 = Date.valueOf(date);
+		SortedSet<Date> bookedDates = new TreeSet<>();
+
+		Set<BookingsModel> bookingsModel = commonRepository.searchJurisdictionAvailability(
+				bookingsRequest.getBookingsModel().getBkBookingVenue(),
+				bookingsRequest.getBookingsModel().getBkBookingType(),
+				bookingsRequest.getBookingsModel().getBkSector(),
+				date1,BookingsConstants.APPLY);
+		List<LocalDate> fetchBookedDates = enrichmentService.enrichBookedDates(bookingsModel);
+		List<LocalDate> toBeBooked = enrichmentService.extractAllDatesBetweenTwoDates(bookingsRequest);
+		for (LocalDate toBeBooked1 : toBeBooked) {
+
+			for (LocalDate fetchBookedDates1 : fetchBookedDates) {
+				if (toBeBooked1.equals(fetchBookedDates1)) {
+					bookedDates.add(Date.valueOf(toBeBooked1));
+				}
+			}
+
+		}
+
+		return bookedDates;
+
 	}
 	
 }

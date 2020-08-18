@@ -1,6 +1,7 @@
 package org.egov.bookings.contract;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,4 +21,8 @@ public class JurisdictionAvailabilityRequest implements Serializable {
 	private String bookingVenue;
 	
 	private String bookingType;
+	
+	private Date fromDate;
+	
+	private Date toDate;
 }

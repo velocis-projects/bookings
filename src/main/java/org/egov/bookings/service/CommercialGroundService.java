@@ -12,6 +12,7 @@ import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.CommercialGrndAvailabilityModel;
 import org.egov.bookings.model.CommercialGroundFeeModel;
+import org.egov.bookings.web.models.BookingsRequest;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -33,5 +34,8 @@ public interface CommercialGroundService {
 
 	CommercialGrndAvailabilityModel lockCommercialAvailability(
 			CommercialGrndAvailabilityModel commercialGrndAvailabilityModel);
+
+	Set<Date> fetchBookedDates(
+			BookingsRequest bookingsRequest);
 
 }
