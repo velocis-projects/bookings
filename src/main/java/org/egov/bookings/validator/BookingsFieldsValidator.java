@@ -28,92 +28,77 @@ public class BookingsFieldsValidator {
 	 * @param tenantId the tenant id
 	 */
 	public void validateTenantId(String tenantId) {
-		if(tenantId == null || tenantId == "")
-		 throw new IllegalArgumentException("Invalid TenantId");
+		if (tenantId == null || tenantId == "")
+			throw new IllegalArgumentException("Invalid TenantId");
 	}
-	
-	
+
 	/**
 	 * Validate business service.
 	 *
 	 * @param businessService the business service
 	 */
 	public void validateBusinessService(String businessService) {
-		if(businessService == null || businessService == "")
-			 throw new IllegalArgumentException("Invalid businessService");
+		if (businessService == null || businessService == "")
+			throw new IllegalArgumentException("Invalid businessService");
 	}
-	
+
 	/**
 	 * Validate action.
 	 *
 	 * @param action the action
 	 */
 	public void validateAction(String action) {
-		if(action == null || action == "")
-			 throw new IllegalArgumentException("Invalid Action");
+		if (action == null || action == "")
+			throw new IllegalArgumentException("Invalid Action");
 	}
-	
-	
-	
+
 	/**
 	 * Checks if is null or empty.
 	 *
 	 * @param object the object
 	 * @return true, if is null or empty
 	 */
-	public static boolean isNullOrEmpty( final Object object )
-	   {
-	      if ( object == null )
-	         return true;
-	      if ( object instanceof String )
-	         return ( ( String ) object ).length() == 0;
-	      if ( object instanceof Collection )
-	         return ( ( Collection< ? > ) object ).isEmpty();
-	      if ( object instanceof Map )
-	         return ( ( Map< ?, ? > ) object ).isEmpty();
-	      if ( object.getClass().isArray() )
-	      {
-	         if( Array.getLength( object ) == 0 ) 
-	         {
-	            return true;
-	         } 
-	         else 
-	         {
-	            // test 1st dim array
-	            for( int i = 0; i < Array.getLength( object ); i++ ) 
-	            {
-	               if( Array.get( object, i ) != null ) 
-	               {
-	                  // check if 2 dim array
-	                  if( Array.get( object, i ).getClass().isArray() ) {
-	                     if( Array.getLength( Array.get( object, i ) ) == 0 ) 
-	                     {
-	                        return true;
-	                     }
-	                     for( int j = 0; j < Array.getLength( Array.get( object, i ) ); j++ ) {
-	                        if( Array.get( Array.get( object, j ), i ) != null ) 
-	                        {
-	                           // means found at least one data not null
-	                           return false;
-	                        }
-	                     }
-	                     // means all data of a row are null
-	                     return true;
-	                  } 
-	                  else 
-	                  {
-	                     // means 1 dim array and one data not null
-	                     return false;
-	                  }
-	               }
-	            }
-	            // all data are null
-	            return true;
-	         }
-	      }
-	      return false;
-	   }
-
+	public static boolean isNullOrEmpty(final Object object) {
+		if (object == null)
+			return true;
+		if (object instanceof String)
+			return ((String) object).length() == 0;
+		if (object instanceof Collection)
+			return ((Collection<?>) object).isEmpty();
+		if (object instanceof Map)
+			return ((Map<?, ?>) object).isEmpty();
+		if (object.getClass().isArray()) {
+			if (Array.getLength(object) == 0) {
+				return true;
+			} else {
+				// test 1st dim array
+				for (int i = 0; i < Array.getLength(object); i++) {
+					if (Array.get(object, i) != null) {
+						// check if 2 dim array
+						if (Array.get(object, i).getClass().isArray()) {
+							if (Array.getLength(Array.get(object, i)) == 0) {
+								return true;
+							}
+							for (int j = 0; j < Array.getLength(Array.get(object, i)); j++) {
+								if (Array.get(Array.get(object, j), i) != null) {
+									// means found at least one data not null
+									return false;
+								}
+							}
+							// means all data of a row are null
+							return true;
+						} else {
+							// means 1 dim array and one data not null
+							return false;
+						}
+					}
+				}
+				// all data are null
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Validate osbm search criteria.
@@ -121,68 +106,66 @@ public class BookingsFieldsValidator {
 	 * @param osbmSearchCriteria the osbm search criteria
 	 */
 	public void validateOsbmSearchCriteria(OsbmSearchCriteria osbmSearchCriteria) {
-		
-		if(null == osbmSearchCriteria) {
+
+		if (null == osbmSearchCriteria) {
 			throw new IllegalArgumentException("Invalid Search Criteria Field");
-		}
-		else if(null == osbmSearchCriteria.getConstructionType() || osbmSearchCriteria.getConstructionType() == "") {
+		} else if (null == osbmSearchCriteria.getConstructionType() || osbmSearchCriteria.getConstructionType() == "") {
 			throw new IllegalArgumentException("Invalid constructionType");
 		}
-		
-		else if(null == osbmSearchCriteria.getDurationInMonths() || osbmSearchCriteria.getDurationInMonths() == "") {
+
+		else if (null == osbmSearchCriteria.getDurationInMonths() || osbmSearchCriteria.getDurationInMonths() == "") {
 			throw new IllegalArgumentException("Invalid durationInMonths");
 		}
-		
-		else if(null == osbmSearchCriteria.getResidentialCommercial() || osbmSearchCriteria.getResidentialCommercial() == "") {
+
+		else if (null == osbmSearchCriteria.getResidentialCommercial()
+				|| osbmSearchCriteria.getResidentialCommercial() == "") {
 			throw new IllegalArgumentException("Invalid residentialCommercial");
 		}
-		
-		
-		else if(null == osbmSearchCriteria.getStorage() || osbmSearchCriteria.getStorage() == "") {
+
+		else if (null == osbmSearchCriteria.getStorage() || osbmSearchCriteria.getStorage() == "") {
 			throw new IllegalArgumentException("Invalid getStorage");
 		}
-		
-		else if(null == osbmSearchCriteria.getVillageCity() || osbmSearchCriteria.getVillageCity() == "") {
+
+		else if (null == osbmSearchCriteria.getVillageCity() || osbmSearchCriteria.getVillageCity() == "") {
 			throw new IllegalArgumentException("Invalid villageCity");
 		}
-		
-	}
 
+	}
 
 	/**
 	 * Validate commercial ground criteria.
 	 *
-	 * @param commercialGroundFeeSearchCriteria the commercial ground fee search criteria
+	 * @param commercialGroundFeeSearchCriteria the commercial ground fee search
+	 *                                          criteria
 	 */
 	public void validateCommercialGroundCriteria(CommercialGroundFeeSearchCriteria commercialGroundFeeSearchCriteria) {
-		if(null == commercialGroundFeeSearchCriteria) {
+		if (null == commercialGroundFeeSearchCriteria) {
 			throw new IllegalArgumentException("Invalid Commercial Ground Fee Search Criteria");
-		}
-		else if(null == commercialGroundFeeSearchCriteria.getCategory() || commercialGroundFeeSearchCriteria.getCategory() == "") {
+		} else if (null == commercialGroundFeeSearchCriteria.getCategory()
+				|| commercialGroundFeeSearchCriteria.getCategory() == "") {
 			throw new IllegalArgumentException("Invalid Category");
 		}
-		
-		else if(null == commercialGroundFeeSearchCriteria.getBookingVenue() || commercialGroundFeeSearchCriteria.getBookingVenue() == "") {
+
+		else if (null == commercialGroundFeeSearchCriteria.getBookingVenue()
+				|| commercialGroundFeeSearchCriteria.getBookingVenue() == "") {
 			throw new IllegalArgumentException("Invalid Booking Venue");
 		}
 	}
 
-
 	/**
 	 * Validate commercial ground availability criteria.
 	 *
-	 * @param commercialGroundAvailabiltySearchCriteria the commercial ground availabilty search criteria
+	 * @param commercialGroundAvailabiltySearchCriteria the commercial ground
+	 *                                                  availabilty search criteria
 	 */
 	public void validateCommercialGroundAvailabilityCriteria(
 			CommercialGroundAvailabiltySearchCriteria commercialGroundAvailabiltySearchCriteria) {
-		if(null == commercialGroundAvailabiltySearchCriteria) {
+		if (null == commercialGroundAvailabiltySearchCriteria) {
 			throw new IllegalArgumentException("Invalid Commercial Ground Availability Search Criteria");
-		}
-		else if(null == commercialGroundAvailabiltySearchCriteria.getBookingVenue()) {
+		} else if (null == commercialGroundAvailabiltySearchCriteria.getBookingVenue()) {
 			throw new IllegalArgumentException("Invalid Commercial Ground Booking Venue");
 		}
 	}
-
 
 	/**
 	 * Validate osbm approver body.
@@ -190,17 +173,14 @@ public class BookingsFieldsValidator {
 	 * @param osbmApproverRequest the osbm approver request
 	 */
 	public void validateOsbmApproverBody(OsbmApproverRequest osbmApproverRequest) {
-		if(null == osbmApproverRequest) {
+		if (null == osbmApproverRequest) {
 			throw new IllegalArgumentException("Invalid Osbm Approver Request Body");
-		}
-		else if(null == osbmApproverRequest.getSector() || osbmApproverRequest.getSector().equals("")) {
+		} else if (null == osbmApproverRequest.getSector() || osbmApproverRequest.getSector().equals("")) {
 			throw new IllegalArgumentException("Invalid Sector");
-		}
-		else if(null == osbmApproverRequest.getUuid() || osbmApproverRequest.getUuid().equals("")) {
+		} else if (null == osbmApproverRequest.getUuid() || osbmApproverRequest.getUuid().equals("")) {
 			throw new IllegalArgumentException("Invalid Uuid");
 		}
 	}
-
 
 	/**
 	 * Validate pdf details.
@@ -208,22 +188,19 @@ public class BookingsFieldsValidator {
 	 * @param viewPdfDetailsModel the view pdf details model
 	 */
 	public void validatePdfDetails(ViewPdfDetailsModel viewPdfDetailsModel) {
-		
-		if(null == viewPdfDetailsModel) {
+
+		if (null == viewPdfDetailsModel) {
 			throw new IllegalArgumentException("Invalid Pdf Details Request Body");
-		}
-		else if(null == viewPdfDetailsModel.getBkApplicationNumber() || viewPdfDetailsModel.getBkApplicationNumber().equals("")) {
+		} else if (null == viewPdfDetailsModel.getBkApplicationNumber()
+				|| viewPdfDetailsModel.getBkApplicationNumber().equals("")) {
 			throw new IllegalArgumentException("Invalid application number");
-		}
-		else if(null == viewPdfDetailsModel.getFileStoreId() || viewPdfDetailsModel.getFileStoreId().equals("")) {
+		} else if (null == viewPdfDetailsModel.getFileStoreId() || viewPdfDetailsModel.getFileStoreId().equals("")) {
 			throw new IllegalArgumentException("Invalid File Store Id");
-		}
-		else if(null == viewPdfDetailsModel.getKey() || viewPdfDetailsModel.getKey().equals("")) {
+		} else if (null == viewPdfDetailsModel.getKey() || viewPdfDetailsModel.getKey().equals("")) {
 			throw new IllegalArgumentException("Invalid Key");
 		}
-	
-	}
 
+	}
 
 	/**
 	 * Validate new location request.
@@ -231,55 +208,54 @@ public class BookingsFieldsValidator {
 	 * @param newLocationRequest the new location request
 	 */
 	public void validateNewLocationRequest(NewLocationRequest newLocationRequest) {
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest)) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest)) {
 			throw new IllegalArgumentException("Invalid New Location Request");
 		}
-		
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getRequestInfo())) {
+
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getRequestInfo())) {
 			throw new IllegalArgumentException("Invalid Request Info");
 		}
-		
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel())) {
+
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel())) {
 			throw new IllegalArgumentException("Invalid New NewLocationModel object");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getAction())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getAction())) {
 			throw new IllegalArgumentException("Invalid Action");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getApplicantAddress())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getApplicantAddress())) {
 			throw new IllegalArgumentException("Invalid APPLICANT ADDRESS");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getApplicantName())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getApplicantName())) {
 			throw new IllegalArgumentException("Invalid APPLICANT NAME");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getAreaRequirement())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getAreaRequirement())) {
 			throw new IllegalArgumentException("Invalid AREA REQUIREMENT");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getBusinessService())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getBusinessService())) {
 			throw new IllegalArgumentException("Invalid BUSINESS SERVICE");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getContact())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getContact())) {
 			throw new IllegalArgumentException("Invalid CONTACT");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getIdProof())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getIdProof())) {
 			throw new IllegalArgumentException("Invalid ID PROOF");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getLandmark())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getLandmark())) {
 			throw new IllegalArgumentException("Invalid LANDMARK");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getLocalityAddress())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getLocalityAddress())) {
 			throw new IllegalArgumentException("Invalid LOCALITY ADDRESS");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getMailAddress())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getMailAddress())) {
 			throw new IllegalArgumentException("Invalid MAIL ADDRESS");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getSector())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getSector())) {
 			throw new IllegalArgumentException("Invalid SECTOR");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getTenantId())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getTenantId())) {
 			throw new IllegalArgumentException("Invalid TENANT ID");
 		}
 	}
-
 
 	/**
 	 * Validate new location request for update.
@@ -287,27 +263,26 @@ public class BookingsFieldsValidator {
 	 * @param newLocationRequest the new location request
 	 */
 	public void validateNewLocationRequestForUpdate(NewLocationRequest newLocationRequest) {
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest)) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest)) {
 			throw new IllegalArgumentException("Invalid New Location Request");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel())) {
 			throw new IllegalArgumentException("Invalid New NewLocationModel object");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getApplicationNumber())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getApplicationNumber())) {
 			throw new IllegalArgumentException("Invalid APPLICATION NUMBER");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getAction())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getAction())) {
 			throw new IllegalArgumentException("Invalid Action");
 		}
-		
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getBusinessService())) {
+
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getBusinessService())) {
 			throw new IllegalArgumentException("Invalid BUSINESS SERVICE");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getTenantId())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel().getTenantId())) {
 			throw new IllegalArgumentException("Invalid TENANT ID");
 		}
 	}
-
 
 	/**
 	 * Validate commercial ground availability model.
@@ -316,23 +291,22 @@ public class BookingsFieldsValidator {
 	 */
 	public void validateCommercialGroundAvailabilityModel(
 			CommercialGrndAvailabilityModel commercialGrndAvailabilityModel) {
-		if(BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel)) {
+		if (BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel)) {
 			throw new IllegalArgumentException("Invalid commercialGrndAvailabilityModel object");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel.getBookingVenue())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel.getBookingVenue())) {
 			throw new IllegalArgumentException("Invalid Booking Venue");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel.getFromDate())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel.getFromDate())) {
 			throw new IllegalArgumentException("Invalid From Date");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel.getToDate())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel.getToDate())) {
 			throw new IllegalArgumentException("Invalid To Date");
 		}
-		if(BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel.isLocked())) {
+		if (BookingsFieldsValidator.isNullOrEmpty(commercialGrndAvailabilityModel.isLocked())) {
 			throw new IllegalArgumentException("Invalid isLocked");
 		}
 	}
-
 
 	/**
 	 * Validate fee request.
@@ -355,7 +329,6 @@ public class BookingsFieldsValidator {
 
 	}
 
-
 	/**
 	 * Validate jurisdiction availablity request.
 	 *
@@ -372,30 +345,28 @@ public class BookingsFieldsValidator {
 		if (BookingsFieldsValidator.isNullOrEmpty(jurisdictionAvailabilityRequest.getBkSector())) {
 			throw new IllegalArgumentException("Invalid Sector");
 		}
-		
-	}
 
+	}
 
 	public void validateGrndAvailabilityRequest(BookingsRequest bookingsRequest) {
 
-		if(BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
 			throw new IllegalArgumentException("Invalid Booking Request");
 		}
-		
-		if(BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
 			throw new IllegalArgumentException("Invalid Booking Model object");
 		}
-		
-		if(BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkBookingVenue())) {
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkBookingVenue())) {
 			throw new IllegalArgumentException("Invalid Booking Venue");
 		}
-		
-		if(BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkBookingType())) {
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkBookingType())) {
 			throw new IllegalArgumentException("Invalid Booking Type");
 		}
-		
-	}
 
+	}
 
 	public void validateJurisdictionAvailablityRqst(BookingsRequest bookingsRequest) {
 		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
@@ -417,5 +388,60 @@ public class BookingsFieldsValidator {
 		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkSector())) {
 			throw new IllegalArgumentException("Invalid Booking Sector");
 		}
+	}
+
+	public void validateUpdateBookingRequest(BookingsRequest bookingsRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
+			throw new IllegalArgumentException("Invalid Booking Request");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
+			throw new IllegalArgumentException("Invalid Booking Model object");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getRequestInfo())) {
+			throw new IllegalArgumentException("Invalid Request Info");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
+			throw new IllegalArgumentException("Invalid Application Number");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBusinessService())) {
+			throw new IllegalArgumentException("Invalid Business Service");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkAction())) {
+			throw new IllegalArgumentException("Invalid Action");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getTenantId())) {
+			throw new IllegalArgumentException("Invalid Tenant Id");
+		}
+	}
+
+	public void validateCreateBookingRequest(BookingsRequest bookingsRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
+			throw new IllegalArgumentException("Invalid Booking Request");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
+			throw new IllegalArgumentException("Invalid Booking Model object");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getRequestInfo())) {
+			throw new IllegalArgumentException("Invalid Request Info");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBusinessService())) {
+			throw new IllegalArgumentException("Invalid Business Service");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkAction())) {
+			throw new IllegalArgumentException("Invalid Action");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getTenantId())) {
+			throw new IllegalArgumentException("Invalid Tenant Id");
+		}
+
 	}
 }

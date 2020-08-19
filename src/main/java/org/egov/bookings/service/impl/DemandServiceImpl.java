@@ -72,7 +72,7 @@ public class DemandServiceImpl implements DemandService {
 
 	/** The bookings calculator. */
 	@Autowired
-	BookingsCalculatorServiceImpl bookingsCalculator;
+	BookingsCalculatorService bookingsCalculator;
 
 	@Autowired
 	MDMSService mdmsService;

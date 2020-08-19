@@ -211,7 +211,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 		return taxHeadEstimate1;
 	}
 
-	private BigDecimal getJurisdicationAmount(BookingsRequest bookingsRequest) {
+	public BigDecimal getJurisdicationAmount(BookingsRequest bookingsRequest) {
 
 		OsujmFeeModel osujmFeeModel = null;
 		Long area = null;
@@ -241,7 +241,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	 * @param bussinessService the bussiness service
 	 * @return the tax head master data
 	 */
-	private List<TaxHeadMasterFields> getTaxHeadMasterData(BookingsRequest bookingsRequest, String bussinessService) {
+	public List<TaxHeadMasterFields> getTaxHeadMasterData(BookingsRequest bookingsRequest, String bussinessService) {
 
 		List<TaxHeadMasterFields> taxHeadMasterFieldList = new ArrayList<>();
 		JSONArray mdmsArrayList = null;
@@ -272,7 +272,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	 * @param bookingsRequest the bookings request
 	 * @return the osbm amount
 	 */
-	private BigDecimal getOsbmAmount(BookingsRequest bookingsRequest) {
+	public BigDecimal getOsbmAmount(BookingsRequest bookingsRequest) {
 
 		OsbmFeeModel osbmFeeModel = null;
 		try {
@@ -301,7 +301,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	 * @param bookingsRequest the bookings request
 	 * @return the commercial amount
 	 */
-	private BigDecimal getCommercialAmount(BookingsRequest bookingsRequest) {
+	public BigDecimal getCommercialAmount(BookingsRequest bookingsRequest) {
 
 		CommercialGroundFeeModel commercialGroundFeeModel = null;
 		BigDecimal finalAmount = null;

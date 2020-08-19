@@ -4,10 +4,10 @@ import org.springframework.stereotype.Component;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class WorkflowQueryBuilder.
+ * The Class BookingsQueryBuilder.
  */
 @Component
-public class WorkflowQueryBuilder {
+public class BookingsQueryBuilder {
 
 	/** The Constant FIND_ASSIGNEE_UUID. */
 	public static final String FIND_ASSIGNEE_UUID = "select uuid from eg_user eu where eu.id = "

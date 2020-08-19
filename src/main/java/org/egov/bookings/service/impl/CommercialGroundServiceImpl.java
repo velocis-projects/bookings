@@ -51,6 +51,7 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 	@Autowired
 	private BookingsRepository bookingsRepository;
 	
+	
 	/** The commercial grnd availability repository. */
 	@Autowired
 	private CommercialGrndAvailabilityRepository commercialGrndAvailabilityRepository;
@@ -88,7 +89,7 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
         LocalDate date = LocalDate.now();
         Date date1 = Date.valueOf(date);
         Set<AvailabilityResponse> bookedDates = new HashSet<>();
-        Set<BookingsModel> bookingsModel = commonRepository.findAllBookedVenuesFromNow(
+        Set<BookingsModel> bookingsModel = commercialGroundRepository.findAllBookedVenuesFromNow(
 				commercialGroundAvailabiltySearchCriteria.getBookingVenue(),
 				commercialGroundAvailabiltySearchCriteria.getBookingType(),
 				date1,BookingsConstants.APPLY);
@@ -128,7 +129,7 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 		Date date1 = Date.valueOf(date);
 		SortedSet<Date> bookedDates = new TreeSet<>();
 
-		Set<BookingsModel> bookingsModelSet = commonRepository.findAllBookedVenuesFromNow(
+		Set<BookingsModel> bookingsModelSet = commercialGroundRepository.findAllBookedVenuesFromNow(
 				bookingsRequest.getBookingsModel().getBkBookingVenue(),
 				bookingsRequest.getBookingsModel().getBkBookingType(), date1, BookingsConstants.APPLY);
 		
