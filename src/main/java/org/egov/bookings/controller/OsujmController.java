@@ -84,7 +84,7 @@ public class OsujmController {
 	}
 	
 	
-	@PostMapping("/availability/dates/_fetch")
+	@PostMapping("/booked/dates/_fetch")
 	public ResponseEntity<?> fetchBookedDates(
 			@RequestBody BookingsRequest bookingsRequest) {
 

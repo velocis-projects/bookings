@@ -110,7 +110,7 @@ public class CommercialGroundController {
 
 	
 	
-	@PostMapping("/availability/dates/_search")
+	@PostMapping("/booked/dates/_search")
 	private ResponseEntity<?> fetchBookedDates(
 			@RequestBody BookingsRequest bookingsRequest) {
 		

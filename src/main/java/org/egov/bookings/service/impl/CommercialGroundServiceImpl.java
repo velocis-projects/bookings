@@ -128,10 +128,12 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 		Date date1 = Date.valueOf(date);
 		SortedSet<Date> bookedDates = new TreeSet<>();
 
-		Set<BookingsModel> bookingsModel = commonRepository.findAllBookedVenuesFromNow(
+		Set<BookingsModel> bookingsModelSet = commonRepository.findAllBookedVenuesFromNow(
 				bookingsRequest.getBookingsModel().getBkBookingVenue(),
 				bookingsRequest.getBookingsModel().getBkBookingType(), date1, BookingsConstants.APPLY);
-		List<LocalDate> fetchBookedDates = enrichmentService.enrichBookedDates(bookingsModel);
+		
+		
+		List<LocalDate> fetchBookedDates = enrichmentService.enrichBookedDates(bookingsModelSet);
 		List<LocalDate> toBeBooked = enrichmentService.extractAllDatesBetweenTwoDates(bookingsRequest);
 		for (LocalDate toBeBooked1 : toBeBooked) {
 
