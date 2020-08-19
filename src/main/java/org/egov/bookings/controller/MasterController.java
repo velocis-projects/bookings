@@ -36,7 +36,7 @@ public class MasterController {
 	 * @param documentfields the documentfields
 	 * @return the park community inventory details
 	 */
-	@PostMapping(value = "/park/community/hall/_search")
+	@PostMapping(value = "/park/community/hall/inventory/_search")
 	private ResponseEntity<?> getParkCommunityInventoryDetails(@RequestBody DocumentFields documentfields )
 	{
 		if (BookingsFieldsValidator.isNullOrEmpty(documentfields)) 
