@@ -66,9 +66,8 @@ public class BookingsController {
 	private ResponseEntity<?> saveBooking(
 			@RequestBody BookingsRequest bookingsRequest) {
 
-		bookingsFieldsValidator.validateAction(bookingsRequest.getBookingsModel().getBkAction());
-		bookingsFieldsValidator.validateBusinessService(bookingsRequest.getBookingsModel().getBusinessService());
-		bookingsFieldsValidator.validateTenantId(bookingsRequest.getBookingsModel().getTenantId());
+		
+		bookingsFieldsValidator.validateCreateBookingRequest(bookingsRequest);
 		BookingsModel bookingsModel = bookingsService.save(bookingsRequest);
 		ResponseModel rs = new ResponseModel();
 		if (bookingsModel == null) {
@@ -91,13 +90,10 @@ public class BookingsController {
 	 * @return the response entity
 	 */
 	@PostMapping("_update")
-	private ResponseEntity<?> updateBuildingMaterial(
+	private ResponseEntity<?> updateBooking(
 			@RequestBody BookingsRequest bookingsRequest) {
 		
-		bookingsFieldsValidator.validateAction(bookingsRequest.getBookingsModel().getBkAction());
-		//bookingsFieldsValidator.validateBusinessService(bookingsRequest.getBookingsModel().getBusinessService());
-		bookingsFieldsValidator.validateTenantId(bookingsRequest.getBookingsModel().getTenantId());
-		//enrichmentService.enrichTLCreateRequest(bookingsRequest);
+		bookingsFieldsValidator.validateUpdateBookingRequest(bookingsRequest);
 		BookingsModel bookingsModel = bookingsService
 				.update(bookingsRequest);
 		ResponseModel rs = new ResponseModel();

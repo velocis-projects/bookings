@@ -42,18 +42,30 @@ public class OsujmNewLocationController {
 	private static final Logger LOGGER = LogManager.getLogger( OsujmNewLocationController.class.getName() );
 	
 	
+	/**
+	 * Adds the new location.
+	 *
+	 * @param newLocationRequest the new location request
+	 * @return the response entity
+	 */
 	@PostMapping("_create")
 	private ResponseEntity<?> addNewLocation(
 			@RequestBody NewLocationRequest newLocationRequest) {
 		
 		bookingsFieldsValidator.validateNewLocationRequest(newLocationRequest);
-		OsujmNewLocationModel response = newLocationService
+		OsujmNewLocationModel osujmNewLocationModel = newLocationService
 				.addNewLocation(newLocationRequest);
 		ResponseModel rs = new ResponseModel();
-		rs.setStatus("200");
-		rs.setMessage("Data submitted successfully");
-		rs.setData(response);
-		
+		if (osujmNewLocationModel == null) {
+			rs.setStatus("400");
+			rs.setMessage("New Location Created Successfully");
+			rs.setData(osujmNewLocationModel);
+		} else {
+			rs.setStatus("200");
+			rs.setMessage("Error while creating New Location");
+			rs.setData(osujmNewLocationModel);
+		}
+
 		return ResponseEntity.ok(rs);
 	}
 	
@@ -64,13 +76,18 @@ public class OsujmNewLocationController {
 			@RequestBody NewLocationRequest newLocationRequest) {
 		
 		bookingsFieldsValidator.validateNewLocationRequestForUpdate(newLocationRequest);
-		OsujmNewLocationModel response = newLocationService
+		OsujmNewLocationModel osujmNewLocationModel = newLocationService
 				.updateNewLocation(newLocationRequest);
 		ResponseModel rs = new ResponseModel();
-		rs.setStatus("200");
-		rs.setMessage("Data submitted successfully");
-		rs.setData(response);
-		
+		if (osujmNewLocationModel == null) {
+			rs.setStatus("400");
+			rs.setMessage("New Location Updated Successfully");
+			rs.setData(osujmNewLocationModel);
+		} else {
+			rs.setStatus("200");
+			rs.setMessage("Error while Updating New Location");
+			rs.setData(osujmNewLocationModel);
+		}
 		return ResponseEntity.ok(rs);
 	}
 	

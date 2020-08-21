@@ -188,6 +188,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 							commercialAmount.multiply((taxHeadEstimate.getTaxAmount().divide(new BigDecimal(100)))),
 							taxHeadEstimate.getCategory()));
 				}
+				
 
 			}
 			break;
@@ -204,14 +205,13 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 							mccJurisdictionAmount.multiply((taxHeadEstimate.getTaxAmount().divide(new BigDecimal(100)))),
 							taxHeadEstimate.getCategory()));
 				}
-
 			}
 			break;
 		}
 		return taxHeadEstimate1;
 	}
 
-	private BigDecimal getJurisdicationAmount(BookingsRequest bookingsRequest) {
+	public BigDecimal getJurisdicationAmount(BookingsRequest bookingsRequest) {
 
 		OsujmFeeModel osujmFeeModel = null;
 		Long area = null;
@@ -222,14 +222,13 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 					.builder().bookingVenue(bookingVenue).category(category).build();*/
 			osujmFeeModel = osujmService
 					.findJurisdictionFee(bookingsRequest);
+			if(BookingsFieldsValidator.isNullOrEmpty(osujmFeeModel)) {
+				throw new IllegalArgumentException("There is not any amount for this mcc jurisdiction criteria in database");
+			}
 			BigDecimal days = enrichmentService.extractDaysBetweenTwoDates(bookingsRequest);
 			finalAmount = days.multiply(new BigDecimal(osujmFeeModel.getRatePerSqrFeetPerDay()*area));
-			if(BookingsFieldsValidator.isNullOrEmpty(osujmFeeModel)) {
-				throw new CustomException("DATA_NOT_FOUND","There is not any amount for this commercial ground criteria in database");
-			}
-			
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Exception while fetching osbm amount from database");
+			throw new IllegalArgumentException(e.getLocalizedMessage());
 		}
 		return finalAmount;
 	}
@@ -241,7 +240,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	 * @param bussinessService the bussiness service
 	 * @return the tax head master data
 	 */
-	private List<TaxHeadMasterFields> getTaxHeadMasterData(BookingsRequest bookingsRequest, String bussinessService) {
+	public List<TaxHeadMasterFields> getTaxHeadMasterData(BookingsRequest bookingsRequest, String bussinessService) {
 
 		List<TaxHeadMasterFields> taxHeadMasterFieldList = new ArrayList<>();
 		JSONArray mdmsArrayList = null;
@@ -272,7 +271,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	 * @param bookingsRequest the bookings request
 	 * @return the osbm amount
 	 */
-	private BigDecimal getOsbmAmount(BookingsRequest bookingsRequest) {
+	public BigDecimal getOsbmAmount(BookingsRequest bookingsRequest) {
 
 		OsbmFeeModel osbmFeeModel = null;
 		try {
@@ -301,8 +300,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	 * @param bookingsRequest the bookings request
 	 * @return the commercial amount
 	 */
-	private BigDecimal getCommercialAmount(BookingsRequest bookingsRequest) {
-
+	public BigDecimal getCommercialAmount(BookingsRequest bookingsRequest) {
 		CommercialGroundFeeModel commercialGroundFeeModel = null;
 		BigDecimal finalAmount = null;
 		try {
@@ -312,13 +310,14 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 					.builder().bookingVenue(bookingVenue).category(category).build();
 			commercialGroundFeeModel = commercialGroundService
 					.searchCommercialGroundFee(commercialGroundFeeSearchCriteria);
-			BigDecimal days = enrichmentService.extractDaysBetweenTwoDates(bookingsRequest);
-			 finalAmount = days.multiply(BigDecimal.valueOf(commercialGroundFeeModel.getRatePerDay())); 
 			if(BookingsFieldsValidator.isNullOrEmpty(commercialGroundFeeModel)) {
 				throw new CustomException("DATA_NOT_FOUND","There is not any amount for this commercial ground criteria in database");
 			}
+			BigDecimal days = enrichmentService.extractDaysBetweenTwoDates(bookingsRequest);
+			 finalAmount = days.multiply(BigDecimal.valueOf(commercialGroundFeeModel.getRatePerDay())); 
+			
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Exception while fetching osbm amount from database");
+			throw new IllegalArgumentException(e.getLocalizedMessage());
 		}
 		return finalAmount;
 	}

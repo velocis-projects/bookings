@@ -1,5 +1,6 @@
 package org.egov.bookings.controller;
 
+import java.sql.Date;
 import java.util.Set;
 
 import org.egov.bookings.common.model.ResponseModel;
@@ -47,9 +48,16 @@ public class OsujmController {
 		OsujmFeeModel osbmFeeModel = osujmService.findJurisdictionFee(bookingsRequest);
 
 		ResponseModel rs = new ResponseModel();
-		rs.setStatus("200");
-		rs.setMessage("Fee Fetched");
-		rs.setData(osbmFeeModel);
+		if (osbmFeeModel == null) {
+			rs.setStatus("400");
+			rs.setMessage("Failure while Fetching Fee");
+			rs.setData(osbmFeeModel);
+		} else {
+			rs.setStatus("200");
+			rs.setMessage("Fee Fetched successfully");
+			rs.setData(osbmFeeModel);
+		}
+
 		return ResponseEntity.ok(rs);
 
 	}
@@ -66,6 +74,22 @@ public class OsujmController {
 
 		bookingsFieldsValidator.validateJurisdictionAvailablityRequest(jurisdictionAvailabilityRequest);
 		Set<AvailabilityResponse> res = osujmService.searchJurisdictionAvailability(jurisdictionAvailabilityRequest);
+
+		ResponseModel rs = new ResponseModel();
+		rs.setStatus("200");
+		rs.setMessage("Already Booked Dates");
+		rs.setData(res);
+		return ResponseEntity.ok(rs);
+
+	}
+	
+	
+	@PostMapping("/booked/dates/_fetch")
+	public ResponseEntity<?> fetchBookedDates(
+			@RequestBody BookingsRequest bookingsRequest) {
+
+		bookingsFieldsValidator.validateJurisdictionAvailablityRqst(bookingsRequest);
+		Set<Date> res = osujmService.fetchBookedDates(bookingsRequest);
 
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");

@@ -72,7 +72,7 @@ public class DemandServiceImpl implements DemandService {
 
 	/** The bookings calculator. */
 	@Autowired
-	BookingsCalculatorServiceImpl bookingsCalculator;
+	BookingsCalculatorService bookingsCalculator;
 
 	@Autowired
 	MDMSService mdmsService;
@@ -146,7 +146,7 @@ public class DemandServiceImpl implements DemandService {
 	            taxPeriodFrom = taxPeriods.get(BookingsCalculatorConstants.MDMS_STARTDATE);
 	            taxPeriodTo = taxPeriods.get(BookingsCalculatorConstants.MDMS_ENDDATE);
 			List<String> combinedBillingSlabs = new LinkedList<>();
-			//addRoundOffTaxHead(tenantId, demandDetails);
+			addRoundOffTaxHead(tenantId, demandDetails,BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_OSUJM);
 			Demand singleDemand = Demand.builder().status(StatusEnum.ACTIVE)
 					.consumerCode(bookingsRequest.getBookingsModel().getBkApplicationNumber())
 					.demandDetails(demandDetails).payer(bookingsRequest.getRequestInfo().getUserInfo())
@@ -314,7 +314,7 @@ public class DemandServiceImpl implements DemandService {
 	            taxPeriodTo = taxPeriods.get(BookingsCalculatorConstants.MDMS_ENDDATE);
 			
 			List<String> combinedBillingSlabs = new LinkedList<>();
-			addRoundOffTaxHead(tenantId, demandDetails);
+			addRoundOffTaxHead(tenantId, demandDetails,BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_GFCP);
 			Demand singleDemand = Demand.builder().status(StatusEnum.ACTIVE)
 					.consumerCode(bookingsRequest.getBookingsModel().getBkApplicationNumber())
 					.demandDetails(demandDetails).payer(bookingsRequest.getRequestInfo().getUserInfo())
@@ -333,7 +333,7 @@ public class DemandServiceImpl implements DemandService {
 
 	}
 
-	private void addRoundOffTaxHead(String tenantId, List<DemandDetail> demandDetails) {
+	private void addRoundOffTaxHead(String tenantId, List<DemandDetail> demandDetails,String mdmsRoundOff) {
 		BigDecimal totalTax = BigDecimal.ZERO;
 
 		DemandDetail prevRoundOffDemandDetail = null;
@@ -342,7 +342,7 @@ public class DemandServiceImpl implements DemandService {
 		 * Sum all taxHeads except RoundOff as new roundOff will be calculated
 		 */
 		for (DemandDetail demandDetail : demandDetails) {
-			if (!demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD))
+			if (!demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(mdmsRoundOff))
 				totalTax = totalTax.add(demandDetail.getTaxAmount());
 			else
 				prevRoundOffDemandDetail = demandDetail;
@@ -382,7 +382,7 @@ public class DemandServiceImpl implements DemandService {
 
 		if (roundOff.compareTo(BigDecimal.ZERO) != 0) {
 			DemandDetail roundOffDemandDetail = DemandDetail.builder().taxAmount(roundOff)
-					.taxHeadMasterCode(BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD).tenantId(tenantId)
+					.taxHeadMasterCode(mdmsRoundOff).tenantId(tenantId)
 					.collectionAmount(BigDecimal.ZERO).build();
 
 			demandDetails.add(roundOffDemandDetail);
@@ -436,7 +436,7 @@ public class DemandServiceImpl implements DemandService {
 
 		Demand demand = searchResult.get(0);
 		List<DemandDetail> demandDetails = demand.getDemandDetails();
-		List<DemandDetail> updatedDemandDetails = getUpdatedDemandDetails(taxHeadEstimate1, demandDetails);
+		List<DemandDetail> updatedDemandDetails = getUpdatedDemandDetails(taxHeadEstimate1, demandDetails,BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_OSUJM);
 		demand.setDemandDetails(updatedDemandDetails);
 		demands.add(demand);
 
@@ -476,7 +476,7 @@ public class DemandServiceImpl implements DemandService {
 
 		Demand demand = searchResult.get(0);
 		List<DemandDetail> demandDetails = demand.getDemandDetails();
-		List<DemandDetail> updatedDemandDetails = getUpdatedDemandDetails(taxHeadEstimate1, demandDetails);
+		List<DemandDetail> updatedDemandDetails = getUpdatedDemandDetails(taxHeadEstimate1, demandDetails,BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_OSBM);
 		demand.setDemandDetails(updatedDemandDetails);
 		demands.add(demand);
 
@@ -515,7 +515,7 @@ public class DemandServiceImpl implements DemandService {
 
 		Demand demand = searchResult.get(0);
 		List<DemandDetail> demandDetails = demand.getDemandDetails();
-		List<DemandDetail> updatedDemandDetails = getUpdatedDemandDetails(taxHeadEstimate1, demandDetails);
+		List<DemandDetail> updatedDemandDetails = getUpdatedDemandDetails(taxHeadEstimate1, demandDetails,BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_GFCP);
 		demand.setDemandDetails(updatedDemandDetails);
 		demands.add(demand);
 
@@ -544,7 +544,7 @@ public class DemandServiceImpl implements DemandService {
 	 * @return the updated demand details
 	 */
 	private List<DemandDetail> getUpdatedDemandDetails(List<TaxHeadEstimate> taxHeadEstimate1,
-			List<DemandDetail> demandDetails) {
+			List<DemandDetail> demandDetails,String mdmsRoundOff) {
 
 		List<DemandDetail> newDemandDetails = new ArrayList<>();
 		Map<String, List<DemandDetail>> taxHeadToDemandDetail = new HashMap<>();
@@ -581,7 +581,7 @@ public class DemandServiceImpl implements DemandService {
 		}
 		List<DemandDetail> combinedBillDetials = new LinkedList<>(demandDetails);
 		combinedBillDetials.addAll(newDemandDetails);
-		addRoundOffTaxHead(demandDetails.get(0).getTenantId(), combinedBillDetials);
+		addRoundOffTaxHead(demandDetails.get(0).getTenantId(), combinedBillDetials,mdmsRoundOff);
 		return combinedBillDetials;
 	}
 

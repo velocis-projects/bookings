@@ -15,6 +15,7 @@ import org.egov.bookings.model.CommercialGrndAvailabilityModel;
 import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.service.CommercialGroundService;
 import org.egov.bookings.validator.BookingsFieldsValidator;
+import org.egov.bookings.web.models.BookingsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -107,4 +108,23 @@ public class CommercialGroundController {
 		return ResponseEntity.ok(rs);
 	}
 
+	
+	
+	@PostMapping("/booked/dates/_search")
+	private ResponseEntity<?> fetchBookedDates(
+			@RequestBody BookingsRequest bookingsRequest) {
+		
+		bookingsFieldsValidator.validateGrndAvailabilityRequest(bookingsRequest);
+		
+		
+		Set<Date> res = commercialGroundService.fetchBookedDates(bookingsRequest);
+		ResponseModel rs = new ResponseModel();
+		rs.setStatus("200");
+		rs.setMessage("Already Booked Dates");
+		rs.setData(res);
+		
+		return ResponseEntity.ok(rs);
+	}
+	
+	
 }

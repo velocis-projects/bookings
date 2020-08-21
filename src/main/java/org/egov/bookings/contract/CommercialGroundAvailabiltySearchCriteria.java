@@ -72,5 +72,10 @@ public class CommercialGroundAvailabiltySearchCriteria implements Serializable {
 
 	/** The booking venue. */
 	private String bookingVenue;
+	
+	
+	private String fromDate;
+	
+	private String toDate;
 
 }

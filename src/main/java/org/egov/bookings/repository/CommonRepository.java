@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.egov.bookings.model.BookingsModel;
-import org.egov.bookings.repository.querybuilder.WorkflowQueryBuilder;
+import org.egov.bookings.repository.querybuilder.BookingsQueryBuilder;
 import org.egov.bookings.utils.BookingsConstants;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,7 +26,7 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 * @param role_tenantId   the role tenant id
 	 * @return the string
 	 */
-	@Query(value = WorkflowQueryBuilder.FIND_ASSIGNEE_UUID, nativeQuery = true)
+	@Query(value = BookingsQueryBuilder.FIND_ASSIGNEE_UUID, nativeQuery = true)
 	public String findAssigneeUuid(@Param(BookingsConstants.TENANT_ID) String tenantId,
 			@Param(BookingsConstants.ACTION) String action,
 			@Param(BookingsConstants.BUSINESS_SERVICE) String businessservice,
@@ -38,7 +38,7 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 * @param uuid the uuid
 	 * @return the list
 	 */
-	@Query(value = WorkflowQueryBuilder.FIND_APPLICATION_NUMBER, nativeQuery = true)
+	@Query(value = BookingsQueryBuilder.FIND_APPLICATION_NUMBER, nativeQuery = true)
 	public Set<String> findApplicationNumber(@Param(BookingsConstants.ROLES) String roles);
 
 	/**
@@ -47,7 +47,7 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 * @param uuid the uuid
 	 * @return the list
 	 */
-	@Query(value = WorkflowQueryBuilder.FIND_SECTOR_LIST, nativeQuery = true)
+	@Query(value = BookingsQueryBuilder.FIND_SECTOR_LIST, nativeQuery = true)
 	public List<String> findSectorList(@Param(BookingsConstants.UUID) String uuid);
 
 	/**
@@ -56,7 +56,7 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 * @param applicationNumber the application number
 	 * @return the list
 	 */
-	@Query(value = WorkflowQueryBuilder.FIND_DOCUMENT_LIST, nativeQuery = true)
+	@Query(value = BookingsQueryBuilder.FIND_DOCUMENT_LIST, nativeQuery = true)
 	public List<?> findDocumentList(@Param(BookingsConstants.APPLICATION_NUMBER) String applicationNumber);
 
 	/**
@@ -65,14 +65,10 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 * @param applicationNumber the application number
 	 * @return the string
 	 */
-	@Query(value = WorkflowQueryBuilder.FIND_BUSINESS_SERVICE, nativeQuery = true)
+	@Query(value = BookingsQueryBuilder.FIND_BUSINESS_SERVICE, nativeQuery = true)
 	public String findBusinessService(@Param(BookingsConstants.APPLICATION_NUMBER) String applicationNumber);
 
-	@Query(value = WorkflowQueryBuilder.CHECK_COMMERCIAL_GROUND_AVAILABILITY, nativeQuery = true)
-	public Set<BookingsModel> findAllByBkBookingVenueAndBetweenToDateAndFromDate(
-			@Param(BookingsConstants.BOOKING_VENUE) String bookingVenue,
-			@Param(BookingsConstants.BOOKING_TYPE) String bookingType, @Param(BookingsConstants.DATE) Date date,@Param(BookingsConstants.APPLY) String APPLY);
-	
+
 	
 	/**
 	 * Fetch all approver.
@@ -88,12 +84,21 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 * @param applicationNumber the application number
 	 * @return the list
 	 */
-	@Query(value = WorkflowQueryBuilder.FIND_DOCUMENTS, nativeQuery = true)
+	@Query(value = BookingsQueryBuilder.FIND_DOCUMENTS, nativeQuery = true)
 	public List<?> findDocuments(@Param(BookingsConstants.APPLICATION_NUMBER) String applicationNumber);
 
-	@Query(value = WorkflowQueryBuilder.CHECK_JURISDICTION_AVAILABILITY, nativeQuery = true)
+	/**
+	 * Search jurisdiction availability.
+	 *
+	 * @param bookingVenue the booking venue
+	 * @param bookingType the booking type
+	 * @param bkSector the bk sector
+	 * @param date the date
+	 * @param APPLY the apply
+	 * @return the sets the
+	 */
+	@Query(value = BookingsQueryBuilder.CHECK_JURISDICTION_AVAILABILITY, nativeQuery = true)
 	public Set<BookingsModel> searchJurisdictionAvailability(@Param(BookingsConstants.BOOKING_VENUE) String bookingVenue,@Param(BookingsConstants.BOOKING_TYPE) String bookingType, @Param(BookingsConstants.BK_SECTOR) String bkSector,
-			@Param(BookingsConstants.DATE) 	Date date, @Param(BookingsConstants.APPLY) String APPLY);
-
+			@Param(BookingsConstants.DATE) 	Date date, @Param(BookingsConstants.PAY) String PAY);
 
 }
