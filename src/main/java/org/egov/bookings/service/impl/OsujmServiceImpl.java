@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.transaction.Transactional;
 
@@ -43,6 +45,9 @@ public class OsujmServiceImpl implements OsujmService {
 	@Autowired
 	private EnrichmentService enrichmentService;
 	
+	@Autowired
+	private BookingsConstants bc;
+	
 	/* (non-Javadoc)
 	 * @see org.egov.bookings.service.OsujmService#findJurisdictionFee(org.egov.bookings.web.models.BookingsRequest)
 	 */
@@ -77,6 +82,7 @@ public class OsujmServiceImpl implements OsujmService {
         LocalDate date = LocalDate.now();
         Date date1 = Date.valueOf(date);
         Set<AvailabilityResponse> bookedDates = new HashSet<>();
+        
         Set<BookingsModel> bookingsModel = commonRepository.searchJurisdictionAvailability(
         		jurisdictionAvailabilityRequest.getBookingVenue(),
         		jurisdictionAvailabilityRequest.getBookingType(),
@@ -98,7 +104,8 @@ public class OsujmServiceImpl implements OsujmService {
 		LocalDate date = LocalDate.now();
 		Date date1 = Date.valueOf(date);
 		SortedSet<Date> bookedDates = new TreeSet<>();
-
+		
+		
 		Set<BookingsModel> bookingsModel = commonRepository.searchJurisdictionAvailability(
 				bookingsRequest.getBookingsModel().getBkBookingVenue(),
 				bookingsRequest.getBookingsModel().getBkBookingType(),

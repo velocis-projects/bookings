@@ -79,6 +79,7 @@ public class BookingsConstants {
 	/** The Constant LOCALIZATION_CODE_ASSIGN_CITIZEN. */
 	public static final String LOCALIZATION_CODE_ASSIGN_CITIZEN = "pgr.sms.notification.assign.citizen";
 
+
 	/** The Constant LOCALIZATION_CODE_ASSIGN_EMPLOYEE. */
 	public static final String LOCALIZATION_CODE_ASSIGN_EMPLOYEE = "pgr.sms.notification.assign.employee";
 
@@ -421,7 +422,7 @@ public class BookingsConstants {
 
 	/** The Constant APPLY. */
 	public static final String APPLY = "APPLY";
-
+	
 	/** The Constant APPROVE. */
 	public static final String APPROVE = "APPROVE";
 
@@ -480,7 +481,7 @@ public class BookingsConstants {
 	public static final String MCC_APPROVER = "MCC_APPROVER";
 
 	/** The Constant ACTION_SPECIAL_APPLY. */
-	public static final String ACTION_SPECIAL_APPLY = "SPECIALAPPLY";
+	public static final String ACTION_DELIVER = "DELIVER";
 
 	/** The Constant ACTION_FAILURE_APPLY. */
 	public static final String ACTION_FAILURE_APPLY = "FAILUREAPPLY";
@@ -490,5 +491,6 @@ public class BookingsConstants {
 
 	/** The Constant ADMIN_APPROVER. */
 	public static final String ADMIN_APPROVER = "ADMIN_APPROVER";
+	
 
 }

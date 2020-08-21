@@ -104,6 +104,9 @@ public class BookingsServiceImpl implements BookingsService {
 	@Autowired
 	private MailNotificationService mailNotificationService;
 	
+	@Autowired
+	private BookingsConstants bc;
+	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger(BookingsServiceImpl.class.getName());
 
@@ -120,7 +123,7 @@ public class BookingsServiceImpl implements BookingsService {
 
 			if (!flag)
 				enrichmentService.enrichBookingsCreateRequest(bookingsRequest);
-			if (!BookingsConstants.ACTION_SPECIAL_APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
+			if (!BookingsConstants.ACTION_DELIVER.equals(bookingsRequest.getBookingsModel().getBkAction())
 					&& !BookingsConstants.ACTION_FAILURE_APPLY
 							.equals(bookingsRequest.getBookingsModel().getBkAction())) {
 				enrichmentService.generateDemand(bookingsRequest);
@@ -134,7 +137,7 @@ public class BookingsServiceImpl implements BookingsService {
 			enrichmentService.enrichBookingsDetails(bookingsRequest);
 			bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
 			bookingsRequest.setBookingsModel(bookingsModel);
-		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)
+		/*if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)
 				&& !"INITIATED".equals(bookingsModel.getBkApplicationStatus())) {
 			try {
 				Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
@@ -146,7 +149,7 @@ public class BookingsServiceImpl implements BookingsService {
 			} catch (Exception e) {
 				throw new CustomException("NOTIFICATION_ERROR", e.getMessage());
 			}
-		}
+		}*/
 
 		return bookingsModel;
 
