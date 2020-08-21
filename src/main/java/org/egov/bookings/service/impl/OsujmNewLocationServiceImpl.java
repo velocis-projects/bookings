@@ -16,6 +16,8 @@ import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.Booking;
 import org.egov.bookings.contract.DocumentFields;
+import org.egov.bookings.contract.Message;
+import org.egov.bookings.contract.MessagesResponse;
 import org.egov.bookings.contract.OsujmNewLocationFields;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.OsujmNewLocationModel;
@@ -24,33 +26,42 @@ import org.egov.bookings.repository.OsujmNewLocationRepository;
 import org.egov.bookings.service.BookingsService;
 import org.egov.bookings.service.OsujmNewLocationService;
 import org.egov.bookings.utils.BookingsConstants;
-import org.egov.bookings.utils.CreateDateComparator;
 import org.egov.bookings.utils.NewLocationCreateDate;
 import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.NewLocationRequest;
 import org.egov.bookings.workflow.WorkflowIntegrator;
 import org.egov.common.contract.request.Role;
+import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OsujmNewLocationServiceImpl.
+ */
 @Service
 @Transactional
 public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 
+	/** The bookings service. */
 	@Autowired
 	private BookingsService bookingsService;
 	
+	/** The enrichment service. */
 	@Autowired
 	private EnrichmentService enrichmentService;
 	
+	/** The config. */
 	@Autowired
 	private BookingsConfiguration config;
 	
+	/** The workflow integrator. */
 	@Autowired
 	private WorkflowIntegrator workflowIntegrator;
 
+	/** The new location repository. */
 	@Autowired
 	OsujmNewLocationRepository newLocationRepository;
 	
@@ -62,8 +73,27 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 	@Autowired
 	private ObjectMapper objectMapper;
 	
+	/** The bookings service impl. */
+	@Autowired
+	private BookingsServiceImpl bookingsServiceImpl;
+	
+	/** The sms notification service. */
+	@Autowired
+	private SMSNotificationService smsNotificationService;
+	
+	/** The mail notification service. */
+	@Autowired
+	private MailNotificationService mailNotificationService;
+	
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger(OsujmNewLocationServiceImpl.class.getName());
 	
+	/**
+	 * Adds the new location.
+	 *
+	 * @param newLocationRequest the new location request
+	 * @return the osujm new location model
+	 */
 	@Override
 	public OsujmNewLocationModel addNewLocation(NewLocationRequest newLocationRequest) {
 		OsujmNewLocationModel osujmNewLocationModel = new OsujmNewLocationModel();
@@ -91,6 +121,12 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 
 	}
 
+	/**
+	 * Update new location.
+	 *
+	 * @param newLocationRequest the new location request
+	 * @return the osujm new location model
+	 */
 	@Override
 	public OsujmNewLocationModel updateNewLocation(NewLocationRequest newLocationRequest) {
 
@@ -109,18 +145,95 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 				newLocaltionModel = enrichmentService.enrichNlujmDetails(newLocationRequest);
 				newLocaltionModel = newLocationRepository.save(newLocaltionModel);
 			}
-
 			 else {
 				 newLocationRepository.save(newLocationRequest.getNewLocationModel());
 				 newLocaltionModel = newLocationRequest.getNewLocationModel();
 			}
-		
+			MessagesResponse messageResponse = bookingsServiceImpl.getLocalizationMessage(newLocationRequest.getRequestInfo());
+			String applicationStatus = "";
+			if(!BookingsFieldsValidator.isNullOrEmpty(messageResponse))
+			{
+				for (Message message : messageResponse.getMessages()) {
+					if(newLocaltionModel.getApplicationStatus().equals(message.getCode()))
+					{
+						applicationStatus = message.getMessage();
+						break;
+					}
+				}
+			}
+			if(!BookingsFieldsValidator.isNullOrEmpty(newLocaltionModel))
+			{
+				try {
+					String notificationMsg = prepareSMSNotifMsgForUpdate(newLocaltionModel, applicationStatus);
+					smsNotificationService.sendSMS(notificationMsg);
+					String mailSubject = prepareMailSubjectForUpdate(newLocaltionModel);
+					notificationMsg = prepareMailNotifMsgForUpdate(newLocaltionModel, applicationStatus);
+					mailNotificationService.sendMail(newLocaltionModel.getMailAddress(), notificationMsg, mailSubject);
+				} catch (Exception e) {
+					throw new CustomException("NOTIFICATION_ERROR", e.getMessage());
+				}
+			}
 		} catch (Exception e) {
 			LOGGER.error("Exception occur while updating booking " + e);
 		}
 		return newLocaltionModel;
 	}
+	
+	/**
+	 * Prepare SMS notif msg for update.
+	 *
+	 * @param newLocaltionModel the new localtion model
+	 * @param applicationStatus the application status
+	 * @return the string
+	 */
+	private String prepareSMSNotifMsgForUpdate(OsujmNewLocationModel newLocaltionModel, String applicationStatus)
+	{
+		String notificationMsg = "";
+		if(!BookingsFieldsValidator.isNullOrEmpty(newLocaltionModel))
+		{
+			notificationMsg = "Dear " + newLocaltionModel.getApplicantName() + ", Your " + BookingsConstants.NLOSUJM
+					+ " Application no. " + newLocaltionModel.getApplicationNumber() +  " has been updated with status " + applicationStatus + ".";
+		}
+		return notificationMsg;
+	}
 
+	/**
+	 * Prepare mail subject for update.
+	 *
+	 * @param newLocaltionModel the new localtion model
+	 * @return the string
+	 */
+	private String prepareMailSubjectForUpdate(OsujmNewLocationModel newLocaltionModel)
+	{
+		String mailSubject = "";
+		if(!BookingsFieldsValidator.isNullOrEmpty(newLocaltionModel))
+		{
+			mailSubject = "[Application No: " + newLocaltionModel.getApplicationNumber() + "] Application Status Updated for " + BookingsConstants.NLOSUJM + ".";
+		}
+		return mailSubject;
+	}
+	
+	/**
+	 * Prepare mail notif msg for update.
+	 *
+	 * @param newLocaltionModel the new localtion model
+	 * @param bkApplicationStatus the bk application status
+	 * @return the string
+	 */
+	private String prepareMailNotifMsgForUpdate(OsujmNewLocationModel newLocaltionModel, String bkApplicationStatus)
+	{
+		String notificationMsg = "";
+		if(!BookingsFieldsValidator.isNullOrEmpty(newLocaltionModel) )
+		{
+			notificationMsg = "Dear " + newLocaltionModel.getApplicantName().toUpperCase() + "," + "<br/>" + "<br/>"
+					+ "Your application number <strong>" + newLocaltionModel.getApplicationNumber()
+					+ "</strong> for <strong>" + BookingsConstants.NLOSUJM
+					+ "</strong> has been updated with status <strong>" + bkApplicationStatus + "</strong>." + "<br/>"
+					+ "<br/>" + "Regards," + "<br/>" + "Team CMC";
+		}
+		return notificationMsg;
+	}
+	
 	/**
 	 * Gets the employee newlocation search.
 	 *

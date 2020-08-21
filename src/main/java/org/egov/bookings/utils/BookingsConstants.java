@@ -490,5 +490,8 @@ public class BookingsConstants {
 
 	/** The Constant ADMIN_APPROVER. */
 	public static final String ADMIN_APPROVER = "ADMIN_APPROVER";
+	
+	/** The Constant NLOSUJM. */
+	public static final String NLOSUJM = "New Location Open Spaces Under Jurisdiction of MCC";
 
 }
