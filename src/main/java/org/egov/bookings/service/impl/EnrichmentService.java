@@ -359,7 +359,6 @@ public class EnrichmentService {
 
 	public List<LocalDate> enrichBookedDates(Set<BookingsModel> bookingsModel) {
 		List<LocalDate> listOfDates = new ArrayList<>();
-		try {
 
 			for (BookingsModel bookingsModel1 : bookingsModel) {
 				LocalDate startDate = LocalDate.parse(bookingsModel1.getBkFromDate() + "");
@@ -372,9 +371,6 @@ public class EnrichmentService {
 				listOfDates.add(endDate);
 			}
 
-		} catch (Exception e) {
-			throw new CustomException("INVALID_REQUEST_BODY", e.getLocalizedMessage());
-		}
 		return listOfDates;
 	}
 

@@ -611,6 +611,9 @@ public class BookingsServiceImpl implements BookingsService {
 					&& BookingsConstants.BUSINESS_SERVICE_OSUJM.equals(businessService)){
 				bookingsModel = enrichmentService.enrichOsujmDetails(bookingsRequest);
 				bookingsModel = bookingsRepository.save(bookingsModel);
+				if(BookingsConstants.PAY.equals(bookingsRequest.getBookingsModel().getBkAction())){
+					config.setLock(true);
+				}
 			}
 			else {
 				bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());

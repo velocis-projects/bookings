@@ -12,6 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.transaction.Transactional;
 
+import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.AvailabilityResponse;
 import org.egov.bookings.contract.JurisdictionAvailabilityRequest;
 import org.egov.bookings.model.BookingsModel;
@@ -46,7 +47,9 @@ public class OsujmServiceImpl implements OsujmService {
 	private EnrichmentService enrichmentService;
 	
 	@Autowired
-	private BookingsConstants bc;
+	BookingsConfiguration config;
+	
+	private Lock lock = new ReentrantLock();
 	
 	/* (non-Javadoc)
 	 * @see org.egov.bookings.service.OsujmService#findJurisdictionFee(org.egov.bookings.web.models.BookingsRequest)
@@ -104,25 +107,36 @@ public class OsujmServiceImpl implements OsujmService {
 		LocalDate date = LocalDate.now();
 		Date date1 = Date.valueOf(date);
 		SortedSet<Date> bookedDates = new TreeSet<>();
-		
-		
-		Set<BookingsModel> bookingsModel = commonRepository.searchJurisdictionAvailability(
-				bookingsRequest.getBookingsModel().getBkBookingVenue(),
-				bookingsRequest.getBookingsModel().getBkBookingType(),
-				bookingsRequest.getBookingsModel().getBkSector(),
-				date1,BookingsConstants.APPLY);
-		List<LocalDate> fetchBookedDates = enrichmentService.enrichBookedDates(bookingsModel);
-		List<LocalDate> toBeBooked = enrichmentService.extractAllDatesBetweenTwoDates(bookingsRequest);
-		for (LocalDate toBeBooked1 : toBeBooked) {
 
-			for (LocalDate fetchBookedDates1 : fetchBookedDates) {
-				if (toBeBooked1.equals(fetchBookedDates1)) {
-					bookedDates.add(Date.valueOf(toBeBooked1));
+		lock.lock();
+		try {
+			if (config.isLock()) {
+				config.setLock(false);
+				Set<BookingsModel> bookingsModel = commonRepository.searchJurisdictionAvailability(
+						bookingsRequest.getBookingsModel().getBkBookingVenue(),
+						bookingsRequest.getBookingsModel().getBkBookingType(),
+						bookingsRequest.getBookingsModel().getBkSector(), date1, BookingsConstants.PAY);
+				List<LocalDate> fetchBookedDates = enrichmentService.enrichBookedDates(bookingsModel);
+				List<LocalDate> toBeBooked = enrichmentService.extractAllDatesBetweenTwoDates(bookingsRequest);
+				for (LocalDate toBeBooked1 : toBeBooked) {
+
+					for (LocalDate fetchBookedDates1 : fetchBookedDates) {
+						if (toBeBooked1.equals(fetchBookedDates1)) {
+							bookedDates.add(Date.valueOf(toBeBooked1));
+						}
+					}
+
 				}
+			} else {
+				lock.unlock();
+				throw new CustomException("OTHER_PAYMENT_IN_PROCESS", "Please try after few seconds");
 			}
+			lock.unlock();
 
+		} catch (Exception e) {
+			config.setLock(true);
+			throw new CustomException("OTHER_PAYMENT_IN_PROCESS", "Please try after few seconds");
 		}
-
 		return bookedDates;
 
 	}
