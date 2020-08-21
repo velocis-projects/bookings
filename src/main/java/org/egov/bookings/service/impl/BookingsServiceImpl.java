@@ -161,7 +161,7 @@ public class BookingsServiceImpl implements BookingsService {
 	 * @param requestInfo the request info
 	 * @return the localization message
 	 */
-	private MessagesResponse getLocalizationMessage(RequestInfo requestInfo)
+	public MessagesResponse getLocalizationMessage(RequestInfo requestInfo)
 	{
 		Object result = new Object();
 		RequestInfoWrapper requestInfoWrapper = new RequestInfoWrapper();
@@ -505,7 +505,7 @@ public class BookingsServiceImpl implements BookingsService {
 			for (Role role : roles) {
 				if(!BookingsConstants.CITIZEN.equals(role.getCode()) && !BookingsConstants.EMPLOYEE.equals(role.getCode()) ) {
 					
-					if(BookingsConstants.OSBM_APPROVER.equals(role.getCode()) || BookingsConstants.MCC_APPROVER.equals(role.getCode()))
+					if(!BookingsFieldsValidator.isNullOrEmpty(applicationNumberSet) && (BookingsConstants.OSBM_APPROVER.equals(role.getCode()) || BookingsConstants.MCC_APPROVER.equals(role.getCode())))
 					{
 						List<String> sectorList = commonRepository.findSectorList(uuid);
 						if (sectorList == null || sectorList.isEmpty()) {
@@ -520,7 +520,7 @@ public class BookingsServiceImpl implements BookingsService {
 									applicationStatus, mobileNumber, bookingType, sectorList, fromDate, toDate, applicationNumberSet));
 						}
 					}
-					else if(BookingsConstants.MCC_HELPDESK_USER.equals(role.getCode()))
+					else if(!BookingsFieldsValidator.isNullOrEmpty(applicationNumberSet) && BookingsConstants.MCC_HELPDESK_USER.equals(role.getCode()))
 					{
 						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
 							bookingsSet.addAll( bookingsRepository.getEmployeeSearchBWTBooking(tenantId, applicationNumber,
@@ -617,7 +617,7 @@ public class BookingsServiceImpl implements BookingsService {
 			}
 		
 		
-			/*MessagesResponse messageResponse = getLocalizationMessage(bookingsRequest.getRequestInfo());
+			MessagesResponse messageResponse = getLocalizationMessage(bookingsRequest.getRequestInfo());
 
 			String bkApplicationStatus = "";
 			if(!BookingsFieldsValidator.isNullOrEmpty(messageResponse))
@@ -633,18 +633,16 @@ public class BookingsServiceImpl implements BookingsService {
 			if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel))
 			{
 				try {
-				Map< String, MdmsJsonFields > mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
-				String notificationMsg = prepareSMSNotifMsgForUpdate(bookingsModel, mdmsJsonFieldsMap, bkApplicationStatus);
-				smsNotificationService.sendSMS(notificationMsg);
-				String mailSubject = prepareMailSubjectForUpdate(bookingsModel, mdmsJsonFieldsMap);
-				notificationMsg = prepareMailNotifMsgForUpdate(bookingsModel, mdmsJsonFieldsMap, bkApplicationStatus);
-				mailNotificationService.sendMail(bookingsModel.getBkEmail(), notificationMsg, mailSubject);
-				}
-				catch (Exception e) {
+					Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
+					String notificationMsg = prepareSMSNotifMsgForUpdate(bookingsModel, mdmsJsonFieldsMap, bkApplicationStatus);
+					smsNotificationService.sendSMS(notificationMsg);
+					String mailSubject = prepareMailSubjectForUpdate(bookingsModel, mdmsJsonFieldsMap);
+					notificationMsg = prepareMailNotifMsgForUpdate(bookingsModel, mdmsJsonFieldsMap, bkApplicationStatus);
+					mailNotificationService.sendMail(bookingsModel.getBkEmail(), notificationMsg, mailSubject);
+				} catch (Exception e) {
 					throw new CustomException("NOTIFICATION_ERROR", e.getMessage());
 				}
 			}
-*/		
 		return bookingsModel;
 	}
 
