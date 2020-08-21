@@ -22,7 +22,7 @@ public class WorkflowQueryBuilder {
 	/** The Constant FIND_APPLICATION_NUMBER. */
 	public static final String FIND_APPLICATION_NUMBER = "select businessid from eg_wf_processinstance_v2 as ewpv "
 			+ "inner join eg_wf_state_v2 as ewsv on ewsv.uuid = ewpv.status " 
-			+ "inner join eg_wf_action_v2 as ewav on ewav.currentstate = ewsv.uuid "
+			+ "inner join eg_wf_action_v2 as ewav on ewav.currentstate = ewsv.uuid or ewav.nextstate = ewsv.uuid "
 			+ "and ewav.roles = :roles";
 	//where ewpv.action != 'INITIATE'
 	
