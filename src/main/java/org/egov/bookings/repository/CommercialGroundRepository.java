@@ -30,19 +30,6 @@ public interface CommercialGroundRepository extends CrudRepository<CommercialGro
 
 	CommercialGroundFeeModel findByBookingVenueAndCategory(String bookingVenue, String category);
 	
-	/**
-	 * Find all booked venues from now.
-	 *
-	 * @param bookingVenue the booking venue
-	 * @param bookingType the booking type
-	 * @param date the date
-	 * @param APPLY the apply
-	 * @return the sets the
-	 */
-	@Query(value = BookingsQueryBuilder.CHECK_COMMERCIAL_GROUND_AVAILABILITY, nativeQuery = true)
-	public Set<BookingsModel> findAllBookedVenuesFromNow(
-			@Param(BookingsConstants.BOOKING_VENUE) String bookingVenue,
-			@Param(BookingsConstants.BOOKING_TYPE) String bookingType, @Param(BookingsConstants.DATE) Date date,@Param(BookingsConstants.APPLY) String APPLY);
 	
 
 }

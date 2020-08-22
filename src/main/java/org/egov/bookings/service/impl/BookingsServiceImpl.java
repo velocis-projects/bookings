@@ -612,11 +612,14 @@ public class BookingsServiceImpl implements BookingsService {
 				bookingsModel = enrichmentService.enrichOsujmDetails(bookingsRequest);
 				bookingsModel = bookingsRepository.save(bookingsModel);
 				if(BookingsConstants.PAY.equals(bookingsRequest.getBookingsModel().getBkAction())){
-					config.setLock(true);
+					config.setJurisdictionLock(true);
 				}
 			}
 			else {
 				bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
+				if(BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()) && BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService)){
+					config.setCommercialLock(true);
+				}
 			}
 		
 		

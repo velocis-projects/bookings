@@ -268,7 +268,12 @@ public class BookingsConfiguration {
     @Value("${egov.demand.search.endpoint}")
     private String demandSearchEndpoint;
     
-    @Value("${egov.lock.payment}")
-    private boolean lock;
+    @Value("${egov.lock.jurisdiction.payment}")
+    private boolean jurisdictionLock;
+    
+    @Value("${egov.lock.commercial.payment}")
+    private boolean commercialLock;
+    
+    
 
 }

@@ -110,8 +110,8 @@ public class OsujmServiceImpl implements OsujmService {
 
 		lock.lock();
 		try {
-			if (config.isLock()) {
-				config.setLock(false);
+			if (config.isJurisdictionLock()) {
+				config.setJurisdictionLock(false);
 				Set<BookingsModel> bookingsModel = commonRepository.searchJurisdictionAvailability(
 						bookingsRequest.getBookingsModel().getBkBookingVenue(),
 						bookingsRequest.getBookingsModel().getBkBookingType(),
@@ -134,7 +134,8 @@ public class OsujmServiceImpl implements OsujmService {
 			lock.unlock();
 
 		} catch (Exception e) {
-			config.setLock(true);
+			lock.unlock();
+			config.setJurisdictionLock(true);
 			throw new CustomException("OTHER_PAYMENT_IN_PROCESS", "Please try after few seconds");
 		}
 		return bookedDates;

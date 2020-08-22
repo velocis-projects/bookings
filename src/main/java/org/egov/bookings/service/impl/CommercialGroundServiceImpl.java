@@ -10,10 +10,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections.map.HashedMap;
+import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.AvailabilityResponse;
 import org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria;
 import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
@@ -50,15 +53,19 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 	/** The bookings repository. */
 	@Autowired
 	private BookingsRepository bookingsRepository;
-	
-	
+
 	/** The commercial grnd availability repository. */
 	@Autowired
 	private CommercialGrndAvailabilityRepository commercialGrndAvailabilityRepository;
-	
+
 	/** The enrichment service. */
 	@Autowired
 	private EnrichmentService enrichmentService;
+
+	@Autowired
+	private BookingsConfiguration config;
+
+	private Lock lock = new ReentrantLock();
 
 	/*
 	 * (non-Javadoc)
@@ -71,39 +78,47 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 	public CommercialGroundFeeModel searchCommercialGroundFee(
 			CommercialGroundFeeSearchCriteria commercialGroundFeeSearchCriteria) {
 		try {
-		return commercialGroundRepository.findByBookingVenueAndCategory(commercialGroundFeeSearchCriteria.getBookingVenue(),
-				commercialGroundFeeSearchCriteria.getCategory());
-		}catch (Exception e) {
-			throw new CustomException("DATABASE_FETCH_ERROR",e.getLocalizedMessage());
+			return commercialGroundRepository.findByBookingVenueAndCategory(
+					commercialGroundFeeSearchCriteria.getBookingVenue(),
+					commercialGroundFeeSearchCriteria.getCategory());
+		} catch (Exception e) {
+			throw new CustomException("DATABASE_FETCH_ERROR", e.getLocalizedMessage());
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.egov.bookings.service.CommercialGroundService#searchCommercialGroundAvailabilty(org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.egov.bookings.service.CommercialGroundService#
+	 * searchCommercialGroundAvailabilty(org.egov.bookings.contract.
+	 * CommercialGroundAvailabiltySearchCriteria)
 	 */
 	@Override
 	public Set<AvailabilityResponse> searchCommercialGroundAvailabilty(
 			CommercialGroundAvailabiltySearchCriteria commercialGroundAvailabiltySearchCriteria) {
 
 		// Date date = commercialGroundAvailabiltySearchCriteria.getDate();
-        LocalDate date = LocalDate.now();
-        Date date1 = Date.valueOf(date);
-        Set<AvailabilityResponse> bookedDates = new HashSet<>();
-        Set<BookingsModel> bookingsModel = commercialGroundRepository.findAllBookedVenuesFromNow(
+		LocalDate date = LocalDate.now();
+		Date date1 = Date.valueOf(date);
+		Set<AvailabilityResponse> bookedDates = new HashSet<>();
+		Set<BookingsModel> bookingsModel = commonRepository.findAllBookedVenuesFromNow(
 				commercialGroundAvailabiltySearchCriteria.getBookingVenue(),
-				commercialGroundAvailabiltySearchCriteria.getBookingType(),
-				date1,BookingsConstants.APPLY);
-		for(BookingsModel bkModel : bookingsModel) {
-			bookedDates.add(AvailabilityResponse.builder().fromDate(bkModel.getBkFromDate()).toDate(bkModel.getBkToDate()).build());
+				commercialGroundAvailabiltySearchCriteria.getBookingType(), date1, BookingsConstants.APPLY);
+		for (BookingsModel bkModel : bookingsModel) {
+			bookedDates.add(AvailabilityResponse.builder().fromDate(bkModel.getBkFromDate())
+					.toDate(bkModel.getBkToDate()).build());
 		}
-		
+
 		return bookedDates;
 
-		
 	}
 
-	/* (non-Javadoc)
-	 * @see org.egov.bookings.service.CommercialGroundService#lockCommercialAvailability(org.egov.bookings.model.CommercialGrndAvailabilityModel)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.egov.bookings.service.CommercialGroundService#lockCommercialAvailability(
+	 * org.egov.bookings.model.CommercialGrndAvailabilityModel)
 	 */
 	@Override
 	public CommercialGrndAvailabilityModel lockCommercialAvailability(
@@ -112,40 +127,54 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 		try {
 			commGrndAvail = commercialGrndAvailabilityRepository.save(commercialGrndAvailabilityModel);
 			return commGrndAvail;
-		}catch (Exception e) {
-			throw new CustomException("DATABASE_ERROR",e.getLocalizedMessage());
+		} catch (Exception e) {
+			throw new CustomException("DATABASE_ERROR", e.getLocalizedMessage());
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.egov.bookings.service.CommercialGroundService#fetchBookedDates(org.egov.bookings.web.models.BookingsRequest)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.egov.bookings.service.CommercialGroundService#fetchBookedDates(org.egov.
+	 * bookings.web.models.BookingsRequest)
 	 */
 	@Override
-	public Set<Date> fetchBookedDates(
-			BookingsRequest bookingsRequest) {
+	public Set<Date> fetchBookedDates(BookingsRequest bookingsRequest) {
 
 		// Date date = commercialGroundAvailabiltySearchCriteria.getDate();
 		LocalDate date = LocalDate.now();
 		Date date1 = Date.valueOf(date);
 		SortedSet<Date> bookedDates = new TreeSet<>();
 
-		Set<BookingsModel> bookingsModelSet = commercialGroundRepository.findAllBookedVenuesFromNow(
-				bookingsRequest.getBookingsModel().getBkBookingVenue(),
-				bookingsRequest.getBookingsModel().getBkBookingType(), date1, BookingsConstants.APPLY);
-		
-		
-		List<LocalDate> fetchBookedDates = enrichmentService.enrichBookedDates(bookingsModelSet);
-		List<LocalDate> toBeBooked = enrichmentService.extractAllDatesBetweenTwoDates(bookingsRequest);
-		for (LocalDate toBeBooked1 : toBeBooked) {
+		lock.lock();
+		try {
+			if (config.isCommercialLock()) {
+				Set<BookingsModel> bookingsModelSet = commonRepository.findAllBookedVenuesFromNow(
+						bookingsRequest.getBookingsModel().getBkBookingVenue(),
+						bookingsRequest.getBookingsModel().getBkBookingType(), date1, BookingsConstants.APPLY);
 
-			for (LocalDate fetchBookedDates1 : fetchBookedDates) {
-				if (toBeBooked1.equals(fetchBookedDates1)) {
-					bookedDates.add(Date.valueOf(toBeBooked1));
+				List<LocalDate> fetchBookedDates = enrichmentService.enrichBookedDates(bookingsModelSet);
+				List<LocalDate> toBeBooked = enrichmentService.extractAllDatesBetweenTwoDates(bookingsRequest);
+				for (LocalDate toBeBooked1 : toBeBooked) {
+
+					for (LocalDate fetchBookedDates1 : fetchBookedDates) {
+						if (toBeBooked1.equals(fetchBookedDates1)) {
+							bookedDates.add(Date.valueOf(toBeBooked1));
+						}
+					}
 				}
+			} else {
+				lock.unlock();
+				throw new CustomException("OTHER_PAYMENT_IN_PROCESS", "Please try after few seconds");
 			}
+			lock.unlock();
 
+		} catch (Exception e) {
+			lock.unlock();
+			config.setCommercialLock(true);
+			throw new CustomException("OTHER_PAYMENT_IN_PROCESS", "Please try after few seconds");
 		}
-
 		return bookedDates;
 
 	}
