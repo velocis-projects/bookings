@@ -443,6 +443,8 @@ public class BookingsConstants {
 
 	/** The Constant BUSINESS_SERVICE_NLUJM. */
 	public static final String BUSINESS_SERVICE_NLUJM = "NLUJM";
+	
+	public static final String BUSINESS_SERVICE_PACC = "PACC";
 
 	/** The Constant EMPLOYEE. */
 	public static final String TYPE = "type";

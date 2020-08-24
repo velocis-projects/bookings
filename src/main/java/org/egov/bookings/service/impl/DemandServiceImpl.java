@@ -108,10 +108,65 @@ public class DemandServiceImpl implements DemandService {
 		case BookingsConstants.BUSINESS_SERVICE_OSUJM:
 			demands = getDemandsForOsujm(bookingsRequest);
 			break;
+			
+		case BookingsConstants.BUSINESS_SERVICE_PACC:
+			demands = getDemandsForPACC(bookingsRequest);
+			break;	
 		}
 
 		return demandRepository.saveDemand(bookingsRequest.getRequestInfo(), demands);
 
+	}
+
+	private List<Demand> getDemandsForPACC(BookingsRequest bookingsRequest) {
+
+
+		List<Demand> demands = new LinkedList<>();
+		List<DemandDetail> demandDetails = new LinkedList<>();
+		try {
+			String tenantId = bookingsRequest.getRequestInfo().getUserInfo().getTenantId();
+
+			String taxHeadCode1 = BookingsCalculatorConstants.PACC_TAX_CODE_1;
+
+			String taxHeadCode2 = BookingsCalculatorConstants.PACC_TAX_CODE_2;
+
+			List<TaxHeadEstimate> taxHeadEstimate1 = bookingsCalculator.getTaxHeadEstimate(bookingsRequest,
+					taxHeadCode1, taxHeadCode2);
+
+			taxHeadEstimate1.forEach(taxHeadEstimate -> {
+				demandDetails.add(DemandDetail.builder().taxAmount(taxHeadEstimate.getEstimateAmount())
+						.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).collectionAmount(BigDecimal.ZERO)
+						.tenantId(tenantId).build());
+			});
+
+			
+			 Object mdmsData = mdmsService.mDMSCall(bookingsRequest.getRequestInfo(), tenantId);
+
+	            Long taxPeriodFrom = System.currentTimeMillis();
+	            Long taxPeriodTo = System.currentTimeMillis();
+
+	            Map<String, Long> taxPeriods = mdmsService.getTaxPeriods(bookingsRequest.getRequestInfo(), bookingsRequest.getBookingsModel(), mdmsData);
+	            taxPeriodFrom = taxPeriods.get(BookingsCalculatorConstants.MDMS_STARTDATE);
+	            taxPeriodTo = taxPeriods.get(BookingsCalculatorConstants.MDMS_ENDDATE);
+			List<String> combinedBillingSlabs = new LinkedList<>();
+			addRoundOffTaxHead(tenantId, demandDetails,BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_PACC);
+			Demand singleDemand = Demand.builder().status(StatusEnum.ACTIVE)
+					.consumerCode(bookingsRequest.getBookingsModel().getBkApplicationNumber())
+					.demandDetails(demandDetails).payer(bookingsRequest.getRequestInfo().getUserInfo())
+					.minimumAmountPayable(config.getMinimumPayableAmount())
+					.tenantId(bookingsRequest.getRequestInfo().getUserInfo().getTenantId()).taxPeriodFrom(taxPeriodFrom)
+					.taxPeriodTo(taxPeriodTo).consumerType("bookings")
+					.businessService(bookingsRequest.getBookingsModel().getBusinessService())
+					.additionalDetails(Collections.singletonMap("calculationDes1cription", combinedBillingSlabs))
+					.build();
+
+			demands.add(singleDemand);
+		} catch (Exception e) {
+			throw new CustomException("DEMAND_ERROR", e.getLocalizedMessage());
+		}
+		return demands;
+
+	
 	}
 
 	private List<Demand> getDemandsForOsujm(BookingsRequest bookingsRequest) {

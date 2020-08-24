@@ -146,16 +146,17 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 		LocalDate date = LocalDate.now();
 		Date date1 = Date.valueOf(date);
 		SortedSet<Date> bookedDates = new TreeSet<>();
-
-		lock.lock();
+		
 		try {
+			List<LocalDate> toBeBooked = enrichmentService.extractAllDatesBetweenTwoDates(bookingsRequest);
+			lock.lock();
 			if (config.isCommercialLock()) {
 				Set<BookingsModel> bookingsModelSet = commonRepository.findAllBookedVenuesFromNow(
 						bookingsRequest.getBookingsModel().getBkBookingVenue(),
 						bookingsRequest.getBookingsModel().getBkBookingType(), date1, BookingsConstants.APPLY);
 
 				List<LocalDate> fetchBookedDates = enrichmentService.enrichBookedDates(bookingsModelSet);
-				List<LocalDate> toBeBooked = enrichmentService.extractAllDatesBetweenTwoDates(bookingsRequest);
+				
 				for (LocalDate toBeBooked1 : toBeBooked) {
 
 					for (LocalDate fetchBookedDates1 : fetchBookedDates) {

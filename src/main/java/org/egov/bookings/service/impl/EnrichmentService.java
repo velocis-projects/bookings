@@ -206,43 +206,17 @@ public class EnrichmentService {
 	 */
 	public void generateDemand(BookingsRequest bookingsRequest) {
 
-		
-		
-		switch(bookingsRequest.getBookingsModel().getBusinessService()) {
-		 
-		case BookingsConstants.BUSINESS_SERVICE_OSBM :
-			
-
-			if(!bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
+		if (!BookingsConstants.BUSINESS_SERVICE_BWT.equals(bookingsRequest.getBookingsModel().getBusinessService())) {
+			if (!bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
 				demandService.createDemand(bookingsRequest);
 			} else
 				demandService.updateDemand(bookingsRequest);
-		break;
-		
-		case BookingsConstants.BUSINESS_SERVICE_BWT : 
-			
-
-			if(!bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
+		} else {
+			if (!bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
 				demandService.createDemand(bookingsRequest);
 			}
-		break ;
-		
-		case BookingsConstants.BUSINESS_SERVICE_GFCP :
-			if(!bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
-				demandService.createDemand(bookingsRequest);
-			} else
-				demandService.updateDemand(bookingsRequest);
-			break;
-			
-		case BookingsConstants.BUSINESS_SERVICE_OSUJM :
-			if(!bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
-				demandService.createDemand(bookingsRequest);
-			} else
-				demandService.updateDemand(bookingsRequest);
-			break;	
 		}
-		
-		
+
 	}
 
 	/**
@@ -384,6 +358,22 @@ public class EnrichmentService {
 		listOfDates2.add(endDate);
 		return listOfDates2;
 
+	}
+
+
+
+	public BookingsModel enrichPaccDetails(BookingsRequest bookingsRequest) {
+		BookingsModel bookingsModel = null;
+		try {
+			bookingsModel = bookingsRepository
+					.findByBkApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
+			bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
+			bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
+			bookingsModel.setBookingsRemarks(bookingsRequest.getBookingsModel().getBookingsRemarks());
+		} catch (Exception e) {
+			throw new CustomException("PACC UPDATE ERROR", "ERROR WHILE UPDATING PACC DETAILS ");
+		}
+		return bookingsModel;
 	}
 
 }

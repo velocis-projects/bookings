@@ -275,5 +275,6 @@ public class BookingsConfiguration {
     private boolean commercialLock;
     
     
+    
 
 }

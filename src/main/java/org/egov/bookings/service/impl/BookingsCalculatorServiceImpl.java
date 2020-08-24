@@ -207,8 +207,30 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 				}
 			}
 			break;
+			
+		case BookingsConstants.BUSINESS_SERVICE_PACC:
+			//BigDecimal parkAndCommunityAmount = getParkAndCommunityAmount(bookingsRequest);
+			BigDecimal parkAndCommunityAmount = new BigDecimal(4400);
+			for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
+				if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
+					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(), parkAndCommunityAmount,
+							taxHeadEstimate.getCategory()));
+				}
+				if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
+					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+							parkAndCommunityAmount.multiply((taxHeadEstimate.getTaxAmount().divide(new BigDecimal(100)))),
+							taxHeadEstimate.getCategory()));
+				}
+			}
+			break;
+			
 		}
 		return taxHeadEstimate1;
+	}
+
+	private BigDecimal getParkAndCommunityAmount(BookingsRequest bookingsRequest) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public BigDecimal getJurisdicationAmount(BookingsRequest bookingsRequest) {

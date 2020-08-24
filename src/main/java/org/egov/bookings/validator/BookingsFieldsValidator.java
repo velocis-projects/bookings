@@ -11,6 +11,7 @@ import org.egov.bookings.contract.OsbmApproverRequest;
 import org.egov.bookings.contract.OsbmSearchCriteria;
 import org.egov.bookings.model.CommercialGrndAvailabilityModel;
 import org.egov.bookings.model.ViewPdfDetailsModel;
+import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.web.models.NewLocationRequest;
 import org.springframework.stereotype.Component;
@@ -443,5 +444,30 @@ public class BookingsFieldsValidator {
 			throw new IllegalArgumentException("Invalid Tenant Id");
 		}
 
+	}
+
+	public void validatePAndCBookingRequest(BookingsRequest bookingsRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
+			throw new IllegalArgumentException("Invalid Booking Request");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
+			throw new IllegalArgumentException("Invalid Booking Model object");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getRequestInfo())) {
+			throw new IllegalArgumentException("Invalid Request Info");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBusinessService())) {
+			throw new IllegalArgumentException("Invalid Business Service");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkAction())) {
+			throw new IllegalArgumentException("Invalid Action");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getTenantId())) {
+			throw new IllegalArgumentException("Invalid Tenant Id");
+		}
 	}
 }

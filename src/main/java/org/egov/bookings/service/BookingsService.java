@@ -95,4 +95,9 @@ public interface BookingsService {
 	 * @return the list
 	 */
 	public List<BookingApprover> fetchAllApprover();
+
+	
+
+	
+	
 }
