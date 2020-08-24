@@ -35,7 +35,7 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	/**
 	 * Find application number.
 	 *
-	 * @param uuid the uuid
+	 * @param roles the roles
 	 * @return the list
 	 */
 	@Query(value = BookingsQueryBuilder.FIND_APPLICATION_NUMBER, nativeQuery = true)
@@ -73,6 +73,7 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	/**
 	 * Fetch all approver.
 	 *
+	 * @param type the type
 	 * @return the list
 	 */
 	@Query(value = "select u.username,u.mobilenumber,u.name,u.uuid,u.id from eg_user u where u.type =:type",nativeQuery = true)
@@ -94,11 +95,49 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 * @param bookingType the booking type
 	 * @param bkSector the bk sector
 	 * @param date the date
-	 * @param APPLY the apply
+	 * @param PAY the pay
 	 * @return the sets the
 	 */
 	@Query(value = BookingsQueryBuilder.CHECK_JURISDICTION_AVAILABILITY, nativeQuery = true)
 	public Set<BookingsModel> searchJurisdictionAvailability(@Param(BookingsConstants.BOOKING_VENUE) String bookingVenue,@Param(BookingsConstants.BOOKING_TYPE) String bookingType, @Param(BookingsConstants.BK_SECTOR) String bkSector,
 			@Param(BookingsConstants.DATE) 	Date date, @Param(BookingsConstants.PAY) String PAY);
+	
+	
+	/**
+	 * Find next state.
+	 *
+	 * @param applicationNumber the application number
+	 * @param action the action
+	 * @return the list
+	 */
+	@Query(value = BookingsQueryBuilder.FIND_NEXT_STATE, nativeQuery = true)
+	public List<String> findNextState(@Param(BookingsConstants.APPLICATION_NUMBER) String applicationNumber, @Param(BookingsConstants.ACTION) String action);
+
+	/**
+	 * Find approver name.
+	 *
+	 * @param state the state
+	 * @return the string
+	 */
+	@Query(value = BookingsQueryBuilder.FIND_APPROVER_NAME, nativeQuery = true)
+	public String findApproverName(@Param(BookingsConstants.STATE) String state);
+	
+	/**
+	 * Find user id.
+	 *
+	 * @param approver the approver
+	 * @return the list
+	 */
+	@Query(value = BookingsQueryBuilder.FIND_USER_ID, nativeQuery = true)
+	public List<Integer> findUserId(@Param(BookingsConstants.APPROVER) String approver);
+	
+	/**
+	 * Find user list.
+	 *
+	 * @param userId the user id
+	 * @return the list
+	 */
+	@Query(value = BookingsQueryBuilder.FIND_USER_LIST, nativeQuery = true)
+	public List<?> findUserList(@Param(BookingsConstants.USER_ID) List<Integer> userId);
 
 }

@@ -2,7 +2,6 @@ package org.egov.bookings.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -104,8 +103,10 @@ public class BookingsServiceImpl implements BookingsService {
 	@Autowired
 	private MailNotificationService mailNotificationService;
 	
+	/** The bc. */
 	@Autowired
 	private BookingsConstants bc;
+	
 	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger(BookingsServiceImpl.class.getName());
@@ -832,6 +833,57 @@ public class BookingsServiceImpl implements BookingsService {
 			throw new CustomException("APPROVER_ERROR", e.getLocalizedMessage());
 		}
 		return bookingApprover1;
+	}
+
+	/**
+	 * Gets the assignee.
+	 *
+	 * @param requestinfo the requestinfo
+	 * @param applicationNumber the application number
+	 * @param action the action
+	 * @return the assignee
+	 */
+	@Override
+	public Object getAssignee(RequestInfo requestinfo, String applicationNumber, String action) {
+		List<?> userList = new ArrayList<>();
+		Map<String, String> userMap = new HashMap<>();
+		try
+		{
+			if (BookingsFieldsValidator.isNullOrEmpty(requestinfo)) 
+			{
+				throw new IllegalArgumentException("Invalid requestinfo");
+			}
+			if (BookingsFieldsValidator.isNullOrEmpty(applicationNumber)) 
+			{
+				throw new IllegalArgumentException("Invalid applicationNumber");
+			}
+			if (BookingsFieldsValidator.isNullOrEmpty(action)) 
+			{
+				throw new IllegalArgumentException("Invalid action");
+			}
+			List<String> nestState = commonRepository.findNextState(applicationNumber, action);
+			String approverName = "";
+			for (String state : nestState) {
+				approverName = commonRepository.findApproverName(state);
+				if(!BookingsFieldsValidator.isNullOrEmpty(approverName)) {
+					break;
+				}
+			}
+			String[] approverArray = approverName.split(",");
+			for (String approver : approverArray) {
+				List<Integer> UserId = commonRepository.findUserId(approver);
+				userList = commonRepository.findUserList(UserId);
+					String jsonString = objectMapper.writeValueAsString(userList.get(0));
+					String[] jsonArray = jsonString.split(",");
+					userMap.put(jsonArray[0].substring(2,jsonArray[0].length()-1), jsonArray[1].substring(1,jsonArray[1].length()-2));
+			}
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the getAssignee " + e);
+			e.printStackTrace();
+		}
+		return userMap;
 	}
 
 }

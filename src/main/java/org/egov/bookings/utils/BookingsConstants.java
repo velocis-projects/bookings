@@ -495,4 +495,12 @@ public class BookingsConstants {
 	/** The Constant NLOSUJM. */
 	public static final String NLOSUJM = "New Location Open Spaces Under Jurisdiction of MCC";
 
+	/** The Constant STATE. */
+	public static final String STATE = "state";
+	
+	/** The Constant APPROVER. */
+	public static final String APPROVER = "approver";
+	
+	/** The Constant USER_ID. */
+	public static final String USER_ID = "userId";
 }
