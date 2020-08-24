@@ -10,8 +10,7 @@ import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.web.models.BookingsRequest;
-import org.egov.bookings.web.models.ProcessInstance;
-import org.egov.bookings.web.models.ProcessInstanceRequest;
+import org.egov.common.contract.request.RequestInfo;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -97,7 +96,13 @@ public interface BookingsService {
 	public List<BookingApprover> fetchAllApprover();
 
 	
-
-	
-	
+	/**
+	 * Gets the assignee.
+	 *
+	 * @param requestinfo the requestinfo
+	 * @param applicationNumber the application number
+	 * @param action the action
+	 * @return the assignee
+	 */
+	public Object getAssignee(RequestInfo requestinfo, String applicationNumber, String action);
 }
