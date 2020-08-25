@@ -1,6 +1,8 @@
 package org.egov.bookings.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -11,6 +13,7 @@ import org.egov.bookings.common.model.ResponseModel;
 import org.egov.bookings.contract.Booking;
 import org.egov.bookings.contract.ProcessInstanceSearchCriteria;
 import org.egov.bookings.contract.RequestInfoWrapper;
+import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.service.BookingsService;
@@ -298,7 +301,7 @@ public class BookingsController {
 	@PostMapping( value = "employee/assignee/_search")
 	public ResponseEntity<?> getAssignee( @RequestParam(value = "applicationNumber", required = true) String applicationNumber, @RequestParam(value = "action", required = true) String action, @Valid @RequestBody RequestInfoWrapper requestInfoWrapper )
 	{
-		Object o = new Object();
+		List<UserDetails> userdetailsList = new ArrayList<>();
 		try
 		{
 			if (BookingsFieldsValidator.isNullOrEmpty(requestInfoWrapper)) 
@@ -317,13 +320,13 @@ public class BookingsController {
 			{
 				throw new IllegalArgumentException("Invalid action");
 			}
-			o = bookingsService.getAssignee(requestInfoWrapper.getRequestInfo(), applicationNumber, action);
+			userdetailsList = bookingsService.getAssignee(requestInfoWrapper.getRequestInfo(), applicationNumber, action);
 		}
 		catch(Exception e)
 		{
 			LOGGER.error("Exception occur in the getAssignee " + e);
 			e.printStackTrace();
 		}
-		return ResponseEntity.ok( o );
+		return ResponseEntity.ok( userdetailsList );
 	}
 }
