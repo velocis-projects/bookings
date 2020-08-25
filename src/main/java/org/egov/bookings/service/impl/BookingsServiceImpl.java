@@ -21,6 +21,7 @@ import org.egov.bookings.contract.Message;
 import org.egov.bookings.contract.MessagesResponse;
 import org.egov.bookings.contract.ProcessInstanceSearchCriteria;
 import org.egov.bookings.contract.RequestInfoWrapper;
+import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.repository.BookingsRepository;
@@ -850,9 +851,9 @@ public class BookingsServiceImpl implements BookingsService {
 	 * @return the assignee
 	 */
 	@Override
-	public Object getAssignee(RequestInfo requestinfo, String applicationNumber, String action) {
+	public List<UserDetails> getAssignee(RequestInfo requestinfo, String applicationNumber, String action) {
 		List<?> userList = new ArrayList<>();
-		Map<String, String> userMap = new HashMap<>();
+		List<UserDetails> userdetailsList = new ArrayList<>();
 		try
 		{
 			if (BookingsFieldsValidator.isNullOrEmpty(requestinfo)) 
@@ -879,9 +880,14 @@ public class BookingsServiceImpl implements BookingsService {
 			for (String approver : approverArray) {
 				List<Integer> UserId = commonRepository.findUserId(approver);
 				userList = commonRepository.findUserList(UserId);
-					String jsonString = objectMapper.writeValueAsString(userList.get(0));
+				for (Object object : userList) {
+					UserDetails userDetails = new UserDetails();
+					String jsonString = objectMapper.writeValueAsString(object);
 					String[] jsonArray = jsonString.split(",");
-					userMap.put(jsonArray[0].substring(2,jsonArray[0].length()-1), jsonArray[1].substring(1,jsonArray[1].length()-2));
+					userDetails.setUuid(jsonArray[0].substring(2,jsonArray[0].length()-1));
+					userDetails.setUserName(jsonArray[1].substring(1,jsonArray[1].length()-2));
+					userdetailsList.add(userDetails);
+				}
 			}
 		}
 		catch(Exception e)
@@ -889,7 +895,7 @@ public class BookingsServiceImpl implements BookingsService {
 			LOGGER.error("Exception occur in the getAssignee " + e);
 			e.printStackTrace();
 		}
-		return userMap;
+		return userdetailsList;
 	}
 
 }

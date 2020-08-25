@@ -7,6 +7,7 @@ import org.egov.bookings.contract.Booking;
 import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.ProcessInstanceSearchCriteria;
 import org.egov.bookings.contract.RequestInfoWrapper;
+import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.web.models.BookingsRequest;
@@ -104,5 +105,5 @@ public interface BookingsService {
 	 * @param action the action
 	 * @return the assignee
 	 */
-	public Object getAssignee(RequestInfo requestinfo, String applicationNumber, String action);
+	public List<UserDetails> getAssignee(RequestInfo requestinfo, String applicationNumber, String action);
 }
