@@ -22,7 +22,5 @@ public class JurisdictionAvailabilityRequest implements Serializable {
 	
 	private String bookingType;
 	
-	private Date fromDate;
 	
-	private Date toDate;
 }
