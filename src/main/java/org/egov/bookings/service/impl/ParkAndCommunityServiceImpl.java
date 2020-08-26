@@ -1,26 +1,19 @@
 package org.egov.bookings.service.impl;
 
-import java.util.Map;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
-import org.egov.bookings.contract.MdmsJsonFields;
-import org.egov.bookings.contract.Message;
-import org.egov.bookings.contract.MessagesResponse;
 import org.egov.bookings.model.BookingsModel;
-import org.egov.bookings.repository.BookingsRepository;
-import org.egov.bookings.repository.CommonRepository;
-import org.egov.bookings.repository.OsbmApproverRepository;
+import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 import org.egov.bookings.repository.ParkAndCommunityRepository;
-import org.egov.bookings.repository.impl.ServiceRequestRepository;
+import org.egov.bookings.repository.ParkCommunityHallV1MasterRepository;
 import org.egov.bookings.service.BookingsService;
 import org.egov.bookings.service.ParkAndCommunityService;
 import org.egov.bookings.utils.BookingsConstants;
-import org.egov.bookings.utils.BookingsUtils;
-import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.workflow.WorkflowIntegrator;
 import org.egov.tracer.model.CustomException;
@@ -28,11 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ParkAndCommunityServiceImpl.
+ */
 @Service
 @Transactional
-public class ParkAndCommunityServiceImpl implements ParkAndCommunityService{
+public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 
 	/** The bookings repository. */
 	@Autowired
@@ -50,49 +45,27 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService{
 	@Autowired
 	private WorkflowIntegrator workflowIntegrator;
 
-	/** The osbm approver repository. */
-	@Autowired
-	OsbmApproverRepository osbmApproverRepository;
-
-	/** The common repository. */
-	@Autowired
-	CommonRepository commonRepository;
-
-	/** The bookings utils. */
-	@Autowired
-	private BookingsUtils bookingsUtils;
-
-	/** The object mapper. */
-	@Autowired
-	private ObjectMapper objectMapper;
-
 	/** The enrichment service. */
 	@Autowired
 	private EnrichmentService enrichmentService;
 
-	/** The service request repository. */
+	/** The park community hall V 1 master repository. */
 	@Autowired
-	private ServiceRequestRepository serviceRequestRepository;
-	
-	/** The sms notification service. */
-	@Autowired
-	private SMSNotificationService smsNotificationService;
-	
-	/** The mail notification service. */
-	@Autowired
-	private MailNotificationService mailNotificationService;
-	
-	@Autowired
-	private BookingsService bookingsService;
-	
+	private ParkCommunityHallV1MasterRepository parkCommunityHallV1MasterRepository;
+
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger(BookingsServiceImpl.class.getName());
 
+	/** The booking service. */
 	@Autowired
 	private BookingsService bookingService;
-	
-	
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.egov.bookings.service.ParkAndCommunityService#
+	 * createParkAndCommunityBooking(org.egov.bookings.web.models.BookingsRequest)
+	 */
 	@Override
 	public BookingsModel createParkAndCommunityBooking(BookingsRequest bookingsRequest) {
 		BookingsModel bookingsModel = null;
@@ -114,6 +87,12 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService{
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.egov.bookings.service.ParkAndCommunityService#
+	 * updateParkAndCommunityBooking(org.egov.bookings.web.models.BookingsRequest)
+	 */
 	@Override
 	public BookingsModel updateParkAndCommunityBooking(BookingsRequest bookingsRequest) {
 
@@ -129,12 +108,31 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService{
 				&& BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService)) {
 			bookingsModel = enrichmentService.enrichPaccDetails(bookingsRequest);
 			bookingsModel = parkAndCommunityRepository.save(bookingsModel);
-		}
-		else {
+		} else {
 			bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
 		}
 
 		return bookingsModel;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.egov.bookings.service.ParkAndCommunityService#fetchParkCommunityMaster()
+	 */
+	@Override
+	public List<ParkCommunityHallV1MasterModel> fetchParkCommunityMaster() {
+
+		List<ParkCommunityHallV1MasterModel> parkCommunityHallV1MasterList = null;
+		try {
+
+			parkCommunityHallV1MasterList = parkCommunityHallV1MasterRepository.findAll();
+			return parkCommunityHallV1MasterList;
+
+		} catch (Exception e) {
+			throw new CustomException("DATABASE_ERROR", "ERROR WHILE FETCHING PARK AND COMMUNITY MASTER DATA");
+		}
 	}
 
 }

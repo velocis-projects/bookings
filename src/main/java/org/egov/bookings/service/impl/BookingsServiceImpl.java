@@ -139,7 +139,7 @@ public class BookingsServiceImpl implements BookingsService {
 			enrichmentService.enrichBookingsDetails(bookingsRequest);
 			bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
 			bookingsRequest.setBookingsModel(bookingsModel);
-		/*if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)
+		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)
 				&& !"INITIATED".equals(bookingsModel.getBkApplicationStatus())) {
 			try {
 				Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
@@ -151,7 +151,7 @@ public class BookingsServiceImpl implements BookingsService {
 			} catch (Exception e) {
 				throw new CustomException("NOTIFICATION_ERROR", e.getMessage());
 			}
-		}*/
+		}
 
 		return bookingsModel;
 
