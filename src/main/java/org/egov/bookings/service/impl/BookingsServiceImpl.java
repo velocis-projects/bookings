@@ -491,19 +491,6 @@ public class BookingsServiceImpl implements BookingsService {
 					applicationNumberSet.addAll(commonRepository.findApplicationNumber(role.getCode()));
 				}
 			}
-			boolean flag = false;
-			if (!BookingsFieldsValidator.isNullOrEmpty(applicationNumber) && !BookingsFieldsValidator.isNullOrEmpty(applicationNumberSet)) {
-				if(applicationNumberSet.contains(applicationNumber))
-				{
-					flag = true;
-					applicationNumberSet.clear();
-					applicationNumberSet.add(applicationNumber);
-				}
-				if(!flag)
-				{
-					return booking;
-				}
-			}
 			for (Role role : roles) {
 				if(!BookingsConstants.CITIZEN.equals(role.getCode()) && !BookingsConstants.EMPLOYEE.equals(role.getCode()) ) {
 					
@@ -549,7 +536,7 @@ public class BookingsServiceImpl implements BookingsService {
 					}
 				}
 			}
-			if (!BookingsFieldsValidator.isNullOrEmpty(applicationNumber)) {
+			if (!BookingsFieldsValidator.isNullOrEmpty(applicationNumber) && !BookingsFieldsValidator.isNullOrEmpty(bookingsSet)) {
 				documentList = commonRepository.findDocumentList(applicationNumber);
 				booking.setBusinessService(commonRepository.findBusinessService(applicationNumber));
 			}
