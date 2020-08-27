@@ -7,9 +7,29 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// TODO: Auto-generated Javadoc
+/* (non-Javadoc)
+ * @see java.lang.Object#toString()
+ */
 @Data
+
+/**
+ * Instantiates a new park and community search criteria.
+ */
 @NoArgsConstructor
+
+/**
+ * Instantiates a new park and community search criteria.
+ *
+ * @param bookingType the booking type
+ * @param bookingVenue the booking venue
+ * @param sector the sector
+ */
 @AllArgsConstructor
+
+/* (non-Javadoc)
+ * @see java.lang.Object#toString()
+ */
 @Builder
 public class ParkAndCommunitySearchCriteria implements Serializable{
 
@@ -23,8 +43,7 @@ public class ParkAndCommunitySearchCriteria implements Serializable{
 	/** The booking venue. */
 	private String bookingVenue;
 
-	private String fromDate;
-
-	private String toDate;
+	/** The sector. */
+	private String sector;
 
 }

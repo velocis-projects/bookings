@@ -19,6 +19,7 @@ import org.egov.bookings.contract.TaxHeadMasterFields;
 import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
+import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 import org.egov.bookings.models.demand.Demand;
 import org.egov.bookings.models.demand.DemandDetail;
 import org.egov.bookings.models.demand.DemandRequest;
@@ -34,6 +35,7 @@ import org.egov.bookings.repository.impl.ServiceRequestRepository;
 import org.egov.bookings.service.BookingsCalculatorService;
 import org.egov.bookings.service.CommercialGroundService;
 import org.egov.bookings.service.OsujmService;
+import org.egov.bookings.service.ParkAndCommunityService;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.validator.BookingsFieldsValidator;
@@ -95,6 +97,10 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	
 	@Autowired
 	private EnrichmentService enrichmentService;
+	
+	@Autowired
+	private ParkAndCommunityService parkAndCommunityService;
+	
 	
 	/**
 	 * Search demand.
@@ -209,16 +215,19 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 			break;
 			
 		case BookingsConstants.BUSINESS_SERVICE_PACC:
-			//BigDecimal parkAndCommunityAmount = getParkAndCommunityAmount(bookingsRequest);
-			BigDecimal parkAndCommunityAmount = new BigDecimal(4400);
+			//ParkCommunityHallV1MasterModel parkCommunityHallV1FeeMaster = getParkAndCommunityAmount(bookingsRequest);
+			//BigDecimal days = enrichmentService.extractDaysBetweenTwoDates(bookingsRequest);
+			//BigDecimal amount = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges())+Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
+			//BigDecimal finalAmount = days.multiply(amount);
+			BigDecimal finalAmount = new BigDecimal(4400);
 			for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
 				if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
-					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(), parkAndCommunityAmount,
+					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(), finalAmount,
 							taxHeadEstimate.getCategory()));
 				}
 				if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
-							parkAndCommunityAmount.multiply((taxHeadEstimate.getTaxAmount().divide(new BigDecimal(100)))),
+							finalAmount.multiply((BigDecimal.valueOf(18/*Long.valueOf(parkCommunityHallV1FeeMaster.getCgstRate())*/).divide(new BigDecimal(100)))),
 							taxHeadEstimate.getCategory()));
 				}
 			}
@@ -228,9 +237,25 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 		return taxHeadEstimate1;
 	}
 
-	private BigDecimal getParkAndCommunityAmount(BookingsRequest bookingsRequest) {
-		// TODO Auto-generated method stub
-		return null;
+	private ParkCommunityHallV1MasterModel getParkAndCommunityAmount(BookingsRequest bookingsRequest) {
+
+		ParkCommunityHallV1MasterModel parkCommunityHallV1FeeMaster = null;
+		BigDecimal finalAmount = null;
+		try {
+			/*OsujmFeeModel commercialGroundFeeSearchCriteria = CommercialGroundFeeSearchCriteria
+					.builder().bookingVenue(bookingVenue).category(category).build();*/
+			 parkCommunityHallV1FeeMaster = parkAndCommunityService
+					.findParkAndCommunityFee(bookingsRequest.getBookingsModel().getBkBookingVenue());
+			if(BookingsFieldsValidator.isNullOrEmpty(parkCommunityHallV1FeeMaster)) {
+				throw new IllegalArgumentException("There is not any amount for this park and community criteria in database");
+			}
+			BigDecimal days = enrichmentService.extractDaysBetweenTwoDates(bookingsRequest);
+			BigDecimal amount = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges())+Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
+			finalAmount = days.multiply(amount);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e.getLocalizedMessage());
+		}
+		return parkCommunityHallV1FeeMaster;
 	}
 
 	public BigDecimal getJurisdicationAmount(BookingsRequest bookingsRequest) {

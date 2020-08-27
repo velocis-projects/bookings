@@ -1,7 +1,11 @@
 package org.egov.bookings.service;
 
+import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 
+import org.egov.bookings.contract.AvailabilityResponse;
+import org.egov.bookings.contract.ParkAndCommunitySearchCriteria;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 import org.egov.bookings.web.models.BookingsRequest;
@@ -34,5 +38,11 @@ public interface ParkAndCommunityService {
 	 * @return the list
 	 */
 	List<ParkCommunityHallV1MasterModel> fetchParkCommunityMaster();
+
+	Set<AvailabilityResponse> availabilitySearch(ParkAndCommunitySearchCriteria parkAndCommunitySearchCriteria);
+
+	Set<Date> fetchBookedDates(BookingsRequest bookingsRequest);
+
+	ParkCommunityHallV1MasterModel findParkAndCommunityFee(String string);
 
 }

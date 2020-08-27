@@ -14,10 +14,8 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 import org.egov.bookings.config.BookingsConfiguration;
-import org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria;
 import org.egov.bookings.contract.IdResponse;
 import org.egov.bookings.model.BookingsModel;
-import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
 import org.egov.bookings.repository.BookingsRepository;
 import org.egov.bookings.repository.OsbmFeeRepository;
@@ -27,6 +25,7 @@ import org.egov.bookings.service.BookingsCalculatorService;
 import org.egov.bookings.service.BookingsService;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.BookingsUtils;
+import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.web.models.NewLocationRequest;
 import org.egov.common.contract.request.RequestInfo;
@@ -53,11 +52,7 @@ public class EnrichmentService {
 	/** The id gen repository. */
 	@Autowired
 	private IdGenRepository idGenRepository;
-
-	/** The osbm fee repository. */
-	@Autowired
-	private OsbmFeeRepository osbmFeeRepository;
-
+	
 	/** The bookings calculator service. */
 	@Autowired
 	BookingsCalculatorService bookingsCalculatorService;
@@ -195,7 +190,7 @@ public class EnrichmentService {
 		java.sql.Date date = bookingsUtils.getCurrentSqlDate();
 		bookingsRequest.getBookingsModel().setBkDateCreated(date);
 		}catch (Exception e) {
-			throw new CustomException("INVALID_BOOKING_DATA", e.getMessage());
+			throw new CustomException("INVALID_BOOKING_REQUEST", e.getMessage());
 		}
 	}
 
@@ -235,13 +230,15 @@ public class EnrichmentService {
 				bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
 				bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
 				bookingsModel.setBookingsRemarks(bookingsRequest.getBookingsModel().getBookingsRemarks());
-				if (bookingsRequest.getBookingsModel().getBkAction().equals(BookingsConstants.PAY)) {
+				if (BookingsConstants.PAY.equals(bookingsRequest.getBookingsModel().getBkAction())) {
 					LocalDate bkFromDate = LocalDate.now();
 					Date fromDate = java.sql.Date.valueOf(bkFromDate);
 					LocalDate bkToDate = LocalDate.now().plusMonths(Integer.valueOf(bookingsModel.getBkDuration()));
 					Date toDate = java.sql.Date.valueOf(bkToDate);
 					bookingsModel.setBkFromDate(fromDate);
 					bookingsModel.setBkToDate(toDate);
+					if(!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkPaymentStatus()))
+					bookingsModel.setBkPaymentStatus(bookingsRequest.getBookingsModel().getBkPaymentStatus());
 				}
 
 			}
@@ -268,6 +265,9 @@ public class EnrichmentService {
 			bookingsModel.setBkContactNo(bookingsRequest.getBookingsModel().getBkContactNo());
 			bookingsModel.setBkDriverName(bookingsRequest.getBookingsModel().getBkDriverName());
 			bookingsModel.setBkApproverName(bookingsRequest.getBookingsModel().getBkApproverName());
+			if(!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
+				bookingsModel.setBkPaymentStatus(bookingsRequest.getBookingsModel().getBkPaymentStatus());
+			}
 		} catch (Exception e) {
 			throw new CustomException("WATER TANKER UPDATE ERROR", "ERROR WHILE UPDATING BWT DETAILS ");
 		}
@@ -323,6 +323,10 @@ public class EnrichmentService {
 			bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
 			bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
 			bookingsModel.setBookingsRemarks(bookingsRequest.getBookingsModel().getBookingsRemarks());
+			if(!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
+				bookingsModel.setBkPaymentStatus(bookingsRequest.getBookingsModel().getBkPaymentStatus());
+			}
+			
 		} catch (Exception e) {
 			throw new CustomException("OSUJM UPDATE ERROR", "ERROR WHILE UPDATING OSUJM DETAILS ");
 		}

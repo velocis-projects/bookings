@@ -1,10 +1,14 @@
 package org.egov.bookings.controller;
 
+import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 
 import org.egov.bookings.common.model.ResponseModel;
+import org.egov.bookings.contract.AvailabilityResponse;
+import org.egov.bookings.contract.ParkAndCommunitySearchCriteria;
 import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
@@ -119,4 +123,44 @@ public class ParkAndCommunityController {
 		return ResponseEntity.ok(rs);
 	}
 
+	
+	
+	@PostMapping("/availability/_search")
+	private ResponseEntity<?> availabilitySearch(@RequestBody ParkAndCommunitySearchCriteria parkAndCommunitySearchCriteria) {
+
+		Set<AvailabilityResponse> parkCommunityHallV1MasterList = parkAndCommunityService
+				.availabilitySearch(parkAndCommunitySearchCriteria);
+		ResponseModel rs = new ResponseModel();
+		if (parkCommunityHallV1MasterList == null) {
+			rs.setStatus("400");
+			rs.setMessage("Error while Fetching Park And Community Availability Date");
+			rs.setData(parkCommunityHallV1MasterList);
+		} else {
+			rs.setStatus("200");
+			rs.setMessage("Park And Community Availability Date Fetched Successfully ");
+			rs.setData(parkCommunityHallV1MasterList);
+		}
+
+		return ResponseEntity.ok(rs);
+	}
+	
+	
+	/*@PostMapping("/booked/dates/_search")
+	private ResponseEntity<?> fetchBookedDates(
+			@RequestBody BookingsRequest bookingsRequest) {
+		
+		bookingsFieldsValidator.validateGrndAvailabilityRequest(bookingsRequest);
+		
+		
+		Set<Date> res = parkAndCommunityService.fetchBookedDates(bookingsRequest);
+		ResponseModel rs = new ResponseModel();
+		rs.setStatus("200");
+		rs.setMessage("Already Booked Dates");
+		rs.setData(res);
+		
+		return ResponseEntity.ok(rs);
+	}*/
+
+	
+	
 }

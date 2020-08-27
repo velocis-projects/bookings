@@ -21,75 +21,75 @@ public class ParkCommunityHallV1MasterModel {
 	private String id;
 
 	@Column(name = "SCCID")
-	private String SCCID;
+	private String sccid;
 
 	@Column(name = "SCID")
-	private String SCID;
+	private String scid;
 
 	@Column(name = "X")
-	private String X;
+	private String x;
 
 	@Column(name = "Y")
-	private String Y;
+	private String y;
 
 	@Column(name = "Amount")
-	private String Amount;
+	private String amount;
 
 	@Column(name = "DimensionSqrYards")
-	private String DimensionSqrYards;
+	private String dimensionSqrYards;
 
 	@Column(name = "Rent")
-	private String Rent;
+	private String rent;
 
 	@Column(name = "CleaningCharges")
-	private String CleaningCharges;
+	private String cleaningCharges;
 
 	@Column(name = "surcharge")
 	private String surcharge;
 
 	@Column(name = "LuxuryTax")
-	private String LuxuryTax;
+	private String luxuryTax;
 
 	@Column(name = "Name")
-	private String Name;
+	private String name;
 
 	@Column(name = "Radius")
-	private String Radius;
+	private String radius;
 
 	@Column(name = "LocationChangeAmount")
-	private String LocationChangeAmount;
+	private String locationChangeAmount;
 
 	@Column(name = "Isactive")
-	private Boolean Isactive;
+	private Boolean isActive;
 
 	@Column(name = "UTGSTRate")
-	private String UTGSTRate;
+	private String utgstRate;
 
 	@Column(name = "CGSTRate")
-	private String CGSTRate;
+	private String cgstRate;
 
 	@Column(name = "RefundabelSecurity")
-	private String RefundabelSecurity;
+	private String refundabelSecurity;
 
 	@Column(name = "NormalType")
-	private String NormalType;
+	private String normalType;
 
 	@Column(name = "Reviserate1")
-	private String Reviserate1;
+	private String reviserate1;
 
 	@Column(name = "Oldrent1")
-	private String Oldrent1;
+	private String oldrent1;
 
 	@Column(name = "RentNextSession")
-	private String RentNextSession;
+	private String rentNextSession;
 
 	@Column(name = "ImagePath")
-	private String ImagePath;
+	private String imagePath;
 
 	@Column(name = "VenueType")
-	private String VenueType;
+	private String venueType;
 
 	@Column(name = "BookingAllowedFor")
-	private String BookingAllowedFor;
+	private String bookingAllowedFor;
 
 }

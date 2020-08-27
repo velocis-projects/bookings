@@ -274,6 +274,8 @@ public class BookingsConfiguration {
     @Value("${egov.lock.commercial.payment}")
     private boolean commercialLock;
     
+    @Value("${egov.lock.park.and.commercial.payment}")
+    private boolean parkAndCommercialLock;
     
     
 
