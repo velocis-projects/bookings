@@ -10,8 +10,6 @@ import org.egov.bookings.contract.JurisdictionAvailabilityRequest;
 import org.egov.bookings.contract.OsbmApproverRequest;
 import org.egov.bookings.contract.OsbmSearchCriteria;
 import org.egov.bookings.model.CommercialGrndAvailabilityModel;
-import org.egov.bookings.model.ViewPdfDetailsModel;
-import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.web.models.NewLocationRequest;
 import org.springframework.stereotype.Component;
@@ -181,26 +179,6 @@ public class BookingsFieldsValidator {
 		} else if (null == osbmApproverRequest.getUuid() || osbmApproverRequest.getUuid().equals("")) {
 			throw new IllegalArgumentException("Invalid Uuid");
 		}
-	}
-
-	/**
-	 * Validate pdf details.
-	 *
-	 * @param viewPdfDetailsModel the view pdf details model
-	 */
-	public void validatePdfDetails(ViewPdfDetailsModel viewPdfDetailsModel) {
-
-		if (null == viewPdfDetailsModel) {
-			throw new IllegalArgumentException("Invalid Pdf Details Request Body");
-		} else if (null == viewPdfDetailsModel.getBkApplicationNumber()
-				|| viewPdfDetailsModel.getBkApplicationNumber().equals("")) {
-			throw new IllegalArgumentException("Invalid application number");
-		} else if (null == viewPdfDetailsModel.getFileStoreId() || viewPdfDetailsModel.getFileStoreId().equals("")) {
-			throw new IllegalArgumentException("Invalid File Store Id");
-		} else if (null == viewPdfDetailsModel.getKey() || viewPdfDetailsModel.getKey().equals("")) {
-			throw new IllegalArgumentException("Invalid Key");
-		}
-
 	}
 
 	/**

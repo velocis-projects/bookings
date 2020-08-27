@@ -20,5 +20,5 @@ public interface ParkAndCommunityRepository extends CrudRepository<BookingsModel
 			@Param(BookingsConstants.BOOKING_TYPE) String bookingType, @Param(BookingsConstants.SECTOR) String sector,
 			@Param(BookingsConstants.DATE) Date date, @Param(BookingsConstants.APPLY) String APPLY);
 
-	ParkCommunityHallV1MasterModel findById(String bookingVenue);
+	
 }

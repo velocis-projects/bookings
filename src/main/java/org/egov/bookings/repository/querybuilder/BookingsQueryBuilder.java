@@ -27,7 +27,7 @@ public class BookingsQueryBuilder {
 	//where ewpv.action != 'INITIATE'
 	
 	/** The Constant FIND_SECTOR_LIST. */
-	public static final String FIND_SECTOR_LIST = "select sector from tt_osbm_approver where uuid = :uuid";
+	public static final String FIND_SECTOR_LIST = "select sector from tm_osbm_approver where uuid = :uuid";
 	
 	/** The Constant FIND_DOCUMENT_LIST. */
 	public static final String FIND_DOCUMENT_LIST = "select distinct ef.filestoreid, ef.filename from eg_filestoremap as ef"
@@ -42,7 +42,7 @@ public class BookingsQueryBuilder {
 	public static final String CHECK_COMMERCIAL_GROUND_AVAILABILITY = "select * from tt_bookings where bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType  and bk_to_date >= :date and bk_action =:APPLY";
 	
 	/** The Constant FIND_JURISDICTION_AMOUNT. */
-	public static final String FIND_JURISDICTION_AMOUNT = "select * from tt_osujm_fee where area_from <= :area and area_to >= :area and sector = :sector";
+	public static final String FIND_JURISDICTION_AMOUNT = "select * from tm_osujm_fee where area_from <= :area and area_to >= :area and sector = :sector";
 	
 	/** The Constant CHECK_JURISDICTION_AVAILABILITY. */
 	public static final String CHECK_JURISDICTION_AVAILABILITY = "select * from tt_bookings where bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType  and bk_sector = :bkSector  and bk_to_date >= :date and bk_action =:PAY";

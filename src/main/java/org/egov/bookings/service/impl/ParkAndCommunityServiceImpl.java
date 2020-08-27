@@ -214,10 +214,9 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 
 	@Override
 	public ParkCommunityHallV1MasterModel findParkAndCommunityFee(String bookingVenue) {
-
+		ParkCommunityHallV1MasterModel parkCommunityHallFee = null;
 		try {
-			ParkCommunityHallV1MasterModel parkCommunityHallFee = parkAndCommunityRepository
-					.findById(bookingVenue);
+			parkCommunityHallFee = parkCommunityHallV1MasterRepository.findById(bookingVenue);
 			return parkCommunityHallFee;
 		} catch (Exception e) {
 			throw new CustomException("DATABASE_ERROR", e.getLocalizedMessage());

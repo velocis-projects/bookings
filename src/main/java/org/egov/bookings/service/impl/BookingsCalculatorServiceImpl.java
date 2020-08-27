@@ -215,7 +215,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 			break;
 			
 		case BookingsConstants.BUSINESS_SERVICE_PACC:
-			//ParkCommunityHallV1MasterModel parkCommunityHallV1FeeMaster = getParkAndCommunityAmount(bookingsRequest);
+			ParkCommunityHallV1MasterModel parkCommunityHallV1FeeMaster = getParkAndCommunityAmount(bookingsRequest);
 			//BigDecimal days = enrichmentService.extractDaysBetweenTwoDates(bookingsRequest);
 			//BigDecimal amount = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges())+Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
 			//BigDecimal finalAmount = days.multiply(amount);
@@ -242,8 +242,6 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 		ParkCommunityHallV1MasterModel parkCommunityHallV1FeeMaster = null;
 		BigDecimal finalAmount = null;
 		try {
-			/*OsujmFeeModel commercialGroundFeeSearchCriteria = CommercialGroundFeeSearchCriteria
-					.builder().bookingVenue(bookingVenue).category(category).build();*/
 			 parkCommunityHallV1FeeMaster = parkAndCommunityService
 					.findParkAndCommunityFee(bookingsRequest.getBookingsModel().getBkBookingVenue());
 			if(BookingsFieldsValidator.isNullOrEmpty(parkCommunityHallV1FeeMaster)) {

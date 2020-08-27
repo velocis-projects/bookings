@@ -145,7 +145,7 @@ public class ParkAndCommunityController {
 	}
 	
 	
-	/*@PostMapping("/booked/dates/_search")
+	@PostMapping("/booked/dates/_search")
 	private ResponseEntity<?> fetchBookedDates(
 			@RequestBody BookingsRequest bookingsRequest) {
 		
@@ -159,7 +159,7 @@ public class ParkAndCommunityController {
 		rs.setData(res);
 		
 		return ResponseEntity.ok(rs);
-	}*/
+	}
 
 	
 	
