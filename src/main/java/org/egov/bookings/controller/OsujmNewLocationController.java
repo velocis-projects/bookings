@@ -58,11 +58,11 @@ public class OsujmNewLocationController {
 		ResponseModel rs = new ResponseModel();
 		if (osujmNewLocationModel == null) {
 			rs.setStatus("400");
-			rs.setMessage("New Location Created Successfully");
+			rs.setMessage("Error while creating New Location");
 			rs.setData(osujmNewLocationModel);
 		} else {
 			rs.setStatus("200");
-			rs.setMessage("Error while creating New Location");
+			rs.setMessage("New Location Created Successfully");
 			rs.setData(osujmNewLocationModel);
 		}
 
@@ -81,11 +81,11 @@ public class OsujmNewLocationController {
 		ResponseModel rs = new ResponseModel();
 		if (osujmNewLocationModel == null) {
 			rs.setStatus("400");
-			rs.setMessage("New Location Updated Successfully");
+			rs.setMessage("Error while Updating New Location");
 			rs.setData(osujmNewLocationModel);
 		} else {
 			rs.setStatus("200");
-			rs.setMessage("Error while Updating New Location");
+			rs.setMessage("New Location Updated Successfully");
 			rs.setData(osujmNewLocationModel);
 		}
 		return ResponseEntity.ok(rs);
