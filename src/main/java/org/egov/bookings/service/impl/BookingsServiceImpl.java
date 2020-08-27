@@ -633,7 +633,7 @@ public class BookingsServiceImpl implements BookingsService {
 					smsNotificationService.sendSMS(notificationMsg);
 					String mailSubject = prepareMailSubjectForUpdate(bookingsModel, mdmsJsonFieldsMap);
 					notificationMsg = prepareMailNotifMsgForUpdate(bookingsModel, mdmsJsonFieldsMap, bkApplicationStatus);
-					mailNotificationService.sendMail(bookingsModel.getBkEmail(), notificationMsg, mailSubject);
+//					mailNotificationService.sendMail(bookingsModel.getBkEmail(), notificationMsg, mailSubject);
 				} catch (Exception e) {
 					throw new CustomException("NOTIFICATION_ERROR", e.getMessage());
 				}

@@ -168,7 +168,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 					smsNotificationService.sendSMS(notificationMsg);
 					String mailSubject = prepareMailSubjectForUpdate(newLocaltionModel);
 					notificationMsg = prepareMailNotifMsgForUpdate(newLocaltionModel, applicationStatus);
-					mailNotificationService.sendMail(newLocaltionModel.getMailAddress(), notificationMsg, mailSubject);
+//					mailNotificationService.sendMail(newLocaltionModel.getMailAddress(), notificationMsg, mailSubject);
 				} catch (Exception e) {
 					throw new CustomException("NOTIFICATION_ERROR", e.getMessage());
 				}
