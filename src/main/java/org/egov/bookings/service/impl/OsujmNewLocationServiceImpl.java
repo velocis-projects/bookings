@@ -161,7 +161,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 					}
 				}
 			}
-			if(!BookingsFieldsValidator.isNullOrEmpty(newLocaltionModel))
+			/*if(!BookingsFieldsValidator.isNullOrEmpty(newLocaltionModel))
 			{
 				try {
 					String notificationMsg = prepareSMSNotifMsgForUpdate(newLocaltionModel, applicationStatus);
@@ -172,7 +172,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 				} catch (Exception e) {
 					throw new CustomException("NOTIFICATION_ERROR", e.getMessage());
 				}
-			}
+			}*/
 		} catch (Exception e) {
 			LOGGER.error("Exception occur while updating booking " + e);
 		}
