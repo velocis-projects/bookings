@@ -6,6 +6,8 @@ import java.util.Set;
 
 import org.egov.bookings.contract.AvailabilityResponse;
 import org.egov.bookings.contract.ParkAndCommunitySearchCriteria;
+import org.egov.bookings.contract.ParkCommunityFeeMasterRequest;
+import org.egov.bookings.contract.ParkCommunityFeeMasterResponse;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 import org.egov.bookings.web.models.BookingsRequest;
@@ -44,5 +46,7 @@ public interface ParkAndCommunityService {
 	Set<Date> fetchBookedDates(BookingsRequest bookingsRequest);
 
 	ParkCommunityHallV1MasterModel findParkAndCommunityFee(String string);
+
+	ParkCommunityFeeMasterResponse fetchAmount(ParkCommunityFeeMasterRequest parkCommunityFeeMasterRequest);
 
 }

@@ -216,10 +216,10 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 			
 		case BookingsConstants.BUSINESS_SERVICE_PACC:
 			ParkCommunityHallV1MasterModel parkCommunityHallV1FeeMaster = getParkAndCommunityAmount(bookingsRequest);
-			//BigDecimal days = enrichmentService.extractDaysBetweenTwoDates(bookingsRequest);
-			//BigDecimal amount = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges())+Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
-			//BigDecimal finalAmount = days.multiply(amount);
-			BigDecimal finalAmount = new BigDecimal(4400);
+			BigDecimal days = enrichmentService.extractDaysBetweenTwoDates(bookingsRequest);
+			BigDecimal amount = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges())+Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
+			BigDecimal finalAmount = days.multiply(amount);
+		//	BigDecimal finalAmount = new BigDecimal(4400);
 			for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
 				if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(), finalAmount,
@@ -227,9 +227,19 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 				}
 				if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
-							finalAmount.multiply((BigDecimal.valueOf(18/*Long.valueOf(parkCommunityHallV1FeeMaster.getCgstRate())*/).divide(new BigDecimal(100)))),
+							finalAmount.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge())).divide(new BigDecimal(100)))),
 							taxHeadEstimate.getCategory()));
 				}
+				/*if (taxHeadEstimate.getCode().equals("PACC_CGST")) {
+					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+							finalAmount.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCgstRate())).divide(new BigDecimal(100)))),
+							taxHeadEstimate.getCategory()));
+				}
+				if (taxHeadEstimate.getCode().equals("PACC_UGST")) {
+					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+							finalAmount.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getUtgstRate())).divide(new BigDecimal(100)))),
+							taxHeadEstimate.getCategory()));
+				}*/
 			}
 			break;
 			

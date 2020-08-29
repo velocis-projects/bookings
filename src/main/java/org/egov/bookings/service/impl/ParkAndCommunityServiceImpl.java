@@ -17,6 +17,8 @@ import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.AvailabilityResponse;
 import org.egov.bookings.contract.ParkAndCommunitySearchCriteria;
+import org.egov.bookings.contract.ParkCommunityFeeMasterRequest;
+import org.egov.bookings.contract.ParkCommunityFeeMasterResponse;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 import org.egov.bookings.repository.ParkAndCommunityRepository;
@@ -24,6 +26,7 @@ import org.egov.bookings.repository.ParkCommunityHallV1MasterRepository;
 import org.egov.bookings.service.BookingsService;
 import org.egov.bookings.service.ParkAndCommunityService;
 import org.egov.bookings.utils.BookingsConstants;
+import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.workflow.WorkflowIntegrator;
 import org.egov.tracer.model.CustomException;
@@ -218,6 +221,24 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		try {
 			parkCommunityHallFee = parkCommunityHallV1MasterRepository.findById(bookingVenue);
 			return parkCommunityHallFee;
+		} catch (Exception e) {
+			throw new CustomException("DATABASE_ERROR", e.getLocalizedMessage());
+		}
+	}
+
+	@Override
+	public ParkCommunityFeeMasterResponse fetchAmount(ParkCommunityFeeMasterRequest parkCommunityFeeMasterRequest) {
+		ParkCommunityHallV1MasterModel parkCommunityHallFee = null;
+		try {
+			parkCommunityHallFee = parkCommunityHallV1MasterRepository.findById(parkCommunityFeeMasterRequest.getBookingVenue());
+			if(BookingsFieldsValidator.isNullOrEmpty(parkCommunityHallFee)) {
+				throw new CustomException("DATABASE_ERROR", "Invalid Fee Master Request");
+			}
+			else {
+				ParkCommunityFeeMasterResponse parkCommunityFeeMasterResponse= enrichmentService.enrichParkCommunityAmount(parkCommunityHallFee);
+				return parkCommunityFeeMasterResponse;
+			}
+			
 		} catch (Exception e) {
 			throw new CustomException("DATABASE_ERROR", e.getLocalizedMessage());
 		}
