@@ -12,6 +12,6 @@ public interface ParkCommunityHallV1MasterRepository extends JpaRepository<ParkC
 
 	ParkCommunityHallV1MasterModel findById(String bookingVenue);
 
-	ParkCommunityHallV1MasterModel findByVenueTypeAndSector(String bookingVenue, String sector);
+	ParkCommunityHallV1MasterModel findByVenueTypeAndSector(String venueType, String sector);
 
 }
