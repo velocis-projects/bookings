@@ -505,4 +505,6 @@ public class BookingsConstants {
 	
 	/** The Constant USER_ID. */
 	public static final String USER_ID = "userId";
+	
+	public static final String PARKS_AND_COMMUNITY_VIEWER = "PARKS_AND_COMMUNITY_VIEWER";
 }

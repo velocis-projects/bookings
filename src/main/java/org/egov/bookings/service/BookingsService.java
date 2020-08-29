@@ -100,10 +100,8 @@ public interface BookingsService {
 	/**
 	 * Gets the assignee.
 	 *
-	 * @param requestinfo the requestinfo
-	 * @param applicationNumber the application number
-	 * @param action the action
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @return the assignee
 	 */
-	public List<UserDetails> getAssignee(RequestInfo requestinfo, String applicationNumber, String action);
+	public List<UserDetails> getAssignee(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO);
 }

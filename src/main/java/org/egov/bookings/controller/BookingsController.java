@@ -293,34 +293,20 @@ public class BookingsController {
 	/**
 	 * Gets the assignee.
 	 *
-	 * @param applicationNumber the application number
-	 * @param action the action
-	 * @param requestInfoWrapper the request info wrapper
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @return the assignee
 	 */
 	@PostMapping( value = "employee/assignee/_search")
-	public ResponseEntity<?> getAssignee( @RequestParam(value = "applicationNumber", required = true) String applicationNumber, @RequestParam(value = "action", required = true) String action, @Valid @RequestBody RequestInfoWrapper requestInfoWrapper )
+	public ResponseEntity<?> getAssignee( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
 		List<UserDetails> userdetailsList = new ArrayList<>();
 		try
 		{
-			if (BookingsFieldsValidator.isNullOrEmpty(requestInfoWrapper)) 
+			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
 			{
-				throw new IllegalArgumentException("Invalid requestInfoWrapper");
+				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
 			}
-			if (BookingsFieldsValidator.isNullOrEmpty(requestInfoWrapper.getRequestInfo())) 
-			{
-				throw new IllegalArgumentException("Invalid requestInfo");
-			}
-			if (BookingsFieldsValidator.isNullOrEmpty(applicationNumber)) 
-			{
-				throw new IllegalArgumentException("Invalid applicationNumber");
-			}
-			if (BookingsFieldsValidator.isNullOrEmpty(action)) 
-			{
-				throw new IllegalArgumentException("Invalid action");
-			}
-			userdetailsList = bookingsService.getAssignee(requestInfoWrapper.getRequestInfo(), applicationNumber, action);
+			userdetailsList = bookingsService.getAssignee(searchCriteriaFieldsDTO);
 		}
 		catch(Exception e)
 		{

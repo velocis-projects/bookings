@@ -91,5 +91,8 @@ public class ParkCommunityHallV1MasterModel {
 
 	@Column(name = "BookingAllowedFor")
 	private String bookingAllowedFor;
+	
+	@Column(name = "Sector")
+	private String sector;
 
 }

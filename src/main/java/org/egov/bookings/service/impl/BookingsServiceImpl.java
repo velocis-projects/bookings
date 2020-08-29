@@ -17,13 +17,13 @@ import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.Booking;
 import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.MdmsJsonFields;
-import org.egov.bookings.contract.Message;
 import org.egov.bookings.contract.MessagesResponse;
 import org.egov.bookings.contract.ProcessInstanceSearchCriteria;
 import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.repository.BookingsRepository;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsbmApproverRepository;
@@ -100,10 +100,6 @@ public class BookingsServiceImpl implements BookingsService {
 	@Autowired
 	private SMSNotificationService smsNotificationService;
 	
-	/** The mail notification service. */
-	@Autowired
-	private MailNotificationService mailNotificationService;
-	
 	/** The bc. */
 	@Autowired
 	private BookingsConstants bc;
@@ -139,20 +135,19 @@ public class BookingsServiceImpl implements BookingsService {
 			enrichmentService.enrichBookingsDetails(bookingsRequest);
 			bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
 			bookingsRequest.setBookingsModel(bookingsModel);
-		/*if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)
-				&& !"INITIATED".equals(bookingsModel.getBkApplicationStatus())) {
-			try {
-				Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
-				String notificationMsg = prepareSMSNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
-				smsNotificationService.sendSMS(notificationMsg);
-				String mailSubject = prepareMailSubjectForCreate(bookingsModel, mdmsJsonFieldsMap);
-				notificationMsg = prepareMailNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
-				mailNotificationService.sendMail(bookingsModel.getBkEmail(), notificationMsg, mailSubject);
-			} catch (Exception e) {
-				throw new CustomException("NOTIFICATION_ERROR", e.getMessage());
-			}
-		}
-*/
+//			if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)
+//				&& !"INITIATED".equals(bookingsModel.getBkApplicationStatus())) {
+//				try {
+//					Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
+//					String notificationMsg = prepareSMSNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
+//					smsNotificationService.sendSMS(notificationMsg);
+//					String mailSubject = prepareMailSubjectForCreate(bookingsModel, mdmsJsonFieldsMap);
+//					notificationMsg = prepareMailNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
+//					mailNotificationService.sendMail(bookingsModel.getBkEmail(), notificationMsg, mailSubject);
+//				} catch (Exception e) {
+//				throw new CustomException("NOTIFICATION_ERROR", e.getMessage());
+//				}
+//			}
 		return bookingsModel;
 
 	}
@@ -832,57 +827,118 @@ public class BookingsServiceImpl implements BookingsService {
 	/**
 	 * Gets the assignee.
 	 *
-	 * @param requestinfo the requestinfo
-	 * @param applicationNumber the application number
-	 * @param action the action
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @return the assignee
 	 */
 	@Override
-	public List<UserDetails> getAssignee(RequestInfo requestinfo, String applicationNumber, String action) {
+	public List<UserDetails> getAssignee(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
 		List<?> userList = new ArrayList<>();
-		List<UserDetails> userdetailsList = new ArrayList<>();
+		List<UserDetails> userDetailsList = new ArrayList<>();
+		List<Integer> userId = new ArrayList<>();
 		try
 		{
-			if (BookingsFieldsValidator.isNullOrEmpty(requestinfo)) 
+			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
 			{
-				throw new IllegalArgumentException("Invalid requestinfo");
+				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
 			}
-			if (BookingsFieldsValidator.isNullOrEmpty(applicationNumber)) 
-			{
-				throw new IllegalArgumentException("Invalid applicationNumber");
-			}
-			if (BookingsFieldsValidator.isNullOrEmpty(action)) 
-			{
-				throw new IllegalArgumentException("Invalid action");
-			}
-			List<String> nestState = commonRepository.findNextState(applicationNumber, action);
+			String applicationNumber = searchCriteriaFieldsDTO.getApplicationNumber();
+			String action = searchCriteriaFieldsDTO.getAction();
+			String sector = searchCriteriaFieldsDTO.getSector();
+			String businessService = searchCriteriaFieldsDTO.getBusinessService();
 			String approverName = "";
-			for (String state : nestState) {
-				approverName = commonRepository.findApproverName(state);
-				if(!BookingsFieldsValidator.isNullOrEmpty(approverName)) {
-					break;
+			if (BookingsFieldsValidator.isNullOrEmpty(businessService)) 
+			{
+				List<String> nextState = commonRepository.findNextState(applicationNumber, action);
+				if (!BookingsFieldsValidator.isNullOrEmpty(nextState)) {
+					for (String state : nextState) {
+						approverName = commonRepository.findApproverName(state);
+						if (!BookingsFieldsValidator.isNullOrEmpty(approverName)) {
+							break;
+						}
+					}
+				}
+				String[] approverArray = approverName.split(",");
+				if (!BookingsFieldsValidator.isNullOrEmpty(approverArray)) {
+					for (String approver : approverArray) {
+						if (!BookingsConstants.CITIZEN.equals(approver)) {
+							userId = commonRepository.findUserId(approver);
+							if (!BookingsFieldsValidator.isNullOrEmpty(userId)) {
+								userList = commonRepository.findUserList(userId);
+							}
+							if (!BookingsFieldsValidator.isNullOrEmpty(userList)) {
+								userDetailsList = prepareUserList(userList, sector);
+							}
+						}
+					}
 				}
 			}
-			String[] approverArray = approverName.split(",");
-			for (String approver : approverArray) {
-				List<Integer> UserId = commonRepository.findUserId(approver);
-				userList = commonRepository.findUserList(UserId);
-				for (Object object : userList) {
-					UserDetails userDetails = new UserDetails();
-					String jsonString = objectMapper.writeValueAsString(object);
-					String[] jsonArray = jsonString.split(",");
-					userDetails.setUuid(jsonArray[0].substring(2,jsonArray[0].length()-1));
-					userDetails.setUserName(jsonArray[1].substring(1,jsonArray[1].length()-2));
-					userdetailsList.add(userDetails);
+			else if(!BookingsFieldsValidator.isNullOrEmpty(businessService) && BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService))
+			{
+				userId = commonRepository.findUserId(BookingsConstants.COMMERCIAL_GROUND_VIEWER);
+				if (!BookingsFieldsValidator.isNullOrEmpty(userId)) {
+					userList = commonRepository.findUserList(userId);
+				}
+				if (!BookingsFieldsValidator.isNullOrEmpty(userList)) {
+					userDetailsList = prepareUserList(userList, sector);
 				}
 			}
+			else if(!BookingsFieldsValidator.isNullOrEmpty(businessService) && BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService))
+			{
+				userId = commonRepository.findUserId(BookingsConstants.PARKS_AND_COMMUNITY_VIEWER);
+				if (!BookingsFieldsValidator.isNullOrEmpty(userId)) {
+					userList = commonRepository.findUserList(userId);
+				}
+				if (!BookingsFieldsValidator.isNullOrEmpty(userList)) {
+					userDetailsList = prepareUserList(userList, sector);
+				}
+			}
+				
 		}
 		catch(Exception e)
 		{
 			LOGGER.error("Exception occur in the getAssignee " + e);
 			e.printStackTrace();
 		}
-		return userdetailsList;
+		return userDetailsList;
 	}
-
+	
+	/**
+	 * Prepare user list.
+	 *
+	 * @param userList the user list
+	 * @param sector the sector
+	 * @return the list
+	 */
+	private List<UserDetails> prepareUserList(List<?> userList, String sector)
+	{
+		List<UserDetails> userDetailsList = new ArrayList<>();
+		Map<String, UserDetails> userDetailsMap = new HashMap<>();
+		OsbmApproverModel osbmApproverModel = new OsbmApproverModel();
+		try {
+			for (Object object : userList) {
+				UserDetails userDetails = new UserDetails();
+				String jsonString = objectMapper.writeValueAsString(object);
+				String[] jsonArray = jsonString.split(",");
+				userDetails.setUuid(jsonArray[0].substring(2, jsonArray[0].length() - 1));
+				userDetails.setUserName(jsonArray[1].substring(1, jsonArray[1].length() - 2));
+				osbmApproverModel = osbmApproverRepository.findByUuidAndSector(userDetails.getUuid(), sector);
+				if (!BookingsFieldsValidator.isNullOrEmpty(sector) && !BookingsFieldsValidator.isNullOrEmpty(osbmApproverModel)) {
+					if (!userDetailsMap.containsKey(userDetails.getUuid())) {
+						userDetailsMap.put(userDetails.getUuid(), userDetails);
+						userDetailsList.add(userDetails);
+					}
+				}
+				else if (BookingsFieldsValidator.isNullOrEmpty(sector)) {
+					if (!userDetailsMap.containsKey(userDetails.getUuid())) {
+						userDetailsMap.put(userDetails.getUuid(), userDetails);
+						userDetailsList.add(userDetails);
+					}
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception occur in the prepareUserList " + e);
+			e.printStackTrace();
+		}
+		return userDetailsList;
+	}
 }

@@ -53,6 +53,12 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 	@JsonProperty("RequestInfo")
 	private RequestInfo requestInfo;
 	
+	/** The action. */
+	private String action;
+	
+	/** The business service. */
+	private String businessService;
+	
 	/**
 	 * Gets the tenant id.
 	 *
@@ -268,6 +274,42 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 	 */
 	public void setRequestInfo(RequestInfo requestInfo) {
 		this.requestInfo = requestInfo;
+	}
+
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
+	public String getAction() {
+		return action;
+	}
+
+	/**
+	 * Sets the action.
+	 *
+	 * @param action the new action
+	 */
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	/**
+	 * Gets the business service.
+	 *
+	 * @return the business service
+	 */
+	public String getBusinessService() {
+		return businessService;
+	}
+
+	/**
+	 * Sets the business service.
+	 *
+	 * @param businessService the new business service
+	 */
+	public void setBusinessService(String businessService) {
+		this.businessService = businessService;
 	}
 
 }

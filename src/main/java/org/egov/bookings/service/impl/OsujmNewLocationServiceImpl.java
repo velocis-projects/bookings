@@ -16,8 +16,6 @@ import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.Booking;
 import org.egov.bookings.contract.DocumentFields;
-import org.egov.bookings.contract.Message;
-import org.egov.bookings.contract.MessagesResponse;
 import org.egov.bookings.contract.OsujmNewLocationFields;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.OsujmNewLocationModel;
@@ -31,7 +29,6 @@ import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.NewLocationRequest;
 import org.egov.bookings.workflow.WorkflowIntegrator;
 import org.egov.common.contract.request.Role;
-import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,9 +78,9 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 	@Autowired
 	private SMSNotificationService smsNotificationService;
 	
-	/** The mail notification service. */
-	@Autowired
-	private MailNotificationService mailNotificationService;
+//	/** The mail notification service. */
+//	@Autowired
+//	private MailNotificationService mailNotificationService;
 	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger(OsujmNewLocationServiceImpl.class.getName());
@@ -149,7 +146,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 				 newLocationRepository.save(newLocationRequest.getNewLocationModel());
 				 newLocaltionModel = newLocationRequest.getNewLocationModel();
 			}
-			MessagesResponse messageResponse = bookingsServiceImpl.getLocalizationMessage(newLocationRequest.getRequestInfo());
+			/*MessagesResponse messageResponse = bookingsServiceImpl.getLocalizationMessage(newLocationRequest.getRequestInfo());
 			String applicationStatus = "";
 			if(!BookingsFieldsValidator.isNullOrEmpty(messageResponse))
 			{
@@ -161,7 +158,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 					}
 				}
 			}
-			/*if(!BookingsFieldsValidator.isNullOrEmpty(newLocaltionModel))
+			if(!BookingsFieldsValidator.isNullOrEmpty(newLocaltionModel))
 			{
 				try {
 					String notificationMsg = prepareSMSNotifMsgForUpdate(newLocaltionModel, applicationStatus);
