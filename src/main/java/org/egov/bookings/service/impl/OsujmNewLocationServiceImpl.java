@@ -79,9 +79,9 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 	private SMSNotificationService smsNotificationService;
 	
 
-	/** The mail notification service. */
-	@Autowired
-	private MailNotificationService mailNotificationService;
+//	/** The mail notification service. */
+//	@Autowired
+//	private MailNotificationService mailNotificationService;
 	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger(OsujmNewLocationServiceImpl.class.getName());
@@ -160,7 +160,6 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 				}
 			}
 			if(!BookingsFieldsValidator.isNullOrEmpty(newLocaltionModel))
-
 			{
 				try {
 					String notificationMsg = prepareSMSNotifMsgForUpdate(newLocaltionModel, applicationStatus);

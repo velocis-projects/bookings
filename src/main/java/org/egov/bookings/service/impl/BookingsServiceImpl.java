@@ -101,9 +101,9 @@ public class BookingsServiceImpl implements BookingsService {
 	private SMSNotificationService smsNotificationService;
 	
 	/** The mail notification service. */
-	@Autowired
+	/*@Autowired
 	private MailNotificationService mailNotificationService;
-	
+	*/
 	
 	
 	/** The Constant LOGGER. */
@@ -829,8 +829,13 @@ public class BookingsServiceImpl implements BookingsService {
 		}
 		return bookingApprover1;
 	}
-	
-	
+
+	/**
+	 * Gets the assignee.
+	 *
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
+	 * @return the assignee
+	 */
 	@Override
 	public List<UserDetails> getAssignee(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
 		List<?> userList = new ArrayList<>();

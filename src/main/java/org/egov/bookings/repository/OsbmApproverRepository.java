@@ -37,7 +37,6 @@ public interface OsbmApproverRepository extends CrudRepository<OsbmApproverModel
 	 * @return the osbm approver model
 	 */
 	public OsbmApproverModel findByUuidAndSector(String uuid, String sector);
-
 	
 	
 }

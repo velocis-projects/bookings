@@ -104,5 +104,4 @@ public interface BookingsService {
 	 * @return the assignee
 	 */
 	public List<UserDetails> getAssignee(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO);
-
 }

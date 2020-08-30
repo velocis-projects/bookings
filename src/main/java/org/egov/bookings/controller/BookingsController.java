@@ -315,4 +315,5 @@ public class BookingsController {
 		}
 		return ResponseEntity.ok( userdetailsList );
 	}
+	
 }
