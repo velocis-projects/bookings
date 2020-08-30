@@ -113,6 +113,7 @@ public class ParkAndCommunityController {
 		
 		List<ParkCommunityHallV1MasterModel> parkCommunityHallV1MasterList = parkAndCommunityService
 				.fetchParkCommunityMaster(parkCommunityFeeMasterRequest);
+
 		ResponseModel rs = new ResponseModel();
 		if (parkCommunityHallV1MasterList == null) {
 			rs.setStatus("400");

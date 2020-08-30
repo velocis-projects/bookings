@@ -42,6 +42,7 @@ public interface ParkAndCommunityService {
 	 */
 	List<ParkCommunityHallV1MasterModel> fetchParkCommunityMaster(ParkCommunityFeeMasterRequest parkCommunityFeeMasterRequest);
 
+
 	Set<AvailabilityResponse> availabilitySearch(ParkAndCommunitySearchCriteria parkAndCommunitySearchCriteria);
 
 	Set<Date> fetchBookedDates(BookingsRequest bookingsRequest);

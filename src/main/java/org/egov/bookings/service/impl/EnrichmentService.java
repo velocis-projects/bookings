@@ -1,7 +1,6 @@
 package org.egov.bookings.service.impl;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -23,7 +22,6 @@ import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 import org.egov.bookings.repository.BookingsRepository;
-import org.egov.bookings.repository.OsbmFeeRepository;
 import org.egov.bookings.repository.OsujmNewLocationRepository;
 import org.egov.bookings.repository.impl.IdGenRepository;
 import org.egov.bookings.service.BookingsCalculatorService;

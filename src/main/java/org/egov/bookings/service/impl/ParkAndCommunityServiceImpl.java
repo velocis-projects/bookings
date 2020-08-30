@@ -113,6 +113,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 
 		/*if(BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()))
 			enrichmentService.enrichBookingsAssignee(bookingsRequest);*/
+
 		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
 
 		if (config.getIsExternalWorkFlowEnabled())
@@ -153,6 +154,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 
 		} catch (Exception e) {
 			throw new CustomException("DATABASE_ERROR", e.getLocalizedMessage());
+
 		}
 	}
 

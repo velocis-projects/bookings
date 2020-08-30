@@ -401,6 +401,7 @@ public class BookingsFieldsValidator {
 		if (BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()) && BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkSector())) {
 			throw new IllegalArgumentException("Invalid Sector");
 		}
+
 	}
 
 	public void validateCreateBookingRequest(BookingsRequest bookingsRequest) {

@@ -1,6 +1,5 @@
 package org.egov.bookings.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.egov.bookings.contract.Booking;

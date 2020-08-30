@@ -67,5 +67,6 @@ public class BookingsQueryBuilder {
 	public static final String FIND_USER_LIST = "select uuid, username from eg_user where id in (:userId)";
 
 	/** The Constant CHECK_PARK_AND_COMMUNITY_AVAILABILITY. */
+
 	public static final String CHECK_PARK_AND_COMMUNITY_AVAILABILITY = "select * from tt_bookings where bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType and bk_sector =:sector and bk_to_date >= :date and bk_action =:APPLY";
 }

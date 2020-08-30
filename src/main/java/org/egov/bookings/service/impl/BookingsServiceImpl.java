@@ -100,9 +100,10 @@ public class BookingsServiceImpl implements BookingsService {
 	@Autowired
 	private SMSNotificationService smsNotificationService;
 	
-	/** The bc. */
+	/** The mail notification service. */
 	@Autowired
-	private BookingsConstants bc;
+	private MailNotificationService mailNotificationService;
+	
 	
 	
 	/** The Constant LOGGER. */
@@ -135,19 +136,21 @@ public class BookingsServiceImpl implements BookingsService {
 			enrichmentService.enrichBookingsDetails(bookingsRequest);
 			bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
 			bookingsRequest.setBookingsModel(bookingsModel);
-//			if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)
-//				&& !"INITIATED".equals(bookingsModel.getBkApplicationStatus())) {
-//				try {
-//					Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
-//					String notificationMsg = prepareSMSNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
-//					smsNotificationService.sendSMS(notificationMsg);
-//					String mailSubject = prepareMailSubjectForCreate(bookingsModel, mdmsJsonFieldsMap);
-//					notificationMsg = prepareMailNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
-//					mailNotificationService.sendMail(bookingsModel.getBkEmail(), notificationMsg, mailSubject);
-//				} catch (Exception e) {
-//				throw new CustomException("NOTIFICATION_ERROR", e.getMessage());
-//				}
-//			}
+
+		/*if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)
+				&& !"INITIATED".equals(bookingsModel.getBkApplicationStatus())) {
+			try {
+				Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
+				String notificationMsg = prepareSMSNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
+				smsNotificationService.sendSMS(notificationMsg);
+				String mailSubject = prepareMailSubjectForCreate(bookingsModel, mdmsJsonFieldsMap);
+				notificationMsg = prepareMailNotifMsgForCreate(bookingsModel, mdmsJsonFieldsMap);
+				mailNotificationService.sendMail(bookingsModel.getBkEmail(), notificationMsg, mailSubject);
+			} catch (Exception e) {
+				throw new CustomException("NOTIFICATION_ERROR", e.getMessage());
+			}
+		}
+*/
 		return bookingsModel;
 
 	}
@@ -571,6 +574,7 @@ public class BookingsServiceImpl implements BookingsService {
 		if(BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()) && !BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService))
 		enrichmentService.enrichBookingsAssignee(bookingsRequest);
 		
+
 		
 		if (config.getIsExternalWorkFlowEnabled())
 			workflowIntegrator.callWorkFlow(bookingsRequest);
@@ -825,13 +829,8 @@ public class BookingsServiceImpl implements BookingsService {
 		}
 		return bookingApprover1;
 	}
-
-	/**
-	 * Gets the assignee.
-	 *
-	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
-	 * @return the assignee
-	 */
+	
+	
 	@Override
 	public List<UserDetails> getAssignee(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
 		List<?> userList = new ArrayList<>();
