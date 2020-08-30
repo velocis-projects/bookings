@@ -415,17 +415,10 @@ public class EnrichmentService {
 
 	public void enrichBookingsAssignee(BookingsRequest bookingsRequest) {
 		SearchCriteriaFieldsDTO searchCriteriaFieldsDTO = new SearchCriteriaFieldsDTO();
-		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
-		
-		if (BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService)
-				|| BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService)) {
-			searchCriteriaFieldsDTO.setBusinessService(businessService);
-		} else {
 			searchCriteriaFieldsDTO.setApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 			searchCriteriaFieldsDTO.setAction(BookingsConstants.ACTION_INITIATE);
 			searchCriteriaFieldsDTO.setSector(bookingsRequest.getBookingsModel().getBkSector());
 			searchCriteriaFieldsDTO.setRequestInfo(bookingsRequest.getRequestInfo());
-		}
 		List<UserDetails> userdetailsList = bookingsService.getAssignee(searchCriteriaFieldsDTO);
 		 if(!BookingsFieldsValidator.isNullOrEmpty(userdetailsList))
 		 bookingsRequest.getBookingsModel().setAssignee(userdetailsList.get(0).getUuid());

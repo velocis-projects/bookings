@@ -111,8 +111,8 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 	@Override
 	public BookingsModel updateParkAndCommunityBooking(BookingsRequest bookingsRequest) {
 
-		if(BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()))
-			enrichmentService.enrichBookingsAssignee(bookingsRequest);
+		/*if(BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()))
+			enrichmentService.enrichBookingsAssignee(bookingsRequest);*/
 		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
 
 		if (config.getIsExternalWorkFlowEnabled())
