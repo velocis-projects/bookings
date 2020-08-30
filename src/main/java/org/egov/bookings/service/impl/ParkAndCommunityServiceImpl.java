@@ -143,16 +143,16 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 	 * org.egov.bookings.service.ParkAndCommunityService#fetchParkCommunityMaster()
 	 */
 	@Override
-	public ParkCommunityHallV1MasterModel fetchParkCommunityMaster(ParkCommunityFeeMasterRequest parkCommunityFeeMasterRequest) {
+	public List<ParkCommunityHallV1MasterModel> fetchParkCommunityMaster(ParkCommunityFeeMasterRequest parkCommunityFeeMasterRequest) {
 
-		ParkCommunityHallV1MasterModel parkCommunityHallV1Master = null;
+		List<ParkCommunityHallV1MasterModel> parkCommunityHallV1Master = null;
 		try {
 
 			parkCommunityHallV1Master = parkCommunityHallV1MasterRepository.findByVenueTypeAndSector(parkCommunityFeeMasterRequest.getVenueType(),parkCommunityFeeMasterRequest.getSector());
 			return parkCommunityHallV1Master;
 
 		} catch (Exception e) {
-			throw new CustomException("DATABASE_ERROR", "ERROR WHILE FETCHING PARK AND COMMUNITY MASTER DATA");
+			throw new CustomException("DATABASE_ERROR", e.getLocalizedMessage());
 		}
 	}
 

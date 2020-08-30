@@ -1,5 +1,7 @@
 package org.egov.bookings.repository;
 
+import java.util.List;
+
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,6 +14,6 @@ public interface ParkCommunityHallV1MasterRepository extends JpaRepository<ParkC
 
 	ParkCommunityHallV1MasterModel findById(String bookingVenue);
 
-	ParkCommunityHallV1MasterModel findByVenueTypeAndSector(String venueType, String sector);
+	List<ParkCommunityHallV1MasterModel> findByVenueTypeAndSector(String venueType, String sector);
 
 }

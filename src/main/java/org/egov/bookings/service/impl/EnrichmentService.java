@@ -422,7 +422,7 @@ public class EnrichmentService {
 			searchCriteriaFieldsDTO.setBusinessService(businessService);
 		} else {
 			searchCriteriaFieldsDTO.setApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
-			searchCriteriaFieldsDTO.setAction(bookingsRequest.getBookingsModel().getBkAction());
+			searchCriteriaFieldsDTO.setAction(BookingsConstants.ACTION_INITIATE);
 			searchCriteriaFieldsDTO.setSector(bookingsRequest.getBookingsModel().getBkSector());
 			searchCriteriaFieldsDTO.setRequestInfo(bookingsRequest.getRequestInfo());
 		}

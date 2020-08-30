@@ -111,7 +111,7 @@ public class ParkAndCommunityController {
 
 		bookingsFieldsValidator.validateParkAndCommunityMasterRequest(parkCommunityFeeMasterRequest);
 		
-		ParkCommunityHallV1MasterModel parkCommunityHallV1MasterList = parkAndCommunityService
+		List<ParkCommunityHallV1MasterModel> parkCommunityHallV1MasterList = parkAndCommunityService
 				.fetchParkCommunityMaster(parkCommunityFeeMasterRequest);
 		ResponseModel rs = new ResponseModel();
 		if (parkCommunityHallV1MasterList == null) {

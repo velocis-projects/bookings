@@ -398,6 +398,8 @@ public class BookingsConstants {
 
 	/** The Constant ACTION. */
 	public static final String ACTION = "action";
+	
+	public static final String ACTION_INITIATE = "INITIATE";
 
 	/** The Constant BUSINESS_SERVICE. */
 	public static final String BUSINESS_SERVICE = "businessservice";

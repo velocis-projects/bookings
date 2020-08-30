@@ -40,7 +40,7 @@ public interface ParkAndCommunityService {
 	 *
 	 * @return the list
 	 */
-	ParkCommunityHallV1MasterModel fetchParkCommunityMaster(ParkCommunityFeeMasterRequest parkCommunityFeeMasterRequest);
+	List<ParkCommunityHallV1MasterModel> fetchParkCommunityMaster(ParkCommunityFeeMasterRequest parkCommunityFeeMasterRequest);
 
 	Set<AvailabilityResponse> availabilitySearch(ParkAndCommunitySearchCriteria parkAndCommunitySearchCriteria);
 
