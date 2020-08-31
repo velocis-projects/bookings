@@ -31,6 +31,10 @@ public class BookingsCalculatorConstants {
 
 	public static final String PACC_TAX_CODE_2 = "PACC_TAX";
 	
+	public static final String PACC_UGST = "PACC_UGST";
+	
+	public static final String PACC_CGST = "PACC_CGST";
+	
 	public static final String MDMS_ROUNDOFF_TAXHEAD_PACC = "PACC_ROUND_OFF";
 
 	public static final String MDMS_ROUNDOFF_TAXHEAD_OSUJM = "OSUJM_ROUND_OFF";

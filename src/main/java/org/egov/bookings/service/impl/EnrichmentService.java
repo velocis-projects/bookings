@@ -394,6 +394,9 @@ public class EnrichmentService {
 			BigDecimal surchargeAmount = amount.multiply(
 					BigDecimal.valueOf(Long.valueOf(parkCommunityHallFee.getSurcharge())).divide(new BigDecimal(100)));
 			BigDecimal finalAmount = amount.add(surchargeAmount);
+			
+			BigDecimal fA = BookingsUtils.removeRoundOff(finalAmount);
+			
 			BigDecimal cgstAmount = amount.multiply(
 					BigDecimal.valueOf(Long.valueOf(parkCommunityHallFee.getCgstRate())).divide(new BigDecimal(100)));
 			BigDecimal ugstAmount = amount.multiply(

@@ -1,5 +1,6 @@
 package org.egov.bookings.utils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -719,6 +720,26 @@ public class BookingsUtils {
 	        url.append("{3}");
 	        return url.toString();
 	    }
+
+	public static BigDecimal removeRoundOff(BigDecimal finalAmount) {
+		finalAmount = new BigDecimal(423.39);
+		BigDecimal decimalValue = finalAmount.remainder(BigDecimal.ONE);
+		BigDecimal midVal = new BigDecimal(0.5);
+		
+		
+		if (decimalValue.compareTo(midVal) > 0)
+			finalAmount= finalAmount.setScale(0,BigDecimal.ROUND_HALF_UP);
+
+		if (decimalValue.compareTo(midVal) < 0)
+			finalAmount= finalAmount.setScale(0,BigDecimal.ROUND_HALF_UP);
+		
+		if (decimalValue.compareTo(midVal) == 0)
+			return finalAmount;
+
+		return finalAmount;
+		
+		
+	}
 	
 
 }

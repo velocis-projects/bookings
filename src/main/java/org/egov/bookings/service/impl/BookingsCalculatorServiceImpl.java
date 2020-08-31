@@ -36,6 +36,7 @@ import org.egov.bookings.service.BookingsCalculatorService;
 import org.egov.bookings.service.CommercialGroundService;
 import org.egov.bookings.service.OsujmService;
 import org.egov.bookings.service.ParkAndCommunityService;
+import org.egov.bookings.utils.BookingsCalculatorConstants;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.validator.BookingsFieldsValidator;
@@ -225,21 +226,21 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(), finalAmount,
 							taxHeadEstimate.getCategory()));
 				}
-				if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
+				/*if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
 							finalAmount.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge())).divide(new BigDecimal(100)))),
 							taxHeadEstimate.getCategory()));
-				}
-				/*if (taxHeadEstimate.getCode().equals("PACC_CGST")) {
+				}*/
+				if (taxHeadEstimate.getCode().equals(BookingsCalculatorConstants.PACC_CGST)) {
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
 							finalAmount.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCgstRate())).divide(new BigDecimal(100)))),
 							taxHeadEstimate.getCategory()));
 				}
-				if (taxHeadEstimate.getCode().equals("PACC_UGST")) {
+				if (taxHeadEstimate.getCode().equals(BookingsCalculatorConstants.PACC_UGST)) {
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
 							finalAmount.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getUtgstRate())).divide(new BigDecimal(100)))),
 							taxHeadEstimate.getCategory()));
-				}*/
+				}
 			}
 			break;
 			
@@ -250,16 +251,12 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	private ParkCommunityHallV1MasterModel getParkAndCommunityAmount(BookingsRequest bookingsRequest) {
 
 		ParkCommunityHallV1MasterModel parkCommunityHallV1FeeMaster = null;
-		BigDecimal finalAmount = null;
 		try {
 			 parkCommunityHallV1FeeMaster = parkAndCommunityService
 					.findParkAndCommunityFee(bookingsRequest.getBookingsModel().getBkBookingVenue());
 			if(BookingsFieldsValidator.isNullOrEmpty(parkCommunityHallV1FeeMaster)) {
 				throw new IllegalArgumentException("There is not any amount for this park and community criteria in database");
 			}
-			BigDecimal days = enrichmentService.extractDaysBetweenTwoDates(bookingsRequest);
-			BigDecimal amount = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges())+Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
-			finalAmount = days.multiply(amount);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e.getLocalizedMessage());
 		}
