@@ -412,9 +412,11 @@ public class EnrichmentService {
 
 
 	public void enrichBookingsAssignee(BookingsRequest bookingsRequest) {
+		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
 		SearchCriteriaFieldsDTO searchCriteriaFieldsDTO = new SearchCriteriaFieldsDTO();
 			searchCriteriaFieldsDTO.setApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 			searchCriteriaFieldsDTO.setAction(BookingsConstants.ACTION_INITIATE);
+			if(!BookingsConstants.BUSINESS_SERVICE_BWT.equals(businessService) && !BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService) && !BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService));
 			searchCriteriaFieldsDTO.setSector(bookingsRequest.getBookingsModel().getBkSector());
 			searchCriteriaFieldsDTO.setRequestInfo(bookingsRequest.getRequestInfo());
 		List<UserDetails> userdetailsList = bookingsService.getAssignee(searchCriteriaFieldsDTO);
