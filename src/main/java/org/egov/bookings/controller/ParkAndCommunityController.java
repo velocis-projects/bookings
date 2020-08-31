@@ -4,14 +4,11 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Set;
 
-import javax.validation.Valid;
-
 import org.egov.bookings.common.model.ResponseModel;
 import org.egov.bookings.contract.AvailabilityResponse;
 import org.egov.bookings.contract.ParkAndCommunitySearchCriteria;
 import org.egov.bookings.contract.ParkCommunityFeeMasterRequest;
 import org.egov.bookings.contract.ParkCommunityFeeMasterResponse;
-import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 import org.egov.bookings.service.ParkAndCommunityService;
