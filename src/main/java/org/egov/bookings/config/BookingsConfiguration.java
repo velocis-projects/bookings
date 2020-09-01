@@ -95,10 +95,10 @@ public class BookingsConfiguration {
 
 
     //Persister Config
-   @Value("${persister.save.tradelicense.topic}")
+    @Value("${kafka.topics.save.service}")
     private String saveTopic;
 
-    @Value("${persister.update.tradelicense.topic}")
+    @Value("${kafka.topics.update.service}")
     private String updateTopic;
 
     @Value("${persister.update.tradelicense.workflow.topic}")
@@ -170,9 +170,22 @@ public class BookingsConfiguration {
 
     @Value("${notification.sms.enabled}")
     private Boolean isSMSEnabled;
+    
+    @Value("${notification.sms.enabled.forBK}")
+    private Boolean isBKSMSEnabled;
 
+    @Value("${notification.sms.enabled.forBPA}")
+    private Boolean isBPASMSEnabled;
+    
 
+    //EMAIL
+    @Value("${kafka.topics.notification.email}")
+    private String emailNotifTopic;
 
+    @Value("${notification.email.enabled.forBK}")
+    private Boolean isBKEMAILEnabled;
+    
+    
     //Localization
     @Value("${egov.localization.host}")
     private String localizationHost;
@@ -248,9 +261,18 @@ public class BookingsConfiguration {
 	
 	@Value("${egov.user.event.notification.enabled}")
 	private Boolean isUserEventsNotificationEnabled;
+	
+	@Value("${egov.user.event.notification.enabledForTL}")
+	private Boolean isUserEventsNotificationEnabledForTL;
+
+    @Value("${egov.user.event.notification.enabledForBPA}")
+    private Boolean isUserEventsNotificationEnabledForBPA;
 
 	@Value("${egov.usr.events.pay.triggers}")
 	private String payTriggers;
+	
+	@Value("${egov.usr.events.ctl.pay.link}")
+	private String ctlPayLink;
 	
 	@Value("${egov.demand.create.endpoint}")
 	private String demandCreateEndpoint;
