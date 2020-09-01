@@ -15,10 +15,13 @@ import java.util.stream.LongStream;
 
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.IdResponse;
+import org.egov.bookings.contract.ParkCommunityFeeMasterResponse;
+import org.egov.bookings.contract.UserDetails;
+import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
+import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 import org.egov.bookings.repository.BookingsRepository;
-import org.egov.bookings.repository.OsbmFeeRepository;
 import org.egov.bookings.repository.OsujmNewLocationRepository;
 import org.egov.bookings.repository.impl.IdGenRepository;
 import org.egov.bookings.service.BookingsCalculatorService;
@@ -378,6 +381,47 @@ public class EnrichmentService {
 			throw new CustomException("PACC UPDATE ERROR", "ERROR WHILE UPDATING PACC DETAILS ");
 		}
 		return bookingsModel;
+	}
+
+
+
+	public ParkCommunityFeeMasterResponse enrichParkCommunityAmount(
+			ParkCommunityHallV1MasterModel parkCommunityHallFee) {
+		ParkCommunityFeeMasterResponse parkCommunityFeeMasterResponse = new ParkCommunityFeeMasterResponse();
+		try {
+			BigDecimal amount = BigDecimal.valueOf(Long.valueOf(parkCommunityHallFee.getRent())
+					+ Long.valueOf(parkCommunityHallFee.getCleaningCharges()));
+			BigDecimal surchargeAmount = amount.multiply(
+					BigDecimal.valueOf(Long.valueOf(parkCommunityHallFee.getSurcharge())).divide(new BigDecimal(100)));
+			BigDecimal finalAmount = amount.add(surchargeAmount);
+			BigDecimal cgstAmount = amount.multiply(
+					BigDecimal.valueOf(Long.valueOf(parkCommunityHallFee.getCgstRate())).divide(new BigDecimal(100)));
+			BigDecimal ugstAmount = amount.multiply(
+					BigDecimal.valueOf(Long.valueOf(parkCommunityHallFee.getUtgstRate())).divide(new BigDecimal(100)));
+			parkCommunityFeeMasterResponse.setTotalAmount(finalAmount);
+			parkCommunityFeeMasterResponse.setAmount(amount);
+			parkCommunityFeeMasterResponse.setSurchargeAmount(surchargeAmount);
+			parkCommunityFeeMasterResponse.setCgstAmount(cgstAmount);
+			parkCommunityFeeMasterResponse.setUgstAmount(ugstAmount);
+			return parkCommunityFeeMasterResponse;
+		} catch (Exception e) {
+			throw new CustomException("FEE_MASTER_ERROR", "ERROR WHILE ENRICHING PARK AND COMMUNITY FEE RESPONSE");
+		}
+	}
+
+
+
+	public void enrichBookingsAssignee(BookingsRequest bookingsRequest) {
+		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
+		SearchCriteriaFieldsDTO searchCriteriaFieldsDTO = new SearchCriteriaFieldsDTO();
+			searchCriteriaFieldsDTO.setApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
+			searchCriteriaFieldsDTO.setAction(BookingsConstants.ACTION_INITIATE);
+			if(!BookingsConstants.BUSINESS_SERVICE_BWT.equals(businessService) && !BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService) && !BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService));
+			searchCriteriaFieldsDTO.setSector(bookingsRequest.getBookingsModel().getBkSector());
+			searchCriteriaFieldsDTO.setRequestInfo(bookingsRequest.getRequestInfo());
+		List<UserDetails> userdetailsList = bookingsService.getAssignee(searchCriteriaFieldsDTO);
+		 if(!BookingsFieldsValidator.isNullOrEmpty(userdetailsList))
+		 bookingsRequest.getBookingsModel().setAssignee(userdetailsList.get(0).getUuid());
 	}
 
 }

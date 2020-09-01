@@ -95,7 +95,6 @@ public class BookingsServiceImpl implements BookingsService {
 	@Autowired
 	private Producer producer;
 	
-	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger(BookingsServiceImpl.class.getName());
 
@@ -132,7 +131,6 @@ public class BookingsServiceImpl implements BookingsService {
 		}
 		bookingsRequest.setBookingsModel(bookingsModel);
 		return bookingsModel;
-
 	}
 	
 	public String prepareApplicationStatus(RequestInfo requestInfo, BookingsModel bookingsModel) {
@@ -453,9 +451,9 @@ public class BookingsServiceImpl implements BookingsService {
 	 */
 	@Override
 	public BookingsModel update(BookingsRequest bookingsRequest) {
-
 		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
-
+		if(BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()) && !BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService))
+		enrichmentService.enrichBookingsAssignee(bookingsRequest);
 		if (config.getIsExternalWorkFlowEnabled())
 			workflowIntegrator.callWorkFlow(bookingsRequest);
 

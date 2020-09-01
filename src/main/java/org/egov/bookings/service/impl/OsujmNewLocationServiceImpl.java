@@ -78,6 +78,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 	@Autowired
 	private SMSNotificationService smsNotificationService;
 	
+
 //	/** The mail notification service. */
 //	@Autowired
 //	private MailNotificationService mailNotificationService;

@@ -9,7 +9,9 @@ import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
 import org.egov.bookings.contract.JurisdictionAvailabilityRequest;
 import org.egov.bookings.contract.OsbmApproverRequest;
 import org.egov.bookings.contract.OsbmSearchCriteria;
+import org.egov.bookings.contract.ParkCommunityFeeMasterRequest;
 import org.egov.bookings.model.CommercialGrndAvailabilityModel;
+import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.web.models.NewLocationRequest;
 import org.springframework.stereotype.Component;
@@ -396,6 +398,10 @@ public class BookingsFieldsValidator {
 		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getTenantId())) {
 			throw new IllegalArgumentException("Invalid Tenant Id");
 		}
+		if (BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()) && BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkSector())) {
+			throw new IllegalArgumentException("Invalid Sector");
+		}
+
 	}
 
 	public void validateCreateBookingRequest(BookingsRequest bookingsRequest) {
@@ -446,6 +452,15 @@ public class BookingsFieldsValidator {
 		}
 		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getTenantId())) {
 			throw new IllegalArgumentException("Invalid Tenant Id");
+		}
+	}
+
+	public void validateParkAndCommunityMasterRequest(ParkCommunityFeeMasterRequest parkCommunityFeeMasterRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(parkCommunityFeeMasterRequest.getVenueType())) {
+			throw new IllegalArgumentException("Invalid Venue Type");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(parkCommunityFeeMasterRequest.getSector())) {
+			throw new IllegalArgumentException("Invalid Sector");
 		}
 	}
 }

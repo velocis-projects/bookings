@@ -1,5 +1,6 @@
 package org.egov.bookings.model;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 
@@ -287,6 +288,8 @@ public class BookingsModel {
 	@Column(name = "APPROVER_NAME")
 	private String bkApproverName;
 
+	@Transient
+	private BigDecimal discount;
 	
 	@Size(max = 64)
 	@JsonProperty("assignee")
