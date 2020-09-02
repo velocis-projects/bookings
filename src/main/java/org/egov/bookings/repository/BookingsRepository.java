@@ -1042,7 +1042,7 @@ public interface BookingsRepository
 	 */
 	@Query(
 			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
-					+ "AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_APPLICATION_NUMBER IN (?6) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
+					+ "AND TB.BK_APPLICATION_STATUS != 'INITIATED' AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_APPLICATION_NUMBER IN (?6) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
 			nativeQuery = true )
 			List<BookingsModel> getEmployeeSearchBWTBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
 					, String bookingType, Set< String > applicationNumberSet );
@@ -1062,7 +1062,7 @@ public interface BookingsRepository
 	 */
 	@Query(
 			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
-					+ "AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_APPLICATION_NUMBER IN (?6) AND TB.BK_DATE_CREATED BETWEEN (?7) AND (?8) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
+					+ "AND TB.BK_APPLICATION_STATUS != 'INITIATED' AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE LIKE (%?5%) AND TB.BK_APPLICATION_NUMBER IN (?6) AND TB.BK_DATE_CREATED BETWEEN (?7) AND (?8) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
 			nativeQuery = true )
 			List<BookingsModel> getEmployeeSearchBWTBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
 					, String bookingType, Set< String > applicationNumberSet, Date fromDate, Date toDate );
@@ -1103,4 +1103,85 @@ public interface BookingsRepository
 			List<BookingsModel> getEmployeeSearchGFCPBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
 					, String bookingType, Date fromDate, Date toDate );
 
+	
+	/**
+	 * Gets the employee search PACC booking.
+	 *
+	 * @param tenantId the tenant id
+	 * @param applicationNumber the application number
+	 * @param applicationStatus the application status
+	 * @param mobileNumber the mobile number
+	 * @param parksBookingType the parks booking type
+	 * @param communityCenterBookingType the community center booking type
+	 * @return the employee search PACC booking
+	 */
+	@Query(
+			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
+					+ "AND TB.BK_APPLICATION_STATUS != 'INITIATED' AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE = (?5) OR TB.BK_BOOKING_TYPE = (?6) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
+			nativeQuery = true )
+			List<BookingsModel> getEmployeeSearchPACCBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
+					, String parksBookingType, String communityCenterBookingType );
+	
+	
+	/**
+	 * Gets the employee search PACC booking.
+	 *
+	 * @param tenantId the tenant id
+	 * @param applicationNumber the application number
+	 * @param applicationStatus the application status
+	 * @param mobileNumber the mobile number
+	 * @param parksBookingType the parks booking type
+	 * @param communityCenterBookingType the community center booking type
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @return the employee search PACC booking
+	 */
+	@Query(
+			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
+					+ "AND TB.BK_APPLICATION_STATUS != 'INITIATED' AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE = (?5) OR TB.BK_BOOKING_TYPE = (?6) AND TB.BK_DATE_CREATED BETWEEN (?7) AND (?8) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
+			nativeQuery = true )
+			List<BookingsModel> getEmployeeSearchPACCBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
+					, String parksBookingType, String communityCenterBookingType, Date fromDate, Date toDate );
+
+	
+	/**
+	 * Gets the employee search PACC booking.
+	 *
+	 * @param tenantId the tenant id
+	 * @param applicationNumber the application number
+	 * @param applicationStatus the application status
+	 * @param mobileNumber the mobile number
+	 * @param parksBookingType the parks booking type
+	 * @param communityCenterBookingType the community center booking type
+	 * @param applicationNumberSet the application number set
+	 * @return the employee search PACC booking
+	 */
+	@Query(
+			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
+					+ "AND TB.BK_APPLICATION_STATUS != 'INITIATED' AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE = (?5) OR TB.BK_BOOKING_TYPE = (?6) AND TB.BK_APPLICATION_NUMBER IN (?7) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
+			nativeQuery = true )
+			List<BookingsModel> getEmployeeSearchPACCBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
+					, String parksBookingType, String communityCenterBookingType, Set< String > applicationNumberSet );
+	
+	/**
+	 * Gets the employee search PACC booking.
+	 *
+	 * @param tenantId the tenant id
+	 * @param applicationNumber the application number
+	 * @param applicationStatus the application status
+	 * @param mobileNumber the mobile number
+	 * @param parksBookingType the parks booking type
+	 * @param communityCenterBookingType the community center booking type
+	 * @param applicationNumberSet the application number set
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @return the employee search PACC booking
+	 */
+	@Query(
+			value = "SELECT * FROM TT_BOOKINGS AS TB WHERE TB.TENANT_ID = (?1) AND TB.BK_APPLICATION_NUMBER LIKE (%?2%) AND TB.BK_APPLICATION_STATUS LIKE (%?3%) "
+					+ "AND TB.BK_APPLICATION_STATUS != 'INITIATED' AND TB.BK_MOBILE_NUMBER LIKE (%?4%) AND TB.BK_BOOKING_TYPE = (?5) OR TB.BK_BOOKING_TYPE = (?6) AND TB.BK_APPLICATION_NUMBER IN (?7) AND TB.BK_DATE_CREATED BETWEEN (?8) AND (?9) ORDER BY TB.BK_APPLICATION_NUMBER DESC",
+			nativeQuery = true )
+			List<BookingsModel> getEmployeeSearchPACCBooking( String tenantId, String applicationNumber, String applicationStatus, String mobileNumber
+					, String parksBookingType, String communityCenterBookingType, Set< String > applicationNumberSet, Date fromDate, Date toDate );
+	
 }

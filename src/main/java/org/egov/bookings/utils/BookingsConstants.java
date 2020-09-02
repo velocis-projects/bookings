@@ -552,5 +552,14 @@ public class BookingsConstants {
     public static final String NOTIFICATION_LOCALE = "en_IN";
     public static final String MODULE = "rainmaker-services";
     public static final String INITIATED = "INITIATED";
-	
+    public static final String PARKS = "Parks";
+    public static final String COMMUNITY_CENTER = "Community Center";
+    public static final String DEO = "DEO";
+    public static final String CLERK = "CLERK";
+    public static final String SENIOR_ASSISTANT = "SENIOR_ASSISTANT";
+    public static final String AUDIT_DEPARTMENT = "AUDIT_DEPARTMENT";
+    public static final String CHIEF_ACCOUNT_OFFICER = "CHIEF_ACCOUNT_OFFICER";
+    public static final String PAYMENT_PROCESSING_AUTHORITY = "PAYMENT_PROCESSING_AUTHORITY";
+    public static final String E_SAMPARK_CENTER = "E-SAMPARK-CENTER";
+    public static final String MCC_USER = "MCC_USER";
 }
