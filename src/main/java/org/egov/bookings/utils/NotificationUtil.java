@@ -39,9 +39,11 @@ import org.egov.bookings.contract.EventRequest;
 import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.contract.SMSRequest;
 import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.model.OsujmNewLocationModel;
 import org.egov.bookings.producer.Producer;
 import org.egov.bookings.repository.impl.ServiceRequestRepository;
 import org.egov.bookings.service.impl.BookingsServiceImpl;
+import org.egov.bookings.service.impl.OsujmNewLocationServiceImpl;
 import org.egov.common.contract.request.RequestInfo;
 //import org.egov.tl.web.models.*;
 import org.egov.tracer.model.CustomException;
@@ -74,6 +76,9 @@ public class NotificationUtil {
 	
 	@Autowired
 	private BookingsServiceImpl bookingsServiceImpl;
+	
+	@Autowired
+	private OsujmNewLocationServiceImpl osujmNewLocationServiceImpl;
 
 	/**
 	 * Instantiates a new notification util.
@@ -99,21 +104,13 @@ public class NotificationUtil {
 	/** The consumer code key. */
 	final String consumerCodeKey = "consumerCodeKey";
 
-	/**
-	 * Creates customized message based on tradelicense.
-	 *
-	 * @param requestInfo the request info
-	 * @param bookingsModel the bookings model
-	 * @param localizationMessage            The messages from localization
-	 * @return customized message based on tradelicense
-	 */
 	public String getCustomizedMsg(RequestInfo requestInfo, BookingsModel bookingsModel, String localizationMessage) {
 		String message = null, messageTemplate;
 		String ACTION_STATUS = bookingsModel.getBkAction() + "_" + bookingsModel.getBkApplicationStatus();
 		String applicationStatus = bookingsServiceImpl.prepareApplicationStatus(requestInfo, bookingsModel);
 		BigDecimal amountToBePaid = new BigDecimal(0);
 		switch (ACTION_STATUS) {
-		//OSBM,OSUJM
+		//OSBM,OSUJM,NLUJM
 		case ACTION_STATUS_INITIATED:
 			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_INITIATED, localizationMessage);
 			message = getInitiatedMsg(bookingsModel, messageTemplate);
@@ -143,6 +140,9 @@ public class NotificationUtil {
 			
 		//BWT
 		case ACTION_STATUS_SPECIALAPPLY_DELIVERED:
+		case ACTION_STATUS_PENDINGUPDATE:
+		case ACTION_STATUS_DELIVERED:
+		case ACTION_STATUS_NOTDELIVERED:
 			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_PENDINGUPDATE, localizationMessage);
 			message = getUpdatedMsg(bookingsModel, messageTemplate, applicationStatus);
 			break;
@@ -159,46 +159,47 @@ public class NotificationUtil {
 			message = getPendingAssignmentDriverMsg(bookingsModel, messageTemplate);
 			break;
 			
-		case ACTION_STATUS_PENDINGUPDATE:
-			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_PENDINGUPDATE, localizationMessage);
-			message = getUpdatedMsg(bookingsModel, messageTemplate, applicationStatus);
-			break;
-		
-		case ACTION_STATUS_DELIVERED:
-			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_PENDINGUPDATE, localizationMessage);
-			message = getUpdatedMsg(bookingsModel, messageTemplate, applicationStatus);
-			break;
-			
-		case ACTION_STATUS_NOTDELIVERED:
-			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_PENDINGUPDATE, localizationMessage);
-			message = getUpdatedMsg(bookingsModel, messageTemplate, applicationStatus);
-			break;
-		
 		//GFCP
 		case ACTION_STATUS_APPLIED:
 			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_APPLIED, localizationMessage);
 			message = getAppliedMsg(bookingsModel, messageTemplate);
 			break;
-		
-		//NLUJM
-		case ACTION_STATUS_PENDINGAPPROVALOSD:
-			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_INITIATED, localizationMessage);
-			message = getPendingAssignmentDriverMsg(bookingsModel, messageTemplate);
-			break;
-			
-		case ACTION_STATUS_PENDINGPUBLISH:
-			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_INITIATED, localizationMessage);
-			message = getPendingAssignmentDriverMsg(bookingsModel, messageTemplate);
-			break;
-			
-		case ACTION_STATUS_PUBLISH:
-			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_INITIATED, localizationMessage);
-			message = getPendingAssignmentDriverMsg(bookingsModel, messageTemplate);
-			break;
 		}
 		return message;
 	}
 	
+	
+	public String getCustomizedMsg(RequestInfo requestInfo, OsujmNewLocationModel osujmNewLocationModel, String localizationMessage) {
+		String message = null, messageTemplate;
+		String ACTION_STATUS = osujmNewLocationModel.getAction() + "_" + osujmNewLocationModel.getApplicationStatus();
+		String applicationStatus = osujmNewLocationServiceImpl.prepareApplicationStatus(requestInfo, osujmNewLocationModel);
+		BigDecimal amountToBePaid = new BigDecimal(0);
+		switch (ACTION_STATUS) {
+		//NLUJM
+		case ACTION_STATUS_INITIATED:
+			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_INITIATED, localizationMessage);
+			message = getNLUJMInitiatedMsg(osujmNewLocationModel, messageTemplate);
+			break;
+			
+		case ACTION_STATUS_PENDINGAPPROVAL:
+			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_PENDINGAPPROVAL, localizationMessage);
+			message = getNLUJMAppliedMsg(osujmNewLocationModel, messageTemplate);
+			break;
+			
+		case ACTION_STATUS_REJECTED:
+			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_REJECTED, localizationMessage);
+			message = getNLUJMRejectedMsg(osujmNewLocationModel, messageTemplate);
+			break;
+			
+		case ACTION_STATUS_PENDINGAPPROVALOSD:
+		case ACTION_STATUS_PENDINGPUBLISH:
+		case ACTION_STATUS_PUBLISH:
+			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_UPDATE, localizationMessage);
+			message = getNLUJMUpdatedMsg(osujmNewLocationModel, messageTemplate, applicationStatus);
+			break;
+		}
+		return message;
+	}
 	/**
 	 * Creates customized message based on tradelicense.
 	 *
@@ -313,7 +314,13 @@ public class NotificationUtil {
 		message = message.replace("<3>", bookingsModel.getBkApplicationNumber());
 		return message;
 	}
-
+	
+	private String getNLUJMInitiatedMsg(OsujmNewLocationModel osujmNewLocationModel, String message) {
+		message = message.replace("<1>",osujmNewLocationModel.getApplicantName());
+		message = message.replace("<2>", BookingsConstants.NLUJM_BOOKING_TYPE);
+		message = message.replace("<3>", osujmNewLocationModel.getApplicationNumber());
+		return message;
+	}
 	/**
 	 * Gets the pending payment msg.
 	 *
@@ -341,7 +348,13 @@ public class NotificationUtil {
 		message = message.replace("<3>", bookingsModel.getBkApplicationNumber());
 		return message;
 	}
-
+	
+	private String getNLUJMAppliedMsg(OsujmNewLocationModel osujmNewLocationModel, String message) {
+		message = message.replace("<1>",osujmNewLocationModel.getApplicantName());
+		message = message.replace("<2>", BookingsConstants.NLUJM_BOOKING_TYPE);
+		message = message.replace("<3>", osujmNewLocationModel.getApplicationNumber());
+		return message;
+	}
 	/**
 	 * Creates customized message for submitted.
 	 *
@@ -411,6 +424,12 @@ public class NotificationUtil {
 		return message;
 	}
 	
+	private String getNLUJMRejectedMsg(OsujmNewLocationModel osujmNewLocationModel, String message) {
+		message = message.replace("<1>",osujmNewLocationModel.getApplicantName());
+		message = message.replace("<2>", BookingsConstants.NLUJM_BOOKING_TYPE);
+		return message;
+	}
+	
 	/**
 	 * Gets the payment msg.
 	 *
@@ -453,6 +472,14 @@ public class NotificationUtil {
 		message = message.replace("<3>", bookingsModel.getBkBookingType());
 		message = message.replace("<4>", bookingsModel.getBkStatus());
 		message = message.replace("<5>", applicationStatus);
+		return message;
+	}
+	
+	private String getNLUJMUpdatedMsg(OsujmNewLocationModel osujmNewLocationModel, String message, String applicationStatus) {
+		message = message.replace("<1>", osujmNewLocationModel.getApplicantName());
+		message = message.replace("<2>", osujmNewLocationModel.getApplicationNumber());
+		message = message.replace("<3>", BookingsConstants.NLUJM_BOOKING_TYPE);
+		message = message.replace("<4>", applicationStatus);
 		return message;
 	}
 //	private String getRejectedMsgForCitizen(TradeLicense license, String message, String localizationMessage) {

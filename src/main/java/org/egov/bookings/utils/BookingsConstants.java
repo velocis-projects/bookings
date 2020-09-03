@@ -562,4 +562,7 @@ public class BookingsConstants {
     public static final String PAYMENT_PROCESSING_AUTHORITY = "PAYMENT_PROCESSING_AUTHORITY";
     public static final String E_SAMPARK_CENTER = "E-SAMPARK-CENTER";
     public static final String MCC_USER = "MCC_USER";
+    public static final String NLUJM_BOOKING_TYPE = "New Location Open Spaces Under Jurisdiction of MCC";
+    public static final String NOTIFICATION_UPDATE = "bk.en.counter.update";
+    
 }
