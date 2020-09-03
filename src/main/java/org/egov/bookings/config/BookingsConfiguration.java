@@ -100,6 +100,12 @@ public class BookingsConfiguration {
 
     @Value("${kafka.topics.update.service}")
     private String updateTopic;
+    
+    @Value("${kafka.topics.save.service.NLUJM}")
+    private String saveNLUJMTopic;
+
+    @Value("${kafka.topics.update.service.NLUJM}")
+    private String updateNLUJMTopic;
 
     @Value("${persister.update.tradelicense.workflow.topic}")
     private String updateWorkflowTopic;
