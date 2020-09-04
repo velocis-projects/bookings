@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.Booking;
 import org.egov.bookings.contract.BookingApprover;
+import org.egov.bookings.contract.BookingsRequestKafka;
 import org.egov.bookings.contract.MdmsJsonFields;
 import org.egov.bookings.contract.MessagesResponse;
 import org.egov.bookings.contract.ProcessInstanceSearchCriteria;
@@ -24,6 +25,7 @@ import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsbmApproverModel;
+import org.egov.bookings.producer.BookingsProducer;
 import org.egov.bookings.repository.BookingsRepository;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsbmApproverRepository;
@@ -59,11 +61,7 @@ public class BookingsServiceImpl implements BookingsService {
 	/** The bookings repository. */
 	@Autowired
 	private BookingsRepository bookingsRepository;
-
-	/** The save topic. */
-	@Value("${kafka.topics.save.service}")
-	private String saveTopic;
-
+	
 	/** The config. */
 	@Autowired
 	private BookingsConfiguration config;
@@ -100,6 +98,9 @@ public class BookingsServiceImpl implements BookingsService {
 	@Autowired
 	private SMSNotificationService smsNotificationService;
 	
+	@Autowired
+	private BookingsProducer bookingsProducer;
+	
 	/** The mail notification service. */
 	/*@Autowired
 	private MailNotificationService mailNotificationService;
@@ -117,7 +118,6 @@ public class BookingsServiceImpl implements BookingsService {
 	 */
 	@Override
 	public BookingsModel save(BookingsRequest bookingsRequest) {
-		BookingsModel bookingsModel = null;
 			boolean flag = isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 
 			if (!flag)
@@ -132,10 +132,15 @@ public class BookingsServiceImpl implements BookingsService {
 				if (!flag)
 					workflowIntegrator.callWorkFlow(bookingsRequest);
 			}
-			// bookingsProducer.push(saveTopic, bookingsRequest.getBookingsModel());
 			enrichmentService.enrichBookingsDetails(bookingsRequest);
-			bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
-			bookingsRequest.setBookingsModel(bookingsModel);
+			try {
+			BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+			bookingsProducer.push(config.getSaveBookingTopic(), kafkaBookingRequest);
+			}catch (Exception e) {
+				throw new IllegalArgumentException(e.getLocalizedMessage());
+			}
+			//bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
+			//bookingsRequest.setBookingsModel(bookingsModel);
 
 		/*if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)
 				&& !"INITIATED".equals(bookingsModel.getBkApplicationStatus())) {
@@ -151,7 +156,7 @@ public class BookingsServiceImpl implements BookingsService {
 			}
 		}
 */
-		return bookingsModel;
+		return bookingsRequest.getBookingsModel();
 
 	}
 	
@@ -586,7 +591,10 @@ public class BookingsServiceImpl implements BookingsService {
 					&& BookingsConstants.BUSINESS_SERVICE_OSBM.equals(businessService)) {
 
 				bookingsModel = enrichmentService.enrichOsbmDetails(bookingsRequest);
-				bookingsModel = bookingsRepository.save(bookingsModel);
+				bookingsRequest.setBookingsModel(bookingsModel);
+				BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+				bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
+				//bookingsModel = bookingsRepository.save(bookingsModel);
 
 			}
 
@@ -594,19 +602,27 @@ public class BookingsServiceImpl implements BookingsService {
 					&& BookingsConstants.BUSINESS_SERVICE_BWT.equals(businessService)) {
 
 				bookingsModel = enrichmentService.enrichBwtDetails(bookingsRequest);
-				bookingsModel = bookingsRepository.save(bookingsModel);
+				bookingsRequest.setBookingsModel(bookingsModel);
+				BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+				bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
+				//bookingsModel = bookingsRepository.save(bookingsModel);
 
 			}
 			else if(!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
 					&& BookingsConstants.BUSINESS_SERVICE_OSUJM.equals(businessService)){
 				bookingsModel = enrichmentService.enrichOsujmDetails(bookingsRequest);
-				bookingsModel = bookingsRepository.save(bookingsModel);
+				bookingsRequest.setBookingsModel(bookingsModel);
+				BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+				bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
+				//bookingsModel = bookingsRepository.save(bookingsModel);
 				if(BookingsConstants.PAY.equals(bookingsRequest.getBookingsModel().getBkAction())){
 					config.setJurisdictionLock(true);
 				}
 			}
 			else {
-				bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
+				BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+				bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
+				//bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
 				if(BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()) && BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService)){
 					config.setCommercialLock(true);
 				}

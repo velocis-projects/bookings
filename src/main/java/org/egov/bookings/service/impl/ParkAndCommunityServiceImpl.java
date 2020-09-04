@@ -16,11 +16,13 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.AvailabilityResponse;
+import org.egov.bookings.contract.BookingsRequestKafka;
 import org.egov.bookings.contract.ParkAndCommunitySearchCriteria;
 import org.egov.bookings.contract.ParkCommunityFeeMasterRequest;
 import org.egov.bookings.contract.ParkCommunityFeeMasterResponse;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
+import org.egov.bookings.producer.BookingsProducer;
 import org.egov.bookings.repository.ParkAndCommunityRepository;
 import org.egov.bookings.repository.ParkCommunityHallV1MasterRepository;
 import org.egov.bookings.service.BookingsService;
@@ -75,6 +77,8 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 	
 	private Lock lock = new ReentrantLock();
 
+	@Autowired
+	private BookingsProducer bookingsProducer;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -94,10 +98,10 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 			if (!flag)
 				workflowIntegrator.callWorkFlow(bookingsRequest);
 		}
-		// bookingsProducer.push(saveTopic, bookingsRequest.getBookingsModel());
 		enrichmentService.enrichBookingsDetails(bookingsRequest);
-		bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
-		bookingsRequest.setBookingsModel(bookingsModel);
+		BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+		bookingsProducer.push(config.getSaveBookingTopic(), kafkaBookingRequest);
+		//bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
 		return bookingsModel;
 
 	}
@@ -125,13 +129,18 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
 				&& BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService)) {
 			bookingsModel = enrichmentService.enrichPaccDetails(bookingsRequest);
-			bookingsModel = parkAndCommunityRepository.save(bookingsModel);
+			bookingsRequest.setBookingsModel(bookingsModel);
+			BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+			bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
+			//bookingsModel = parkAndCommunityRepository.save(bookingsModel);
 		} else {
 			if (BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
 					&& BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService)) {
 				config.setParkAndCommercialLock(true);
 			}
-			bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
+			BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+			bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
+			//bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
 		}
 
 		return bookingsModel;

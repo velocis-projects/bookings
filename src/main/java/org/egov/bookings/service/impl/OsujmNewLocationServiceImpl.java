@@ -16,9 +16,11 @@ import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.Booking;
 import org.egov.bookings.contract.DocumentFields;
+import org.egov.bookings.contract.NewLocationKafkaRequest;
 import org.egov.bookings.contract.OsujmNewLocationFields;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.OsujmNewLocationModel;
+import org.egov.bookings.producer.BookingsProducer;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsujmNewLocationRepository;
 import org.egov.bookings.service.BookingsService;
@@ -29,6 +31,7 @@ import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.NewLocationRequest;
 import org.egov.bookings.workflow.WorkflowIntegrator;
 import org.egov.common.contract.request.Role;
+import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -78,6 +81,8 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 	@Autowired
 	private SMSNotificationService smsNotificationService;
 	
+	@Autowired
+	private BookingsProducer bookingsProducer; 
 
 //	/** The mail notification service. */
 //	@Autowired
@@ -94,7 +99,6 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 	 */
 	@Override
 	public OsujmNewLocationModel addNewLocation(NewLocationRequest newLocationRequest) {
-		OsujmNewLocationModel osujmNewLocationModel = new OsujmNewLocationModel();
 		try
 		{
 			boolean flag = bookingsService.isBookingExists(newLocationRequest.getNewLocationModel().getApplicationNumber());
@@ -106,14 +110,13 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 				if (!flag)
 					workflowIntegrator.callWorkFlow(newLocationRequest);
 			}
-			// bookingsProducer.push(saveTopic, bookingsRequest.getBookingsModel());
 			enrichmentService.enrichNewLocationDetails(newLocationRequest);
-			osujmNewLocationModel = newLocationRepository.save(newLocationRequest.getNewLocationModel());
-			newLocationRequest.setNewLocationModel(osujmNewLocationModel);
-			
+			NewLocationKafkaRequest newLocationKafkaRequest = enrichmentService.enrichKafkaForNewLocation(newLocationRequest);
+			bookingsProducer.push(config.getSaveNewLocationTopic(), newLocationKafkaRequest);
+			//osujmNewLocationModel = newLocationRepository.save(newLocationRequest.getNewLocationModel());
 		}
 		catch (Exception e) {
-			LOGGER.error("Exception occur during create booking " + e);
+			throw new CustomException("NEW_LOCATION_SAVE_ERROR",e.getLocalizedMessage());
 		}
 		return newLocationRequest.getNewLocationModel();
 
@@ -141,11 +144,18 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 					&& BookingsConstants.BUSINESS_SERVICE_NLUJM.equals(businessService)) {
 
 				newLocaltionModel = enrichmentService.enrichNlujmDetails(newLocationRequest);
-				newLocaltionModel = newLocationRepository.save(newLocaltionModel);
+				newLocationRequest.setNewLocationModel(newLocaltionModel);
+				NewLocationKafkaRequest newLocationKafkaRequest = enrichmentService
+						.enrichKafkaForNewLocation(newLocationRequest);
+				bookingsProducer.push(config.getUpdateNewLocationTopic(), newLocationKafkaRequest);
+				//newLocaltionModel = newLocationRepository.save(newLocaltionModel);
 			}
-			 else {
-				 newLocationRepository.save(newLocationRequest.getNewLocationModel());
-				 newLocaltionModel = newLocationRequest.getNewLocationModel();
+			else {
+				NewLocationKafkaRequest newLocationKafkaRequest = enrichmentService
+						.enrichKafkaForNewLocation(newLocationRequest);
+				bookingsProducer.push(config.getUpdateNewLocationTopic(), newLocationKafkaRequest);
+				// newLocationRepository.save(newLocationRequest.getNewLocationModel());
+				newLocaltionModel = newLocationRequest.getNewLocationModel();
 			}
 			/*MessagesResponse messageResponse = bookingsServiceImpl.getLocalizationMessage(newLocationRequest.getRequestInfo());
 			String applicationStatus = "";

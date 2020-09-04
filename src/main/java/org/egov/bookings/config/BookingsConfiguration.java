@@ -276,7 +276,18 @@ public class BookingsConfiguration {
     
     @Value("${egov.lock.park.and.commercial.payment}")
     private boolean parkAndCommercialLock;
-    
+
+	@Value("${kafka.topics.save.service}")
+	private String saveBookingTopic;
+
+	@Value("${kafka.topics.save.nlujm.service}")
+	private String saveNewLocationTopic;
+
+	@Value("${kafka.topics.update.service}")
+	private String updateBookingTopic;
+
+	@Value("${kafka.topics.update.nlujm.service}")
+	private String updateNewLocationTopic;    
     
 
 }

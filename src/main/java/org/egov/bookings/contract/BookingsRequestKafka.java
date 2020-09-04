@@ -1,4 +1,6 @@
-package org.egov.bookings.web.models;
+package org.egov.bookings.contract;
+
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -20,11 +22,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @Builder
 @ToString
-public class BookingsRequest {
+public class BookingsRequestKafka {
 
 	@JsonProperty("Booking")
 	@Valid
-	private BookingsModel bookingsModel;
+	private List<BookingsModel> bookingsModel;
 
 	@JsonProperty("RequestInfo")
 	private RequestInfo requestInfo;
