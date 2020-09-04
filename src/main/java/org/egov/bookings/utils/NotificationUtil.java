@@ -1,7 +1,5 @@
 package org.egov.bookings.utils;
 
-// TODO: Auto-generated Javadoc
-//import static org.egov.tl.util.CTLConstants.*;
 import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_APPLIED;
 import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_APPROVED;
 import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_DELIVERED;
@@ -40,7 +38,7 @@ import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.contract.SMSRequest;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
-import org.egov.bookings.producer.Producer;
+import org.egov.bookings.producer.BookingsProducer;
 import org.egov.bookings.repository.impl.ServiceRequestRepository;
 import org.egov.bookings.service.impl.BookingsServiceImpl;
 import org.egov.bookings.service.impl.OsujmNewLocationServiceImpl;
@@ -72,7 +70,7 @@ public class NotificationUtil {
 	private ServiceRequestRepository serviceRequestRepository;
 
 	/** The producer. */
-	private Producer producer;
+	private BookingsProducer producer;
 	
 	@Autowired
 	private BookingsServiceImpl bookingsServiceImpl;
@@ -89,7 +87,7 @@ public class NotificationUtil {
 	 */
 	@Autowired
 	public NotificationUtil(BookingsConfiguration config, ServiceRequestRepository serviceRequestRepository,
-			Producer producer) {
+			BookingsProducer producer) {
 		this.config = config;
 		this.serviceRequestRepository = serviceRequestRepository;
 		this.producer = producer;

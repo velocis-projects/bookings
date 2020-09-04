@@ -1,13 +1,10 @@
 package org.egov.bookings.service.notification;
 
-
 import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_BWT;
 import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_GFCP;
-import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_NLUJM;
 import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_OSBM;
 import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_OSUJM;
 import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_PACC;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.Action;
 import org.egov.bookings.contract.ActionItem;
@@ -40,7 +36,6 @@ import com.jayway.jsonpath.JsonPath;
 
 import lombok.extern.slf4j.Slf4j;
 
-// TODO: Auto-generated Javadoc
 /** The Constant log. */
 
 /** The Constant log. */
@@ -87,7 +82,6 @@ public class BookingNotificationService {
 			case BUSINESS_SERVICE_BWT:
 			case BUSINESS_SERVICE_GFCP:
 			case BUSINESS_SERVICE_OSUJM:
-			case BUSINESS_SERVICE_NLUJM:
 			case BUSINESS_SERVICE_PACC:	
 				List<SMSRequest> smsRequestsTL = new LinkedList<>();
 				List<EmailRequest> emailRequestsTL = new LinkedList<>();

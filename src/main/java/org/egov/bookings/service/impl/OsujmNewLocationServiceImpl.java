@@ -21,7 +21,7 @@ import org.egov.bookings.contract.MessagesResponse;
 import org.egov.bookings.contract.OsujmNewLocationFields;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.OsujmNewLocationModel;
-import org.egov.bookings.producer.Producer;
+import org.egov.bookings.producer.BookingsProducer;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsujmNewLocationRepository;
 import org.egov.bookings.service.BookingsService;
@@ -74,9 +74,11 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 	@Autowired
 	private ObjectMapper objectMapper;
 	
+	/** The producer. */
 	@Autowired
-	private Producer producer;
+	private BookingsProducer producer;
 	
+	/** The bookings service impl. */
 	@Autowired
 	private BookingsServiceImpl bookingsServiceImpl;
 	
@@ -119,6 +121,13 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 
 	}
 	
+	/**
+	 * Prepare application status.
+	 *
+	 * @param requestInfo the request info
+	 * @param osujmNewLocationModel the osujm new location model
+	 * @return the string
+	 */
 	public String prepareApplicationStatus(RequestInfo requestInfo, OsujmNewLocationModel osujmNewLocationModel) {
 		MessagesResponse messageResponse = bookingsServiceImpl.getLocalizationMessage(requestInfo);
 		String applicationStatus = "";

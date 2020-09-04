@@ -1,44 +1,20 @@
 package org.egov.bookings.service.notification;
 
-import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_BWT;
-import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_GFCP;
 import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_NLUJM;
-import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_OSBM;
-import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_OSUJM;
-import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_PACC;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.egov.bookings.config.BookingsConfiguration;
-import org.egov.bookings.contract.Action;
-import org.egov.bookings.contract.ActionItem;
 import org.egov.bookings.contract.EmailRequest;
-import org.egov.bookings.contract.Event;
-import org.egov.bookings.contract.EventRequest;
-import org.egov.bookings.contract.Recepient;
 import org.egov.bookings.contract.SMSRequest;
-import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
-import org.egov.bookings.model.Source;
 import org.egov.bookings.repository.impl.ServiceRequestRepository;
-import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.NotificationUtil;
-import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.web.models.NewLocationRequest;
-import org.egov.common.contract.request.RequestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
-import com.jayway.jsonpath.JsonPath;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class NLUJMBookingNotificationService.
  */

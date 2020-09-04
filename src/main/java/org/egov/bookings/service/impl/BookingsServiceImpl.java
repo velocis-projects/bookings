@@ -25,7 +25,7 @@ import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsbmApproverModel;
-import org.egov.bookings.producer.Producer;
+import org.egov.bookings.producer.BookingsProducer;
 import org.egov.bookings.repository.BookingsRepository;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsbmApproverRepository;
@@ -49,6 +49,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.minidev.json.JSONArray;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class BookingsServiceImpl.
  */
@@ -92,8 +93,9 @@ public class BookingsServiceImpl implements BookingsService {
 	@Autowired
 	private ServiceRequestRepository serviceRequestRepository;
 	
+	/** The producer. */
 	@Autowired
-	private Producer producer;
+	private BookingsProducer producer;
 	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger(BookingsServiceImpl.class.getName());
@@ -133,6 +135,13 @@ public class BookingsServiceImpl implements BookingsService {
 		return bookingsModel;
 	}
 	
+	/**
+	 * Prepare application status.
+	 *
+	 * @param requestInfo the request info
+	 * @param bookingsModel the bookings model
+	 * @return the string
+	 */
 	public String prepareApplicationStatus(RequestInfo requestInfo, BookingsModel bookingsModel) {
 		MessagesResponse messageResponse = getLocalizationMessage(requestInfo);
 		String applicationStatus = "";
