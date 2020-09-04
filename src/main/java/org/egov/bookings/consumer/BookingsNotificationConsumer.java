@@ -42,7 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @org.springframework.stereotype.Service
 @Slf4j
-public class BookingsNotificationConsumer {
+public class BookingsNotificationConsumer {/*
 
     @Autowired
     private BookingsProducer pGRProducer;
@@ -134,11 +134,11 @@ public class BookingsNotificationConsumer {
     }
 
 
-    /**
+    *//**
      * Sends notifications on different topics for the consumer to pick.
      *
      * @param serviceReqRequest
-     */
+     *//*
     public void process(ServiceRequest serviceReqRequest) {
         if (!CollectionUtils.isEmpty(serviceReqRequest.getActionInfo())) {
             for (ActionInfo actionInfo : serviceReqRequest.getActionInfo()) {
@@ -179,7 +179,7 @@ public class BookingsNotificationConsumer {
     }
 
 
-    /**
+    *//**
      * Prepares event to be registered in user-event service.
      * Currently, only the notifications addressed to CITIZEN are considered.
      *
@@ -187,7 +187,7 @@ public class BookingsNotificationConsumer {
      * @param actionInfo
      * @param requestInfo
      * @return
-     */
+     *//*
     public EventRequest prepareuserEvents(Service serviceReq, ActionInfo actionInfo, RequestInfo requestInfo) {
         List<Event> events = new ArrayList<>();
         if (StringUtils.isEmpty(actionInfo.getAssignee()) && !actionInfo.getAction().equals(WorkFlowConfigs.ACTION_OPEN)) {
@@ -397,4 +397,4 @@ public class BookingsNotificationConsumer {
         }
         return isNotifEnabled;
     }
-}
+*/}

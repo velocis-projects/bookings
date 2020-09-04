@@ -10,6 +10,7 @@ import org.egov.bookings.model.OsujmNewLocationModel;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsbmApproverRepository;
 import org.egov.bookings.utils.BookingsUtils;
+import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.web.models.NewLocationRequest;
 import org.egov.tracer.model.CustomException;
@@ -116,8 +117,8 @@ public class WorkflowIntegrator {
 		obj.put(BUSINESSSERVICEKEY, bookingsRequest.getBookingsModel().getBusinessService());
 		obj.put(MODULENAMEKEY, MODULENAMEVALUE);
 		obj.put(ACTIONKEY, bkModel.getBkAction());
-		if (null != bkModel.getBookingsRemarks() && !CollectionUtils.isEmpty(bkModel.getBookingsRemarks()))
-			obj.put(COMMENTKEY, bkModel.getBookingsRemarks().get(0).getBkRemarks());
+		if (BookingsFieldsValidator.isNullOrEmpty(bkModel.getBkRemarks()))
+			obj.put(COMMENTKEY, bkModel.getBkRemarks());
 		if (!StringUtils.isEmpty(bkModel.getAssignee()))
 			obj.put(ASSIGNEEKEY, uuidmap);
 		obj.put(DOCUMENTSKEY, bkModel.getWfDocuments());
@@ -198,8 +199,8 @@ public class WorkflowIntegrator {
 		obj.put(BUSINESSSERVICEKEY, newLocModel.getBusinessService());
 		obj.put(MODULENAMEKEY, MODULENAMEVALUE);
 		obj.put(ACTIONKEY, newLocModel.getAction());
-		if (null != newLocModel.getBookingsRemarks() && !CollectionUtils.isEmpty(newLocModel.getBookingsRemarks()))
-			obj.put(COMMENTKEY, newLocModel.getBookingsRemarks().get(0).getBkRemarks());
+		if (BookingsFieldsValidator.isNullOrEmpty(newLocModel.getRemarks()))
+			obj.put(COMMENTKEY, newLocModel.getRemarks());
 		if (!StringUtils.isEmpty(newLocModel.getAssignee()))
 			obj.put(ASSIGNEEKEY, uuidmap);
 		obj.put(DOCUMENTSKEY, newLocModel.getWfDocuments());

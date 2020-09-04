@@ -8,9 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.transaction.Transactional;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
@@ -18,6 +16,7 @@ import org.egov.bookings.contract.Booking;
 import org.egov.bookings.contract.DocumentFields;
 import org.egov.bookings.contract.Message;
 import org.egov.bookings.contract.MessagesResponse;
+import org.egov.bookings.contract.NewLocationKafkaRequest;
 import org.egov.bookings.contract.OsujmNewLocationFields;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.OsujmNewLocationModel;
@@ -33,12 +32,11 @@ import org.egov.bookings.web.models.NewLocationRequest;
 import org.egov.bookings.workflow.WorkflowIntegrator;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.Role;
+import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class OsujmNewLocationServiceImpl.
  */
@@ -74,14 +72,13 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 	@Autowired
 	private ObjectMapper objectMapper;
 	
-	/** The producer. */
-	@Autowired
-	private BookingsProducer producer;
-	
 	/** The bookings service impl. */
 	@Autowired
 	private BookingsServiceImpl bookingsServiceImpl;
 	
+	@Autowired
+	private BookingsProducer bookingsProducer; 
+
 	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger(OsujmNewLocationServiceImpl.class.getName());
@@ -94,7 +91,6 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 	 */
 	@Override
 	public OsujmNewLocationModel addNewLocation(NewLocationRequest newLocationRequest) {
-		OsujmNewLocationModel osujmNewLocationModel = new OsujmNewLocationModel();
 		try
 		{
 			boolean flag = bookingsService.isBookingExists(newLocationRequest.getNewLocationModel().getApplicationNumber());
@@ -106,16 +102,16 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 				if (!flag)
 					workflowIntegrator.callWorkFlow(newLocationRequest);
 			}
-			// bookingsProducer.push(saveTopic, bookingsRequest.getBookingsModel());
 			enrichmentService.enrichNewLocationDetails(newLocationRequest);
-			osujmNewLocationModel = newLocationRepository.save(newLocationRequest.getNewLocationModel());
-			newLocationRequest.setNewLocationModel(osujmNewLocationModel);
-			if (!BookingsFieldsValidator.isNullOrEmpty(osujmNewLocationModel)) {
-				producer.push(config.getSaveNLUJMBookingSMSTopic(), newLocationRequest);
+			NewLocationKafkaRequest newLocationKafkaRequest = enrichmentService.enrichKafkaForNewLocation(newLocationRequest);
+			bookingsProducer.push(config.getSaveNewLocationTopic(), newLocationKafkaRequest);
+			//osujmNewLocationModel = newLocationRepository.save(newLocationRequest.getNewLocationModel());
+			if (!BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel())) {
+				bookingsProducer.push(config.getSaveNLUJMBookingSMSTopic(), newLocationRequest);
 			}
 		}
 		catch (Exception e) {
-			LOGGER.error("Exception occur during create booking " + e);
+			throw new CustomException("NEW_LOCATION_SAVE_ERROR",e.getLocalizedMessage());
 		}
 		return newLocationRequest.getNewLocationModel();
 
@@ -167,19 +163,26 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 					&& BookingsConstants.BUSINESS_SERVICE_NLUJM.equals(businessService)) {
 
 				newLocaltionModel = enrichmentService.enrichNlujmDetails(newLocationRequest);
-				newLocaltionModel = newLocationRepository.save(newLocaltionModel);
+				newLocationRequest.setNewLocationModel(newLocaltionModel);
+				NewLocationKafkaRequest newLocationKafkaRequest = enrichmentService
+						.enrichKafkaForNewLocation(newLocationRequest);
+				bookingsProducer.push(config.getUpdateNewLocationTopic(), newLocationKafkaRequest);
+				//newLocaltionModel = newLocationRepository.save(newLocaltionModel);
 			}
-			 else {
-				 newLocationRepository.save(newLocationRequest.getNewLocationModel());
-				 newLocaltionModel = newLocationRequest.getNewLocationModel();
+			else {
+				NewLocationKafkaRequest newLocationKafkaRequest = enrichmentService
+						.enrichKafkaForNewLocation(newLocationRequest);
+				bookingsProducer.push(config.getUpdateNewLocationTopic(), newLocationKafkaRequest);
+				// newLocationRepository.save(newLocationRequest.getNewLocationModel());
+				newLocaltionModel = newLocationRequest.getNewLocationModel();
 			}
 			if (!BookingsFieldsValidator.isNullOrEmpty(newLocaltionModel)) {
-				producer.push(config.getUpdateNLUJMBookingSMSTopic(), newLocationRequest);
+				bookingsProducer.push(config.getUpdateNLUJMBookingSMSTopic(), newLocationRequest);
 			}
 		} catch (Exception e) {
-			LOGGER.error("Exception occur while updating booking " + e);
+			throw new CustomException("OSUJM_NEW_LOCATION_ERROR", e.getLocalizedMessage());
 		}
-		return newLocaltionModel;
+		return newLocationRequest.getNewLocationModel();
 	}
 	
 	/**

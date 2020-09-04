@@ -95,18 +95,6 @@ public class BookingsConfiguration {
 
 
     //Persister Config
-//    @Value("${kafka.topics.save.service}")
-//    private String saveTopic;
-//
-//    @Value("${kafka.topics.update.service}")
-//    private String updateTopic;
-//    
-//    @Value("${kafka.topics.save.service.NLUJM}")
-//    private String saveNLUJMTopic;
-//
-//    @Value("${kafka.topics.update.service.NLUJM}")
-//    private String updateNLUJMTopic;
-
     @Value("${persister.update.tradelicense.workflow.topic}")
     private String updateWorkflowTopic;
 
@@ -317,7 +305,18 @@ public class BookingsConfiguration {
     
     @Value("${egov.lock.park.and.commercial.payment}")
     private boolean parkAndCommercialLock;
-    
+
+	@Value("${kafka.topics.save.service}")
+	private String saveBookingTopic;
+
+	@Value("${kafka.topics.save.nlujm.service}")
+	private String saveNewLocationTopic;
+
+	@Value("${kafka.topics.update.service}")
+	private String updateBookingTopic;
+
+	@Value("${kafka.topics.update.nlujm.service}")
+	private String updateNewLocationTopic;    
     
 
 }

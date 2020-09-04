@@ -35,9 +35,8 @@ public class OsujmNewLocationModel {
 	@Column(name = "APPLICATION_NUMBER")
 	private String applicationNumber;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "APPLICATION_NUMBER", referencedColumnName = "APPLICATION_NUMBER")
-	private List<BookingsRemarks> bookingsRemarks;
+	@Column(name = "REMARKS")
+	private String remarks;
 	
 	@Column(name = "APPLICANT_NAME")
 	private String applicantName;

@@ -16,6 +16,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.AvailabilityResponse;
+import org.egov.bookings.contract.BookingsRequestKafka;
 import org.egov.bookings.contract.ParkAndCommunitySearchCriteria;
 import org.egov.bookings.contract.ParkCommunityFeeMasterRequest;
 import org.egov.bookings.contract.ParkCommunityFeeMasterResponse;
@@ -35,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ParkAndCommunityServiceImpl.
  */
@@ -74,12 +74,10 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 	@Autowired
 	private BookingsService bookingService;
 	
-	/** The producer. */
-	@Autowired
-	private BookingsProducer producer;
-	
 	private Lock lock = new ReentrantLock();
 
+	@Autowired
+	private BookingsProducer bookingsProducer;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -88,24 +86,28 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 	 */
 	@Override
 	public BookingsModel createParkAndCommunityBooking(BookingsRequest bookingsRequest) {
-		BookingsModel bookingsModel = null;
-		boolean flag = bookingService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
+		try {
+			boolean flag = bookingService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 
-		if (!flag)
-			enrichmentService.enrichBookingsCreateRequest(bookingsRequest);
-		enrichmentService.generateDemand(bookingsRequest);
-
-		if (config.getIsExternalWorkFlowEnabled()) {
 			if (!flag)
-				workflowIntegrator.callWorkFlow(bookingsRequest);
+				enrichmentService.enrichBookingsCreateRequest(bookingsRequest);
+			enrichmentService.generateDemand(bookingsRequest);
+
+			if (config.getIsExternalWorkFlowEnabled()) {
+				if (!flag)
+					workflowIntegrator.callWorkFlow(bookingsRequest);
+			}
+			enrichmentService.enrichBookingsDetails(bookingsRequest);
+			BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+			bookingsProducer.push(config.getSaveBookingTopic(), kafkaBookingRequest);
+			// bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
+			if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
+				bookingsProducer.push(config.getSaveBookingSMSTopic(), bookingsRequest);
+			}
+		} catch (Exception e) {
+			throw new CustomException("PARK_COOMUNITY_CREATE_ERROR", e.getLocalizedMessage());
 		}
-		enrichmentService.enrichBookingsDetails(bookingsRequest);
-		bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
-		bookingsRequest.setBookingsModel(bookingsModel);
-		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)) {
-			producer.push(config.getSaveBookingSMSTopic(), bookingsRequest);
-		}
-		return bookingsModel;
+		return bookingsRequest.getBookingsModel();
 	}
 
 	/*
@@ -130,18 +132,23 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
 				&& BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService)) {
 			bookingsModel = enrichmentService.enrichPaccDetails(bookingsRequest);
-			bookingsModel = parkAndCommunityRepository.save(bookingsModel);
+			bookingsRequest.setBookingsModel(bookingsModel);
+			BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+			bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
+			//bookingsModel = parkAndCommunityRepository.save(bookingsModel);
 		} else {
 			if (BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
 					&& BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService)) {
 				config.setParkAndCommercialLock(true);
 			}
-			bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
+			BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+			bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
+			//bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
 		}
-		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)) {
-			producer.push(config.getUpdateBookingSMSTopic	(), bookingsRequest);
+		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
+			bookingsProducer.push(config.getUpdateBookingSMSTopic(), bookingsRequest);
 		}
-		return bookingsModel;
+		return bookingsRequest.getBookingsModel();
 	}
 
 	/*

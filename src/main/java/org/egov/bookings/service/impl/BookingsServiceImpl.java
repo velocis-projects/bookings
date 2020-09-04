@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.Booking;
 import org.egov.bookings.contract.BookingApprover;
+import org.egov.bookings.contract.BookingsRequestKafka;
 import org.egov.bookings.contract.MdmsJsonFields;
 import org.egov.bookings.contract.Message;
 import org.egov.bookings.contract.MessagesResponse;
@@ -49,7 +50,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.minidev.json.JSONArray;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class BookingsServiceImpl.
  */
@@ -60,7 +60,7 @@ public class BookingsServiceImpl implements BookingsService {
 	/** The bookings repository. */
 	@Autowired
 	private BookingsRepository bookingsRepository;
-
+	
 	/** The config. */
 	@Autowired
 	private BookingsConfiguration config;
@@ -93,9 +93,14 @@ public class BookingsServiceImpl implements BookingsService {
 	@Autowired
 	private ServiceRequestRepository serviceRequestRepository;
 	
-	/** The producer. */
 	@Autowired
-	private BookingsProducer producer;
+	private BookingsProducer bookingsProducer;
+	
+	/** The mail notification service. */
+	/*@Autowired
+	private MailNotificationService mailNotificationService;
+	*/
+	
 	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger(BookingsServiceImpl.class.getName());
@@ -108,32 +113,44 @@ public class BookingsServiceImpl implements BookingsService {
 	 */
 	@Override
 	public BookingsModel save(BookingsRequest bookingsRequest) {
-		BookingsModel bookingsModel = null;
-		boolean flag = isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
+			boolean flag = isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 
-		if (!flag)
-			enrichmentService.enrichBookingsCreateRequest(bookingsRequest);
-		if (!BookingsConstants.ACTION_DELIVER.equals(bookingsRequest.getBookingsModel().getBkAction())
-				&& !BookingsConstants.ACTION_FAILURE_APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())) {
-			enrichmentService.generateDemand(bookingsRequest);
-		}
-
-		if (config.getIsExternalWorkFlowEnabled()) {
 			if (!flag)
-				workflowIntegrator.callWorkFlow(bookingsRequest);
-		}
-		enrichmentService.enrichBookingsDetails(bookingsRequest);
-		bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
-		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)) {
-			Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
-			if (!BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap)) {
-				bookingsRequest.getBookingsModel().setBkBookingType(mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName());
-				producer.push(config.getSaveBookingSMSTopic(), bookingsRequest);
+				enrichmentService.enrichBookingsCreateRequest(bookingsRequest);
+			if (!BookingsConstants.ACTION_DELIVER.equals(bookingsRequest.getBookingsModel().getBkAction())
+					&& !BookingsConstants.ACTION_FAILURE_APPLY
+							.equals(bookingsRequest.getBookingsModel().getBkAction())) {
+				enrichmentService.generateDemand(bookingsRequest);
 			}
-		}
-		bookingsRequest.setBookingsModel(bookingsModel);
-		return bookingsModel;
+
+			if (config.getIsExternalWorkFlowEnabled()) {
+				if (!flag)
+					workflowIntegrator.callWorkFlow(bookingsRequest);
+			}
+			enrichmentService.enrichBookingsDetails(bookingsRequest);
+			try {
+			BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+			bookingsProducer.push(config.getSaveBookingTopic(), kafkaBookingRequest);
+			}catch (Exception e) {
+				throw new IllegalArgumentException(e.getLocalizedMessage());
+			}
+			//bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
+			//bookingsRequest.setBookingsModel(bookingsModel);
+
+			if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
+				Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
+				if (!BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap)) {
+					bookingsRequest.getBookingsModel().setBkBookingType(mdmsJsonFieldsMap.get(bookingsRequest.getBookingsModel().getBkBookingType()).getName());
+					bookingsProducer.push(config.getSaveBookingSMSTopic(), bookingsRequest);
+				}
+			}
+
+			
+		return bookingsRequest.getBookingsModel();
+
 	}
+	
+	
 	
 	/**
 	 * Prepare application status.
@@ -176,6 +193,8 @@ public class BookingsServiceImpl implements BookingsService {
 		}
 		return status;
 	}
+	
+	
 	
 	/**
 	 * Gets the localization message.
@@ -238,11 +257,10 @@ public class BookingsServiceImpl implements BookingsService {
 		catch(Exception e)
 		{
 			LOGGER.error("Exception occur during mdmsJsonField " + e);
-			e.printStackTrace();
 		}
 		return mdmsJsonFieldsMap;
 	}
-	
+
 	/**
 	 * Checks if is booking exists.
 	 *
@@ -264,7 +282,6 @@ public class BookingsServiceImpl implements BookingsService {
 
 	}
 
-	
 	/**
 	 * Gets the citizen search booking.
 	 *
@@ -419,47 +436,6 @@ public class BookingsServiceImpl implements BookingsService {
 									applicationStatus, mobileNumber, bookingType, fromDate, toDate));
 						}
 					}
-					else if(BookingsConstants.PARKS_AND_COMMUNITY_VIEWER.equals(role.getCode()))
-					{
-						String parksBookingType = BookingsConstants.PARKS;
-						String communityCenterBookingType = BookingsConstants.COMMUNITY_CENTER;
-						if(!BookingsFieldsValidator.isNullOrEmpty(bookingType)) {
-							parksBookingType = bookingType;
-							communityCenterBookingType = bookingType;
-						}
-						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsSet.addAll( bookingsRepository.getEmployeeSearchPACCBooking(tenantId, applicationNumber,
-									applicationStatus, mobileNumber, parksBookingType, communityCenterBookingType));
-						}
-						else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsSet.addAll( bookingsRepository.getEmployeeSearchPACCBooking(tenantId, applicationNumber,
-									applicationStatus, mobileNumber, parksBookingType, communityCenterBookingType, fromDate, toDate));
-						}
-					}
-					else if(!BookingsFieldsValidator.isNullOrEmpty(applicationNumberSet) && (BookingsConstants.DEO.equals(role.getCode())
-							|| BookingsConstants.CLERK.equals(role.getCode())
-							|| BookingsConstants.SENIOR_ASSISTANT.equals(role.getCode())
-							|| BookingsConstants.AUDIT_DEPARTMENT.equals(role.getCode())
-							|| BookingsConstants.CHIEF_ACCOUNT_OFFICER.equals(role.getCode())
-							|| BookingsConstants.PAYMENT_PROCESSING_AUTHORITY.equals(role.getCode())
-							|| BookingsConstants.E_SAMPARK_CENTER.equals(role.getCode())
-							|| BookingsConstants.MCC_USER.equals(role.getCode())))
-					{
-						String parksBookingType = BookingsConstants.PARKS;
-						String communityCenterBookingType = BookingsConstants.COMMUNITY_CENTER;
-						if(!BookingsFieldsValidator.isNullOrEmpty(bookingType)) {
-							parksBookingType = bookingType;
-							communityCenterBookingType = bookingType;
-						}
-						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsSet.addAll( bookingsRepository.getEmployeeSearchPACCBooking(tenantId, applicationNumber,
-									applicationStatus, mobileNumber, parksBookingType, communityCenterBookingType, applicationNumberSet));
-						}
-						else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-							bookingsSet.addAll( bookingsRepository.getEmployeeSearchPACCBooking(tenantId, applicationNumber,
-									applicationStatus, mobileNumber, parksBookingType, communityCenterBookingType, applicationNumberSet, fromDate, toDate));
-						}
-					}
 				}
 			}
 			if (!BookingsFieldsValidator.isNullOrEmpty(applicationNumber) && !BookingsFieldsValidator.isNullOrEmpty(bookingsSet)) {
@@ -501,47 +477,61 @@ public class BookingsServiceImpl implements BookingsService {
 		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
 		if(BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()) && !BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService))
 		enrichmentService.enrichBookingsAssignee(bookingsRequest);
+		
+
+		
 		if (config.getIsExternalWorkFlowEnabled())
 			workflowIntegrator.callWorkFlow(bookingsRequest);
 
-		// bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
 		BookingsModel bookingsModel = null;
-		if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
-				&& BookingsConstants.BUSINESS_SERVICE_OSBM.equals(businessService)) {
+			if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
+					&& BookingsConstants.BUSINESS_SERVICE_OSBM.equals(businessService)) {
 
-			bookingsModel = enrichmentService.enrichOsbmDetails(bookingsRequest);
-			bookingsModel = bookingsRepository.save(bookingsModel);
+				bookingsModel = enrichmentService.enrichOsbmDetails(bookingsRequest);
+				bookingsRequest.setBookingsModel(bookingsModel);
+				BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+				bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
+				//bookingsModel = bookingsRepository.save(bookingsModel);
 
-		}
-
-		else if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
-				&& BookingsConstants.BUSINESS_SERVICE_BWT.equals(businessService)) {
-
-			bookingsModel = enrichmentService.enrichBwtDetails(bookingsRequest);
-			bookingsModel = bookingsRepository.save(bookingsModel);
-
-		} else if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
-				&& BookingsConstants.BUSINESS_SERVICE_OSUJM.equals(businessService)) {
-			bookingsModel = enrichmentService.enrichOsujmDetails(bookingsRequest);
-			bookingsModel = bookingsRepository.save(bookingsModel);
-			if (BookingsConstants.PAY.equals(bookingsRequest.getBookingsModel().getBkAction())) {
-				config.setJurisdictionLock(true);
 			}
-		} else {
-			bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
-			if (BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
-					&& BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService)) {
-				config.setCommercialLock(true);
+
+			else if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
+					&& BookingsConstants.BUSINESS_SERVICE_BWT.equals(businessService)) {
+
+				bookingsModel = enrichmentService.enrichBwtDetails(bookingsRequest);
+				bookingsRequest.setBookingsModel(bookingsModel);
+				BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+				bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
+				//bookingsModel = bookingsRepository.save(bookingsModel);
+
 			}
-		}
-		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)) {
-			Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
-			if (!BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap)) {
-				bookingsRequest.getBookingsModel().setBkBookingType(mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName());
-				producer.push(config.getUpdateBookingSMSTopic(), bookingsRequest);
+			else if(!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
+					&& BookingsConstants.BUSINESS_SERVICE_OSUJM.equals(businessService)){
+				bookingsModel = enrichmentService.enrichOsujmDetails(bookingsRequest);
+				bookingsRequest.setBookingsModel(bookingsModel);
+				BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+				bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
+				//bookingsModel = bookingsRepository.save(bookingsModel);
+				if(BookingsConstants.PAY.equals(bookingsRequest.getBookingsModel().getBkAction())){
+					config.setJurisdictionLock(true);
+				}
 			}
-		}
-		return bookingsModel;
+			else {
+				BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+				bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
+				//bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());
+				if(BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()) && BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService)){
+					config.setCommercialLock(true);
+				}
+			}
+			if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)) {
+				Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
+				if (!BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap)) {
+					bookingsRequest.getBookingsModel().setBkBookingType(mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName());
+					bookingsProducer.push(config.getUpdateBookingSMSTopic(), bookingsRequest);
+				}
+			}
+		return bookingsRequest.getBookingsModel();
 	}
 
 	/**
@@ -829,13 +819,11 @@ public class BookingsServiceImpl implements BookingsService {
 				String[] jsonArray = jsonString.split(",");
 				userDetails.setUuid(jsonArray[0].substring(2, jsonArray[0].length() - 1));
 				userDetails.setUserName(jsonArray[1].substring(1, jsonArray[1].length() - 2));
-				if (!BookingsFieldsValidator.isNullOrEmpty(sector)) {
-					osbmApproverModel = osbmApproverRepository.findByUuidAndSector(userDetails.getUuid(), sector);
-					if (!BookingsFieldsValidator.isNullOrEmpty(osbmApproverModel)) {
-						if (!userDetailsMap.containsKey(userDetails.getUuid())) {
-							userDetailsMap.put(userDetails.getUuid(), userDetails);
-							userDetailsList.add(userDetails);
-						}
+				osbmApproverModel = osbmApproverRepository.findByUuidAndSector(userDetails.getUuid(), sector);
+				if (!BookingsFieldsValidator.isNullOrEmpty(sector) && !BookingsFieldsValidator.isNullOrEmpty(osbmApproverModel)) {
+					if (!userDetailsMap.containsKey(userDetails.getUuid())) {
+						userDetailsMap.put(userDetails.getUuid(), userDetails);
+						userDetailsList.add(userDetails);
 					}
 				}
 				else if (BookingsFieldsValidator.isNullOrEmpty(sector)) {

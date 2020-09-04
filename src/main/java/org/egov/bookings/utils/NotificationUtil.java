@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.egov.bookings.config.BookingsConfiguration;
-import org.egov.bookings.contract.Difference;
 import org.egov.bookings.contract.EmailRequest;
 import org.egov.bookings.contract.EventRequest;
 import org.egov.bookings.contract.RequestInfoWrapper;
@@ -649,11 +648,11 @@ public class NotificationUtil {
 	 * @param localizationMessage the localization message
 	 * @return the customized msg
 	 */
-	public String getCustomizedMsg(Difference diff, BookingsModel bookingsModel, String localizationMessage) {
+	/*public String getCustomizedMsg(Difference diff, BookingsModel bookingsModel, String localizationMessage) {
 		String message = null, messageTemplate;
 		// StringBuilder finalMessage = new StringBuilder();
 
-		/*
+		
 		 * if(!CollectionUtils.isEmpty(diff.getFieldsChanged())){ messageTemplate =
 		 * getMessageTemplate(TLConstants.NOTIFICATION_FIELD_CHANGED,localizationMessage
 		 * ); message = getEditMsg(license,diff.getFieldsChanged(),messageTemplate);
@@ -669,7 +668,7 @@ public class NotificationUtil {
 		 * localizationMessage); message =
 		 * getEditMsg(license,diff.getClassesRemoved(),messageTemplate);
 		 * finalMessage.append(message); }
-		 */
+		 
 
 //		if (!CollectionUtils.isEmpty(diff.getFieldsChanged()) || !CollectionUtils.isEmpty(diff.getClassesAdded())
 //				|| !CollectionUtils.isEmpty(diff.getClassesRemoved())) {
@@ -680,7 +679,7 @@ public class NotificationUtil {
 //		}
 		return message;
 	}
-
+*/
 	/**
 	 * Gets the edits the msg.
 	 *
