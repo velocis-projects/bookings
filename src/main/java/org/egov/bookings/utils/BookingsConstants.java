@@ -431,7 +431,7 @@ public class BookingsConstants {
 	/** The Constant PAY. */
 	public static final String PAY = "PAY";
 
-	/** The Constant BUSINESS_SERVICE_BWT. */
+	/** The Constant BUSINESS_SERVICE_OSBM. */
 	public static final String BUSINESS_SERVICE_OSBM = "OSBM";
 
 	/** The Constant BUSINESS_SERVICE_BWT. */
@@ -509,4 +509,60 @@ public class BookingsConstants {
 	public static final String USER_ID = "userId";
 	
 	public static final String PARKS_AND_COMMUNITY_VIEWER = "PARKS_AND_COMMUNITY_VIEWER";
+	
+	
+	
+	// ACTION_STATUS combinations for notification
+	//OSBM,OSUJM
+    public static final String ACTION_STATUS_INITIATED = "INITIATE_INITIATED";
+    public static final String ACTION_STATUS_PENDINGAPPROVAL = "APPLY_PENDINGAPPROVAL";
+    public static final String ACTION_STATUS_PENDINGPAYMENT = "APPROVE_PENDINGPAYMENT";
+    public static final String ACTION_STATUS_REJECTED  = "REJECT_REJECTED";
+    public static final String ACTION_STATUS_APPROVED = "PAY_APPROVED";
+    //BWT
+    public static final String ACTION_STATUS_SPECIALAPPLY_DELIVERED = "SPECIALAPPLY_PENDINGASSIGNMENTDRIVER";
+    public static final String ACTION_STATUS_PAIDAPPLY_PENDINGASSIGNMENTDRIVER = "PAIDAPPLY_PENDINGASSIGNMENTDRIVER";
+    public static final String ACTION_STATUS_FAILUREAPPLY_PENDINGASSIGNMENTDRIVER = "FAILUREAPPLY_PENDINGASSIGNMENTDRIVER";
+    public static final String ACTION_STATUS_PENDINGUPDATE = "ASSIGNDRIVER_PENDINGUPDATE";
+    public static final String ACTION_STATUS_DELIVERED = "DELIVER_DELIVERED";
+    public static final String ACTION_STATUS_NOTDELIVERED = "NOTDELIVER_NOTDELIVERED";
+    //GFCP
+    public static final String ACTION_STATUS_APPLIED  = "APPLY_APPLIED";
+    //NLUJM
+    public static final String ACTION_STATUS_PENDINGAPPROVALOSD = "APPROVE_PENDINGAPPROVALOSD";
+    public static final String ACTION_STATUS_PENDINGPUBLISH = "APPROVEOSD_PENDINGPUBLISH";
+    public static final String ACTION_STATUS_PUBLISH = "PUBLISH_PUBLISH";
+	//
+	
+	public static final String NOTIFICATION_INITIATED = "bk.en.counter.initiate";
+	public static final String NOTIFICATION_PENDINGAPPROVAL = "bk.en.counter.apply";
+	public static final String NOTIFICATION_PENDINGPAYMENT = "bk.en.counter.approved";
+	public static final String NOTIFICATION_REJECTED = "bk.en.counter.rejected";
+	public static final String NOTIFICATION_APPROVED = "bk.en.counter.pay";
+	public static final String NOTIFICATION_PENDINGASSIGNMENTDRIVER = "bk.en.counter.paidapply";
+	public static final String NOTIFICATION_PENDINGUPDATE = "bk.en.counter.assigndriver";
+	public static final String NOTIFICATION_DELIVERED = "BK_WF_BWT_DELIVERED";
+	public static final String NOTIFICATION_NOTDELIVERED = "BK_WF_BWT_NOTDELIVERED";
+	public static final String NOTIFICATION_APPLIED = "bk.en.counter.apply";
+    public static final String NOTIFICATION_OBJECT_MODIFIED = "tl.en.edit.object.modified";
+    public static final String DEFAULT_OBJECT_MODIFIED_MSG = "Dear <1>,Your Trade License with application number <APPLICATION_NUMBER> was modified.";
+    public static  final String EMAIL_SUBJECT = "Chandigarh mSeva Application Status";
+    public static final String BILL_AMOUNT_JSONPATH = "$.billResponse.Bill[0].totalAmount";
+    public static final String TRADE_LICENSE_MODULE_CODE = "BK";
+    public static final String NOTIFICATION_LOCALE = "en_IN";
+    public static final String MODULE = "rainmaker-services";
+    public static final String INITIATED = "INITIATED";
+    public static final String PARKS = "Parks";
+    public static final String COMMUNITY_CENTER = "Community Center";
+    public static final String DEO = "DEO";
+    public static final String CLERK = "CLERK";
+    public static final String SENIOR_ASSISTANT = "SENIOR_ASSISTANT";
+    public static final String AUDIT_DEPARTMENT = "AUDIT_DEPARTMENT";
+    public static final String CHIEF_ACCOUNT_OFFICER = "CHIEF_ACCOUNT_OFFICER";
+    public static final String PAYMENT_PROCESSING_AUTHORITY = "PAYMENT_PROCESSING_AUTHORITY";
+    public static final String E_SAMPARK_CENTER = "E-SAMPARK-CENTER";
+    public static final String MCC_USER = "MCC_USER";
+    public static final String NLUJM_BOOKING_TYPE = "New Location Open Spaces Under Jurisdiction of MCC";
+    public static final String NOTIFICATION_UPDATE = "bk.en.counter.update";
+    
 }
