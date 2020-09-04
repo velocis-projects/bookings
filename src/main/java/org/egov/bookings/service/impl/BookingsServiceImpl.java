@@ -128,7 +128,7 @@ public class BookingsServiceImpl implements BookingsService {
 			Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
 			if (!BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap)) {
 				bookingsRequest.getBookingsModel().setBkBookingType(mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName());
-				producer.push(config.getSaveTopic(), bookingsRequest);
+				producer.push(config.getSaveBookingSMSTopic(), bookingsRequest);
 			}
 		}
 		bookingsRequest.setBookingsModel(bookingsModel);
@@ -149,27 +149,24 @@ public class BookingsServiceImpl implements BookingsService {
 		if(!BookingsFieldsValidator.isNullOrEmpty(messageResponse))
 		{
 			if (BookingsConstants.BUSINESS_SERVICE_OSBM.equals(bookingsModel.getBusinessService())) {
-				applicationStatus = "BK_WF_OSBM_" + bookingsModel.getBkApplicationStatus();
+				applicationStatus = BookingsConstants.BK_WF_OSBM + bookingsModel.getBkApplicationStatus();
 			}
 			else if(BookingsConstants.BUSINESS_SERVICE_BWT.equals(bookingsModel.getBusinessService())) {
-				applicationStatus = "BK_WF_BWT_" + bookingsModel.getBkApplicationStatus();
+				applicationStatus = BookingsConstants.BK_WF_BWT + bookingsModel.getBkApplicationStatus();
 			}
 			else if(BookingsConstants.BUSINESS_SERVICE_GFCP.equals(bookingsModel.getBusinessService())) {
 				if(BookingsConstants.INITIATED.equals(bookingsModel.getBkApplicationStatus())) {
-					applicationStatus = "BK_" + bookingsModel.getBkApplicationStatus();
+					applicationStatus = BookingsConstants.BK + bookingsModel.getBkApplicationStatus();
 				}
 				else {
-					applicationStatus = "BK_CGB_" + bookingsModel.getBkApplicationStatus();
+					applicationStatus = BookingsConstants.BK_CGB + bookingsModel.getBkApplicationStatus();
 				}
 			}
 			else if(BookingsConstants.BUSINESS_SERVICE_OSUJM.equals(bookingsModel.getBusinessService())) {
-				applicationStatus = "BK_WF_OSUJM_" + bookingsModel.getBkApplicationStatus();
+				applicationStatus = BookingsConstants.BK_WF_OSUJM + bookingsModel.getBkApplicationStatus();
 			}
 			else if(BookingsConstants.BUSINESS_SERVICE_PACC.equals(bookingsModel.getBusinessService())) {
-				applicationStatus = "BK_WF_PACC_" + bookingsModel.getBkApplicationStatus();
-			}
-			else if(BookingsConstants.BUSINESS_SERVICE_NLUJM.equals(bookingsModel.getBusinessService())) {
-				applicationStatus = "BK_WF_NLUJM_" + bookingsModel.getBkApplicationStatus();
+				applicationStatus = BookingsConstants.BK_WF_PACC + bookingsModel.getBkApplicationStatus();
 			}
 			for (Message message : messageResponse.getMessages()) {
 				if(message.getCode().equals(applicationStatus)){
@@ -541,7 +538,7 @@ public class BookingsServiceImpl implements BookingsService {
 			Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
 			if (!BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap)) {
 				bookingsRequest.getBookingsModel().setBkBookingType(mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName());
-				producer.push(config.getUpdateTopic(), bookingsRequest);
+				producer.push(config.getUpdateBookingSMSTopic(), bookingsRequest);
 			}
 		}
 		return bookingsModel;

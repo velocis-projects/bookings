@@ -111,7 +111,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 			osujmNewLocationModel = newLocationRepository.save(newLocationRequest.getNewLocationModel());
 			newLocationRequest.setNewLocationModel(osujmNewLocationModel);
 			if (!BookingsFieldsValidator.isNullOrEmpty(osujmNewLocationModel)) {
-				producer.push(config.getSaveTopic(), newLocationRequest);
+				producer.push(config.getSaveNLUJMBookingSMSTopic(), newLocationRequest);
 			}
 		}
 		catch (Exception e) {
@@ -135,7 +135,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 		if(!BookingsFieldsValidator.isNullOrEmpty(messageResponse))
 		{
 			if(BookingsConstants.BUSINESS_SERVICE_NLUJM.equals(osujmNewLocationModel.getBusinessService())) {
-				applicationStatus = "BK_WF_NLUJM_" + osujmNewLocationModel.getApplicationStatus();
+				applicationStatus = BookingsConstants.BK_WF_NLUJM + osujmNewLocationModel.getApplicationStatus();
 			}
 			for (Message message : messageResponse.getMessages()) {
 				if(message.getCode().equals(applicationStatus)){
@@ -174,7 +174,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 				 newLocaltionModel = newLocationRequest.getNewLocationModel();
 			}
 			if (!BookingsFieldsValidator.isNullOrEmpty(newLocaltionModel)) {
-				producer.push(config.getSaveTopic(), newLocationRequest);
+				producer.push(config.getUpdateNLUJMBookingSMSTopic(), newLocationRequest);
 			}
 		} catch (Exception e) {
 			LOGGER.error("Exception occur while updating booking " + e);

@@ -95,23 +95,36 @@ public class BookingsConfiguration {
 
 
     //Persister Config
-    @Value("${kafka.topics.save.service}")
-    private String saveTopic;
-
-    @Value("${kafka.topics.update.service}")
-    private String updateTopic;
-    
-    @Value("${kafka.topics.save.service.NLUJM}")
-    private String saveNLUJMTopic;
-
-    @Value("${kafka.topics.update.service.NLUJM}")
-    private String updateNLUJMTopic;
+//    @Value("${kafka.topics.save.service}")
+//    private String saveTopic;
+//
+//    @Value("${kafka.topics.update.service}")
+//    private String updateTopic;
+//    
+//    @Value("${kafka.topics.save.service.NLUJM}")
+//    private String saveNLUJMTopic;
+//
+//    @Value("${kafka.topics.update.service.NLUJM}")
+//    private String updateNLUJMTopic;
 
     @Value("${persister.update.tradelicense.workflow.topic}")
     private String updateWorkflowTopic;
 
     @Value("${persister.update.tradelicense.adhoc.topic}")
     private String updateAdhocTopic;
+    
+    @Value("${kafka.topics.save.booking.sms.notification.service}")
+    private String saveBookingSMSTopic;
+
+    @Value("${kafka.topics.update.sms.notification.service}")
+    private String updateBookingSMSTopic;
+    
+    @Value("${kafka.topics.save.nlujm.sms.notification.service}")
+    private String saveNLUJMBookingSMSTopic;
+
+    @Value("${kafka.topics.update.nlujm.sms.notification.service}")
+    private String updateNLUJMBookingSMSTopic;
+    
 
 
     //Location Config

@@ -564,5 +564,12 @@ public class BookingsConstants {
     public static final String MCC_USER = "MCC_USER";
     public static final String NLUJM_BOOKING_TYPE = "New Location Open Spaces Under Jurisdiction of MCC";
     public static final String NOTIFICATION_UPDATE = "bk.en.counter.update";
+    public static final String BK_WF_NLUJM = "BK_WF_NLUJM_";
+    public static final String BK_WF_OSBM = "BK_WF_OSBM_";
+    public static final String BK_WF_BWT = "BK_WF_BWT_";
+    public static final String BK = "BK_";
+    public static final String BK_CGB = "BK_CGB_";
+    public static final String BK_WF_OSUJM = "bk.en.counter.update";
+    public static final String BK_WF_PACC = "bk.en.counter.update";
     
 }

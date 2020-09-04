@@ -4,7 +4,6 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -17,7 +16,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.AvailabilityResponse;
-import org.egov.bookings.contract.MdmsJsonFields;
 import org.egov.bookings.contract.ParkAndCommunitySearchCriteria;
 import org.egov.bookings.contract.ParkCommunityFeeMasterRequest;
 import org.egov.bookings.contract.ParkCommunityFeeMasterResponse;
@@ -70,7 +68,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 	private ParkCommunityHallV1MasterRepository parkCommunityHallV1MasterRepository;
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LogManager.getLogger(BookingsServiceImpl.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(ParkAndCommunityServiceImpl.class.getName());
 
 	/** The booking service. */
 	@Autowired
@@ -105,7 +103,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
 		bookingsRequest.setBookingsModel(bookingsModel);
 		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)) {
-			producer.push(config.getUpdateTopic(), bookingsRequest);
+			producer.push(config.getSaveBookingSMSTopic(), bookingsRequest);
 		}
 		return bookingsModel;
 	}
@@ -141,7 +139,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 			bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
 		}
 		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)) {
-			producer.push(config.getUpdateTopic(), bookingsRequest);
+			producer.push(config.getUpdateBookingSMSTopic	(), bookingsRequest);
 		}
 		return bookingsModel;
 	}

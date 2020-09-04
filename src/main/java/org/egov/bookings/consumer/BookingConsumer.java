@@ -58,7 +58,7 @@ public class BookingConsumer {
     	@KafkaListener(topics = {"${kafka.topics.save.service}","${kafka.topics.update.service}","${kafka.topics.save.service.NLUJM}","${kafka.topics.save.service.NLUJM}"})
 	    public void listen(final HashMap<String, Object> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
 	        ObjectMapper mapper = new ObjectMapper();
-			if (utils.getSaveTopic().equals(topic) || utils.getUpdateTopic().equals(topic)) {
+			if (utils.getSaveBookingSMSTopic().equals(topic) || utils.getUpdateBookingSMSTopic().equals(topic)) {
 				BookingsRequest bookingsRequest = new BookingsRequest();
 				try {
 					log.info("Consuming record: " + record);
@@ -69,7 +69,7 @@ public class BookingConsumer {
 				log.info("Booking Received: " + bookingsRequest.getBookingsModel().getBkApplicationNumber());
 				notificationService.process(bookingsRequest);
 			}
-			else if(utils.getSaveNLUJMTopic().equals(topic) || utils.getUpdateNLUJMTopic().equals(topic)) {
+			else if(utils.getSaveNLUJMBookingSMSTopic().equals(topic) || utils.getUpdateNLUJMBookingSMSTopic().equals(topic)) {
 				NewLocationRequest newLocationRequest = new NewLocationRequest();
 		        try {
 		            log.info("Consuming record: " + record);
