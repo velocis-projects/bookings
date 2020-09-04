@@ -11,12 +11,12 @@ import org.egov.bookings.contract.DocumentFields;
 import org.egov.bookings.contract.OsbmApproverRequest;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
-import org.egov.bookings.service.BookingsService;
+import org.egov.bookings.model.OsbmFeeModel;
+import org.egov.bookings.model.OsujmFeeModel;
 import org.egov.bookings.service.MasterService;
 import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,11 +39,7 @@ public class MasterController {
 	
 	/** The bookings fields validator. */
 	@Autowired
-	BookingsFieldsValidator bookingsFieldsValidator;
-	
-	/** The bookings service. */
-	@Autowired
-	private BookingsService bookingsService;
+	private BookingsFieldsValidator bookingsFieldsValidator;
 	
 	/**
 	 * Gets the park community inventory details.
@@ -108,7 +104,7 @@ public class MasterController {
 	 *
 	 * @return the response entity
 	 */
-	@GetMapping("all/approver/_fetch")
+	@PostMapping("all/approver/_fetch")
 	public ResponseEntity<?> fetchAllApprover() {
 		ResponseModel rs = new ResponseModel();
 		try {
@@ -123,7 +119,50 @@ public class MasterController {
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok(rs);
-
+	}
+	
+	/**
+	 * Fetch all OSB mfee.
+	 *
+	 * @return the response entity
+	 */
+	@PostMapping("osbm/fee/_fetch")
+	public ResponseEntity<?> fetchAllOSBMfee() {
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<OsbmFeeModel> osbmFeeList = masterService.fetchAllOSBMfee(); 
+			rs.setStatus("200");
+			rs.setMessage("Data submitted successfully");
+			rs.setData(osbmFeeList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the fetchAllOSBMfee " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+	}
+	
+	/**
+	 * Fetch all OSUJ mfee.
+	 *
+	 * @return the response entity
+	 */
+	@PostMapping("osujm/fee/_fetch")
+	public ResponseEntity<?> fetchAllOSUJMfee() {
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<OsujmFeeModel> osbmFeeList = masterService.fetchAllOSUJMfee(); 
+			rs.setStatus("200");
+			rs.setMessage("Data submitted successfully");
+			rs.setData(osbmFeeList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the fetchAllOSUJMfee " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
 	}
 	
 }

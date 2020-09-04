@@ -6,8 +6,9 @@ import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.OsbmApproverRequest;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
+import org.egov.bookings.model.OsbmFeeModel;
+import org.egov.bookings.model.OsujmFeeModel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface MasterService.
  */
@@ -36,5 +37,19 @@ public interface MasterService {
 	 * @return the list
 	 */
 	public List<BookingApprover> fetchAllApprover();
+	
+	/**
+	 * Fetch all OSB mfee.
+	 *
+	 * @return the list
+	 */
+	public List<OsbmFeeModel> fetchAllOSBMfee();
+	
+	/**
+	 * Fetch all OSUJ mfee.
+	 *
+	 * @return the list
+	 */
+	public List<OsujmFeeModel> fetchAllOSUJMfee();
 
 }

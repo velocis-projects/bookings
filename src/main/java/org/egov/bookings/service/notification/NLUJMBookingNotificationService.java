@@ -1,10 +1,12 @@
 package org.egov.bookings.service.notification;
 
 import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_NLUJM;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.EmailRequest;
 import org.egov.bookings.contract.SMSRequest;
@@ -13,11 +15,14 @@ import org.egov.bookings.repository.impl.ServiceRequestRepository;
 import org.egov.bookings.utils.NotificationUtil;
 import org.egov.bookings.web.models.NewLocationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
 
 /**
  * The Class NLUJMBookingNotificationService.
  */
+@Service
 public class NLUJMBookingNotificationService {
 	 /** The config. */
     private BookingsConfiguration config;

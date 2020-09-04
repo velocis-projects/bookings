@@ -11,8 +11,12 @@ import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.OsbmApproverRequest;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
+import org.egov.bookings.model.OsbmFeeModel;
+import org.egov.bookings.model.OsujmFeeModel;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsbmApproverRepository;
+import org.egov.bookings.repository.OsbmFeeRepository;
+import org.egov.bookings.repository.OsujmFeeRepository;
 import org.egov.bookings.repository.ParkCommunityInventoryRepsitory;
 import org.egov.bookings.service.MasterService;
 import org.egov.bookings.validator.BookingsFieldsValidator;
@@ -48,8 +52,15 @@ public class MasterServiceImpl implements MasterService{
 	/** The common repository. */
 	
 	@Autowired
-	CommonRepository commonRepository;
+	private CommonRepository commonRepository;
 	
+	/** The osbm fee repository. */
+	@Autowired
+	private OsbmFeeRepository osbmFeeRepository;
+	
+	/** The osujm fee repository. */
+	@Autowired
+	private OsujmFeeRepository osujmFeeRepository;
 	
 	/**
 	 * Gets the park community inventory details.
@@ -159,6 +170,42 @@ public class MasterServiceImpl implements MasterService{
 			throw new CustomException("APPROVER_ERROR", e.getLocalizedMessage());
 		}
 		return bookingApprover1;
+	}
+
+	/**
+	 * Fetch all OSB mfee.
+	 *
+	 * @return the list
+	 */
+	@Override
+	public List<OsbmFeeModel> fetchAllOSBMfee() {
+		List<OsbmFeeModel> osbmFeeList = new ArrayList<>();
+		try {
+			osbmFeeList = osbmFeeRepository.findAll(); 
+		}
+		catch (Exception e) {
+			LOGGER.error("Exception occur in the fetchAllOSBMfee " + e);
+			e.printStackTrace();
+		}
+		return osbmFeeList;
+	}
+
+	/**
+	 * Fetch all OSUJ mfee.
+	 *
+	 * @return the list
+	 */
+	@Override
+	public List<OsujmFeeModel> fetchAllOSUJMfee() {
+		List<OsujmFeeModel> osujmFeeList = new ArrayList<>();
+		try {
+			osujmFeeList = osujmFeeRepository.findAll(); 
+		}
+		catch (Exception e) {
+			LOGGER.error("Exception occur in the fetchAllOSUJMfee " + e);
+			e.printStackTrace();
+		}
+		return osujmFeeList;
 	}
 	
 }
