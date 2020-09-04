@@ -126,7 +126,7 @@ public class BookingsServiceImpl implements BookingsService {
 			if (!BookingsConstants.ACTION_DELIVER.equals(bookingsRequest.getBookingsModel().getBkAction())
 					&& !BookingsConstants.ACTION_FAILURE_APPLY
 							.equals(bookingsRequest.getBookingsModel().getBkAction())) {
-				//enrichmentService.generateDemand(bookingsRequest);
+				enrichmentService.generateDemand(bookingsRequest);
 			}
 
 			if (config.getIsExternalWorkFlowEnabled()) {
