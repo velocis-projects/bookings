@@ -584,8 +584,7 @@ public class BookingsServiceImpl implements BookingsService {
 		if (config.getIsExternalWorkFlowEnabled())
 			workflowIntegrator.callWorkFlow(bookingsRequest);
 
-		// bookingsProducer.push(saveTopic, bookingsRequest.getBookingsModel());
-		// bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
+		
 		BookingsModel bookingsModel = null;
 			if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
 					&& BookingsConstants.BUSINESS_SERVICE_OSBM.equals(businessService)) {
@@ -655,7 +654,7 @@ public class BookingsServiceImpl implements BookingsService {
 					throw new CustomException("NOTIFICATION_ERROR", e.getMessage());
 				}
 			}
-*/		return bookingsModel;
+*/		return bookingsRequest.getBookingsModel();
 	}
 
 	/**

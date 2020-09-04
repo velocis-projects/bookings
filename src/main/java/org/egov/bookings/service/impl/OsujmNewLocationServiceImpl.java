@@ -184,7 +184,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 		} catch (Exception e) {
 			LOGGER.error("Exception occur while updating booking " + e);
 		}
-		return newLocaltionModel;
+		return newLocationRequest.getNewLocationModel();
 	}
 	
 	/**

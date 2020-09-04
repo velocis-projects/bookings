@@ -87,7 +87,6 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 	 */
 	@Override
 	public BookingsModel createParkAndCommunityBooking(BookingsRequest bookingsRequest) {
-		BookingsModel bookingsModel = null;
 		boolean flag = bookingService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 
 		if (!flag)
@@ -102,7 +101,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
 		bookingsProducer.push(config.getSaveBookingTopic(), kafkaBookingRequest);
 		//bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
-		return bookingsModel;
+		return bookingsRequest.getBookingsModel();
 
 	}
 
@@ -143,7 +142,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 			//bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
 		}
 
-		return bookingsModel;
+		return bookingsRequest.getBookingsModel();
 	}
 
 	/*
