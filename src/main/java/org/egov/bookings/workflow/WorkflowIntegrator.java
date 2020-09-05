@@ -117,7 +117,7 @@ public class WorkflowIntegrator {
 		obj.put(BUSINESSSERVICEKEY, bookingsRequest.getBookingsModel().getBusinessService());
 		obj.put(MODULENAMEKEY, MODULENAMEVALUE);
 		obj.put(ACTIONKEY, bkModel.getBkAction());
-		if (BookingsFieldsValidator.isNullOrEmpty(bkModel.getBkRemarks()))
+		if (!BookingsFieldsValidator.isNullOrEmpty(bkModel.getBkRemarks()))
 			obj.put(COMMENTKEY, bkModel.getBkRemarks());
 		if (!StringUtils.isEmpty(bkModel.getAssignee()))
 			obj.put(ASSIGNEEKEY, uuidmap);
@@ -199,7 +199,7 @@ public class WorkflowIntegrator {
 		obj.put(BUSINESSSERVICEKEY, newLocModel.getBusinessService());
 		obj.put(MODULENAMEKEY, MODULENAMEVALUE);
 		obj.put(ACTIONKEY, newLocModel.getAction());
-		if (BookingsFieldsValidator.isNullOrEmpty(newLocModel.getRemarks()))
+		if (!BookingsFieldsValidator.isNullOrEmpty(newLocModel.getRemarks()))
 			obj.put(COMMENTKEY, newLocModel.getRemarks());
 		if (!StringUtils.isEmpty(newLocModel.getAssignee()))
 			obj.put(ASSIGNEEKEY, uuidmap);
