@@ -37,5 +37,9 @@ public class AvailabilityResponse implements Serializable {
 	/** The to date. */
 	private Date toDate;
 	
+	/** The to time. */
+	private String toTime;
 	
+	/** The from time. */
+	private String fromTime;
 }

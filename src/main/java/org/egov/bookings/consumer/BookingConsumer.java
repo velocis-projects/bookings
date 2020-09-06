@@ -24,24 +24,24 @@ import lombok.extern.slf4j.Slf4j;
 /** The Constant log. */
 @Slf4j
 @Component
-public class BookingConsumer {
+public class BookingConsumer {/*
 
- 		/** The notification service. */
+ 		*//** The notification service. *//*
 		 private BookingNotificationService notificationService;
  		
- 		/** The utils. */
+ 		*//** The utils. *//*
 		 private BookingsConfiguration utils;
  		
- 		/** The nlujm booking notification service. */
+ 		*//** The nlujm booking notification service. *//*
 		 private NLUJMBookingNotificationService nlujmBookingNotificationService;
 
-    	/**
+    	*//**
 	     * Instantiates a new booking consumer.
 	     *
 	     * @param notificationService the notification service
 	     * @param utils the utils
 	     * @param nlujmBookingNotificationService the nlujm booking notification service
-	     */
+	     *//*
 	    @Autowired
 	    public BookingConsumer(BookingNotificationService notificationService, BookingsConfiguration utils, NLUJMBookingNotificationService nlujmBookingNotificationService) {
 	        this.notificationService = notificationService;
@@ -49,12 +49,12 @@ public class BookingConsumer {
 	        this.nlujmBookingNotificationService = nlujmBookingNotificationService;
 	    }
 
-	    /**
+	    *//**
     	 * Listen.
     	 *
     	 * @param record the record
     	 * @param topic the topic
-    	 */
+    	 *//*
     	@KafkaListener(topics = {"${kafka.topics.save.service}","${kafka.topics.update.service}","${kafka.topics.save.service.NLUJM}","${kafka.topics.save.service.NLUJM}"})
 	    public void listen(final HashMap<String, Object> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
 	        ObjectMapper mapper = new ObjectMapper();
@@ -81,4 +81,4 @@ public class BookingConsumer {
 		        nlujmBookingNotificationService.process(newLocationRequest);
 			}
 	    }
-}
+*/}
