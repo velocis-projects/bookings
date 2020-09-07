@@ -113,6 +113,12 @@ public class BookingsConfiguration {
     @Value("${kafka.topics.update.nlujm.sms.notification.service}")
     private String updateNLUJMBookingSMSTopic;
     
+    @Value("${kafka.topics.save.approver.service}")
+    private String saveApproverTopic;
+    
+    @Value("${kafka.topics.update.approver.service}")
+    private String updateApproverTopic;
+    
 
 
     //Location Config

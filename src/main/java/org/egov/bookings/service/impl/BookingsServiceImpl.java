@@ -140,12 +140,12 @@ public class BookingsServiceImpl implements BookingsService {
 			if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
 				Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
 				if (!BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap)) {
-					bookingsRequest.getBookingsModel().setBkBookingType(mdmsJsonFieldsMap.get(bookingsRequest.getBookingsModel().getBkBookingType()).getName());
+					if(!BookingsConstants.BUSINESS_SERVICE_PACC.equals(bookingsRequest.getBookingsModel().getBusinessService())) {
+						bookingsRequest.getBookingsModel().setBkBookingType(mdmsJsonFieldsMap.get(bookingsRequest.getBookingsModel().getBkBookingType()).getName());
+					}
 					bookingsProducer.push(config.getSaveBookingSMSTopic(), bookingsRequest);
 				}
 			}
-
-			
 		return bookingsRequest.getBookingsModel();
 
 	}
