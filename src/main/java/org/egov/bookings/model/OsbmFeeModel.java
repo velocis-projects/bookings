@@ -1,5 +1,7 @@
 package org.egov.bookings.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// TODO: Auto-generated Javadoc
 /* (non-Javadoc)
  * @see java.lang.Object#toString()
  */
@@ -67,5 +68,13 @@ public class OsbmFeeModel {
 	/** The amount. */
 	@Column(name = "AMOUNT")
 	private Long amount;
+	
+	/** The last modified date. */
+	@Column(name = "LAST_MODIFIED_DATE")
+	private Date lastModifiedDate;
+	
+	/** The created date. */
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
 
 }

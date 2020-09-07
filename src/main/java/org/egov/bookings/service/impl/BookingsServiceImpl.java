@@ -43,7 +43,6 @@ import org.egov.common.contract.request.Role;
 import org.egov.mdms.model.MdmsResponse;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -51,7 +50,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.minidev.json.JSONArray;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class BookingsServiceImpl.
  */
@@ -94,10 +92,6 @@ public class BookingsServiceImpl implements BookingsService {
 	/** The service request repository. */
 	@Autowired
 	private ServiceRequestRepository serviceRequestRepository;
-	
-	/** The sms notification service. */
-	@Autowired
-	private SMSNotificationService smsNotificationService;
 	
 	@Autowired
 	private BookingsProducer bookingsProducer;
@@ -146,12 +140,12 @@ public class BookingsServiceImpl implements BookingsService {
 			if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
 				Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
 				if (!BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap)) {
-					bookingsRequest.getBookingsModel().setBkBookingType(mdmsJsonFieldsMap.get(bookingsRequest.getBookingsModel().getBkBookingType()).getName());
-					//bookingsProducer.push(config.getSaveTopic(), bookingsRequest);
+					if(!BookingsConstants.BUSINESS_SERVICE_PACC.equals(bookingsRequest.getBookingsModel().getBusinessService())) {
+						bookingsRequest.getBookingsModel().setBkBookingType(mdmsJsonFieldsMap.get(bookingsRequest.getBookingsModel().getBkBookingType()).getName());
+					}
+					bookingsProducer.push(config.getSaveBookingSMSTopic(), bookingsRequest);
 				}
 			}
-
-			
 		return bookingsRequest.getBookingsModel();
 
 	}
@@ -172,27 +166,24 @@ public class BookingsServiceImpl implements BookingsService {
 		if(!BookingsFieldsValidator.isNullOrEmpty(messageResponse))
 		{
 			if (BookingsConstants.BUSINESS_SERVICE_OSBM.equals(bookingsModel.getBusinessService())) {
-				applicationStatus = "BK_WF_OSBM_" + bookingsModel.getBkApplicationStatus();
+				applicationStatus = BookingsConstants.BK_WF_OSBM + bookingsModel.getBkApplicationStatus();
 			}
 			else if(BookingsConstants.BUSINESS_SERVICE_BWT.equals(bookingsModel.getBusinessService())) {
-				applicationStatus = "BK_WF_BWT_" + bookingsModel.getBkApplicationStatus();
+				applicationStatus = BookingsConstants.BK_WF_BWT + bookingsModel.getBkApplicationStatus();
 			}
 			else if(BookingsConstants.BUSINESS_SERVICE_GFCP.equals(bookingsModel.getBusinessService())) {
 				if(BookingsConstants.INITIATED.equals(bookingsModel.getBkApplicationStatus())) {
-					applicationStatus = "BK_" + bookingsModel.getBkApplicationStatus();
+					applicationStatus = BookingsConstants.BK + bookingsModel.getBkApplicationStatus();
 				}
 				else {
-					applicationStatus = "BK_CGB_" + bookingsModel.getBkApplicationStatus();
+					applicationStatus = BookingsConstants.BK_CGB + bookingsModel.getBkApplicationStatus();
 				}
 			}
 			else if(BookingsConstants.BUSINESS_SERVICE_OSUJM.equals(bookingsModel.getBusinessService())) {
-				applicationStatus = "BK_WF_OSUJM_" + bookingsModel.getBkApplicationStatus();
+				applicationStatus = BookingsConstants.BK_WF_OSUJM + bookingsModel.getBkApplicationStatus();
 			}
 			else if(BookingsConstants.BUSINESS_SERVICE_PACC.equals(bookingsModel.getBusinessService())) {
-				applicationStatus = "BK_WF_PACC_" + bookingsModel.getBkApplicationStatus();
-			}
-			else if(BookingsConstants.BUSINESS_SERVICE_NLUJM.equals(bookingsModel.getBusinessService())) {
-				applicationStatus = "BK_WF_NLUJM_" + bookingsModel.getBkApplicationStatus();
+				applicationStatus = BookingsConstants.BK_WF_PACC + bookingsModel.getBkApplicationStatus();
 			}
 			for (Message message : messageResponse.getMessages()) {
 				if(message.getCode().equals(applicationStatus)){
@@ -269,143 +260,7 @@ public class BookingsServiceImpl implements BookingsService {
 		}
 		return mdmsJsonFieldsMap;
 	}
-	
-	/**
-	 * Prepare SMS notification message.
-	 *
-	 * @param bookingsModel the bookings model
-	 * @param mdmsJsonFieldsMap the mdms json fields map
-	 * @return the string
-	 */
-	private String prepareSMSNotifMsgForCreate(BookingsModel bookingsModel, Map< String, MdmsJsonFields > mdmsJsonFieldsMap)
-	{
-		String notificationMsg = "";
-		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel) && !BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap))
-		{
-			notificationMsg = "Dear " + bookingsModel.getBkApplicantName() + ", You have booked " + mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName()
-					+ " successfully. Your application number is " + bookingsModel.getBkApplicationNumber() + ".";
-		}
-		return notificationMsg;
-	}
-	
-	/**
-	 * Prepare mail subject for create.
-	 *
-	 * @param bookingsModel the bookings model
-	 * @param mdmsJsonFieldsMap the mdms json fields map
-	 * @return the string
-	 */
-	private String prepareMailSubjectForCreate(BookingsModel bookingsModel, Map< String, MdmsJsonFields > mdmsJsonFieldsMap)
-	{
-		String mailSubject = "";
-		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel) && !BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap))
-		{
-			mailSubject = "[Application No: " + bookingsModel.getBkApplicationNumber() + "] Application for " +
-					mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName() + ".";
-		}
-		return mailSubject;
-	}
-	
-	/**
-	 * Prepare mail notif msg for create.
-	 *
-	 * @param bookingsModel the bookings model
-	 * @param mdmsJsonFieldsMap the mdms json fields map
-	 * @return the string
-	 */
-	private String prepareMailNotifMsgForCreate(BookingsModel bookingsModel, Map< String, MdmsJsonFields > mdmsJsonFieldsMap)
-	{
-		String notificationMsg = "";
-		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel.getBkStatus()) && "Request due to water supply failure".equals(bookingsModel.getBkStatus()))
-		{
-			notificationMsg = "Dear " + bookingsModel.getBkApplicantName().toUpperCase() + "," + "<br/>" + "<br/>" + "Your application for <strong>" + mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName()
-					+ "(Normal Water Failure)</strong> has been submitted successfully. Your application number is <strong>" + bookingsModel.getBkApplicationNumber() + ".</strong>" + "<br/>" + "<br/>" + "Regards," + "<br/>" + "Team CMC";
-		}
-		else if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel.getBkStatus()) && "Normal Request(Paid Booking)".equals(bookingsModel.getBkStatus()))
-		{
-			notificationMsg = "Dear " + bookingsModel.getBkApplicantName().toUpperCase() + "," + "<br/>" + "<br/>" + "Your application for <strong>" + mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName()
-					+ "(Paid Booking)</strong> has been submitted successfully. Your application number is <strong>" + bookingsModel.getBkApplicationNumber() + ".</strong>" + "<br/>" + "<br/>" + "Regards," + "<br/>" + "Team CMC";
-		}
-		else
-		{
-			notificationMsg = "Dear " + bookingsModel.getBkApplicantName().toUpperCase() + "," + "<br/>" + "<br/>" + "Your application for <strong>" + mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName()
-					+ "</strong> has been submitted successfully. Your application number is <strong>" + bookingsModel.getBkApplicationNumber() + ".</strong>" + "<br/>" + "<br/>" + "Regards," + "<br/>" + "Team CMC";
-		}
-		return notificationMsg;
-	}
-	
-	/**
-	 * Prepare SMS notif msg for update.
-	 *
-	 * @param bookingsModel the bookings model
-	 * @param mdmsJsonFieldsMap the mdms json fields map
-	 * @param bkApplicationStatus the bk application status
-	 * @return the string
-	 */
-	private String prepareSMSNotifMsgForUpdate(BookingsModel bookingsModel, Map< String, MdmsJsonFields > mdmsJsonFieldsMap, String bkApplicationStatus)
-	{
-		String notificationMsg = "";
-		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel) && !BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap))
-		{
-			notificationMsg = "Dear " + bookingsModel.getBkApplicantName() + ", Your " + mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName()
-					+ " Application no. " + bookingsModel.getBkApplicationNumber() +  " has been updated with status " + bkApplicationStatus + ".";
-		}
-		return notificationMsg;
-	}
-	
-	/**
-	 * Prepare mail subject for update.
-	 *
-	 * @param bookingsModel the bookings model
-	 * @param mdmsJsonFieldsMap the mdms json fields map
-	 * @return the string
-	 */
-	private String prepareMailSubjectForUpdate(BookingsModel bookingsModel, Map< String, MdmsJsonFields > mdmsJsonFieldsMap)
-	{
-		String mailSubject = "";
-		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel) && !BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap))
-		{
-			mailSubject = "[Application No: " + bookingsModel.getBkApplicationNumber() + "] Application Status Updated for " +
-					mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName() + ".";
-		}
-		return mailSubject;
-	}
-	
-	/**
-	 * Prepare mail notif msg for update.
-	 *
-	 * @param bookingsModel the bookings model
-	 * @param mdmsJsonFieldsMap the mdms json fields map
-	 * @param bkApplicationStatus the bk application status
-	 * @return the string
-	 */
-	private String prepareMailNotifMsgForUpdate(BookingsModel bookingsModel, Map< String, MdmsJsonFields > mdmsJsonFieldsMap, String bkApplicationStatus)
-	{
-		String notificationMsg = "";
-		if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel) && !BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap))
-		{
-			if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel.getBkStatus()) && "Request due to water supply failure".equals(bookingsModel.getBkStatus()))
-			{
-				notificationMsg = "Dear " + bookingsModel.getBkApplicantName().toUpperCase() + "," + "<br/>" + "<br/>" + "Your application number <strong>" + bookingsModel.getBkApplicationNumber() 
-				+ "</strong> for <strong>"+ mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName() + "(Normal Water Failure)</strong> has been updated with status <strong>" 
-						+ bkApplicationStatus + "</strong>." + "<br/>" + "<br/>" + "Regards," + "<br/>" + "Team CMC";
-			}
-			else if(!BookingsFieldsValidator.isNullOrEmpty(bookingsModel.getBkStatus()) && "Normal Request(Paid Booking)".equals(bookingsModel.getBkStatus()))
-			{
-				notificationMsg = "Dear " + bookingsModel.getBkApplicantName().toUpperCase() + "," + "<br/>" + "<br/>" + "Your application number <strong>" + bookingsModel.getBkApplicationNumber() 
-				+ "</strong> for <strong>"+ mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName() + "(Paid Booking)</strong> has been updated with status <strong>" 
-						+ bkApplicationStatus + "</strong>." + "<br/>" + "<br/>" + "Regards," + "<br/>" + "Team CMC";
-			}
-			else
-			{
-				notificationMsg = "Dear " + bookingsModel.getBkApplicantName().toUpperCase() + "," + "<br/>" + "<br/>" + "Your application number <strong>" + bookingsModel.getBkApplicationNumber() 
-				+ "</strong> for <strong>"+ mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName() + "</strong> has been updated with status <strong>" 
-						+ bkApplicationStatus + "</strong>." + "<br/>" + "<br/>" + "Regards," + "<br/>" + "Team CMC";
-			}
-		}
-		return notificationMsg;
-	}
-	
+
 	/**
 	 * Checks if is booking exists.
 	 *
@@ -427,7 +282,6 @@ public class BookingsServiceImpl implements BookingsService {
 
 	}
 
-	
 	/**
 	 * Gets the citizen search booking.
 	 *
@@ -670,15 +524,14 @@ public class BookingsServiceImpl implements BookingsService {
 					config.setCommercialLock(true);
 				}
 			}
-		
 			if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)) {
 				Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
 				if (!BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap)) {
 					bookingsRequest.getBookingsModel().setBkBookingType(mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName());
-					//bookingsProducer.push(config.getUpdateTopic(), bookingsRequest);
+					bookingsProducer.push(config.getUpdateBookingSMSTopic(), bookingsRequest);
 				}
 			}
-					return bookingsRequest.getBookingsModel();
+		return bookingsRequest.getBookingsModel();
 	}
 
 	/**

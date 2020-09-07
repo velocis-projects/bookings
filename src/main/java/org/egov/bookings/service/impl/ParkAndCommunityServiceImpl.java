@@ -94,7 +94,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		
 		if (!flag)
 			enrichmentService.enrichParkCommunityCreateRequest(bookingsRequest);
-		enrichmentService.generateDemand(bookingsRequest);
+		//enrichmentService.generateDemand(bookingsRequest);
 
 		if (config.getIsExternalWorkFlowEnabled()) {
 			if (!flag)
@@ -109,7 +109,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		}
 		//parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
 		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
-			//bookingsProducer.push(config.getUpdateTopic(), bookingsRequest);
+			bookingsProducer.push(config.getSaveBookingSMSTopic(), bookingsRequest);
 		}
 		return bookingsRequest.getBookingsModel();
 	}
@@ -150,7 +150,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 			//bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
 		}
 		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
-			//bookingsProducer.push(config.getUpdateTopic(), bookingsRequest);
+			bookingsProducer.push(config.getUpdateBookingSMSTopic(), bookingsRequest);
 		}
 		return bookingsRequest.getBookingsModel();
 	}

@@ -8,9 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.transaction.Transactional;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
@@ -37,10 +35,8 @@ import org.egov.common.contract.request.Role;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class OsujmNewLocationServiceImpl.
  */
@@ -111,7 +107,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 			bookingsProducer.push(config.getSaveNewLocationTopic(), newLocationKafkaRequest);
 			//osujmNewLocationModel = newLocationRepository.save(newLocationRequest.getNewLocationModel());
 			if (!BookingsFieldsValidator.isNullOrEmpty(newLocationRequest.getNewLocationModel())) {
-				//bookingsProducer.push(config.getSaveTopic(), newLocationRequest);
+				bookingsProducer.push(config.getSaveNLUJMBookingSMSTopic(), newLocationRequest);
 			}
 		}
 		catch (Exception e) {
@@ -135,7 +131,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 		if(!BookingsFieldsValidator.isNullOrEmpty(messageResponse))
 		{
 			if(BookingsConstants.BUSINESS_SERVICE_NLUJM.equals(osujmNewLocationModel.getBusinessService())) {
-				applicationStatus = "BK_WF_NLUJM_" + osujmNewLocationModel.getApplicationStatus();
+				applicationStatus = BookingsConstants.BK_WF_NLUJM + osujmNewLocationModel.getApplicationStatus();
 			}
 			for (Message message : messageResponse.getMessages()) {
 				if(message.getCode().equals(applicationStatus)){
@@ -181,7 +177,7 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 				newLocaltionModel = newLocationRequest.getNewLocationModel();
 			}
 			if (!BookingsFieldsValidator.isNullOrEmpty(newLocaltionModel)) {
-				//bookingsProducer.push(config.getSaveTopic(), newLocationRequest);
+				bookingsProducer.push(config.getUpdateNLUJMBookingSMSTopic(), newLocationRequest);
 			}
 		} catch (Exception e) {
 			throw new CustomException("OSUJM_NEW_LOCATION_ERROR", e.getLocalizedMessage());

@@ -7,12 +7,14 @@ import javax.transaction.Transactional;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.OsbmApproverRequest;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
+import org.egov.bookings.producer.BookingsProducer;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsbmApproverRepository;
 import org.egov.bookings.repository.OsbmFeeRepository;
@@ -27,7 +29,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MasterServiceImpl.
  */
@@ -61,6 +62,14 @@ public class MasterServiceImpl implements MasterService{
 	/** The osujm fee repository. */
 	@Autowired
 	private OsujmFeeRepository osujmFeeRepository;
+	
+	/** The bookings producer. */
+	@Autowired
+	private BookingsProducer bookingsProducer;
+	
+	/** The config. */
+	@Autowired
+	private BookingsConfiguration config;
 	
 	/**
 	 * Gets the park community inventory details.
@@ -99,17 +108,17 @@ public class MasterServiceImpl implements MasterService{
 		{
 			throw new IllegalArgumentException("Invalid osbmApproverRequest");
 		}
-		OsbmApproverModel osbmApproverModel = null;
+		OsbmApproverModel osbmApproverModel = new OsbmApproverModel();
 		try {
-			osbmApproverModel = new OsbmApproverModel();
 			osbmApproverModel.setSector(osbmApproverRequest.getSector());
 			osbmApproverModel.setUuid(osbmApproverRequest.getUuid());
-			osbmApproverModel = osbmApproverRepository.save(osbmApproverModel);
-
+			osbmApproverRequest.setOsbmApproverModel(osbmApproverModel);
+			bookingsProducer.push(config.getSaveApproverTopic(), osbmApproverRequest);
+//			osbmApproverModel = osbmApproverRepository.save(osbmApproverModel);
 		}catch (Exception e) {
 			throw new CustomException("APPROVER_SAVE_ERROR", "ERROR WHILE SAVING OSBM SECTOR");
 		}
-		return osbmApproverModel;
+		return osbmApproverRequest.getOsbmApproverModel();
 	}
 
 	/**
