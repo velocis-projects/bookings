@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -90,9 +91,9 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 	@Override
 	public BookingsModel createParkAndCommunityBooking(BookingsRequest bookingsRequest) {
 		boolean flag = bookingService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
-
+		
 		if (!flag)
-			enrichmentService.enrichBookingsCreateRequest(bookingsRequest);
+			enrichmentService.enrichParkCommunityCreateRequest(bookingsRequest);
 		enrichmentService.generateDemand(bookingsRequest);
 
 		if (config.getIsExternalWorkFlowEnabled()) {
@@ -106,7 +107,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		}catch (Exception e) {
 			throw new CustomException("PARK_COMMUNITY_CREATE_ERROR",e.getLocalizedMessage());
 		}
-		//bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
+		//parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
 		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
 			//bookingsProducer.push(config.getUpdateTopic(), bookingsRequest);
 		}
@@ -188,7 +189,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		if (null != bookingsModel) {
 			for (BookingsModel bkModel : bookingsModel) {
 				bookedDates.add(AvailabilityResponse.builder().fromDate(bkModel.getBkFromDate())
-						.toDate(bkModel.getBkToDate()).fromTime(bkModel.getBkFromTime()).toTime(bkModel.getBkToTime()).build());
+						.toDate(bkModel.getBkToDate()).timeslots(bkModel.getTimeslots()).build());
 			}
 		}
 		return bookedDates;

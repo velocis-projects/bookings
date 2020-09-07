@@ -494,7 +494,7 @@ public class DemandServiceImpl implements DemandService {
 
 		Demand demand = searchResult.get(0);
 		List<DemandDetail> demandDetails = demand.getDemandDetails();
-		List<DemandDetail> updatedDemandDetails = getUpdatedDemandDetails(taxHeadEstimate1, demandDetails,BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_OSUJM);
+		List<DemandDetail> updatedDemandDetails = getUpdatedDemandDetails(taxHeadEstimate1, demandDetails,BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_PACC);
 		demand.setDemandDetails(updatedDemandDetails);
 		demands.add(demand);
 

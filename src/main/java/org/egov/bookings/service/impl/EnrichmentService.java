@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -445,6 +446,38 @@ public class EnrichmentService {
 		sujmNewLocationModelList.add(newLocationRequest.getNewLocationModel());
 		NewLocationKafkaRequest kafkaNewLocationRequest =  NewLocationKafkaRequest.builder().newLocationModel(sujmNewLocationModelList).requestInfo(newLocationRequest.getRequestInfo()).build();
 		return kafkaNewLocationRequest;
+	}
+
+
+
+	public void enrichParkCommunityCreateRequest(BookingsRequest bookingsRequest) {
+		// TODO Auto-generated method stub
+
+		RequestInfo requestInfo = bookingsRequest.getRequestInfo();
+		String tenantId = bookingsRequest.getBookingsModel().getTenantId();
+
+		BookingsModel bookingsModel = bookingsRequest.getBookingsModel();
+
+		List<String> applicationNumbers = getIdList(requestInfo, tenantId, config.getApplicationNumberIdgenName(),
+				config.getApplicationNumberIdgenFormat());
+		ListIterator<String> itr = applicationNumbers.listIterator();
+
+		Map<String, String> errorMap = new HashMap<>();
+		/*
+		 * if (applicationNumbers.size() != bookingsRequest.getBookingsModel().size()) {
+		 * errorMap.put("IDGEN ERROR ",
+		 * "The number of LicenseNumber returned by idgen is not equal to number of TradeLicenses"
+		 * ); }
+		 */
+
+		if (!errorMap.isEmpty())
+			throw new CustomException(errorMap);
+		bookingsModel.setBkApplicationNumber(itr.next());
+		bookingsRequest.getBookingsModel().getTimeslots().forEach(slots ->{
+			slots.setId(UUID.randomUUID().toString());
+			slots.setApplicationNumber(bookingsModel.getBkApplicationNumber());
+		});
+	
 	}
 
 }
