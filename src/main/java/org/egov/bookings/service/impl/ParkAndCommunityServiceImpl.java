@@ -185,7 +185,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		if (null != bookingsModel) {
 			for (BookingsModel bkModel : bookingsModel) {
 				bookedDates.add(AvailabilityResponse.builder().fromDate(bkModel.getBkFromDate())
-						.toDate(bkModel.getBkToDate()).build());
+						.toDate(bkModel.getBkToDate()).fromTime(bkModel.getBkFromTime()).toTime(bkModel.getBkToTime()).build());
 			}
 		}
 		return bookedDates;
