@@ -436,6 +436,46 @@ public class BookingsServiceImpl implements BookingsService {
 									applicationStatus, mobileNumber, bookingType, fromDate, toDate));
 						}
 					}
+					else if(BookingsConstants.PARKS_AND_COMMUNITY_VIEWER.equals(role.getCode())){
+						String parksBookingType = BookingsConstants.PARKS;
+						String communityCenterBookingType = BookingsConstants.COMMUNITY_CENTER;
+						if(!BookingsFieldsValidator.isNullOrEmpty(bookingType)) {
+							parksBookingType = bookingType;
+							communityCenterBookingType = bookingType;
+						}
+						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
+							bookingsSet.addAll( bookingsRepository.getEmployeeSearchPACCBooking(tenantId, applicationNumber,
+									applicationStatus, mobileNumber, parksBookingType, communityCenterBookingType));
+						}
+						else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
+							bookingsSet.addAll( bookingsRepository.getEmployeeSearchPACCBooking(tenantId, applicationNumber,
+									applicationStatus, mobileNumber, parksBookingType, communityCenterBookingType, fromDate, toDate));
+						}
+					}
+					else if(!BookingsFieldsValidator.isNullOrEmpty(applicationNumberSet) && (BookingsConstants.DEO.equals(role.getCode())
+							|| BookingsConstants.CLERK.equals(role.getCode())
+							|| BookingsConstants.SENIOR_ASSISTANT.equals(role.getCode())
+							|| BookingsConstants.AUDIT_DEPARTMENT.equals(role.getCode())
+							|| BookingsConstants.CHIEF_ACCOUNT_OFFICER.equals(role.getCode())
+							|| BookingsConstants.PAYMENT_PROCESSING_AUTHORITY.equals(role.getCode())
+							|| BookingsConstants.E_SAMPARK_CENTER.equals(role.getCode())
+							|| BookingsConstants.MCC_USER.equals(role.getCode())))
+					{
+						String parksBookingType = BookingsConstants.PARKS;
+						String communityCenterBookingType = BookingsConstants.COMMUNITY_CENTER;
+						if(!BookingsFieldsValidator.isNullOrEmpty(bookingType)) {
+							parksBookingType = bookingType;
+							communityCenterBookingType = bookingType;
+						}
+						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
+							bookingsSet.addAll( bookingsRepository.getEmployeeSearchPACCBooking(tenantId, applicationNumber,
+									applicationStatus, mobileNumber, parksBookingType, communityCenterBookingType, applicationNumberSet));
+						}
+						else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
+							bookingsSet.addAll( bookingsRepository.getEmployeeSearchPACCBooking(tenantId, applicationNumber,
+									applicationStatus, mobileNumber, parksBookingType, communityCenterBookingType, applicationNumberSet, fromDate, toDate));
+						}
+					}
 				}
 			}
 			if (!BookingsFieldsValidator.isNullOrEmpty(applicationNumber) && !BookingsFieldsValidator.isNullOrEmpty(bookingsSet)) {
