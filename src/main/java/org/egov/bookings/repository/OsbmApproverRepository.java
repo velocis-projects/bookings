@@ -3,7 +3,7 @@ package org.egov.bookings.repository;
 import java.util.List;
 
 import org.egov.bookings.model.OsbmApproverModel;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 // TODO: Auto-generated Javadoc
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * The Interface OsbmApproverRepository.
  */
 @Repository
-public interface OsbmApproverRepository extends CrudRepository<OsbmApproverModel, Long>{
+public interface OsbmApproverRepository extends JpaRepository<OsbmApproverModel, Long>{
 
 	/**
 	 * Find by sector.

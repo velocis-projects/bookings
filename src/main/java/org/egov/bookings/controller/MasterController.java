@@ -121,6 +121,29 @@ public class MasterController {
 		return ResponseEntity.ok(rs);
 	}
 	
+	
+	/**
+	 * Fetch all approver details.
+	 *
+	 * @return the response entity
+	 */
+	@PostMapping("/approver/_fetch")
+	public ResponseEntity<?> fetchAllApproverDetails() {
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<OsbmApproverModel> osbmApproverList = masterService.fetchAllApproverDetails(); 
+			rs.setStatus("200");
+			rs.setMessage("Data submitted successfully");
+			rs.setData(osbmApproverList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the fetchAllOSBMfee " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+	}
+	
 	/**
 	 * Fetch all OSB mfee.
 	 *

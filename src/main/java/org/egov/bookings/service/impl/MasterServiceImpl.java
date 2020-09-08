@@ -180,6 +180,25 @@ public class MasterServiceImpl implements MasterService{
 		}
 		return bookingApprover1;
 	}
+	
+	/**
+	 * Fetch all approver details.
+	 *
+	 * @return the list
+	 */
+	@Override
+	public List<OsbmApproverModel> fetchAllApproverDetails() {
+		List<OsbmApproverModel> osbmApproverList = new ArrayList<>();
+		try {
+			osbmApproverList = osbmApproverRepository.findAll();
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the fetchAllApproverDetails " + e);
+			e.printStackTrace();
+		}
+		return osbmApproverList;
+	}
 
 	/**
 	 * Fetch all OSB mfee.
@@ -216,5 +235,5 @@ public class MasterServiceImpl implements MasterService{
 		}
 		return osujmFeeList;
 	}
-	
+
 }

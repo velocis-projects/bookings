@@ -39,6 +39,13 @@ public interface MasterService {
 	public List<BookingApprover> fetchAllApprover();
 	
 	/**
+	 * Fetch all approver details.
+	 *
+	 * @return the list
+	 */
+	public List<OsbmApproverModel> fetchAllApproverDetails();
+	
+	/**
 	 * Fetch all OSB mfee.
 	 *
 	 * @return the list
