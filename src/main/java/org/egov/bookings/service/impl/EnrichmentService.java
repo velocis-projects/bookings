@@ -473,11 +473,12 @@ public class EnrichmentService {
 		if (!errorMap.isEmpty())
 			throw new CustomException(errorMap);
 		bookingsModel.setBkApplicationNumber(itr.next());
-		bookingsRequest.getBookingsModel().getTimeslots().forEach(slots ->{
-			slots.setId(UUID.randomUUID().toString());
-			slots.setApplicationNumber(bookingsModel.getBkApplicationNumber());
-		});
-	
+		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getTimeslots())) {
+			bookingsRequest.getBookingsModel().getTimeslots().forEach(slots -> {
+				slots.setId(UUID.randomUUID().toString());
+				slots.setApplicationNumber(bookingsModel.getBkApplicationNumber());
+			});
+		}
 	}
 
 }

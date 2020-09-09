@@ -105,7 +105,6 @@ public class NotificationUtil {
 		String message = null, messageTemplate;
 		String ACTION_STATUS = bookingsModel.getBkAction() + "_" + bookingsModel.getBkApplicationStatus();
 		String applicationStatus = bookingsServiceImpl.prepareApplicationStatus(requestInfo, bookingsModel);
-		BigDecimal amountToBePaid = new BigDecimal(0);
 		switch (ACTION_STATUS) {
 		//OSBM,OSUJM,NLUJM
 		case ACTION_STATUS_INITIATED:
@@ -129,7 +128,6 @@ public class NotificationUtil {
 			break;
 			
 		case ACTION_STATUS_APPROVED:
-			amountToBePaid = getAmountToBePaid(requestInfo, bookingsModel);
 			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_APPROVED, localizationMessage);
 //			message = getApprovedMsg(bookingsModel,localizationMessage, messageTemplate);
 			message = getPaymentMsg(bookingsModel, messageTemplate);
@@ -145,7 +143,6 @@ public class NotificationUtil {
 			break;
 			
 		case ACTION_STATUS_PAIDAPPLY_PENDINGASSIGNMENTDRIVER:	
-			amountToBePaid = getAmountToBePaid(requestInfo, bookingsModel);
 			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_PENDINGASSIGNMENTDRIVER, localizationMessage);
 //			message = getApprovedMsg(bookingsModel,localizationMessage, messageTemplate);
 			message = getPendingAssignmentDriverMsg(bookingsModel, messageTemplate);
@@ -398,15 +395,6 @@ public class NotificationUtil {
 		return message;
 	}
 	
-	
-//	private String getApprovedAndPaymentPendingMsg(TradeLicense license, String message, String localizationMessage, BigDecimal amountToBePaid) {
-//		//message = message.replace("<2>", license.getTradeName());
-//		message = message.replace("<2>", getMessageTemplate(license.getBusinessService(), localizationMessage));
-//		message = message.replace("<3>", license.getApplicationNumber());
-//		message = message.replace("<4>", amountToBePaid.toString());
-//		return message;
-//	}
-	
 
 	/**
  * Creates customized message for rejected.
@@ -553,52 +541,6 @@ public class NotificationUtil {
 				}
 			).collect(Collectors.toList()), true);
 		}
-	}
-
-	/**
-	 * Fetches the amount to be paid from getBill API.
-	 *
-	 * @param requestInfo            The RequestInfo of the request
-	 * @param bookingsModel the bookings model
-	 * @return the amount to be paid
-	 */
-	private BigDecimal getAmountToBePaid(RequestInfo requestInfo, BookingsModel bookingsModel) {
-
-		LinkedHashMap responseMap = (LinkedHashMap) serviceRequestRepository.fetchResult(getBillUri(bookingsModel),
-				new RequestInfoWrapper(requestInfo));
-		String jsonString = new JSONObject(responseMap).toString();
-
-		BigDecimal amountToBePaid = null;
-		try {
-			Object obj = JsonPath.parse(jsonString).read(BILL_AMOUNT_JSONPATH);
-			amountToBePaid = new BigDecimal(obj.toString());
-		} catch (Exception e) {
-			throw new CustomException("PARSING ERROR",
-					"Failed to parse the response using jsonPath: " + BILL_AMOUNT_JSONPATH);
-		}
-		return amountToBePaid;
-	}
-
-	/**
-	 * Creates the uri for getBill by adding query params from the license.
-	 *
-	 * @param bookingsModel the bookings model
-	 * @return The uri for the getBill
-	 */
-	private StringBuilder getBillUri(BookingsModel bookingsModel) {
-		StringBuilder builder = new StringBuilder();
-
-
-		builder.append(config.getCalculatorHost());
-		builder.append(config.getGetBillEndpoint());
-		builder.append("?tenantId=");
-		builder.append(bookingsModel.getTenantId());
-		builder.append("&consumerCode=");
-		builder.append(bookingsModel.getBkApplicationNumber());
-		builder.append("&businessService=");
-		String businessService = bookingsModel.getBusinessService();
-		builder.append(businessService);
-		return builder;
 	}
 
 	/**

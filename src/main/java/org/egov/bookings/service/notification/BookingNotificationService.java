@@ -100,14 +100,6 @@ public class BookingNotificationService {
 							util.sendEMAIL(emailRequestsTL,true);
 					}
 				}
-//				if(null != config.getIsUserEventsNotificationEnabledForTL()) {
-//					if(config.getIsUserEventsNotificationEnabledForTL()) {
-//						EventRequest eventRequest = getEventsForBK(request);
-//						if(null != eventRequest)
-//							util.sendEventNotification(eventRequest);
-//					}
-//				}
-//				break;
 		}
     }
 

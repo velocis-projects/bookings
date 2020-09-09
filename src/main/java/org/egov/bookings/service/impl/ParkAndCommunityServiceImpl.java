@@ -4,11 +4,9 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -19,7 +17,6 @@ import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.AvailabilityResponse;
 import org.egov.bookings.contract.BookingsRequestKafka;
-import org.egov.bookings.contract.MdmsJsonFields;
 import org.egov.bookings.contract.ParkAndCommunitySearchCriteria;
 import org.egov.bookings.contract.ParkCommunityFeeMasterRequest;
 import org.egov.bookings.contract.ParkCommunityFeeMasterResponse;
@@ -143,7 +140,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		} else {
 			if (BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
 					&& BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService)) {
-				config.setParkAndCommercialLock(true);
+				config.setParkAndCommunityLock(true);
 			}
 			BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
 			bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
@@ -207,7 +204,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		try {
 			List<LocalDate> toBeBooked = enrichmentService.extractAllDatesBetweenTwoDates(bookingsRequest);
 			lock.lock();
-			if (config.isParkAndCommercialLock()) {
+			if (config.isParkAndCommunityLock()) {
 				Set<BookingsModel> bookingsModelSet = parkAndCommunityRepository.fetchBookedDatesOfParkAndCommunity(
 						bookingsRequest.getBookingsModel().getBkBookingVenue(), bookingsRequest.getBookingsModel().getBkBookingType(),
 						bookingsRequest.getBookingsModel().getBkSector(), date1, BookingsConstants.APPLY);
@@ -230,7 +227,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 
 		} catch (Exception e) {
 			lock.unlock();
-			config.setParkAndCommercialLock(true);
+			config.setParkAndCommunityLock(true);
 			throw new CustomException("OTHER_PAYMENT_IN_PROCESS", "Please try after few seconds");
 		}
 		return bookedDates;

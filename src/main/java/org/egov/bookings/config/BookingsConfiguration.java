@@ -21,8 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-@Import({TracerConfiguration.class})
+@Import({ TracerConfiguration.class })
 @Getter
 @Setter
 @AllArgsConstructor
@@ -31,286 +30,147 @@ import lombok.Setter;
 @Component
 public class BookingsConfiguration {
 
+	@Value("${app.timezone}")
+	private String timeZone;
 
-    @Value("${app.timezone}")
-    private String timeZone;
+	@PostConstruct
+	public void initialize() {
+		TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
+	}
 
-    @PostConstruct
-    public void initialize() {
-        TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
-    }
+	@Bean
+	@Autowired
+	public MappingJackson2HttpMessageConverter jacksonConverter(ObjectMapper objectMapper) {
+		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+		converter.setObjectMapper(objectMapper);
+		return converter;
+	}
 
-    @Bean
-    @Autowired
-    public MappingJackson2HttpMessageConverter jacksonConverter(ObjectMapper objectMapper) {
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setObjectMapper(objectMapper);
-        return converter;
-    }
+	// User Config
+	@Value("${egov.user.host}")
+	private String userHost;
 
-    // User Config
-    @Value("${egov.user.host}")
-    private String userHost;
+	@Value("${egov.user.search.path}")
+	private String userSearchEndpoint;
 
-    @Value("${egov.user.context.path}")
-    private String userContextPath;
+	// Idgen Config
+	@Value("${egov.idgen.host}")
+	private String idGenHost;
 
-    @Value("${egov.user.create.path}")
-    private String userCreateEndpoint;
+	@Value("${egov.idgen.path}")
+	private String idGenPath;
 
-    @Value("${egov.user.search.path}")
-    private String userSearchEndpoint;
+	@Value("${egov.idgen.bk.applicationNum.name}")
+	private String applicationNumberIdgenName;
 
-    @Value("${egov.user.update.path}")
-    private String userUpdateEndpoint;
+	@Value("${egov.idgen.bk.applicationNum.format}")
+	private String applicationNumberIdgenFormat;
 
-    @Value("${egov.user.username.prefix}")
-    private String usernamePrefix;
-
-
-    //Idgen Config
-    @Value("${egov.idgen.host}")
-    private String idGenHost;
-
-    @Value("${egov.idgen.path}")
-    private String idGenPath;
-
-    @Value("${egov.idgen.tl.applicationNum.name}")
-    private String applicationNumberIdgenName;
-
-    @Value("${egov.idgen.tl.applicationNum.format}")
-    private String applicationNumberIdgenFormat;
-
-    @Value("${egov.idgen.tl.licensenumber.name}")
-    private String licenseNumberIdgenName;
-
-    @Value("${egov.idgen.tl.licensenumber.format}")
-    private String licenseNumberIdgenFormat;
-    
-    @Value("${egov.demand.update.endpoint}")
+	@Value("${egov.demand.update.endpoint}")
 	private String demandUpdateEndPoint;
-    
 
-   
+	@Value("${kafka.topics.save.booking.sms.notification.service}")
+	private String saveBookingSMSTopic;
 
+	@Value("${kafka.topics.update.sms.notification.service}")
+	private String updateBookingSMSTopic;
 
-    //Persister Config
-    @Value("${persister.update.tradelicense.workflow.topic}")
-    private String updateWorkflowTopic;
+	@Value("${kafka.topics.save.nlujm.sms.notification.service}")
+	private String saveNLUJMBookingSMSTopic;
 
-    @Value("${persister.update.tradelicense.adhoc.topic}")
-    private String updateAdhocTopic;
-    
-    @Value("${kafka.topics.save.booking.sms.notification.service}")
-    private String saveBookingSMSTopic;
+	@Value("${kafka.topics.update.nlujm.sms.notification.service}")
+	private String updateNLUJMBookingSMSTopic;
 
-    @Value("${kafka.topics.update.sms.notification.service}")
-    private String updateBookingSMSTopic;
-    
-    @Value("${kafka.topics.save.nlujm.sms.notification.service}")
-    private String saveNLUJMBookingSMSTopic;
+	@Value("${kafka.topics.save.approver.service}")
+	private String saveApproverTopic;
 
-    @Value("${kafka.topics.update.nlujm.sms.notification.service}")
-    private String updateNLUJMBookingSMSTopic;
-    
-    @Value("${kafka.topics.save.approver.service}")
-    private String saveApproverTopic;
-    
-    @Value("${kafka.topics.update.approver.service}")
-    private String updateApproverTopic;
-    
+	@Value("${kafka.topics.update.approver.service}")
+	private String updateApproverTopic;
 
+	@Value("${kafka.topics.notification.sms}")
+	private String smsNotifTopic;
 
-    //Location Config
-    @Value("${egov.location.host}")
-    private String locationHost;
+	@Value("${notification.sms.enabled}")
+	private Boolean isSMSEnabled;
 
-    @Value("${egov.location.context.path}")
-    private String locationContextPath;
+	@Value("${notification.sms.enabled.forBK}")
+	private Boolean isBKSMSEnabled;
 
-    @Value("${egov.location.endpoint}")
-    private String locationEndpoint;
+	@Value("${kafka.topics.notification.email}")
+	private String emailNotifTopic;
 
-    @Value("${egov.location.hierarchyTypeCode}")
-    private String hierarchyTypeCode;
+	@Value("${notification.email.enabled.forBK}")
+	private Boolean isBKEMAILEnabled;
 
-    @Value("${egov.tl.default.limit}")
-    private Integer defaultLimit;
+	@Value("${egov.localization.host}")
+	private String localizationHost;
 
-    @Value("${egov.tl.default.offset}")
-    private Integer defaultOffset;
+	@Value("${egov.localization.context.path}")
+	private String localizationContextPath;
 
-    @Value("${egov.tl.max.limit}")
-    private Integer maxSearchLimit;
+	@Value("${egov.localization.search.endpoint}")
+	private String localizationSearchEndpoint;
 
+	@Value("${egov.localization.statelevel}")
+	private Boolean isLocalizationStateLevel;
 
+	@Value("${egov.mdms.host}")
+	private String mdmsHost;
 
-    // tradelicense Calculator
-    @Value("${egov.tl.calculator.host}")
-    private String calculatorHost;
+	@Value("${egov.mdms.search.endpoint}")
+	private String mdmsEndPoint;
 
-    @Value("${egov.tl.calculator.calculate.endpoint}")
-    private String calculateEndpoint;
+	@Value("${workflow.context.path}")
+	private String wfHost;
 
-    @Value("${egov.tl.calculator.getBill.endpoint}")
-    private String getBillEndpoint;
+	@Value("${workflow.transition.path}")
+	private String wfTransitionPath;
 
+	@Value("${workflow.businessservice.search.path}")
+	private String wfBusinessServiceSearchPath;
 
+	@Value("${is.external.workflow.enabled}")
+	private Boolean isExternalWorkFlowEnabled;
 
-    //Institutional key word
-    @Value("${egov.ownershipcategory.institutional}")
-    private String institutional;
+	@Value("${workflow.process.search.path}")
+	private String workflowProcessInstancePath;
 
-
-    @Value("${egov.receipt.businessservice}")
-    private String businessService;
-
-
-    //Property Service
-    @Value("${egov.property.service.host}")
-    private String propertyHost;
-
-    @Value("${egov.property.service.context.path}")
-    private String propertyContextPath;
-
-    @Value("${egov.property.endpoint}")
-    private String propertySearchEndpoint;
-
-
-    //SMS
-    @Value("${kafka.topics.notification.sms}")
-    private String smsNotifTopic;
-
-    @Value("${notification.sms.enabled}")
-    private Boolean isSMSEnabled;
-    
-    @Value("${notification.sms.enabled.forBK}")
-    private Boolean isBKSMSEnabled;
-
-    @Value("${notification.sms.enabled.forBPA}")
-    private Boolean isBPASMSEnabled;
-    
-
-    //EMAIL
-    @Value("${kafka.topics.notification.email}")
-    private String emailNotifTopic;
-
-    @Value("${notification.email.enabled.forBK}")
-    private Boolean isBKEMAILEnabled;
-    
-    
-    //Localization
-    @Value("${egov.localization.host}")
-    private String localizationHost;
-
-    @Value("${egov.localization.context.path}")
-    private String localizationContextPath;
-
-    @Value("${egov.localization.search.endpoint}")
-    private String localizationSearchEndpoint;
-
-    @Value("${egov.localization.statelevel}")
-    private Boolean isLocalizationStateLevel;
-
-
-
-    //MDMS
-    @Value("${egov.mdms.host}")
-    private String mdmsHost;
-
-    @Value("${egov.mdms.search.endpoint}")
-    private String mdmsEndPoint;
-
-
-    //Allowed Search Parameters
-    @Value("${citizen.allowed.search.params}")
-    private String allowedCitizenSearchParameters;
-
-    @Value("${employee.allowed.search.params}")
-    private String allowedEmployeeSearchParameters;
-
-
-
-    @Value("${egov.tl.previous.allowed}")
-    private Boolean isPreviousTLAllowed;
-
-    @Value("${egov.tl.min.period}")
-    private Long minPeriod;
-
-
-    // Workflow
-    @Value("${create.tl.workflow.name}")
-    private String businessServiceValue;
-
-    @Value("${workflow.context.path}")
-    private String wfHost;
-
-    @Value("${workflow.transition.path}")
-    private String wfTransitionPath;
-
-    @Value("${workflow.businessservice.search.path}")
-    private String wfBusinessServiceSearchPath;
-
-    @Value("${is.external.workflow.enabled}")
-    private Boolean isExternalWorkFlowEnabled;
-    
-    @Value("${workflow.process.search.path}")
-    private String workflowProcessInstancePath;
-    
-    
-
-    //USER EVENTS
+	// USER EVENTS
 	@Value("${egov.ui.app.host}")
 	private String uiAppHost;
-    
+
 	@Value("${egov.usr.events.create.topic}")
 	private String saveUserEventsTopic;
-		
-	@Value("${egov.usr.events.pay.link}")
-	private String payLink;
-	
+
 	@Value("${egov.usr.events.pay.code}")
 	private String payCode;
-	
-	@Value("${egov.user.event.notification.enabled}")
-	private Boolean isUserEventsNotificationEnabled;
-	
-	@Value("${egov.user.event.notification.enabledForTL}")
-	private Boolean isUserEventsNotificationEnabledForTL;
-
-    @Value("${egov.user.event.notification.enabledForBPA}")
-    private Boolean isUserEventsNotificationEnabledForBPA;
 
 	@Value("${egov.usr.events.pay.triggers}")
 	private String payTriggers;
-	
+
 	@Value("${egov.usr.events.ctl.pay.link}")
 	private String ctlPayLink;
-	
+
 	@Value("${egov.demand.create.endpoint}")
 	private String demandCreateEndpoint;
-	
-	
-	
-	
+
 	@Value("${egov.billingservice.host}")
 	private String billingHost;
-	
-	
+
 	@Value("${egov.demand.minimum.payable.amount}")
-    private BigDecimal minimumPayableAmount;
-	
-    @Value("${egov.demand.search.endpoint}")
-    private String demandSearchEndpoint;
-    
-    @Value("${egov.lock.jurisdiction.payment}")
-    private boolean jurisdictionLock;
-    
-    @Value("${egov.lock.commercial.payment}")
-    private boolean commercialLock;
-    
-    @Value("${egov.lock.park.and.commercial.payment}")
-    private boolean parkAndCommercialLock;
+	private BigDecimal minimumPayableAmount;
+
+	@Value("${egov.demand.search.endpoint}")
+	private String demandSearchEndpoint;
+
+	@Value("${egov.lock.jurisdiction.payment}")
+	private boolean jurisdictionLock;
+
+	@Value("${egov.lock.commercial.payment}")
+	private boolean commercialLock;
+
+	@Value("${egov.lock.park.and.community.payment}")
+	private boolean parkAndCommunityLock;
 
 	@Value("${kafka.topics.save.service}")
 	private String saveBookingTopic;
@@ -322,7 +182,6 @@ public class BookingsConfiguration {
 	private String updateBookingTopic;
 
 	@Value("${kafka.topics.update.nlujm.service}")
-	private String updateNewLocationTopic;    
-    
+	private String updateNewLocationTopic;
 
 }
