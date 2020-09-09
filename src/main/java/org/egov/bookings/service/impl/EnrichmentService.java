@@ -463,13 +463,7 @@ public class EnrichmentService {
 		ListIterator<String> itr = applicationNumbers.listIterator();
 
 		Map<String, String> errorMap = new HashMap<>();
-		/*
-		 * if (applicationNumbers.size() != bookingsRequest.getBookingsModel().size()) {
-		 * errorMap.put("IDGEN ERROR ",
-		 * "The number of LicenseNumber returned by idgen is not equal to number of TradeLicenses"
-		 * ); }
-		 */
-
+	
 		if (!errorMap.isEmpty())
 			throw new CustomException(errorMap);
 		bookingsModel.setBkApplicationNumber(itr.next());
