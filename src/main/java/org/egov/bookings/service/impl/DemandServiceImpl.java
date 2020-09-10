@@ -412,7 +412,7 @@ public class DemandServiceImpl implements DemandService {
 		 * roundOff taxHead so as to nullify the decimal eg: If the tax is 12.64 we will
 		 * add extra tax roundOff taxHead of 0.36 so that the total becomes 13
 		 */
-		if (decimalValue.compareTo(midVal) > 0)
+		if (decimalValue.compareTo(midVal) > 0 || decimalValue.compareTo(midVal) == 0)
 			roundOff = BigDecimal.ONE.subtract(decimalValue);
 
 		/*
