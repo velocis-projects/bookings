@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import org.egov.bookings.common.model.ResponseModel;
 import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.DocumentFields;
-import org.egov.bookings.contract.OsbmApproverRequest;
+import org.egov.bookings.contract.MasterRequest;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MasterController.
  */
@@ -36,10 +35,6 @@ public class MasterController {
 	/** The master service. */
 	@Autowired
 	private MasterService masterService;
-	
-	/** The bookings fields validator. */
-	@Autowired
-	private BookingsFieldsValidator bookingsFieldsValidator;
 	
 	/**
 	 * Gets the park community inventory details.
@@ -69,34 +64,215 @@ public class MasterController {
 	
 	
 	/**
-	 * Creates the osbm approver.
+	 * Creates the approver.
 	 *
-	 * @param osbmApproverRequest the osbm approver request
+	 * @param masterRequest the master request
 	 * @return the response entity
 	 */
-	@PostMapping("/approver/_create")
-	public ResponseEntity<?> createOsbmApprover(@RequestBody OsbmApproverRequest osbmApproverRequest) {
+	@PostMapping(value = "/approver/_create")
+	public ResponseEntity<?> createApprover(@RequestBody MasterRequest masterRequest) {
 		
-		if (BookingsFieldsValidator.isNullOrEmpty(osbmApproverRequest)) 
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
 		{
-			throw new IllegalArgumentException("Invalid osbmApproverRequest");
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getApproverList())) 
+		{
+			throw new IllegalArgumentException("Invalid Approver List");
 		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			bookingsFieldsValidator.validateOsbmApproverBody(osbmApproverRequest);
-			OsbmApproverModel osbmModel = masterService.createOsbmApprover(osbmApproverRequest);
+			List<OsbmApproverModel> approverModelList = masterService.createApprover(masterRequest);
 			rs.setStatus("200");
-			rs.setMessage("Data submitted in osbm table");
-			rs.setData(osbmModel);
+			rs.setMessage("Data submitted in approver table");
+			rs.setData(approverModelList);
 		}
 		catch(Exception e)
 		{
-			LOGGER.error("Exception occur in the createOsbmApprover " + e);
+			LOGGER.error("Exception occur in the createApprover " + e);
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok(rs);
 
 	}
+	
+	/**
+	 * Update approver.
+	 *
+	 * @param masterRequest the master request
+	 * @return the response entity
+	 */
+	@PostMapping("/approver/_update")
+	public ResponseEntity<?> updateApprover(@RequestBody MasterRequest masterRequest) {
+		
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getApproverList())) 
+		{
+			throw new IllegalArgumentException("Invalid Approver Model");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getApproverList().get(0).getId())) 
+		{
+			throw new IllegalArgumentException("Invalid Approver id");
+		}
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<OsbmApproverModel> approverModelList = masterService.updateApprover(masterRequest);
+			rs.setStatus("200");
+			rs.setMessage("Data updated in approver table");
+			rs.setData(approverModelList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the updateApprover " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+
+	}
+	
+	/**
+	 * Creates the OSBM fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the response entity
+	 */
+	@PostMapping("/osbm/fee/_create")
+	public ResponseEntity<?> createOSBMFee(@RequestBody MasterRequest masterRequest) {
+		
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsbmFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid OSBM Fee List");
+		}
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<OsbmFeeModel> osbmFeeModelList = masterService.createOSBMFee(masterRequest);
+			rs.setStatus("200");
+			rs.setMessage("Data submitted in OSBM Fee table");
+			rs.setData(osbmFeeModelList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the createOSBMFee " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+
+	}
+	
+	/**
+	 * Update OSBM fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the response entity
+	 */
+	@PostMapping("/osbm/fee/_update")
+	public ResponseEntity<?> updateOSBMFee(@RequestBody MasterRequest masterRequest) {
+		
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsbmFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid OSBM Fee List");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsbmFeeList().get(0).getId())) 
+		{
+			throw new IllegalArgumentException("Invalid OSBM Fee id");
+		}
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<OsbmFeeModel> osbmFeeModelList = masterService.updateOSBMFee(masterRequest);
+			rs.setStatus("200");
+			rs.setMessage("Data updated in OSBM Fee table");
+			rs.setData(osbmFeeModelList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the updateApprover " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+
+	}
+	
+	/**
+	 * Creates the OSUJM fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the response entity
+	 */
+	@PostMapping("/osujm/fee/_create")
+	public ResponseEntity<?> createOSUJMFee(@RequestBody MasterRequest masterRequest) {
+		
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsujmFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid OSUJM Fee List");
+		}
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<OsujmFeeModel> osujmFeeModelList = masterService.createOSUJMFee(masterRequest);
+			rs.setStatus("200");
+			rs.setMessage("Data submitted in OSUJM Fee table");
+			rs.setData(osujmFeeModelList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the createOSUJMFee " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+
+	}
+	
+	/**
+	 * Update OSUJM fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the response entity
+	 */
+	@PostMapping("/osujm/fee/_update")
+	public ResponseEntity<?> updateOSUJMFee(@RequestBody MasterRequest masterRequest) {
+		
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsujmFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid OSUJM Fee List");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsujmFeeList().get(0).getId())) 
+		{
+			throw new IllegalArgumentException("Invalid OSUJM Fee id");
+		}
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<OsujmFeeModel> osujmFeeModelList = masterService.updateOSUJMFee(masterRequest);
+			rs.setStatus("200");
+			rs.setMessage("Data updated in OSUJM Fee table");
+			rs.setData(osujmFeeModelList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the updateOSUJMFee " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+
+	}
+	
 	
 	
 	/**

@@ -7,7 +7,7 @@ import java.util.Map;
 import org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria;
 import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
 import org.egov.bookings.contract.JurisdictionAvailabilityRequest;
-import org.egov.bookings.contract.OsbmApproverRequest;
+import org.egov.bookings.contract.MasterRequest;
 import org.egov.bookings.contract.OsbmSearchCriteria;
 import org.egov.bookings.contract.ParkCommunityFeeMasterRequest;
 import org.egov.bookings.model.CommercialGrndAvailabilityModel;
@@ -169,17 +169,57 @@ public class BookingsFieldsValidator {
 	}
 
 	/**
-	 * Validate osbm approver body.
+	 * Validate approver body.
 	 *
-	 * @param osbmApproverRequest the osbm approver request
+	 * @param masterRequest the master request
 	 */
-	public void validateOsbmApproverBody(OsbmApproverRequest osbmApproverRequest) {
-		if (null == osbmApproverRequest) {
-			throw new IllegalArgumentException("Invalid Osbm Approver Request Body");
-		} else if (null == osbmApproverRequest.getSector() || osbmApproverRequest.getSector().equals("")) {
+	public void validateApproverBody(MasterRequest masterRequest) {
+		if (isNullOrEmpty(masterRequest) || isNullOrEmpty(masterRequest.getApproverList())) {
+			throw new IllegalArgumentException("Invalid Approver Request Body");
+		} else if (isNullOrEmpty(masterRequest.getApproverList().get(0).getSector())) {
 			throw new IllegalArgumentException("Invalid Sector");
-		} else if (null == osbmApproverRequest.getUuid() || osbmApproverRequest.getUuid().equals("")) {
-			throw new IllegalArgumentException("Invalid Uuid");
+		} else if (isNullOrEmpty(masterRequest.getApproverList().get(0).getId())) {
+			throw new IllegalArgumentException("Invalid Id");
+		}else if (isNullOrEmpty(masterRequest.getApproverList().get(0).getUuid())) {
+			throw new IllegalArgumentException("Invalid uuid");
+		}else if (isNullOrEmpty(masterRequest.getApproverList().get(0).getRoleCode())) {
+			throw new IllegalArgumentException("Invalid role code");
+		}
+	}
+	
+	/**
+	 * Validate OSBM fee body.
+	 *
+	 * @param masterRequest the master request
+	 */
+	public void validateOSBMFeeBody(MasterRequest masterRequest) {
+		if (isNullOrEmpty(masterRequest) || isNullOrEmpty(masterRequest.getOsbmFeeList())) {
+			throw new IllegalArgumentException("Invalid OSBM Fee Request Body");
+		} else if (isNullOrEmpty(masterRequest.getOsbmFeeList().get(0).getResidentialCommercial())) {
+			throw new IllegalArgumentException("Invalid Residential Commercial");
+		} else if (isNullOrEmpty(masterRequest.getOsbmFeeList().get(0).getConstructionType())) {
+			throw new IllegalArgumentException("Invalid Construction type");
+		}else if (isNullOrEmpty(masterRequest.getOsbmFeeList().get(0).getDurationInMonths())) {
+			throw new IllegalArgumentException("Invalid duration ");
+		}else if (isNullOrEmpty(masterRequest.getOsbmFeeList().get(0).getStorage())) {
+			throw new IllegalArgumentException("Invalid Storage");
+		}else if (isNullOrEmpty(masterRequest.getOsbmFeeList().get(0).getVillageCity())) {
+			throw new IllegalArgumentException("Invalid Village/City");
+		}
+	}
+	
+	/**
+	 * Validate OSUJM fee body.
+	 *
+	 * @param masterRequest the master request
+	 */
+	public void validateOSUJMFeeBody(MasterRequest masterRequest) {
+		if (isNullOrEmpty(masterRequest) || isNullOrEmpty(masterRequest.getOsujmFeeList())) {
+			throw new IllegalArgumentException("Invalid OSBM Fee Request Body");
+		} else if (isNullOrEmpty(masterRequest.getOsujmFeeList().get(0).getSector())) {
+			throw new IllegalArgumentException("Invalid sector");
+		} else if (isNullOrEmpty(masterRequest.getOsujmFeeList().get(0).getSlab())) {
+			throw new IllegalArgumentException("Invalid slab");
 		}
 	}
 

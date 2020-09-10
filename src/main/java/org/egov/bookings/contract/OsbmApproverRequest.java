@@ -1,6 +1,7 @@
 package org.egov.bookings.contract;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -24,14 +25,8 @@ public class OsbmApproverRequest implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -6489944586553914355L;
 
-	/** The sector. */
-	private String sector;
-
-	/** The uuid. */
-	private String uuid;
-	
-	/** The osbm approver model. */
+	/** The osbm approver list. */
 	@JsonProperty("OsbmApproverDetails")
 	@Valid
-	private OsbmApproverModel osbmApproverModel = null;
+	private List<OsbmApproverModel> osbmApproverList = null;
 }

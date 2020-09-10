@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OsbmFeeRepository extends JpaRepository<OsbmFeeModel, Long> {
+public interface OsbmFeeRepository extends JpaRepository<OsbmFeeModel, String> {
 
 	/**
 	 * Find by village city and residential commercial and storage and duration in months and construction type.

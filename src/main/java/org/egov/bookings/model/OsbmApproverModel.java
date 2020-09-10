@@ -4,8 +4,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -22,9 +20,8 @@ public class OsbmApproverModel {
 
 	/** The id. */
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "ID")
-	private Long id;
+	private String id;
 	
 	/** The sector. */
 	@Column(name = "SECTOR")
@@ -41,4 +38,8 @@ public class OsbmApproverModel {
 	/** The created date. */
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
+	
+	/** The created date. */
+	@Column(name = "ROLE_CODE")
+	private String roleCode;
 }

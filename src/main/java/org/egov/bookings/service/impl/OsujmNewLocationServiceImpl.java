@@ -230,19 +230,6 @@ public class OsujmNewLocationServiceImpl implements OsujmNewLocationService{
 					applicationNumberSet.addAll(commonRepository.findApplicationNumber(role.getCode()));
 				}
 			}
-			boolean flag = false;
-			if (!BookingsFieldsValidator.isNullOrEmpty(applicationNumber) && !BookingsFieldsValidator.isNullOrEmpty(applicationNumberSet)) {
-				if(applicationNumberSet.contains(applicationNumber))
-				{
-					flag = true;
-					applicationNumberSet.clear();
-					applicationNumberSet.add(applicationNumber);
-				}
-				if(!flag)
-				{
-					return booking;
-				}
-			}
 			for (Role role : roles) {
 				if(!BookingsConstants.CITIZEN.equals(role.getCode()) && !BookingsConstants.EMPLOYEE.equals(role.getCode()) ) {
 					

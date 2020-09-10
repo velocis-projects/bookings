@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * The Interface OsbmApproverRepository.
  */
 @Repository
-public interface OsbmApproverRepository extends JpaRepository<OsbmApproverModel, Long>{
+public interface OsbmApproverRepository extends JpaRepository<OsbmApproverModel, String>{
 
 	/**
 	 * Find by sector.

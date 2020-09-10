@@ -1,7 +1,9 @@
 package org.egov.bookings.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -9,7 +11,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.BookingApprover;
-import org.egov.bookings.contract.OsbmApproverRequest;
+import org.egov.bookings.contract.MasterRequest;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
@@ -71,6 +73,10 @@ public class MasterServiceImpl implements MasterService{
 	@Autowired
 	private BookingsConfiguration config;
 	
+	/** The bookings fields validator. */
+	@Autowired
+	private BookingsFieldsValidator bookingsFieldsValidator;
+	
 	/**
 	 * Gets the park community inventory details.
 	 *
@@ -94,33 +100,184 @@ public class MasterServiceImpl implements MasterService{
 	}
 	
 	/**
-	 * Creates the osbm approver.
+	 * Creates the approver.
 	 *
-	 * @param osbmApproverRequest the osbm approver request
-	 * @return the osbm approver model
-	 */
-	/* (non-Javadoc)
-	 * @see org.egov.bookings.service.OsbmApproverService#createOsbmApprover(org.egov.bookings.contract.OsbmApproverRequest)
+	 * @param masterRequest the master request
+	 * @return the list
 	 */
 	@Override
-	public OsbmApproverModel createOsbmApprover(OsbmApproverRequest osbmApproverRequest) {
-		if (BookingsFieldsValidator.isNullOrEmpty(osbmApproverRequest)) 
+	public List<OsbmApproverModel> createApprover(MasterRequest masterRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
 		{
 			throw new IllegalArgumentException("Invalid osbmApproverRequest");
 		}
-		OsbmApproverModel osbmApproverModel = new OsbmApproverModel();
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getApproverList())) 
+		{
+			throw new IllegalArgumentException("Invalid Approver List");
+		}
 		try {
-			osbmApproverModel.setSector(osbmApproverRequest.getSector());
-			osbmApproverModel.setUuid(osbmApproverRequest.getUuid());
-			osbmApproverRequest.setOsbmApproverModel(osbmApproverModel);
-			bookingsProducer.push(config.getSaveApproverTopic(), osbmApproverRequest);
+			masterRequest.getApproverList().get(0).setId(UUID.randomUUID().toString());
+			bookingsFieldsValidator.validateApproverBody(masterRequest);
+			masterRequest.getApproverList().get(0).setCreatedDate(new Date());
+			masterRequest.getApproverList().get(0).setLastModifiedDate(new Date());
+			bookingsProducer.push(config.getSaveApproverTopic(), masterRequest.getApproverList());
 //			osbmApproverModel = osbmApproverRepository.save(osbmApproverModel);
 		}catch (Exception e) {
-			throw new CustomException("APPROVER_SAVE_ERROR", "ERROR WHILE SAVING OSBM SECTOR");
+			throw new CustomException("APPROVER_SAVE_ERROR", "ERROR WHILE SAVING APPROVER DETAILS");
 		}
-		return osbmApproverRequest.getOsbmApproverModel();
+		return masterRequest.getApproverList();
 	}
 
+	
+	/**
+	 * Update approver.
+	 *
+	 * @param masterRequest the master request
+	 * @return the list
+	 */
+	@Override
+	public List<OsbmApproverModel> updateApprover(MasterRequest masterRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getApproverList())) 
+		{
+			throw new IllegalArgumentException("Invalid Approver List");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getApproverList().get(0).getId())) 
+		{
+			throw new IllegalArgumentException("Invalid Approver id");
+		}
+		try {
+			bookingsFieldsValidator.validateApproverBody(masterRequest);
+			masterRequest.getApproverList().get(0).setLastModifiedDate(new Date());
+			bookingsProducer.push(config.getUpdateApproverTopic(), masterRequest.getApproverList());
+		}catch (Exception e) {
+			throw new CustomException("APPROVER_UPDATE_ERROR", "ERROR WHILE UPDATE APPROVER DETAILS");
+		}
+		return masterRequest.getApproverList();
+	}
+	
+	
+	/**
+	 * Creates the OSBM fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the list
+	 */
+	@Override
+	public List<OsbmFeeModel> createOSBMFee(MasterRequest masterRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsbmFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid OSBM Fee List");
+		}
+		try {
+			masterRequest.getOsbmFeeList().get(0).setId(UUID.randomUUID().toString());
+			bookingsFieldsValidator.validateOSBMFeeBody(masterRequest);
+			masterRequest.getOsbmFeeList().get(0).setCreatedDate(new Date());
+			masterRequest.getOsbmFeeList().get(0).setLastModifiedDate(new Date());
+			bookingsProducer.push(config.getSaveOsbmFeeTopic(), masterRequest.getOsbmFeeList());
+		}catch (Exception e) {
+			throw new CustomException("OSBM_FEE_SAVE_ERROR", "ERROR WHILE SAVING OSBM FEE DETAILS");
+		}
+		return masterRequest.getOsbmFeeList();
+	}
+
+	
+	/**
+	 * Update OSBM fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the list
+	 */
+	@Override
+	public List<OsbmFeeModel> updateOSBMFee(MasterRequest masterRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsbmFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid OSBM Fee List");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsbmFeeList().get(0).getId())) 
+		{
+			throw new IllegalArgumentException("Invalid OSBM Fee id");
+		}
+		try {
+			bookingsFieldsValidator.validateOSBMFeeBody(masterRequest);
+			masterRequest.getOsbmFeeList().get(0).setLastModifiedDate(new Date());
+			bookingsProducer.push(config.getUpdateOsbmFeeTopic(), masterRequest.getOsbmFeeList());
+		}catch (Exception e) {
+			throw new CustomException("OSBM_FEE_UPDATE_ERROR", "ERROR WHILE UPDATE OSBM FEE DETAILS");
+		}
+		return masterRequest.getOsbmFeeList();
+	}
+	
+	/**
+	 * Creates the OSUJM fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the list
+	 */
+	@Override
+	public List<OsujmFeeModel> createOSUJMFee(MasterRequest masterRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsujmFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid OSUJM Fee List");
+		}
+		try {
+			masterRequest.getOsujmFeeList().get(0).setId(UUID.randomUUID().toString());
+			bookingsFieldsValidator.validateOSUJMFeeBody(masterRequest);
+			masterRequest.getOsujmFeeList().get(0).setCreatedDate(new Date());
+			masterRequest.getOsujmFeeList().get(0).setLastModifiedDate(new Date());
+			bookingsProducer.push(config.getSaveOsujmFeeTopic(), masterRequest.getOsujmFeeList());
+		}catch (Exception e) {
+			throw new CustomException("OSUJM_FEE_SAVE_ERROR", "ERROR WHILE SAVING OSUJM FEE DETAILS");
+		}
+		return masterRequest.getOsujmFeeList();
+	}
+
+	
+	/**
+	 * Update OSUJM fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the list
+	 */
+	@Override
+	public List<OsujmFeeModel> updateOSUJMFee(MasterRequest masterRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsujmFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid OSUJM Fee List");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsujmFeeList().get(0).getId())) 
+		{
+			throw new IllegalArgumentException("Invalid OSUJM Fee id");
+		}
+		try {
+			bookingsFieldsValidator.validateOSUJMFeeBody(masterRequest);
+			masterRequest.getOsujmFeeList().get(0).setLastModifiedDate(new Date());
+			bookingsProducer.push(config.getUpdateOsujmFeeTopic(), masterRequest.getOsujmFeeList());
+		}catch (Exception e) {
+			throw new CustomException("OSUJM_FEE_UPDATE_ERROR", "ERROR WHILE UPDATE OSUJM FEE DETAILS");
+		}
+		return masterRequest.getOsujmFeeList();
+	}
+	
 	/**
 	 * Fetch all approver.
 	 *
