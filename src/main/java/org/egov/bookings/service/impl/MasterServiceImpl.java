@@ -120,7 +120,7 @@ public class MasterServiceImpl implements MasterService{
 			bookingsFieldsValidator.validateApproverBody(masterRequest);
 			masterRequest.getApproverList().get(0).setCreatedDate(new Date());
 			masterRequest.getApproverList().get(0).setLastModifiedDate(new Date());
-			bookingsProducer.push(config.getSaveApproverTopic(), masterRequest.getApproverList());
+			bookingsProducer.push(config.getSaveApproverTopic(), masterRequest);
 //			osbmApproverModel = osbmApproverRepository.save(osbmApproverModel);
 		}catch (Exception e) {
 			throw new CustomException("APPROVER_SAVE_ERROR", "ERROR WHILE SAVING APPROVER DETAILS");

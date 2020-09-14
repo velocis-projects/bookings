@@ -16,12 +16,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MasterRequest implements Serializable {
+public class MasterRequest {
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7816338338999208980L;
+	//private static final long serialVersionUID = 7816338338999208980L;
 	
 	/** The approver list. */
 	@JsonProperty("ApproverDetails")

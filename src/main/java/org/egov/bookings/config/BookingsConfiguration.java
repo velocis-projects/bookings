@@ -195,5 +195,7 @@ public class BookingsConfiguration {
 
 	@Value("${kafka.topics.update.nlujm.service}")
 	private String updateNewLocationTopic;
-
+	
+	@Value("${egov.services.billing_service.search}")
+	private String billingServiceSearch;
 }
