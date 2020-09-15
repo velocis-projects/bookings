@@ -222,6 +222,25 @@ public class BookingsFieldsValidator {
 			throw new IllegalArgumentException("Invalid slab");
 		}
 	}
+	
+	/**
+	 * Validate GFCP fee body.
+	 *
+	 * @param masterRequest the master request
+	 */
+	public void validateGFCPFeeBody(MasterRequest masterRequest) {
+		if (isNullOrEmpty(masterRequest) || isNullOrEmpty(masterRequest.getGfcpFeeList())) {
+			throw new IllegalArgumentException("Invalid GFCP Fee Request Body");
+		} else if (isNullOrEmpty(masterRequest.getGfcpFeeList().get(0).getLocality())) {
+			throw new IllegalArgumentException("Invalid Locality");
+		} else if (isNullOrEmpty(masterRequest.getGfcpFeeList().get(0).getCategory())) {
+			throw new IllegalArgumentException("Invalid Category");
+		}else if (isNullOrEmpty(masterRequest.getGfcpFeeList().get(0).getRatePerDay())) {
+			throw new IllegalArgumentException("Invalid Rate per day");
+		}else if (isNullOrEmpty(masterRequest.getGfcpFeeList().get(0).getBookingVenue())) {
+			throw new IllegalArgumentException("Invalid Booking venue");
+		}
+	}
 
 	/**
 	 * Validate new location request.

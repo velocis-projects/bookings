@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -16,6 +17,8 @@ import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.MasterRequest;
+import org.egov.bookings.contract.MdmsJsonFields;
+import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
@@ -28,13 +31,17 @@ import org.egov.bookings.repository.OsujmFeeRepository;
 import org.egov.bookings.repository.ParkCommunityInventoryRepsitory;
 import org.egov.bookings.service.MasterService;
 import org.egov.bookings.utils.BookingsConstants;
+import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.validator.BookingsFieldsValidator;
+import org.egov.mdms.model.MdmsResponse;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.minidev.json.JSONArray;
 
 /**
  * The Class MasterServiceImpl.
@@ -81,6 +88,10 @@ public class MasterServiceImpl implements MasterService{
 	/** The bookings fields validator. */
 	@Autowired
 	private BookingsFieldsValidator bookingsFieldsValidator;
+	
+	/** The bookings utils. */
+	@Autowired
+	private BookingsUtils bookingsUtils;
 	
 	/**
 	 * Gets the park community inventory details.
@@ -289,6 +300,66 @@ public class MasterServiceImpl implements MasterService{
 	}
 	
 	/**
+	 * Creates the GFCP fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the list
+	 */
+	@Override
+	public List<CommonMasterFields> createGFCPFee(MasterRequest masterRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getGfcpFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid GFCP Fee List");
+		}
+		try {
+			masterRequest.getGfcpFeeList().get(0).setId(UUID.randomUUID().toString());
+			bookingsFieldsValidator.validateGFCPFeeBody(masterRequest);
+			DateFormat formatter = getSimpleDateFormat();
+			masterRequest.getGfcpFeeList().get(0).setCreatedDate(formatter.format(new Date()));
+			masterRequest.getGfcpFeeList().get(0).setLastModifiedDate(formatter.format(new Date()));
+			bookingsProducer.push(config.getSaveGfcpFeeTopic(), masterRequest);
+		}catch (Exception e) {
+			throw new CustomException("GFCP_FEE_SAVE_ERROR", "ERROR WHILE SAVING GFCP FEE DETAILS");
+		}
+		return masterRequest.getGfcpFeeList();
+	}
+
+	/**
+	 * Update GFCP fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the list
+	 */
+	@Override
+	public List<CommonMasterFields> updateGFCPFee(MasterRequest masterRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getGfcpFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid GFCP Fee List");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getGfcpFeeList().get(0).getId())) 
+		{
+			throw new IllegalArgumentException("Invalid GFCP Fee id");
+		}
+		try {
+			bookingsFieldsValidator.validateGFCPFeeBody(masterRequest);
+			DateFormat formatter = getSimpleDateFormat();
+			masterRequest.getGfcpFeeList().get(0).setLastModifiedDate(formatter.format(new Date()));
+			bookingsProducer.push(config.getUpdateGfcpFeeTopic(), masterRequest);
+		}catch (Exception e) {
+			throw new CustomException("GFCP_FEE_UPDATE_ERROR", "ERROR WHILE UPDATE GFCP FEE DETAILS");
+		}
+		return masterRequest.getGfcpFeeList();
+	}
+	
+	/**
 	 * Gets the simple date format.
 	 *
 	 * @return the simple date format
@@ -366,16 +437,16 @@ public class MasterServiceImpl implements MasterService{
 	 */
 	@Override
 	public List<OsbmApproverModel> fetchAllApproverDetails() {
-		List<OsbmApproverModel> osbmApproverList = new ArrayList<>();
+		List<OsbmApproverModel> approverList = new ArrayList<>();
 		try {
-			osbmApproverList = osbmApproverRepository.findAll();
+			approverList = osbmApproverRepository.findAll();
 		}
 		catch(Exception e)
 		{
 			LOGGER.error("Exception occur in the fetchAllApproverDetails " + e);
 			e.printStackTrace();
 		}
-		return osbmApproverList;
+		return approverList;
 	}
 
 	/**
@@ -412,6 +483,61 @@ public class MasterServiceImpl implements MasterService{
 			e.printStackTrace();
 		}
 		return osujmFeeList;
+	}
+
+	/**
+	 * Gets the roles.
+	 *
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
+	 * @return the roles
+	 */
+	@Override
+	public List<MdmsJsonFields> getRoles(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getUuid())) 
+		{
+			throw new IllegalArgumentException("Invalid uuid");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getRequestInfo())) 
+		{
+			throw new IllegalArgumentException("Invalid requestInfo");
+		}
+		List<String> roleList = new ArrayList<>();
+		List<MdmsJsonFields> mdmsRoleList = new ArrayList<>();
+		try {
+			roleList = commonRepository.findRolesByUuid(searchCriteriaFieldsDTO.getUuid());
+			if (!BookingsFieldsValidator.isNullOrEmpty(roleList)) 
+			{
+				JSONArray mdmsArrayList = null;
+				Object mdmsData = bookingsUtils.getMdMsSearchRequest(searchCriteriaFieldsDTO.getRequestInfo(), BookingsConstants.MDMS_MODULE_NAME, BookingsConstants.MDMS_FILE_NAME);
+				String jsonString = objectMapper.writeValueAsString(mdmsData);
+				MdmsResponse mdmsResponse = objectMapper.readValue(jsonString, MdmsResponse.class);
+				Map<String, Map<String, JSONArray>> mdmsResMap = mdmsResponse.getMdmsRes();
+				Map<String, JSONArray> mdmsRes = mdmsResMap.get(BookingsConstants.MDMS_MODULE_NAME);
+				mdmsArrayList = mdmsRes.get(BookingsConstants.MDMS_FILE_NAME);
+				for (int i = 0; i < mdmsArrayList.size(); i++) 
+				{
+					jsonString = objectMapper.writeValueAsString(mdmsArrayList.get(i));
+					MdmsJsonFields mdmsJsonFields = objectMapper.readValue(jsonString, MdmsJsonFields.class);
+					for (String roleCode : roleList) {
+						if( roleCode.equals(mdmsJsonFields.getCode())) {
+							mdmsRoleList.add(mdmsJsonFields);
+						}
+					}
+					if(roleList.size() == mdmsRoleList.size()){
+						break;
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+			LOGGER.error("Exception occur in the fetchAllOSUJMfee " + e);
+			e.printStackTrace();
+		}
+		return mdmsRoleList;
 	}
 
 }

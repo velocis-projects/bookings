@@ -677,9 +677,15 @@ public class BookingsConstants {
     public static final String BK_WF_PACC = "bk.en.counter.update";
     
     /** The Constant DATE_FORMAT. */
-    public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     
     /** The Constant TIME_ZONE. */
     public static final String TIME_ZONE = "Asia/Kolkata";
+    
+    /** The Constant MDMS_MODULE_NAME. */
+    public static final String MDMS_MODULE_NAME = "ACCESSCONTROL-ROLES";
+    
+    /** The Constant MDMS_FILE_NAME. */
+    public static final String MDMS_FILE_NAME = "roles";
     
 }

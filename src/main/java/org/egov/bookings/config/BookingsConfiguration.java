@@ -98,6 +98,12 @@ public class BookingsConfiguration {
 
 	@Value("${kafka.topics.update.osujm.fee.service}")
 	private String updateOsujmFeeTopic;
+	
+	@Value("${kafka.topics.save.gfcp.fee.service}")
+	private String saveGfcpFeeTopic;
+
+	@Value("${kafka.topics.update.gfcp.fee.service}")
+	private String updateGfcpFeeTopic;
 
 	@Value("${kafka.topics.notification.sms}")
 	private String smsNotifTopic;

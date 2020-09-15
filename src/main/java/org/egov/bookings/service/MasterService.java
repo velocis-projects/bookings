@@ -5,6 +5,8 @@ import java.util.List;
 import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.MasterRequest;
+import org.egov.bookings.contract.MdmsJsonFields;
+import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
@@ -74,6 +76,22 @@ public interface MasterService {
 	public List<CommonMasterFields> updateOSUJMFee(MasterRequest masterRequest);
 	
 	/**
+	 * Creates the GFCP fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the list
+	 */
+	public List<CommonMasterFields> createGFCPFee(MasterRequest masterRequest);
+	
+	/**
+	 * Update GFCP fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the list
+	 */
+	public List<CommonMasterFields> updateGFCPFee(MasterRequest masterRequest);
+	
+	/**
 	 * Fetch all approver.
 	 *
 	 * @return the list
@@ -100,5 +118,13 @@ public interface MasterService {
 	 * @return the list
 	 */
 	public List<OsujmFeeModel> fetchAllOSUJMfee();
+	
+	/**
+	 * Gets the roles.
+	 *
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
+	 * @return the roles
+	 */
+	public List<MdmsJsonFields> getRoles(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO);
 
 }

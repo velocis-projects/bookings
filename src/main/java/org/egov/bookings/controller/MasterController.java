@@ -10,6 +10,8 @@ import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.DocumentFields;
 import org.egov.bookings.contract.MasterRequest;
+import org.egov.bookings.contract.MdmsJsonFields;
+import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
@@ -274,7 +276,69 @@ public class MasterController {
 
 	}
 	
+	@PostMapping("/gfcp/fee/_create")
+	public ResponseEntity<?> createGFCPFee(@RequestBody MasterRequest masterRequest) {
+		
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getGfcpFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid GFCP Fee List");
+		}
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<CommonMasterFields> gfcpFeeModelList = masterService.createGFCPFee(masterRequest);
+			rs.setStatus("200");
+			rs.setMessage("Data submitted in GFCP Fee table");
+			rs.setData(gfcpFeeModelList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the createGFCPFee " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+
+	}
 	
+	/**
+	 * Update OSUJM fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the response entity
+	 */
+	@PostMapping("/gfcp/fee/_update")
+	public ResponseEntity<?> updateGFCPFee(@RequestBody MasterRequest masterRequest) {
+		
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsujmFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid OSUJM Fee List");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsujmFeeList().get(0).getId())) 
+		{
+			throw new IllegalArgumentException("Invalid OSUJM Fee id");
+		}
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<CommonMasterFields> gfcpFeeModelList = masterService.updateGFCPFee(masterRequest);
+			rs.setStatus("200");
+			rs.setMessage("Data updated in GFCP Fee table");
+			rs.setData(gfcpFeeModelList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the updateGFCPFee " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+
+	}
 	
 	/**
 	 * Fetch all approver.
@@ -287,7 +351,7 @@ public class MasterController {
 		try {
 			List<BookingApprover> bookingApproverList = masterService.fetchAllApprover();
 			rs.setStatus("200");
-			rs.setMessage("Data submitted successfully");
+			rs.setMessage("Success");
 			rs.setData(bookingApproverList);
 		}
 		catch(Exception e)
@@ -308,10 +372,10 @@ public class MasterController {
 	public ResponseEntity<?> fetchAllApproverDetails() {
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsbmApproverModel> osbmApproverList = masterService.fetchAllApproverDetails(); 
+			List<OsbmApproverModel> approverList = masterService.fetchAllApproverDetails(); 
 			rs.setStatus("200");
-			rs.setMessage("Data submitted successfully");
-			rs.setData(osbmApproverList);
+			rs.setMessage("Success");
+			rs.setData(approverList);
 		}
 		catch(Exception e)
 		{
@@ -332,7 +396,7 @@ public class MasterController {
 		try {
 			List<OsbmFeeModel> osbmFeeList = masterService.fetchAllOSBMfee(); 
 			rs.setStatus("200");
-			rs.setMessage("Data submitted successfully");
+			rs.setMessage("Success");
 			rs.setData(osbmFeeList);
 		}
 		catch(Exception e)
@@ -354,7 +418,7 @@ public class MasterController {
 		try {
 			List<OsujmFeeModel> osbmFeeList = masterService.fetchAllOSUJMfee(); 
 			rs.setStatus("200");
-			rs.setMessage("Data submitted successfully");
+			rs.setMessage("Success");
 			rs.setData(osbmFeeList);
 		}
 		catch(Exception e)
@@ -365,4 +429,32 @@ public class MasterController {
 		return ResponseEntity.ok(rs);
 	}
 	
+	@PostMapping("roles/_search")
+	public ResponseEntity<?> getRoles(@RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getUuid())) 
+		{
+			throw new IllegalArgumentException("Invalid uuid");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getRequestInfo())) 
+		{
+			throw new IllegalArgumentException("Invalid requestInfo");
+		}
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<MdmsJsonFields> roleList = masterService.getRoles(searchCriteriaFieldsDTO); 
+			rs.setStatus("200");
+			rs.setMessage("Success");
+			rs.setData(roleList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the getRoles " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+	}
 }
