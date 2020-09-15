@@ -380,6 +380,9 @@ public class EnrichmentService {
 			bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
 			bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
 			bookingsModel.setBkRemarks(bookingsRequest.getBookingsModel().getBkRemarks());
+			if(!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
+				bookingsModel.setBkPaymentStatus(bookingsRequest.getBookingsModel().getBkPaymentStatus());
+			}
 		} catch (Exception e) {
 			throw new CustomException("PACC UPDATE ERROR", "ERROR WHILE UPDATING PACC DETAILS ");
 		}
@@ -472,6 +475,20 @@ public class EnrichmentService {
 				slots.setId(UUID.randomUUID().toString());
 				slots.setApplicationNumber(bookingsModel.getBkApplicationNumber());
 			});
+		}
+	}
+
+
+
+	public void enrichPaccPaymentDetails(BookingsRequest bookingsRequest) {
+		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
+		if (BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
+				&& BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService)) {
+			config.setParkAndCommunityLock(true);
+			if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
+				bookingsRequest.getBookingsModel()
+						.setBkPaymentStatus(bookingsRequest.getBookingsModel().getBkPaymentStatus());
+			}
 		}
 	}
 

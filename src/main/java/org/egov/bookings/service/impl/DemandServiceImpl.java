@@ -662,7 +662,7 @@ public class DemandServiceImpl implements DemandService {
 		for (TaxHeadEstimate taxHeadEstimate : taxHeadEstimate1) {
 			if (!taxHeadToDemandDetail.containsKey(taxHeadEstimate.getTaxHeadCode()))
 				newDemandDetails.add(DemandDetail.builder().taxAmount(taxHeadEstimate.getEstimateAmount())
-						.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).tenantId("ch")
+						.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).tenantId(demandDetails.get(0).getTenantId())
 						.collectionAmount(BigDecimal.ZERO).build());
 			else {
 				demandDetailList = taxHeadToDemandDetail.get(taxHeadEstimate.getTaxHeadCode());
@@ -671,7 +671,7 @@ public class DemandServiceImpl implements DemandService {
 				diffInTaxAmount = taxHeadEstimate.getEstimateAmount().subtract(total);
 				if (diffInTaxAmount.compareTo(BigDecimal.ZERO) != 0) {
 					newDemandDetails.add(DemandDetail.builder().taxAmount(diffInTaxAmount)
-							.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).tenantId("ch")
+							.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).tenantId(demandDetails.get(0).getTenantId())
 							.collectionAmount(BigDecimal.ZERO).build());
 				}
 			}

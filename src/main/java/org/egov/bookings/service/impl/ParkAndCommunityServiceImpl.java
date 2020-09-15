@@ -128,7 +128,6 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		if (config.getIsExternalWorkFlowEnabled())
 			workflowIntegrator.callWorkFlow(bookingsRequest);
 
-		// bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
 		BookingsModel bookingsModel = null;
 		if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
 				&& BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService)) {
@@ -138,10 +137,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 			bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
 			//bookingsModel = parkAndCommunityRepository.save(bookingsModel);
 		} else {
-			if (BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
-					&& BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService)) {
-				config.setParkAndCommunityLock(true);
-			}
+			enrichmentService.enrichPaccPaymentDetails(bookingsRequest);
 			BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
 			bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
 			//bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());

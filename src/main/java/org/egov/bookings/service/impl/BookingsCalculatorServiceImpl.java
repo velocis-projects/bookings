@@ -226,12 +226,12 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(), finalAmount,
 							taxHeadEstimate.getCategory()));
 				}
-				/*if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
+				if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
 							finalAmount.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge())).divide(new BigDecimal(100)))),
 							taxHeadEstimate.getCategory()));
-				}*/
-				if (taxHeadEstimate.getCode().equals(BookingsCalculatorConstants.PACC_CGST)) {
+				}
+				/*if (taxHeadEstimate.getCode().equals(BookingsCalculatorConstants.PACC_CGST)) {
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
 							finalAmount.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCgstRate())).divide(new BigDecimal(100)))),
 							taxHeadEstimate.getCategory()));
@@ -240,7 +240,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
 							finalAmount.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getUtgstRate())).divide(new BigDecimal(100)))),
 							taxHeadEstimate.getCategory()));
-				}
+				}*/
 			}
 			break;
 			

@@ -21,7 +21,7 @@ public class CommercialGroundFeeModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "ID")
-	private Long id;
+	private String id;
 	
 	@Column(name = "LOCALITY")
 	private String locality;
