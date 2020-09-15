@@ -1,8 +1,11 @@
 package org.egov.bookings.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -11,6 +14,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.BookingApprover;
+import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.MasterRequest;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
@@ -23,6 +27,7 @@ import org.egov.bookings.repository.OsbmFeeRepository;
 import org.egov.bookings.repository.OsujmFeeRepository;
 import org.egov.bookings.repository.ParkCommunityInventoryRepsitory;
 import org.egov.bookings.service.MasterService;
+import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,7 +111,7 @@ public class MasterServiceImpl implements MasterService{
 	 * @return the list
 	 */
 	@Override
-	public List<OsbmApproverModel> createApprover(MasterRequest masterRequest) {
+	public List<CommonMasterFields> createApprover(MasterRequest masterRequest) {
 		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
 		{
 			throw new IllegalArgumentException("Invalid osbmApproverRequest");
@@ -118,10 +123,10 @@ public class MasterServiceImpl implements MasterService{
 		try {
 			masterRequest.getApproverList().get(0).setId(UUID.randomUUID().toString());
 			bookingsFieldsValidator.validateApproverBody(masterRequest);
-			masterRequest.getApproverList().get(0).setCreatedDate(new Date());
-			masterRequest.getApproverList().get(0).setLastModifiedDate(new Date());
-			bookingsProducer.push(config.getSaveApproverTopic(), masterRequest.getApproverList());
-//			osbmApproverModel = osbmApproverRepository.save(osbmApproverModel);
+			DateFormat formatter = getSimpleDateFormat();
+			masterRequest.getApproverList().get(0).setCreatedDate(formatter.format(new Date()));
+			masterRequest.getApproverList().get(0).setLastModifiedDate(formatter.format(new Date()));
+			bookingsProducer.push(config.getSaveApproverTopic(), masterRequest);
 		}catch (Exception e) {
 			throw new CustomException("APPROVER_SAVE_ERROR", "ERROR WHILE SAVING APPROVER DETAILS");
 		}
@@ -136,7 +141,7 @@ public class MasterServiceImpl implements MasterService{
 	 * @return the list
 	 */
 	@Override
-	public List<OsbmApproverModel> updateApprover(MasterRequest masterRequest) {
+	public List<CommonMasterFields> updateApprover(MasterRequest masterRequest) {
 		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
 		{
 			throw new IllegalArgumentException("Invalid masterRequest");
@@ -151,8 +156,9 @@ public class MasterServiceImpl implements MasterService{
 		}
 		try {
 			bookingsFieldsValidator.validateApproverBody(masterRequest);
-			masterRequest.getApproverList().get(0).setLastModifiedDate(new Date());
-			bookingsProducer.push(config.getUpdateApproverTopic(), masterRequest.getApproverList());
+			DateFormat formatter = getSimpleDateFormat();
+			masterRequest.getApproverList().get(0).setLastModifiedDate(formatter.format(new Date()));
+			bookingsProducer.push(config.getUpdateApproverTopic(), masterRequest);
 		}catch (Exception e) {
 			throw new CustomException("APPROVER_UPDATE_ERROR", "ERROR WHILE UPDATE APPROVER DETAILS");
 		}
@@ -167,7 +173,7 @@ public class MasterServiceImpl implements MasterService{
 	 * @return the list
 	 */
 	@Override
-	public List<OsbmFeeModel> createOSBMFee(MasterRequest masterRequest) {
+	public List<CommonMasterFields> createOSBMFee(MasterRequest masterRequest) {
 		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
 		{
 			throw new IllegalArgumentException("Invalid masterRequest");
@@ -179,9 +185,10 @@ public class MasterServiceImpl implements MasterService{
 		try {
 			masterRequest.getOsbmFeeList().get(0).setId(UUID.randomUUID().toString());
 			bookingsFieldsValidator.validateOSBMFeeBody(masterRequest);
-			masterRequest.getOsbmFeeList().get(0).setCreatedDate(new Date());
-			masterRequest.getOsbmFeeList().get(0).setLastModifiedDate(new Date());
-			bookingsProducer.push(config.getSaveOsbmFeeTopic(), masterRequest.getOsbmFeeList());
+			DateFormat formatter = getSimpleDateFormat();
+			masterRequest.getOsbmFeeList().get(0).setCreatedDate(formatter.format(new Date()));
+			masterRequest.getOsbmFeeList().get(0).setLastModifiedDate(formatter.format(new Date()));
+			bookingsProducer.push(config.getSaveOsbmFeeTopic(), masterRequest);
 		}catch (Exception e) {
 			throw new CustomException("OSBM_FEE_SAVE_ERROR", "ERROR WHILE SAVING OSBM FEE DETAILS");
 		}
@@ -196,7 +203,7 @@ public class MasterServiceImpl implements MasterService{
 	 * @return the list
 	 */
 	@Override
-	public List<OsbmFeeModel> updateOSBMFee(MasterRequest masterRequest) {
+	public List<CommonMasterFields> updateOSBMFee(MasterRequest masterRequest) {
 		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
 		{
 			throw new IllegalArgumentException("Invalid masterRequest");
@@ -211,8 +218,9 @@ public class MasterServiceImpl implements MasterService{
 		}
 		try {
 			bookingsFieldsValidator.validateOSBMFeeBody(masterRequest);
-			masterRequest.getOsbmFeeList().get(0).setLastModifiedDate(new Date());
-			bookingsProducer.push(config.getUpdateOsbmFeeTopic(), masterRequest.getOsbmFeeList());
+			DateFormat formatter = getSimpleDateFormat();
+			masterRequest.getOsbmFeeList().get(0).setLastModifiedDate(formatter.format(new Date()));
+			bookingsProducer.push(config.getUpdateOsbmFeeTopic(), masterRequest);
 		}catch (Exception e) {
 			throw new CustomException("OSBM_FEE_UPDATE_ERROR", "ERROR WHILE UPDATE OSBM FEE DETAILS");
 		}
@@ -226,7 +234,7 @@ public class MasterServiceImpl implements MasterService{
 	 * @return the list
 	 */
 	@Override
-	public List<OsujmFeeModel> createOSUJMFee(MasterRequest masterRequest) {
+	public List<CommonMasterFields> createOSUJMFee(MasterRequest masterRequest) {
 		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
 		{
 			throw new IllegalArgumentException("Invalid masterRequest");
@@ -238,9 +246,10 @@ public class MasterServiceImpl implements MasterService{
 		try {
 			masterRequest.getOsujmFeeList().get(0).setId(UUID.randomUUID().toString());
 			bookingsFieldsValidator.validateOSUJMFeeBody(masterRequest);
-			masterRequest.getOsujmFeeList().get(0).setCreatedDate(new Date());
-			masterRequest.getOsujmFeeList().get(0).setLastModifiedDate(new Date());
-			bookingsProducer.push(config.getSaveOsujmFeeTopic(), masterRequest.getOsujmFeeList());
+			DateFormat formatter = getSimpleDateFormat();
+			masterRequest.getOsujmFeeList().get(0).setCreatedDate(formatter.format(new Date()));
+			masterRequest.getOsujmFeeList().get(0).setLastModifiedDate(formatter.format(new Date()));
+			bookingsProducer.push(config.getSaveOsujmFeeTopic(), masterRequest);
 		}catch (Exception e) {
 			throw new CustomException("OSUJM_FEE_SAVE_ERROR", "ERROR WHILE SAVING OSUJM FEE DETAILS");
 		}
@@ -255,7 +264,7 @@ public class MasterServiceImpl implements MasterService{
 	 * @return the list
 	 */
 	@Override
-	public List<OsujmFeeModel> updateOSUJMFee(MasterRequest masterRequest) {
+	public List<CommonMasterFields> updateOSUJMFee(MasterRequest masterRequest) {
 		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
 		{
 			throw new IllegalArgumentException("Invalid masterRequest");
@@ -270,12 +279,24 @@ public class MasterServiceImpl implements MasterService{
 		}
 		try {
 			bookingsFieldsValidator.validateOSUJMFeeBody(masterRequest);
-			masterRequest.getOsujmFeeList().get(0).setLastModifiedDate(new Date());
-			bookingsProducer.push(config.getUpdateOsujmFeeTopic(), masterRequest.getOsujmFeeList());
+			DateFormat formatter = getSimpleDateFormat();
+			masterRequest.getOsujmFeeList().get(0).setLastModifiedDate(formatter.format(new Date()));
+			bookingsProducer.push(config.getUpdateOsujmFeeTopic(), masterRequest);
 		}catch (Exception e) {
 			throw new CustomException("OSUJM_FEE_UPDATE_ERROR", "ERROR WHILE UPDATE OSUJM FEE DETAILS");
 		}
 		return masterRequest.getOsujmFeeList();
+	}
+	
+	/**
+	 * Gets the simple date format.
+	 *
+	 * @return the simple date format
+	 */
+	private DateFormat getSimpleDateFormat() {
+		DateFormat formatter = new SimpleDateFormat(BookingsConstants.DATE_FORMAT);
+		formatter.setTimeZone(TimeZone.getTimeZone(BookingsConstants.TIME_ZONE));
+		return formatter;
 	}
 	
 	/**

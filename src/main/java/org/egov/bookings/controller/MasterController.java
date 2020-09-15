@@ -7,6 +7,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.common.model.ResponseModel;
 import org.egov.bookings.contract.BookingApprover;
+import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.DocumentFields;
 import org.egov.bookings.contract.MasterRequest;
 import org.egov.bookings.model.InventoryModel;
@@ -82,7 +83,7 @@ public class MasterController {
 		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsbmApproverModel> approverModelList = masterService.createApprover(masterRequest);
+			List<CommonMasterFields> approverModelList = masterService.createApprover(masterRequest);
 			rs.setStatus("200");
 			rs.setMessage("Data submitted in approver table");
 			rs.setData(approverModelList);
@@ -111,7 +112,7 @@ public class MasterController {
 		}
 		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getApproverList())) 
 		{
-			throw new IllegalArgumentException("Invalid Approver Model");
+			throw new IllegalArgumentException("Invalid Approver List");
 		}
 		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getApproverList().get(0).getId())) 
 		{
@@ -119,7 +120,7 @@ public class MasterController {
 		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsbmApproverModel> approverModelList = masterService.updateApprover(masterRequest);
+			List<CommonMasterFields> approverModelList = masterService.updateApprover(masterRequest);
 			rs.setStatus("200");
 			rs.setMessage("Data updated in approver table");
 			rs.setData(approverModelList);
@@ -152,7 +153,7 @@ public class MasterController {
 		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsbmFeeModel> osbmFeeModelList = masterService.createOSBMFee(masterRequest);
+			List<CommonMasterFields> osbmFeeModelList = masterService.createOSBMFee(masterRequest);
 			rs.setStatus("200");
 			rs.setMessage("Data submitted in OSBM Fee table");
 			rs.setData(osbmFeeModelList);
@@ -189,7 +190,7 @@ public class MasterController {
 		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsbmFeeModel> osbmFeeModelList = masterService.updateOSBMFee(masterRequest);
+			List<CommonMasterFields> osbmFeeModelList = masterService.updateOSBMFee(masterRequest);
 			rs.setStatus("200");
 			rs.setMessage("Data updated in OSBM Fee table");
 			rs.setData(osbmFeeModelList);
@@ -222,7 +223,7 @@ public class MasterController {
 		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsujmFeeModel> osujmFeeModelList = masterService.createOSUJMFee(masterRequest);
+			List<CommonMasterFields> osujmFeeModelList = masterService.createOSUJMFee(masterRequest);
 			rs.setStatus("200");
 			rs.setMessage("Data submitted in OSUJM Fee table");
 			rs.setData(osujmFeeModelList);
@@ -259,7 +260,7 @@ public class MasterController {
 		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsujmFeeModel> osujmFeeModelList = masterService.updateOSUJMFee(masterRequest);
+			List<CommonMasterFields> osujmFeeModelList = masterService.updateOSUJMFee(masterRequest);
 			rs.setStatus("200");
 			rs.setMessage("Data updated in OSUJM Fee table");
 			rs.setData(osujmFeeModelList);
