@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
  * The Interface CommercialGroundRepository.
  */
 @Repository
-public interface CommercialGroundRepository extends CrudRepository<CommercialGroundFeeModel, Long> {
+public interface CommercialGroundRepository extends CrudRepository<CommercialGroundFeeModel, String> {
 
 	/**
 	 * Find by locality and category.

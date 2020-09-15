@@ -3,6 +3,7 @@ package org.egov.bookings.service;
 import java.util.List;
 
 import org.egov.bookings.contract.BookingApprover;
+import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.MasterRequest;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
@@ -30,7 +31,7 @@ public interface MasterService {
 	 * @param masterRequest the master request
 	 * @return the list
 	 */
-	public List<OsbmApproverModel> createApprover(MasterRequest masterRequest);
+	public List<CommonMasterFields> createApprover(MasterRequest masterRequest);
 	
 	/**
 	 * Update approver.
@@ -38,7 +39,7 @@ public interface MasterService {
 	 * @param masterRequest the master request
 	 * @return the list
 	 */
-	public List<OsbmApproverModel> updateApprover(MasterRequest masterRequest);
+	public List<CommonMasterFields> updateApprover(MasterRequest masterRequest);
 	
 	/**
 	 * Creates the OSBM fee.
@@ -46,7 +47,7 @@ public interface MasterService {
 	 * @param masterRequest the master request
 	 * @return the list
 	 */
-	public List<OsbmFeeModel> createOSBMFee(MasterRequest masterRequest);
+	public List<CommonMasterFields> createOSBMFee(MasterRequest masterRequest);
 	
 	/**
 	 * Update OSBM fee.
@@ -54,7 +55,7 @@ public interface MasterService {
 	 * @param masterRequest the master request
 	 * @return the list
 	 */
-	public List<OsbmFeeModel> updateOSBMFee(MasterRequest masterRequest);
+	public List<CommonMasterFields> updateOSBMFee(MasterRequest masterRequest);
 	
 	/**
 	 * Creates the OSUJM fee.
@@ -62,7 +63,7 @@ public interface MasterService {
 	 * @param masterRequest the master request
 	 * @return the list
 	 */
-	public List<OsujmFeeModel> createOSUJMFee(MasterRequest masterRequest);
+	public List<CommonMasterFields> createOSUJMFee(MasterRequest masterRequest);
 	
 	/**
 	 * Update OSUJM fee.
@@ -70,7 +71,7 @@ public interface MasterService {
 	 * @param masterRequest the master request
 	 * @return the list
 	 */
-	public List<OsujmFeeModel> updateOSUJMFee(MasterRequest masterRequest);
+	public List<CommonMasterFields> updateOSUJMFee(MasterRequest masterRequest);
 	
 	/**
 	 * Fetch all approver.

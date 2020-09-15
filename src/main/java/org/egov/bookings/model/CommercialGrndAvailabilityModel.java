@@ -23,7 +23,7 @@ public class CommercialGrndAvailabilityModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "ID")
-	private Long id;
+	private String id;
 	
 	@Column(name = "BOOKING_VENUE")
 	private String bookingVenue;
