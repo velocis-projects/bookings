@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 import org.egov.bookings.config.BookingsConfiguration;
+import org.egov.bookings.contract.Bill;
 import org.egov.bookings.contract.BookingsRequestKafka;
 import org.egov.bookings.contract.IdResponse;
 import org.egov.bookings.contract.NewLocationKafkaRequest;
@@ -26,6 +27,7 @@ import org.egov.bookings.model.OsujmNewLocationModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 import org.egov.bookings.repository.BookingsRepository;
 import org.egov.bookings.repository.OsujmNewLocationRepository;
+import org.egov.bookings.repository.impl.BillingServiceRepository;
 import org.egov.bookings.repository.impl.IdGenRepository;
 import org.egov.bookings.service.BookingsCalculatorService;
 import org.egov.bookings.service.BookingsService;
@@ -78,6 +80,9 @@ public class EnrichmentService {
 	@Autowired
 	private OsujmNewLocationRepository osujmNewLocationRepository;
 
+	@Autowired
+	private BillingServiceRepository billingServiceRepository;
+	
 	/**
 	 * Enrich bookings create request.
 	 *

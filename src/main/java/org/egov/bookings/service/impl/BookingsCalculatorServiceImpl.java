@@ -231,6 +231,14 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 							finalAmount.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge())).divide(new BigDecimal(100)))),
 							taxHeadEstimate.getCategory()));
 				}
+				if ("SUCCESS".equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
+					if (taxHeadEstimate.getCode().equals("PACC_LOCATION_AND_VENUE_CHANGE_AMOUNT")) {
+						taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+								finalAmount.multiply((BigDecimal.valueOf(
+										Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount())))),
+								taxHeadEstimate.getCategory()));
+					}
+				}
 				/*if (taxHeadEstimate.getCode().equals(BookingsCalculatorConstants.PACC_CGST)) {
 					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
 							finalAmount.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCgstRate())).divide(new BigDecimal(100)))),
