@@ -211,6 +211,16 @@ public class BookingsUtils {
 		ModuleDetail bkModuleDtls = ModuleDetail.builder().masterDetails(bkMasterDetails).moduleName("Booking").build();
 		return bkModuleDtls;
 	}
+	
+	private ModuleDetail getMdmsModuleSearchType(String moduleName, String mdmsFileName) {
+
+		List<MasterDetail> bkMasterDetails = new ArrayList<>();
+
+		bkMasterDetails.add(MasterDetail.builder().name(mdmsFileName).build());
+
+		ModuleDetail bkModuleDtls = ModuleDetail.builder().masterDetails(bkMasterDetails).moduleName(moduleName).build();
+		return bkModuleDtls;
+	}
 
 	/**
 	 * Gets the tax head master type.
@@ -251,6 +261,22 @@ public class BookingsUtils {
 		log.info("Mdms Criteria Req: " + mdmsCriteriaReq);
 		return mdmsCriteriaReq;
 	}
+	
+	private MdmsCriteriaReq getMDMSSearchRequest(RequestInfo requestInfo, String tenantId, String moduleName, String mdmsFileName) {
+
+		ModuleDetail getMdmsModuleTypes = getMdmsModuleSearchType(moduleName, mdmsFileName);
+
+		List<ModuleDetail> moduleDetails = new LinkedList<>();
+		moduleDetails.add(getMdmsModuleTypes);
+
+		MdmsCriteria mdmsCriteria = MdmsCriteria.builder().moduleDetails(moduleDetails).tenantId(tenantId).build();
+		log.info("Mdms Criteria : " + mdmsCriteria);
+		MdmsCriteriaReq mdmsCriteriaReq = MdmsCriteriaReq.builder().mdmsCriteria(mdmsCriteria).requestInfo(requestInfo)
+				.build();
+
+		log.info("Mdms Criteria Req: " + mdmsCriteriaReq);
+		return mdmsCriteriaReq;
+	}
 
 	/**
 	 * Prepare md ms request for booking.
@@ -267,6 +293,15 @@ public class BookingsUtils {
 
 	}
 
+	public Object getMdMsSearchRequest(RequestInfo requestInfo, String moduleName, String mdmsFileName) {
+		String tenantId = requestInfo.getUserInfo().getTenantId();
+		MdmsCriteriaReq mdmsCriteriaReq = getMDMSSearchRequest(requestInfo, tenantId, moduleName, mdmsFileName);
+		StringBuilder uri = new StringBuilder(mdmsHost).append(mdmsEndpoint);
+		Object result = serviceRequestRepository.fetchResult(uri, mdmsCriteriaReq);
+		return result;
+
+	}
+	
 	/**
 	 * Gets the MDMS request for tax head master.
 	 *

@@ -31,4 +31,8 @@ public class MasterRequest {
 	@JsonProperty("OsujmFeeDetails")
 	private List<CommonMasterFields> osujmFeeList;
 	
+	/** The gfcp fee list. */
+	@JsonProperty("GfcpFeeDetails")
+	private List<CommonMasterFields> gfcpFeeList;
+	
 }

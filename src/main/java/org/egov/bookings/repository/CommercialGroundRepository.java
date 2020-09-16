@@ -1,15 +1,7 @@
 package org.egov.bookings.repository;
 
-import java.sql.Date;
-import java.util.Set;
-
-import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.CommercialGroundFeeModel;
-import org.egov.bookings.repository.querybuilder.BookingsQueryBuilder;
-import org.egov.bookings.utils.BookingsConstants;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 // TODO: Auto-generated Javadoc
