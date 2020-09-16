@@ -316,13 +316,13 @@ public class MasterController {
 		{
 			throw new IllegalArgumentException("Invalid masterRequest");
 		}
-		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsujmFeeList())) 
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getGfcpFeeList())) 
 		{
-			throw new IllegalArgumentException("Invalid OSUJM Fee List");
+			throw new IllegalArgumentException("Invalid GFCP Fee List");
 		}
-		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getOsujmFeeList().get(0).getId())) 
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getGfcpFeeList().get(0).getId())) 
 		{
-			throw new IllegalArgumentException("Invalid OSUJM Fee id");
+			throw new IllegalArgumentException("Invalid GFCP Fee id");
 		}
 		ResponseModel rs = new ResponseModel();
 		try {
