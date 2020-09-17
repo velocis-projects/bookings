@@ -12,6 +12,7 @@ import org.egov.bookings.contract.DocumentFields;
 import org.egov.bookings.contract.MasterRequest;
 import org.egov.bookings.contract.MdmsJsonFields;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
+import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
@@ -337,7 +338,6 @@ public class MasterController {
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok(rs);
-
 	}
 	
 	/**
@@ -429,6 +429,34 @@ public class MasterController {
 		return ResponseEntity.ok(rs);
 	}
 	
+	/**
+	 * Fetch all GFC pfee.
+	 *
+	 * @return the response entity
+	 */
+	@PostMapping("gfcp/fee/_fetch")
+	public ResponseEntity<?> fetchAllGFCPfee() {
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<CommercialGroundFeeModel> osbmFeeList = masterService.fetchAllGFCPfee(); 
+			rs.setStatus("200");
+			rs.setMessage("Success");
+			rs.setData(osbmFeeList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the fetchAllGFCPfee " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+	}
+	
+	/**
+	 * Gets the roles.
+	 *
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
+	 * @return the roles
+	 */
 	@PostMapping("roles/_search")
 	public ResponseEntity<?> getRoles(@RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
 		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 

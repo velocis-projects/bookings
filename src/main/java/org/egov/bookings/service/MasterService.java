@@ -7,6 +7,7 @@ import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.MasterRequest;
 import org.egov.bookings.contract.MdmsJsonFields;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
+import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
@@ -118,6 +119,13 @@ public interface MasterService {
 	 * @return the list
 	 */
 	public List<OsujmFeeModel> fetchAllOSUJMfee();
+	
+	/**
+	 * Fetch all GFC pfee.
+	 *
+	 * @return the list
+	 */
+	public List<CommercialGroundFeeModel> fetchAllGFCPfee();
 	
 	/**
 	 * Gets the roles.

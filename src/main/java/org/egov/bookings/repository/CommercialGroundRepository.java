@@ -1,7 +1,7 @@
 package org.egov.bookings.repository;
 
 import org.egov.bookings.model.CommercialGroundFeeModel;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 // TODO: Auto-generated Javadoc
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
  * The Interface CommercialGroundRepository.
  */
 @Repository
-public interface CommercialGroundRepository extends CrudRepository<CommercialGroundFeeModel, String> {
+public interface CommercialGroundRepository extends JpaRepository<CommercialGroundFeeModel, String> {
 
 	/**
 	 * Find by locality and category.
