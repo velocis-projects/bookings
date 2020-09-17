@@ -2,9 +2,8 @@ package org.egov.bookings.dto;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.List;
+
 import org.egov.common.contract.request.RequestInfo;
-import org.egov.common.contract.request.Role;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
