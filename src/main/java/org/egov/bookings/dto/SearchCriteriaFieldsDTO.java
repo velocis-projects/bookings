@@ -59,9 +59,6 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 	/** The business service. */
 	private String businessService;
 	
-	/** The roles. */
-	private List<Role> roles;
-	
 	/**
 	 * Gets the tenant id.
 	 *
@@ -313,24 +310,6 @@ public class SearchCriteriaFieldsDTO implements Serializable {
 	 */
 	public void setBusinessService(String businessService) {
 		this.businessService = businessService;
-	}
-
-	/**
-	 * Gets the roles.
-	 *
-	 * @return the roles
-	 */
-	public List<Role> getRoles() {
-		return roles;
-	}
-
-	/**
-	 * Sets the roles.
-	 *
-	 * @param roles the new roles
-	 */
-	public void setRoles(List<Role> roles) {
-		this.roles = roles;
 	}
 
 }
