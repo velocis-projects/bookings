@@ -19,11 +19,13 @@ import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.MasterRequest;
 import org.egov.bookings.contract.MdmsJsonFields;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
+import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
 import org.egov.bookings.producer.BookingsProducer;
+import org.egov.bookings.repository.CommercialGroundRepository;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsbmApproverRepository;
 import org.egov.bookings.repository.OsbmFeeRepository;
@@ -92,6 +94,10 @@ public class MasterServiceImpl implements MasterService{
 	/** The bookings utils. */
 	@Autowired
 	private BookingsUtils bookingsUtils;
+	
+	/** The commercial ground fee repository. */
+	@Autowired
+	private CommercialGroundRepository commercialGroundFeeRepository;
 	
 	/**
 	 * Gets the park community inventory details.
@@ -485,6 +491,19 @@ public class MasterServiceImpl implements MasterService{
 		return osujmFeeList;
 	}
 
+	@Override
+	public List<CommercialGroundFeeModel> fetchAllGFCPfee() {
+		List<CommercialGroundFeeModel> gfcpFeeList = new ArrayList<>();
+		try {
+			gfcpFeeList = commercialGroundFeeRepository.findAll(); 
+		}
+		catch (Exception e) {
+			LOGGER.error("Exception occur in the fetchAllGFCPfee " + e);
+			e.printStackTrace();
+		}
+		return gfcpFeeList;
+	}
+	
 	/**
 	 * Gets the roles.
 	 *
