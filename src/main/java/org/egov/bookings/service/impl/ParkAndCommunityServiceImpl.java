@@ -100,7 +100,10 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		enrichmentService.enrichBookingsDetails(bookingsRequest);
 		try {
 		BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
+		if (!flag)
 		bookingsProducer.push(config.getSaveBookingTopic(), kafkaBookingRequest);
+		else
+			bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
 		}catch (Exception e) {
 			throw new CustomException("PARK_COMMUNITY_CREATE_ERROR",e.getLocalizedMessage());
 		}
