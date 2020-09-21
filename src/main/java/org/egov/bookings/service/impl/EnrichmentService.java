@@ -16,21 +16,26 @@ import java.util.stream.LongStream;
 
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.Bill;
+import org.egov.bookings.contract.BillResponse;
 import org.egov.bookings.contract.BookingsRequestKafka;
 import org.egov.bookings.contract.IdResponse;
 import org.egov.bookings.contract.NewLocationKafkaRequest;
 import org.egov.bookings.contract.ParkCommunityFeeMasterResponse;
+import org.egov.bookings.contract.TaxHeadMasterFields;
 import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
+import org.egov.bookings.models.demand.GenerateBillCriteria;
+import org.egov.bookings.models.demand.TaxHeadEstimate;
 import org.egov.bookings.repository.BookingsRepository;
 import org.egov.bookings.repository.OsujmNewLocationRepository;
 import org.egov.bookings.repository.impl.BillingServiceRepository;
 import org.egov.bookings.repository.impl.IdGenRepository;
 import org.egov.bookings.service.BookingsCalculatorService;
 import org.egov.bookings.service.BookingsService;
+import org.egov.bookings.service.DemandService;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.validator.BookingsFieldsValidator;
@@ -71,7 +76,7 @@ public class EnrichmentService {
 	
 	/** The demand service. */
 	@Autowired
-	DemandServiceImpl demandService;
+	DemandService demandService;
 	
 	/** The bookings repository. */
 	@Autowired
@@ -495,6 +500,93 @@ public class EnrichmentService {
 						.setBkPaymentStatus(bookingsRequest.getBookingsModel().getBkPaymentStatus());
 			}
 		}
+	}
+
+	private List<TaxHeadEstimate> enrichTaxHeadEstimateForPACC(BookingsRequest bookingsRequest, BigDecimal finalAmount, String taxHeadCode1,
+			String taxHeadCode2, List<TaxHeadMasterFields> taxHeadMasterFieldList,
+			ParkCommunityHallV1MasterModel parkCommunityHallV1FeeMaster) {
+
+		List<TaxHeadEstimate> taxHeadEstimate1 = new ArrayList<>();
+		for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
+			if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
+				taxHeadEstimate1.add(
+						new TaxHeadEstimate(taxHeadEstimate.getCode(), finalAmount, taxHeadEstimate.getCategory()));
+			}
+			if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
+				taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+						finalAmount
+								.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
+										.divide(new BigDecimal(100)))),
+						taxHeadEstimate.getCategory()));
+			}
+			if (BookingsConstants.PAYMENT_SUCCESS_STATUS
+					.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
+				if (taxHeadEstimate.getCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_3)) {
+					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+							BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount())),
+							taxHeadEstimate.getCategory()));
+				}
+			}
+		}
+		return taxHeadEstimate1;
+	}
+
+
+	public List<TaxHeadEstimate> enrichPaccAmountForBookingChange(BookingsRequest bookingsRequest,
+			BigDecimal finalAmount, String taxHeadCode1, String taxHeadCode2,
+			List<TaxHeadMasterFields> taxHeadMasterFieldList,
+			ParkCommunityHallV1MasterModel parkCommunityHallV1FeeMaster) {
+
+		List<TaxHeadEstimate> taxHeadEstimate1 = new ArrayList<>();
+
+		if (BookingsConstants.PAYMENT_SUCCESS_STATUS.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
+
+			GenerateBillCriteria billCriteria = GenerateBillCriteria.builder()
+					.tenantId(bookingsRequest.getRequestInfo().getUserInfo().getTenantId())
+					.businessService(bookingsRequest.getBookingsModel().getBusinessService())
+					.consumerCode(bookingsRequest.getBookingsModel().getBkApplicationNumber()).build();
+			BillResponse billResponse = demandService.generateBill(bookingsRequest.getRequestInfo(), billCriteria);
+			BigDecimal amount = finalAmount.subtract(
+					billResponse.getBill().get(0).getBillDetails().get(0).getBillAccountDetails().get(0).getAmount());
+
+			if (finalAmount.compareTo(billResponse.getBill().get(0).getBillDetails().get(0).getBillAccountDetails()
+					.get(0).getAmount()) < 1) {
+
+				taxHeadEstimate1 = enrichTaxHeadEstimateForPACC(bookingsRequest, finalAmount, taxHeadCode1,
+						taxHeadCode2, taxHeadMasterFieldList, parkCommunityHallV1FeeMaster);
+			}
+
+			else {
+				for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
+					if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
+						taxHeadEstimate1.add(
+								new TaxHeadEstimate(taxHeadEstimate.getCode(), amount, taxHeadEstimate.getCategory()));
+					}
+					if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
+						taxHeadEstimate1
+								.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+										amount.multiply((BigDecimal
+												.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
+												/*.subtract(billResponse.getBill().get(0).getBillDetails().get(0)
+														.getBillAccountDetails().get(1).getAmount())*/)
+																.divide(new BigDecimal(100))),
+										taxHeadEstimate.getCategory()));
+					}
+					if (taxHeadEstimate.getCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_3)) {
+						taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+								BigDecimal
+										.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount())),
+								taxHeadEstimate.getCategory()));
+					}
+				}
+			}
+		} else {
+
+			taxHeadEstimate1 = enrichTaxHeadEstimateForPACC(bookingsRequest, finalAmount, taxHeadCode1, taxHeadCode2,
+					taxHeadMasterFieldList, parkCommunityHallV1FeeMaster);
+
+		}
+		return taxHeadEstimate1;
 	}
 
 }

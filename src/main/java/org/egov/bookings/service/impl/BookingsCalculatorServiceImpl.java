@@ -13,6 +13,7 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.egov.bookings.config.BookingsConfiguration;
+import org.egov.bookings.contract.BillResponse;
 import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
 import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.contract.TaxHeadMasterFields;
@@ -24,6 +25,7 @@ import org.egov.bookings.models.demand.Demand;
 import org.egov.bookings.models.demand.DemandDetail;
 import org.egov.bookings.models.demand.DemandRequest;
 import org.egov.bookings.models.demand.DemandResponse;
+import org.egov.bookings.models.demand.GenerateBillCriteria;
 import org.egov.bookings.models.demand.TaxHeadEstimate;
 import org.egov.bookings.models.demand.TaxHeadMaster;
 import org.egov.bookings.models.demand.Demand.StatusEnum;
@@ -34,6 +36,7 @@ import org.egov.bookings.repository.impl.IdGenRepository;
 import org.egov.bookings.repository.impl.ServiceRequestRepository;
 import org.egov.bookings.service.BookingsCalculatorService;
 import org.egov.bookings.service.CommercialGroundService;
+import org.egov.bookings.service.DemandService;
 import org.egov.bookings.service.OsujmService;
 import org.egov.bookings.service.ParkAndCommunityService;
 import org.egov.bookings.utils.BookingsCalculatorConstants;
@@ -101,6 +104,9 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	
 	@Autowired
 	private ParkAndCommunityService parkAndCommunityService;
+	
+	@Autowired
+	private DemandService demandService;
 	
 	
 	/**
@@ -221,35 +227,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 			BigDecimal amount = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges())+Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
 			BigDecimal finalAmount = days.multiply(amount);
 		//	BigDecimal finalAmount = new BigDecimal(4400);
-			for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
-				if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
-					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(), finalAmount,
-							taxHeadEstimate.getCategory()));
-				}
-				if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
-					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
-							finalAmount.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge())).divide(new BigDecimal(100)))),
-							taxHeadEstimate.getCategory()));
-				}
-				if (BookingsConstants.PAYMENT_SUCCESS_STATUS.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
-					if (taxHeadEstimate.getCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_3)) {
-						taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
-								BigDecimal.valueOf(
-										Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount())),
-								taxHeadEstimate.getCategory()));
-					}
-				}
-				/*if (taxHeadEstimate.getCode().equals(BookingsCalculatorConstants.PACC_CGST)) {
-					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
-							finalAmount.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCgstRate())).divide(new BigDecimal(100)))),
-							taxHeadEstimate.getCategory()));
-				}
-				if (taxHeadEstimate.getCode().equals(BookingsCalculatorConstants.PACC_UGST)) {
-					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
-							finalAmount.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getUtgstRate())).divide(new BigDecimal(100)))),
-							taxHeadEstimate.getCategory()));
-				}*/
-			}
+			taxHeadEstimate1 = enrichmentService.enrichPaccAmountForBookingChange(bookingsRequest, finalAmount,taxHeadCode1,taxHeadCode2,taxHeadMasterFieldList,parkCommunityHallV1FeeMaster);	
 			break;
 			
 		}

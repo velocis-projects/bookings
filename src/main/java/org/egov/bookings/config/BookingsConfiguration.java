@@ -204,4 +204,7 @@ public class BookingsConfiguration {
 	
 	@Value("${egov.services.billing_service.search}")
 	private String billingServiceSearch;
+	
+	 @Value("${egov.bill.gen.endpoint}")
+	 private String billGenerateEndpoint;
 }
