@@ -75,4 +75,10 @@ public class BookingsQueryBuilder {
 	/** The Constant FIND_ROLES_BY_UUID. */
 	public static final String FIND_ROLES_BY_UUID = "select euv.role_code from eg_user as eu "
 			+ "inner join eg_userrole_v1 as euv on euv.user_id = eu.id where eu.uuid = :uuid";
+	
+	public static final String FIND_APPLICATION_LIST = "select ewpv.businessid from eg_wf_processinstance_v2 as ewpv "
+			+ "inner join eg_wf_state_v2 as ewsv on ewsv.state is null "
+			+ "inner join eg_wf_action_v2 as ewav on ewav.currentstate = ewsv.uuid " 
+			+ "and ewav.roles = :approver and ewpv.action = :action";
+	
 }
