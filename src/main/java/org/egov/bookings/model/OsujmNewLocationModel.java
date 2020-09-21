@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "OsujmNewLocationModel")
-@Table(name = "TT_OSUJM_NEW_LOCATION")
+@Table(name = "BK_OSUJM_NEW_LOCATION")
 public class OsujmNewLocationModel {
 
 	@Id

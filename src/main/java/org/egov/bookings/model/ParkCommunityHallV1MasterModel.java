@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "ParkCommunityHallV1MasterModel")
-@Table(name = "TM_PARK_COMMUNITY_HALL_v1")
+@Table(name = "BK_PARK_COMMUNITY_HALL_v1")
 public class ParkCommunityHallV1MasterModel {
 
 	@Id

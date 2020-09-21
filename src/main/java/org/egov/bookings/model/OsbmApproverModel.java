@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "OsbmApproverModel")
-@Table(name = "TM_OSBM_APPROVER")
+@Table(name = "BK_APPROVER")
 public class OsbmApproverModel {
 
 	/** The id. */
