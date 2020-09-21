@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "OsujmFeeModel")
-@Table(name = "TM_OSUJM_FEE")
+@Table(name = "BK_OSUJM_FEE")
 public class OsujmFeeModel {
 	
 	/** The id. */

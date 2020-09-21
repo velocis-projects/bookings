@@ -11,11 +11,13 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.egov.bookings.config.BookingsConfiguration;
+import org.egov.bookings.contract.BillResponse;
 import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.models.demand.Demand;
 import org.egov.bookings.models.demand.Demand.StatusEnum;
 import org.egov.bookings.models.demand.DemandDetail;
 import org.egov.bookings.models.demand.DemandResponse;
+import org.egov.bookings.models.demand.GenerateBillCriteria;
 import org.egov.bookings.models.demand.TaxHeadEstimate;
 import org.egov.bookings.repository.OsbmFeeRepository;
 import org.egov.bookings.repository.impl.DemandRepository;
@@ -25,6 +27,7 @@ import org.egov.bookings.service.DemandService;
 import org.egov.bookings.utils.BookingsCalculatorConstants;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.BookingsUtils;
+import org.egov.bookings.utils.CalculationUtils;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
@@ -76,6 +79,9 @@ public class DemandServiceImpl implements DemandService {
 
 	@Autowired
 	MDMSService mdmsService;
+	
+	@Autowired
+	CalculationUtils calculationUtils;
 	
 	/*
 	 * (non-Javadoc)
@@ -662,7 +668,7 @@ public class DemandServiceImpl implements DemandService {
 		for (TaxHeadEstimate taxHeadEstimate : taxHeadEstimate1) {
 			if (!taxHeadToDemandDetail.containsKey(taxHeadEstimate.getTaxHeadCode()))
 				newDemandDetails.add(DemandDetail.builder().taxAmount(taxHeadEstimate.getEstimateAmount())
-						.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).tenantId("ch")
+						.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).tenantId(demandDetails.get(0).getTenantId())
 						.collectionAmount(BigDecimal.ZERO).build());
 			else {
 				demandDetailList = taxHeadToDemandDetail.get(taxHeadEstimate.getTaxHeadCode());
@@ -671,7 +677,7 @@ public class DemandServiceImpl implements DemandService {
 				diffInTaxAmount = taxHeadEstimate.getEstimateAmount().subtract(total);
 				if (diffInTaxAmount.compareTo(BigDecimal.ZERO) != 0) {
 					newDemandDetails.add(DemandDetail.builder().taxAmount(diffInTaxAmount)
-							.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).tenantId("ch")
+							.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).tenantId(demandDetails.get(0).getTenantId())
 							.collectionAmount(BigDecimal.ZERO).build());
 				}
 			}
@@ -715,5 +721,33 @@ public class DemandServiceImpl implements DemandService {
 			return response.getDemands();
 
 	}
+	
+	
+	public BillResponse generateBill(RequestInfo requestInfo,GenerateBillCriteria billCriteria){
+
+        String consumerCode = billCriteria.getConsumerCode();
+        String tenantId = billCriteria.getTenantId();
+
+        List<Demand> demands = searchDemand(tenantId,Collections.singleton(consumerCode),requestInfo,billCriteria.getBusinessService());
+
+        if(CollectionUtils.isEmpty(demands))
+            throw new CustomException("INVALID CONSUMERCODE","Bill cannot be generated.No demand exists for the given consumerCode");
+
+        String uri = calculationUtils.getBillGenerateURI();
+        uri = uri.replace("{1}",billCriteria.getTenantId());
+        uri = uri.replace("{2}",billCriteria.getConsumerCode());
+        uri = uri.replace("{3}",billCriteria.getBusinessService());
+
+        Object result = serviceRequestRepository.fetchResult(new StringBuilder(uri),RequestInfoWrapper.builder()
+                                                             .requestInfo(requestInfo).build());
+        BillResponse response;
+         try{
+              response = mapper.convertValue(result,BillResponse.class);
+         }
+         catch (IllegalArgumentException e){
+            throw new CustomException("PARSING ERROR","Unable to parse response of generate bill");
+         }
+         return response;
+    }
 
 }

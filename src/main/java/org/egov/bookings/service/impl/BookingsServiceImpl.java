@@ -558,6 +558,9 @@ public class BookingsServiceImpl implements BookingsService {
 				}
 			}
 			else {
+				if(!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
+					bookingsRequest.getBookingsModel().setBkPaymentStatus(bookingsRequest.getBookingsModel().getBkPaymentStatus());
+				}
 				BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);
 				bookingsProducer.push(config.getUpdateBookingTopic(), kafkaBookingRequest);
 				//bookingsModel = bookingsRepository.save(bookingsRequest.getBookingsModel());

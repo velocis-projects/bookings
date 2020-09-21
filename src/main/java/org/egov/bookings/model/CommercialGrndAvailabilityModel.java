@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "CommercialGrndAvailabilityModel")
-@Table(name = "TT_COMMERCIAL_GROUND_AVAILABILITY_LOCK")
+@Table(name = "BK_COMMERCIAL_GROUND_AVAILABILITY_LOCK")
 public class CommercialGrndAvailabilityModel {
 
 	@Id

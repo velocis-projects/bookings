@@ -16,7 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "TimeslotsModel")
-@Table(name = "TL_TIMESLOTS")
+@Table(name = "BK_TIMESLOTS")
 @EqualsAndHashCode(of = {"id"})
 public class TimeslotsModel {
 

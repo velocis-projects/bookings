@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "CommercialGroundFeeModel")
-@Table(name = "TM_COMMERCIAL_GROUND_FEE")
+@Table(name = "BK_COMMERCIAL_GROUND_FEE")
 public class CommercialGroundFeeModel {
 
 	/** The id. */

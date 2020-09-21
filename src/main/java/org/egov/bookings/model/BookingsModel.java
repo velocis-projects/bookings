@@ -30,7 +30,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "BookingsModel")
-@Table(name = "TT_BOOKINGS")
+@Table(name = "BK_BOOKINGS")
 @Builder
 @ToString
 public class BookingsModel {
