@@ -1,9 +1,7 @@
-ALTER TABLE public.tm_osbm_fee ALTER COLUMN id TYPE varchar USING id::varchar;
+alter table public.bk_bookings drop column fromtime;
 
-ALTER TABLE public.tm_osbm_approver ALTER COLUMN id TYPE varchar USING id::varchar;
+alter table public.bk_bookings drop column totime;
 
-ALTER TABLE public.tm_commercial_ground_fee ALTER COLUMN id TYPE varchar USING id::varchar;
+alter table public.bk_bookings drop column bk_from_time;
 
-ALTER TABLE public.tm_osujm_fee ALTER COLUMN id TYPE varchar USING id::varchar;
-
-ALTER TABLE public.tt_commercial_ground_availability_lock ALTER COLUMN id TYPE varchar USING id::varchar;
+alter table public.bk_bookings drop column bk_to_time;

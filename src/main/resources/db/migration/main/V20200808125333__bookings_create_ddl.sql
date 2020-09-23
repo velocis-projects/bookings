@@ -1,4 +1,4 @@
-CREATE TABLE public.tt_bookings (
+CREATE TABLE public.bk_bookings (
 	bk_application_number varchar(255) NOT NULL,
 	bk_account_type varchar(255) NULL,
 	bk_action varchar(255) NULL,
@@ -88,48 +88,49 @@ CREATE TABLE public.tt_bookings (
 	totime varchar(255) NULL,
 	bk_from_time varchar(255) NULL,
 	bk_to_time varchar(255) NULL,
-	CONSTRAINT tt_bookings_pkey PRIMARY KEY (bk_application_number)
+	CONSTRAINT bk_bookings_pkey PRIMARY KEY (bk_application_number)
 );
 
 
 
 
-CREATE TABLE public.tl_timeslots (
+CREATE TABLE public.bk_timeslots (
 	id varchar(255) NOT NULL,
 	application_number varchar(255) NULL,
 	slot varchar(255) NULL,
-	CONSTRAINT tl_timeslots_pkey PRIMARY KEY (id),
-	CONSTRAINT fkq3y7wk83280jbvrdb63hltxrv FOREIGN KEY (application_number) REFERENCES tt_bookings(bk_application_number)
+	CONSTRAINT bk_timeslots_pkey PRIMARY KEY (id),
+	CONSTRAINT fkq3y7wk83280jbvrdb63hltxrv FOREIGN KEY (application_number) REFERENCES bk_bookings(bk_application_number)
 );
 
 
 
-CREATE TABLE public.tm_commercial_ground_fee (
+CREATE TABLE public.bk_commercial_ground_fee (
 	id varchar NOT NULL,
 	booking_venue varchar(255) NULL,
 	category varchar(255) NULL,
 	locality varchar(255) NULL,
 	rate_per_day int8 NULL,
-	CONSTRAINT tm_commercial_ground_fee_pkey PRIMARY KEY (id)
+	created_date timestamp NULL,
+	last_modified_date timestamp NULL,
+	CONSTRAINT bk_commercial_ground_fee_pkey PRIMARY KEY (id)
 );
 
 
 
 
-
-CREATE TABLE public.tm_osbm_approver (
+CREATE TABLE public.bk_approver (
 	id varchar NOT NULL,
 	sector varchar(255) NULL,
 	uuid varchar(255) NULL,
 	created_date timestamp NULL,
 	last_modified_date timestamp NULL,
 	role_code varchar(255) NULL,
-	CONSTRAINT tm_osbm_approver_pkey PRIMARY KEY (id)
+	CONSTRAINT bk_approver_pkey PRIMARY KEY (id)
 );
 
 
 
-CREATE TABLE public.tm_osbm_fee (
+CREATE TABLE public.bk_osbm_fee (
 	id varchar NOT NULL,
 	amount int8 NULL,
 	construction_type varchar(255) NULL,
@@ -139,12 +140,12 @@ CREATE TABLE public.tm_osbm_fee (
 	village_city varchar(255) NULL,
 	created_date timestamp NULL,
 	last_modified_date timestamp NULL,
-	CONSTRAINT tm_osbm_fee_pkey PRIMARY KEY (id)
+	CONSTRAINT bk_osbm_fee_pkey PRIMARY KEY (id)
 );
 
 
 
-CREATE TABLE public.tm_osujm_fee (
+CREATE TABLE public.bk_osujm_fee (
 	id varchar NOT NULL,
 	area_from int8 NULL,
 	area_to int8 NULL,
@@ -153,12 +154,12 @@ CREATE TABLE public.tm_osujm_fee (
 	slab varchar(255) NULL,
 	created_date timestamp NULL,
 	last_modified_date timestamp NULL,
-	CONSTRAINT tm_osujm_fee_pkey PRIMARY KEY (id)
+	CONSTRAINT bk_osujm_fee_pkey PRIMARY KEY (id)
 );
 
 
 
-CREATE TABLE public.tm_park_community_hall_v1 (
+CREATE TABLE public.bk_park_community_hall_v1 (
 	id varchar(255) NOT NULL,
 	amount varchar(255) NULL,
 	booking_allowed_for varchar(255) NULL,
@@ -185,24 +186,24 @@ CREATE TABLE public.tm_park_community_hall_v1 (
 	venue_type varchar(255) NULL,
 	x varchar(255) NULL,
 	y varchar(255) NULL,
-	CONSTRAINT tm_park_community_hall_v1_pkey PRIMARY KEY (id)
+	CONSTRAINT bk_park_community_hall_v1_pkey PRIMARY KEY (id)
 );
 
 
 
-CREATE TABLE public.tt_commercial_ground_availability_lock (
+CREATE TABLE public.bk_commercial_ground_availability_lock (
 	id int8 NOT NULL,
 	booking_venue varchar(255) NULL,
 	from_date date NULL,
 	islocked bool NULL,
 	to_date date NULL,
-	CONSTRAINT tt_commercial_ground_availability_lock_pkey PRIMARY KEY (id)
+	CONSTRAINT bk_commercial_ground_availability_lock_pkey PRIMARY KEY (id)
 );
 
 
 
 
-CREATE TABLE public.tt_osujm_new_location (
+CREATE TABLE public.bk_osujm_new_location (
 	application_number varchar(255) NOT NULL,
 	"action" varchar(255) NULL,
 	applicant_address varchar(255) NULL,
@@ -221,7 +222,7 @@ CREATE TABLE public.tt_osujm_new_location (
 	sector varchar(255) NULL,
 	tenant_id varchar(255) NULL,
 	uuid varchar(255) NULL,
-	CONSTRAINT tt_osujm_new_location_pkey PRIMARY KEY (application_number)
+	CONSTRAINT bk_osujm_new_location_pkey PRIMARY KEY (application_number)
 );
 
 
