@@ -128,10 +128,6 @@ public class BookingsController {
 			{
 				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
 			}
-			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getTenantId())) 
-			{
-				throw new IllegalArgumentException("Invalid tentantId");
-			}
 			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getUuid())) 
 			{
 				throw new IllegalArgumentException("Invalid uuId");
@@ -160,10 +156,6 @@ public class BookingsController {
 			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
 			{
 				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
-			}
-			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getTenantId())) 
-			{
-				throw new IllegalArgumentException("Invalid tentantId");
 			}
 			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getUuid())) 
 			{

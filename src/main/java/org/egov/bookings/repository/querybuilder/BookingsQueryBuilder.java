@@ -79,6 +79,6 @@ public class BookingsQueryBuilder {
 	public static final String FIND_APPLICATION_LIST = "select ewpv.businessid from eg_wf_processinstance_v2 as ewpv "
 			+ "inner join eg_wf_state_v2 as ewsv on ewsv.state is null "
 			+ "inner join eg_wf_action_v2 as ewav on ewav.currentstate = ewsv.uuid " 
-			+ "and ewav.roles = :approver and ewpv.action = :action";
+			+ "and ewpv.action = :action and ewav.roles = :approver";
 	
 }

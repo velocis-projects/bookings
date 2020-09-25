@@ -397,12 +397,6 @@ public class BookingsModel {
     @JsonProperty("financialYear")
     private String financialYear = null;
     
-    @Column(name = "BK_TO_TIME")
-	private String bkToTime;
-	
-	@Column(name = "BK_FROM_TIME")
-	private String bkFromTime;
-    
 	
 
 }

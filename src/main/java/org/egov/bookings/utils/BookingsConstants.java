@@ -688,8 +688,13 @@ public class BookingsConstants {
     /** The Constant MDMS_FILE_NAME. */
     public static final String MDMS_FILE_NAME = "roles";
 
+	/** The Constant PAYMENT_SUCCESS_STATUS. */
 	public static final String PAYMENT_SUCCESS_STATUS = "SUCCESS";
 	
+	/** The Constant PACC_TAXHEAD_CODE_3. */
 	public static final String PACC_TAXHEAD_CODE_3 = "PACC_LOCATION_AND_VENUE_CHANGE_AMOUNT";
+	
+	/** The Constant DELIVER. */
+	public static final String DELIVER = "DELIVER";
     
 }
