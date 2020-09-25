@@ -799,14 +799,14 @@ public class BookingsServiceImpl implements BookingsService {
 				if (!BookingsFieldsValidator.isNullOrEmpty(approverArray)) {
 					for (String approver : approverArray) {
 						if (!BookingsConstants.CITIZEN.equals(approver)) {
-							userId = commonRepository.findUserId(approver);
-							if (!BookingsFieldsValidator.isNullOrEmpty(userId)) {
-								userList = commonRepository.findUserList(userId);
-							}
-							if (!BookingsFieldsValidator.isNullOrEmpty(userList)) {
-								userDetailsList = prepareUserList(userList, sector);
-							}
+							userId.addAll(commonRepository.findUserId(approver));
 						}
+					}
+					if (!BookingsFieldsValidator.isNullOrEmpty(userId)) {
+						userList = commonRepository.findUserList(userId);
+					}
+					if (!BookingsFieldsValidator.isNullOrEmpty(userList)) {
+						userDetailsList = prepareUserList(userList, sector);
 					}
 				}
 			}
