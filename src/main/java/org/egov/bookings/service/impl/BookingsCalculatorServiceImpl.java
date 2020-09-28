@@ -283,7 +283,7 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 		List<TaxHeadMasterFields> taxHeadMasterFieldList = new ArrayList<>();
 		JSONArray mdmsArrayList = null;
 		try {
-			Object mdmsData = bookingsUtils.prepareMdMsRequestForTaxHeadMaster(bookingsRequest.getRequestInfo());
+			Object mdmsData = bookingsUtils.prepareMdMsRequestForTaxHeadMaster(bookingsRequest);
 			String jsonString = mapper.writeValueAsString(mdmsData);
 			MdmsResponse mdmsResponse = mapper.readValue(jsonString, MdmsResponse.class);
 			Map<String, Map<String, JSONArray>> mdmsResMap = mdmsResponse.getMdmsRes();

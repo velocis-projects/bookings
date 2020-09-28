@@ -542,7 +542,7 @@ public class EnrichmentService {
 		if (BookingsConstants.PAYMENT_SUCCESS_STATUS.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
 
 			GenerateBillCriteria billCriteria = GenerateBillCriteria.builder()
-					.tenantId(bookingsRequest.getRequestInfo().getUserInfo().getTenantId())
+					.tenantId(bookingsRequest.getBookingsModel().getTenantId())
 					.businessService(bookingsRequest.getBookingsModel().getBusinessService())
 					.consumerCode(bookingsRequest.getBookingsModel().getBkApplicationNumber()).build();
 			BillResponse billResponse = demandService.generateBill(bookingsRequest.getRequestInfo(), billCriteria);

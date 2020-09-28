@@ -331,9 +331,9 @@ public class BookingsUtils {
 	 * @param requestInfo the request info
 	 * @return the object
 	 */
-	public Object prepareMdMsRequestForTaxHeadMaster(RequestInfo requestInfo) {
-		String tenantId = requestInfo.getUserInfo().getTenantId();
-		MdmsCriteriaReq mdmsCriteriaReq = getMDMSRequestForTaxHeadMaster(requestInfo, tenantId);
+	public Object prepareMdMsRequestForTaxHeadMaster(BookingsRequest bookingsRequest) {
+		String tenantId = bookingsRequest.getBookingsModel().getTenantId();
+		MdmsCriteriaReq mdmsCriteriaReq = getMDMSRequestForTaxHeadMaster(bookingsRequest.getRequestInfo(), tenantId);
 		StringBuilder uri = new StringBuilder(mdmsHost).append(mdmsEndpoint);
 		Object result = serviceRequestRepository.fetchResult(uri, mdmsCriteriaReq);
 		return result;
