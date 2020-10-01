@@ -220,6 +220,7 @@ public class EnrichmentService {
 		if (!BookingsConstants.BUSINESS_SERVICE_BWT.equals(bookingsRequest.getBookingsModel().getBusinessService())) {
 			if (!bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
 				demandService.createDemand(bookingsRequest);
+				System.out.println("------------------------------>"+config.isDemandFlag());
 			} else
 				demandService.updateDemand(bookingsRequest);
 		} else {
@@ -390,6 +391,7 @@ public class EnrichmentService {
 			bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
 			bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
 			bookingsModel.setBkRemarks(bookingsRequest.getBookingsModel().getBkRemarks());
+			bookingsModel.setTimeslots(bookingsRequest.getBookingsModel().getTimeslots());
 			if(!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
 				bookingsModel.setBkPaymentStatus(bookingsRequest.getBookingsModel().getBkPaymentStatus());
 			}
@@ -540,24 +542,29 @@ public class EnrichmentService {
 		List<TaxHeadEstimate> taxHeadEstimate1 = new ArrayList<>();
 
 		if (BookingsConstants.PAYMENT_SUCCESS_STATUS.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
-
+			BillResponse billResponse = null;
+			if (bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
 			GenerateBillCriteria billCriteria = GenerateBillCriteria.builder()
 					.tenantId(bookingsRequest.getBookingsModel().getTenantId())
 					.businessService(bookingsRequest.getBookingsModel().getBusinessService())
 					.consumerCode(bookingsRequest.getBookingsModel().getBkApplicationNumber()).build();
-			BillResponse billResponse = demandService.generateBill(bookingsRequest.getRequestInfo(), billCriteria);
+			 billResponse = demandService.generateBill(bookingsRequest.getRequestInfo(), billCriteria);
+			}
 			BigDecimal amount = finalAmount.subtract(
 					billResponse.getBill().get(0).getBillDetails().get(0).getBillAccountDetails().get(0).getAmount());
 
 			if (finalAmount.compareTo(billResponse.getBill().get(0).getBillDetails().get(0).getBillAccountDetails()
-					.get(0).getAmount()) < 1) {
-
-				taxHeadEstimate1 = enrichTaxHeadEstimateForPACC(bookingsRequest, finalAmount, taxHeadCode1,
-						taxHeadCode2, taxHeadMasterFieldList, parkCommunityHallV1FeeMaster);
+					.get(0).getAmount()) < 1 || finalAmount.compareTo(billResponse.getBill().get(0).getBillDetails().get(0).getBillAccountDetails()
+							.get(0).getAmount()) == 0) {
+				config.setDemandFlag(false);
+				/*taxHeadEstimate1 = enrichTaxHeadEstimateForPACC(bookingsRequest, finalAmount, taxHeadCode1,
+						taxHeadCode2, taxHeadMasterFieldList, parkCommunityHallV1FeeMaster);*/
 			}
 
 			else {
-				for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
+				taxHeadEstimate1 = enrichTaxHeadEstimateForPACC(bookingsRequest, finalAmount, taxHeadCode1, taxHeadCode2,
+						taxHeadMasterFieldList, parkCommunityHallV1FeeMaster);
+			/*	for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
 					if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
 						taxHeadEstimate1.add(
 								new TaxHeadEstimate(taxHeadEstimate.getCode(), amount, taxHeadEstimate.getCategory()));
@@ -567,8 +574,8 @@ public class EnrichmentService {
 								.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
 										amount.multiply((BigDecimal
 												.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
-												/*.subtract(billResponse.getBill().get(0).getBillDetails().get(0)
-														.getBillAccountDetails().get(1).getAmount())*/)
+												.subtract(billResponse.getBill().get(0).getBillDetails().get(0)
+														.getBillAccountDetails().get(1).getAmount()))
 																.divide(new BigDecimal(100))),
 										taxHeadEstimate.getCategory()));
 					}
@@ -578,7 +585,7 @@ public class EnrichmentService {
 										.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount())),
 								taxHeadEstimate.getCategory()));
 					}
-				}
+				}*/
 			}
 		} else {
 

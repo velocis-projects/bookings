@@ -207,4 +207,7 @@ public class BookingsConfiguration {
 	
 	 @Value("${egov.bill.gen.endpoint}")
 	 private String billGenerateEndpoint;
+	 
+	 @Value("${egov.demand.flag}")
+	 private boolean demandFlag;
 }
