@@ -407,8 +407,8 @@ public class BookingsServiceImpl implements BookingsService {
 					}
 					else if(!BookingsFieldsValidator.isNullOrEmpty(applicationNumberSet) && BookingsConstants.MCC_HELPDESK_USER.equals(role.getCode()))
 					{
+						String action = mdmsSearch(searchCriteriaFieldsDTO.getRequestInfo(), BookingsConstants.BOOKING_MDMS_MODULE_NAME, BookingsConstants.BOOKING_MDMS_FILE_NAME);
 						String approver = BookingsConstants.MCC_HELPDESK_USER;
-						String action = BookingsConstants.DELIVER;
 						List<String> applicationList = commonRepository.findApplicationList(action, approver);
 						applicationNumberSet.addAll(applicationList);
 						if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
@@ -503,7 +503,34 @@ public class BookingsServiceImpl implements BookingsService {
 		return booking;
 
 	}
-
+	
+public String mdmsSearch(RequestInfo requestInfo, String mdmsModuleName, String mdmsFileName){
+	JSONArray mdmsArrayList = null;
+	String action = "";
+	try {
+		Object mdmsData = bookingsUtils.getMdMsSearchRequest(requestInfo, mdmsModuleName, mdmsFileName);
+		String jsonString = objectMapper.writeValueAsString(mdmsData);
+		MdmsResponse mdmsResponse = objectMapper.readValue(jsonString, MdmsResponse.class);
+		Map<String, Map<String, JSONArray>> mdmsResMap = mdmsResponse.getMdmsRes();
+		Map<String, JSONArray> mdmsRes = mdmsResMap.get(mdmsModuleName);
+		mdmsArrayList = mdmsRes.get(mdmsFileName);
+		for (int i = 0; i < mdmsArrayList.size(); i++) {
+			jsonString = objectMapper.writeValueAsString(mdmsArrayList.get(i));
+			String[] bookingConfigJsonDetails = jsonString.substring(1, jsonString.length()-1).split(",");
+			for (int j = 0; j < bookingConfigJsonDetails.length; j++) {
+				String[] bookingConfigJsonFields = bookingConfigJsonDetails[j].substring(1, bookingConfigJsonDetails[j].length()-1).split(":");
+				if(BookingsConstants.BK_WATER_TANKER_DELIVER_ACTION_KEY.equals(bookingConfigJsonFields[0].substring(0, bookingConfigJsonFields[0].length()-1))) {
+					action = bookingConfigJsonFields[1].substring(1, bookingConfigJsonFields[1].length());
+				}
+			}
+		}
+	}
+	catch (Exception e) {
+		LOGGER.error("Exception occur in the mdmsSearch " + e);
+	}
+	return action;
+}
+	
 	/**
 	 * Update.
 	 *

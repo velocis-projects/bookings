@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class BookingsConstants.
  */
@@ -698,5 +699,13 @@ public class BookingsConstants {
 	public static final String DELIVER = "DELIVER";
 	
 	public static final String PACC_RE_INITIATED_ACTION = "RE_INITIATED";
+
+	public static final String BK_WATER_TANKER_DELIVER_ACTION_KEY = "bk-water-tanker-deliver-action";
+	
+	/** The Constant BOOKING_MDMS_MODULE_NAME. */
+	public static final String BOOKING_MDMS_MODULE_NAME = "Booking";
+	
+	/** The Constant BOOKING_MDMS_FILE_NAME. */
+	public static final String BOOKING_MDMS_FILE_NAME = "Booking-Config";
     
 }
