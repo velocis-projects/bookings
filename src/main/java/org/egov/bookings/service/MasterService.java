@@ -94,6 +94,22 @@ public interface MasterService {
 	public List<CommonMasterFields> updateGFCPFee(MasterRequest masterRequest);
 	
 	/**
+	 * Creates the PACC fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the list
+	 */
+	public List<CommonMasterFields> createPACCFee(MasterRequest masterRequest);
+	
+	/**
+	 * Update PACC fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the list
+	 */
+	public List<CommonMasterFields> updatePACCFee(MasterRequest masterRequest);
+	
+	/**
 	 * Fetch all approver.
 	 *
 	 * @return the list

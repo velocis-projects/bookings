@@ -342,6 +342,75 @@ public class MasterController {
 	}
 	
 	/**
+	 * Creates the PACC fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the response entity
+	 */
+	@PostMapping("/pacc/fee/_create")
+	public ResponseEntity<?> createPACCFee(@RequestBody MasterRequest masterRequest) {
+		
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getPaccFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid PACC Fee List");
+		}
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<CommonMasterFields> gfcpFeeModelList = masterService.createPACCFee(masterRequest);
+			rs.setStatus("200");
+			rs.setMessage("Data submitted in PACC Fee table");
+			rs.setData(gfcpFeeModelList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the createPACCFee " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+
+	}
+	
+	/**
+	 * Update PACC fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the response entity
+	 */
+	@PostMapping("/pacc/fee/_update")
+	public ResponseEntity<?> updatePACCFee(@RequestBody MasterRequest masterRequest) {
+		
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getGfcpFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid PACC Fee List");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getGfcpFeeList().get(0).getId())) 
+		{
+			throw new IllegalArgumentException("Invalid PACC Fee id");
+		}
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<CommonMasterFields> gfcpFeeModelList = masterService.updatePACCFee(masterRequest);
+			rs.setStatus("200");
+			rs.setMessage("Data updated in PACC Fee table");
+			rs.setData(gfcpFeeModelList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the updatePACCFee " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+	}
+	
+	/**
 	 * Fetch all approver.
 	 *
 	 * @return the response entity

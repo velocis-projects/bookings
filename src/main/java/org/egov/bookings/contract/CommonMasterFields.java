@@ -70,4 +70,76 @@ public class CommonMasterFields {
 	
 	/** The booking venue. */
 	private String bookingVenue;
+	
+	/** The sccid. */
+	private String sccid;
+
+	/** The scid. */
+	private String scid;
+
+	/** The x. */
+	private String x;
+
+	/** The y. */
+	private String y;
+
+	/** The pacc amount. */
+	private String paccAmount;
+
+	/** The dimension sqr yards. */
+	private String dimensionSqrYards;
+
+	/** The rent. */
+	private String rent;
+
+	/** The cleaning charges. */
+	private String cleaningCharges;
+
+	/** The surcharge. */
+	private String surcharge;
+
+	/** The luxury tax. */
+	private String luxuryTax;
+
+	/** The name. */
+	private String name;
+
+	/** The radius. */
+	private String radius;
+
+	/** The location change amount. */
+	private String locationChangeAmount;
+
+	/** The is active. */
+	private Boolean isActive;
+
+	/** The utgst rate. */
+	private String utgstRate;
+
+	/** The cgst rate. */
+	private String cgstRate;
+
+	/** The refundabel security. */
+	private String refundabelSecurity;
+
+	/** The normal type. */
+	private String normalType;
+
+	/** The reviserate 1. */
+	private String reviserate1;
+
+	/** The oldrent 1. */
+	private String oldrent1;
+
+	/** The rent next session. */
+	private String rentNextSession;
+
+	/** The image path. */
+	private String imagePath;
+
+	/** The venue type. */
+	private String venueType;
+
+	/** The booking allowed for. */
+	private String bookingAllowedFor;
 }

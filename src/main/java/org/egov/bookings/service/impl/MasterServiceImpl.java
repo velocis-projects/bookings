@@ -372,6 +372,66 @@ public class MasterServiceImpl implements MasterService{
 	}
 	
 	/**
+	 * Creates the PACC fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the list
+	 */
+	@Override
+	public List<CommonMasterFields> createPACCFee(MasterRequest masterRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getPaccFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid PACC Fee List");
+		}
+		try {
+			masterRequest.getPaccFeeList().get(0).setId(UUID.randomUUID().toString());
+//			bookingsFieldsValidator.validateGFCPFeeBody(masterRequest);
+			DateFormat formatter = getSimpleDateFormat();
+			masterRequest.getPaccFeeList().get(0).setCreatedDate(formatter.format(new Date()));
+			masterRequest.getPaccFeeList().get(0).setLastModifiedDate(formatter.format(new Date()));
+			bookingsProducer.push(config.getSavePaccFeeTopic(), masterRequest);
+		}catch (Exception e) {
+			throw new CustomException("PACC_FEE_SAVE_ERROR", "ERROR WHILE SAVING PACC FEE DETAILS");
+		}
+		return masterRequest.getGfcpFeeList();
+	}
+
+	/**
+	 * Update PACC fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the list
+	 */
+	@Override
+	public List<CommonMasterFields> updatePACCFee(MasterRequest masterRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid masterRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getPaccFeeList())) 
+		{
+			throw new IllegalArgumentException("Invalid PACC Fee List");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getPaccFeeList().get(0).getId())) 
+		{
+			throw new IllegalArgumentException("Invalid PACC Fee id");
+		}
+		try {
+			bookingsFieldsValidator.validateGFCPFeeBody(masterRequest);
+			DateFormat formatter = getSimpleDateFormat();
+			masterRequest.getPaccFeeList().get(0).setLastModifiedDate(formatter.format(new Date()));
+			bookingsProducer.push(config.getUpdatePaccFeeTopic(), masterRequest);
+		}catch (Exception e) {
+			throw new CustomException("PACC_FEE_UPDATE_ERROR", "ERROR WHILE UPDATE PACC FEE DETAILS");
+		}
+		return masterRequest.getGfcpFeeList();
+	}
+	
+	/**
 	 * Gets the simple date format.
 	 *
 	 * @return the simple date format
