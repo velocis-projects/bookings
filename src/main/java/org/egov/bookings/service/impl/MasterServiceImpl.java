@@ -24,12 +24,14 @@ import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
+import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 import org.egov.bookings.producer.BookingsProducer;
 import org.egov.bookings.repository.CommercialGroundRepository;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsbmApproverRepository;
 import org.egov.bookings.repository.OsbmFeeRepository;
 import org.egov.bookings.repository.OsujmFeeRepository;
+import org.egov.bookings.repository.ParkCommunityHallV1MasterRepository;
 import org.egov.bookings.repository.ParkCommunityInventoryRepsitory;
 import org.egov.bookings.service.MasterService;
 import org.egov.bookings.utils.BookingsConstants;
@@ -98,6 +100,10 @@ public class MasterServiceImpl implements MasterService{
 	/** The commercial ground fee repository. */
 	@Autowired
 	private CommercialGroundRepository commercialGroundFeeRepository;
+	
+	/** The park community hall V 1 master repository. */
+	@Autowired
+	private ParkCommunityHallV1MasterRepository parkCommunityHallV1MasterRepository;
 	
 	/**
 	 * Gets the park community inventory details.
@@ -456,52 +462,75 @@ public class MasterServiceImpl implements MasterService{
 	}
 
 	/**
-	 * Fetch all OSB mfee.
+	 * Fetch all OSBM fee.
 	 *
 	 * @return the list
 	 */
 	@Override
-	public List<OsbmFeeModel> fetchAllOSBMfee() {
+	public List<OsbmFeeModel> fetchAllOSBMFee() {
 		List<OsbmFeeModel> osbmFeeList = new ArrayList<>();
 		try {
 			osbmFeeList = osbmFeeRepository.findAll(); 
 		}
 		catch (Exception e) {
-			LOGGER.error("Exception occur in the fetchAllOSBMfee " + e);
+			LOGGER.error("Exception occur in the fetchAllOSBMFee " + e);
 			e.printStackTrace();
 		}
 		return osbmFeeList;
 	}
 
 	/**
-	 * Fetch all OSUJ mfee.
+	 * Fetch all OSUJM fee.
 	 *
 	 * @return the list
 	 */
 	@Override
-	public List<OsujmFeeModel> fetchAllOSUJMfee() {
+	public List<OsujmFeeModel> fetchAllOSUJMFee() {
 		List<OsujmFeeModel> osujmFeeList = new ArrayList<>();
 		try {
 			osujmFeeList = osujmFeeRepository.findAll(); 
 		}
 		catch (Exception e) {
-			LOGGER.error("Exception occur in the fetchAllOSUJMfee " + e);
+			LOGGER.error("Exception occur in the fetchAllOSUJMFee " + e);
 			e.printStackTrace();
 		}
 		return osujmFeeList;
 	}
 
+	/**
+	 * Fetch all GFCP fee.
+	 *
+	 * @return the list
+	 */
 	@Override
-	public List<CommercialGroundFeeModel> fetchAllGFCPfee() {
+	public List<CommercialGroundFeeModel> fetchAllGFCPFee() {
 		List<CommercialGroundFeeModel> gfcpFeeList = new ArrayList<>();
 		try {
 			gfcpFeeList = commercialGroundFeeRepository.findAll(); 
 		}
 		catch (Exception e) {
-			LOGGER.error("Exception occur in the fetchAllGFCPfee " + e);
+			LOGGER.error("Exception occur in the fetchAllGFCPFee " + e);
 			e.printStackTrace();
 		}
 		return gfcpFeeList;
+	}
+	
+	/**
+	 * Fetch all PACC fee.
+	 *
+	 * @return the list
+	 */
+	@Override
+	public List<ParkCommunityHallV1MasterModel> fetchAllPACCFee() {
+		List<ParkCommunityHallV1MasterModel> paccFeeList = new ArrayList<>();
+		try {
+			paccFeeList = parkCommunityHallV1MasterRepository.findAll(); 
+		}
+		catch (Exception e) {
+			LOGGER.error("Exception occur in the fetchAllPACCFee " + e);
+			e.printStackTrace();
+		}
+		return paccFeeList;
 	}
 	
 	/**

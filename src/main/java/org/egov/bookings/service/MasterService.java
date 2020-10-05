@@ -12,6 +12,7 @@ import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
+import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -107,25 +108,32 @@ public interface MasterService {
 	public List<OsbmApproverModel> fetchAllApproverDetails();
 	
 	/**
-	 * Fetch all OSB mfee.
+	 * Fetch all OSBM fee.
 	 *
 	 * @return the list
 	 */
-	public List<OsbmFeeModel> fetchAllOSBMfee();
+	public List<OsbmFeeModel> fetchAllOSBMFee();
 	
 	/**
-	 * Fetch all OSUJ mfee.
+	 * Fetch all OSUJM fee.
 	 *
 	 * @return the list
 	 */
-	public List<OsujmFeeModel> fetchAllOSUJMfee();
+	public List<OsujmFeeModel> fetchAllOSUJMFee();
 	
 	/**
-	 * Fetch all GFC pfee.
+	 * Fetch all GFCP fee.
 	 *
 	 * @return the list
 	 */
-	public List<CommercialGroundFeeModel> fetchAllGFCPfee();
+	public List<CommercialGroundFeeModel> fetchAllGFCPFee();
+	
+	/**
+	 * Fetch all PACC fee.
+	 *
+	 * @return the list
+	 */
+	public List<ParkCommunityHallV1MasterModel> fetchAllPACCFee();
 	
 	/**
 	 * Gets the roles.

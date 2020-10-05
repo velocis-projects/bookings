@@ -17,6 +17,7 @@ import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
+import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 import org.egov.bookings.service.MasterService;
 import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -379,7 +380,7 @@ public class MasterController {
 		}
 		catch(Exception e)
 		{
-			LOGGER.error("Exception occur in the fetchAllOSBMfee " + e);
+			LOGGER.error("Exception occur in the fetchAllApproverDetails " + e);
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok(rs);
@@ -391,17 +392,17 @@ public class MasterController {
 	 * @return the response entity
 	 */
 	@PostMapping("osbm/fee/_fetch")
-	public ResponseEntity<?> fetchAllOSBMfee() {
+	public ResponseEntity<?> fetchAllOSBMFee() {
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsbmFeeModel> osbmFeeList = masterService.fetchAllOSBMfee(); 
+			List<OsbmFeeModel> osbmFeeList = masterService.fetchAllOSBMFee(); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(osbmFeeList);
 		}
 		catch(Exception e)
 		{
-			LOGGER.error("Exception occur in the fetchAllOSBMfee " + e);
+			LOGGER.error("Exception occur in the fetchAllOSBMFee " + e);
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok(rs);
@@ -413,17 +414,17 @@ public class MasterController {
 	 * @return the response entity
 	 */
 	@PostMapping("osujm/fee/_fetch")
-	public ResponseEntity<?> fetchAllOSUJMfee() {
+	public ResponseEntity<?> fetchAllOSUJMFee() {
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsujmFeeModel> osbmFeeList = masterService.fetchAllOSUJMfee(); 
+			List<OsujmFeeModel> osbmFeeList = masterService.fetchAllOSUJMFee(); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(osbmFeeList);
 		}
 		catch(Exception e)
 		{
-			LOGGER.error("Exception occur in the fetchAllOSUJMfee " + e);
+			LOGGER.error("Exception occur in the fetchAllOSUJMFee " + e);
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok(rs);
@@ -435,17 +436,39 @@ public class MasterController {
 	 * @return the response entity
 	 */
 	@PostMapping("gfcp/fee/_fetch")
-	public ResponseEntity<?> fetchAllGFCPfee() {
+	public ResponseEntity<?> fetchAllGFCPFee() {
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<CommercialGroundFeeModel> osbmFeeList = masterService.fetchAllGFCPfee(); 
+			List<CommercialGroundFeeModel> osbmFeeList = masterService.fetchAllGFCPFee(); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(osbmFeeList);
 		}
 		catch(Exception e)
 		{
-			LOGGER.error("Exception occur in the fetchAllGFCPfee " + e);
+			LOGGER.error("Exception occur in the fetchAllGFCPFee " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+	}
+	
+	/**
+	 * Fetch all PACC fee.
+	 *
+	 * @return the response entity
+	 */
+	@PostMapping("pacc/fee/_fetch")
+	public ResponseEntity<?> fetchAllPACCFee() {
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<ParkCommunityHallV1MasterModel> osbmFeeList = masterService.fetchAllPACCFee(); 
+			rs.setStatus("200");
+			rs.setMessage("Success");
+			rs.setData(osbmFeeList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the fetchAllPACCFee " + e);
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok(rs);
@@ -485,4 +508,5 @@ public class MasterController {
 		}
 		return ResponseEntity.ok(rs);
 	}
+	
 }
