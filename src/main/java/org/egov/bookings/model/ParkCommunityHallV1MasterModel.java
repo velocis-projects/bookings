@@ -1,5 +1,7 @@
 package org.egov.bookings.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -94,5 +96,13 @@ public class ParkCommunityHallV1MasterModel {
 	
 	@Column(name = "Sector")
 	private String sector;
+	
+	/** The last modified date. */
+	@Column(name = "LAST_MODIFIED_DATE")
+	private Date lastModifiedDate;
+	
+	/** The created date. */
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
 
 }

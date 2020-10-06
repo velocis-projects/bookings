@@ -1,6 +1,5 @@
 package org.egov.bookings.contract;
 
-import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -34,5 +33,9 @@ public class MasterRequest {
 	/** The gfcp fee list. */
 	@JsonProperty("GfcpFeeDetails")
 	private List<CommonMasterFields> gfcpFeeList;
+	
+	/** The pacc fee list. */
+	@JsonProperty("PaccFeeDetails")
+	private List<CommonMasterFields> paccFeeList;
 	
 }
