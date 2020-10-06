@@ -707,5 +707,13 @@ public class BookingsConstants {
 	
 	/** The Constant BOOKING_MDMS_FILE_NAME. */
 	public static final String BOOKING_MDMS_FILE_NAME = "Booking-Config";
+	
+	public static final String PACC_TAXHEAD_CODE_LUXURY_TAX = "LUXURY_TAX";
+	
+	public static final String PACC_TAXHEAD_CODE_REFUNDABLE_SECURITY_AMOUNT = "REFUNDABLE_SECURITY";
+	
+	public static final String PACC_TAXHEAD_CODE_FACILITATION_CHARGE = "FACILITATION_CHARGE";
+	
+	public static final String OFFLINE_APPLY = "OFFLINE_APPLY";
     
 }

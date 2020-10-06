@@ -75,10 +75,16 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 	@Autowired
 	private BookingsService bookingService;
 	
+	/** The lock. */
 	private Lock lock = new ReentrantLock();
 
+	/** The bookings producer. */
 	@Autowired
 	private BookingsProducer bookingsProducer;
+	
+	/** The user service. */
+	@Autowired
+	private UserService userService;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -89,6 +95,8 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 	public BookingsModel createParkAndCommunityBooking(BookingsRequest bookingsRequest) {
 		boolean flag = bookingService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 		
+		if(BookingsConstants.EMPLOYEE.equals(bookingsRequest.getRequestInfo().getUserInfo().getType()));
+		userService.createUser(bookingsRequest, false);
 		if (!flag)
 			enrichmentService.enrichParkCommunityCreateRequest(bookingsRequest);
 		enrichmentService.generateDemand(bookingsRequest);
@@ -172,6 +180,9 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.ParkAndCommunityService#availabilitySearch(org.egov.bookings.contract.ParkAndCommunitySearchCriteria)
+	 */
 	@Override
 	public Set<AvailabilityResponse> availabilitySearch(ParkAndCommunitySearchCriteria parkAndCommunitySearchCriteria) {
 
@@ -181,7 +192,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		Set<AvailabilityResponse> bookedDates = new HashSet<>();
 		Set<BookingsModel> bookingsModel = parkAndCommunityRepository.fetchBookedDatesOfParkAndCommunity(
 				parkAndCommunitySearchCriteria.getBookingVenue(), parkAndCommunitySearchCriteria.getBookingType(),
-				parkAndCommunitySearchCriteria.getSector(), date1, BookingsConstants.APPLY);
+				parkAndCommunitySearchCriteria.getSector(), date1, BookingsConstants.APPLY,BookingsConstants.OFFLINE_APPLY);
 		if (null != bookingsModel) {
 			for (BookingsModel bkModel : bookingsModel) {
 				bookedDates.add(AvailabilityResponse.builder().fromDate(bkModel.getBkFromDate())
@@ -192,6 +203,9 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.ParkAndCommunityService#fetchBookedDates(org.egov.bookings.web.models.BookingsRequest)
+	 */
 	@Override
 	public Set<Date> fetchBookedDates(BookingsRequest bookingsRequest) {
 
@@ -206,7 +220,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 			if (config.isParkAndCommunityLock()) {
 				Set<BookingsModel> bookingsModelSet = parkAndCommunityRepository.fetchBookedDatesOfParkAndCommunity(
 						bookingsRequest.getBookingsModel().getBkBookingVenue(), bookingsRequest.getBookingsModel().getBkBookingType(),
-						bookingsRequest.getBookingsModel().getBkSector(), date1, BookingsConstants.APPLY);
+						bookingsRequest.getBookingsModel().getBkSector(), date1, BookingsConstants.APPLY,BookingsConstants.OFFLINE_APPLY);
 
 				List<LocalDate> fetchBookedDates = enrichmentService.enrichBookedDates(bookingsModelSet);
 				
@@ -233,6 +247,9 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.ParkAndCommunityService#findParkAndCommunityFee(java.lang.String)
+	 */
 	@Override
 	public ParkCommunityHallV1MasterModel findParkAndCommunityFee(String bookingVenue) {
 		ParkCommunityHallV1MasterModel parkCommunityHallFee = null;
@@ -244,6 +261,9 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.ParkAndCommunityService#fetchAmount(org.egov.bookings.contract.ParkCommunityFeeMasterRequest)
+	 */
 	@Override
 	public ParkCommunityFeeMasterResponse fetchAmount(ParkCommunityFeeMasterRequest parkCommunityFeeMasterRequest) {
 		ParkCommunityHallV1MasterModel parkCommunityHallFee = null;

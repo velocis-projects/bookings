@@ -210,4 +210,13 @@ public class BookingsConfiguration {
 	 
 	 @Value("${egov.demand.flag}")
 	 private boolean demandFlag;
+	 
+	 @Value("${egov.user.context.path}")
+	 private String userContextPath;
+
+	 @Value("${egov.user.create.endpoint}")
+	 private String userCreateEndpoint;
+	 
+	 @Value("${egov.user.update.path}")
+	 private String userUpdateEndpoint;
 }

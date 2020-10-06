@@ -1,22 +1,22 @@
 package org.egov.bookings.model.user;
 
+import java.util.List;
+
+import org.egov.common.contract.response.ResponseInfo;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.egov.common.contract.request.RequestInfo;
 
 @AllArgsConstructor
-@Getter
 @NoArgsConstructor
-public class CreateUserRequest {
-
-    @JsonProperty("requestInfo")
-    private RequestInfo requestInfo;
+@Getter
+public class UserDetailResponse {
+    @JsonProperty("responseInfo")
+    ResponseInfo responseInfo;
 
     @JsonProperty("user")
-    private OwnerInfo user;
-
+    List<OwnerInfo> user;
 }
-
-

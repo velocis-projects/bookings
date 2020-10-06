@@ -70,7 +70,7 @@ public class BookingsQueryBuilder {
 	/** The Constant CHECK_PARK_AND_COMMUNITY_AVAILABILITY. */
 
 	/** The Constant CHECK_PARK_AND_COMMUNITY_AVAILABILITY. */
-	public static final String CHECK_PARK_AND_COMMUNITY_AVAILABILITY = "select * from bk_bookings where bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType and bk_sector =:sector and bk_to_date >= :date and bk_action =:APPLY";
+	public static final String CHECK_PARK_AND_COMMUNITY_AVAILABILITY = "select * from bk_bookings where bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType and bk_sector =:sector and bk_to_date >= :date and bk_action =:APPLY or bk_action =:OFFLINE_APPLY";
 	
 	/** The Constant FIND_ROLES_BY_UUID. */
 	public static final String FIND_ROLES_BY_UUID = "select euv.role_code from eg_user as eu "
