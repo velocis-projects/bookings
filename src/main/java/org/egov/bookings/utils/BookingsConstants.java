@@ -701,12 +701,9 @@ public class BookingsConstants {
 	public static final String PACC_RE_INITIATED_ACTION = "RE_INITIATED";
 
 	public static final String BK_WATER_TANKER_DELIVER_ACTION_KEY = "bk-water-tanker-deliver-action";
-	
+
 	/** The Constant BOOKING_MDMS_MODULE_NAME. */
 	public static final String BOOKING_MDMS_MODULE_NAME = "Booking";
-	
-	/** The Constant BOOKING_MDMS_FILE_NAME. */
-	public static final String BOOKING_MDMS_FILE_NAME = "Booking-Config";
 	
 	public static final String PACC_TAXHEAD_CODE_LUXURY_TAX = "LUXURY_TAX";
 	
@@ -715,5 +712,7 @@ public class BookingsConstants {
 	public static final String PACC_TAXHEAD_CODE_FACILITATION_CHARGE = "FACILITATION_CHARGE";
 	
 	public static final String OFFLINE_APPLY = "OFFLINE_APPLY";
+
+	public static final String BOOKING_MDMS_FILE_NAME = "Booking_Config";
     
 }

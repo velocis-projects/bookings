@@ -360,10 +360,10 @@ public class MasterController {
 		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<CommonMasterFields> gfcpFeeModelList = masterService.createPACCFee(masterRequest);
+			List<CommonMasterFields> paccFeeModelList = masterService.createPACCFee(masterRequest);
 			rs.setStatus("200");
 			rs.setMessage("Data submitted in PACC Fee table");
-			rs.setData(gfcpFeeModelList);
+			rs.setData(paccFeeModelList);
 		}
 		catch(Exception e)
 		{
@@ -387,20 +387,20 @@ public class MasterController {
 		{
 			throw new IllegalArgumentException("Invalid masterRequest");
 		}
-		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getGfcpFeeList())) 
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getPaccFeeList())) 
 		{
 			throw new IllegalArgumentException("Invalid PACC Fee List");
 		}
-		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getGfcpFeeList().get(0).getId())) 
+		if (BookingsFieldsValidator.isNullOrEmpty(masterRequest.getPaccFeeList().get(0).getId())) 
 		{
 			throw new IllegalArgumentException("Invalid PACC Fee id");
 		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<CommonMasterFields> gfcpFeeModelList = masterService.updatePACCFee(masterRequest);
+			List<CommonMasterFields> paccFeeModelList = masterService.updatePACCFee(masterRequest);
 			rs.setStatus("200");
 			rs.setMessage("Data updated in PACC Fee table");
-			rs.setData(gfcpFeeModelList);
+			rs.setData(paccFeeModelList);
 		}
 		catch(Exception e)
 		{
