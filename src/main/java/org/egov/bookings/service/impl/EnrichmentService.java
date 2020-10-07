@@ -609,7 +609,7 @@ public class EnrichmentService {
 			if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
 				taxHeadEstimate1.add(
 						new TaxHeadEstimate(taxHeadEstimate.getCode(), finalAmount, taxHeadEstimate.getCategory()));
-				break;
+				continue;
 			}
 			if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
 				taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
@@ -617,19 +617,19 @@ public class EnrichmentService {
 								.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
 										.divide(new BigDecimal(100)))),
 						taxHeadEstimate.getCategory()));
-				break;
+				continue;
 			}
 			if (taxHeadEstimate.getCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_LUXURY_TAX)) {
 				taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
 						BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLuxuryTax())),
 						taxHeadEstimate.getCategory()));
-				break;
+				continue;
 			}
 			if (taxHeadEstimate.getCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_REFUNDABLE_SECURITY_AMOUNT)) {
 				taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
 						BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getRefundabelSecurity())),
 						taxHeadEstimate.getCategory()));
-				break;
+				continue;
 			}
 			
 			if(bookingsRequest.getRequestInfo().getUserInfo().getType().equals(BookingsConstants.EMPLOYEE)) {
@@ -638,7 +638,7 @@ public class EnrichmentService {
 						taxHeadEstimate.getFacilitationCharge(),
 						taxHeadEstimate.getCategory()));
 				}
-			break;
+			continue;
 			}
 			if (BookingsConstants.PAYMENT_SUCCESS_STATUS
 					.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
