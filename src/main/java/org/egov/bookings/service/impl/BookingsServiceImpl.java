@@ -373,7 +373,14 @@ public class BookingsServiceImpl implements BookingsService {
 			for (Role role : roles) {
 				if (!BookingsConstants.CITIZEN.equals(role.getCode())
 						&& !BookingsConstants.EMPLOYEE.equals(role.getCode())) {
-					applicationNumberSet.addAll(commonRepository.findApplicationNumber(role.getCode()));
+					if(BookingsConstants.DEO.equals(role.getCode()) || BookingsConstants.CLERK.equals(role.getCode())
+							|| BookingsConstants.E_SAMPARK_CENTER.equals(role.getCode())
+							|| BookingsConstants.MCC_USER.equals(role.getCode())) {
+						applicationNumberSet.addAll(commonRepository.findBusinessId(role.getCode()));
+					}
+					else {
+						applicationNumberSet.addAll(commonRepository.findApplicationNumber(role.getCode()));
+					}
 				}
 			}
 			for (Role role : roles) {

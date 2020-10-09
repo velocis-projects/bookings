@@ -40,6 +40,15 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 */
 	@Query(value = BookingsQueryBuilder.FIND_APPLICATION_NUMBER, nativeQuery = true)
 	public Set<String> findApplicationNumber(@Param(BookingsConstants.ROLES) String roles);
+	
+	/**
+	 * Find business id.
+	 *
+	 * @param roles the roles
+	 * @return the sets the
+	 */
+	@Query(value = BookingsQueryBuilder.FIND_BUSINESS_ID, nativeQuery = true)
+	public Set<String> findBusinessId (@Param(BookingsConstants.ROLES) String roles);
 
 	/**
 	 * Find sector list.
