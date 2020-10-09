@@ -911,4 +911,7 @@ public class BookingsServiceImpl implements BookingsService {
 		}
 		return userDetailsList;
 	}
+	
+	
+	
 }
