@@ -20,10 +20,16 @@ public class BookingsQueryBuilder {
 			+ "action_v2.\"action\" = :action) and euv.role_tenantid = :role_tenantId));";
 
 	/** The Constant FIND_APPLICATION_NUMBER. */
-	public static final String FIND_APPLICATION_NUMBER = "select businessid from eg_wf_processinstance_v2 as ewpv "
+	public static final String FIND_APPLICATION_NUMBER = "select ewpv.businessid from eg_wf_processinstance_v2 as ewpv "
 			+ "inner join eg_wf_state_v2 as ewsv on ewsv.uuid = ewpv.status " 
 			+ "inner join eg_wf_action_v2 as ewav on ewav.currentstate = ewsv.uuid "
 			+ "and ewav.roles = :roles";
+	
+	/** The Constant FIND_BUSINESS_ID. */
+	public static final String FIND_BUSINESS_ID = "select ewpv.businessid from eg_wf_processinstance_v2 as ewpv "
+			+ "inner join eg_wf_state_v2 as ewsv on ewsv.uuid = ewpv.status " 
+			+ "inner join eg_wf_action_v2 as ewav on ewav.currentstate = ewsv.uuid "
+			+ "and ewav.roles like (%:roles%)";
 	//where ewpv.action != 'INITIATE'
 	//inner join eg_wf_action_v2 as ewav on ewav.currentstate = ewsv.uuid or ewav.nextstate = ewsv.uuid
 	
