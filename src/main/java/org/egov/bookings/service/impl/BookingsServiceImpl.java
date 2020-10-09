@@ -520,7 +520,7 @@ public class BookingsServiceImpl implements BookingsService {
 		JSONArray mdmsArrayList = null;
 		String action = "";
 		try {
-			Object mdmsData = bookingsUtils.getMdMsSearchRequest(requestInfo, mdmsModuleName, mdmsFileName);
+			Object mdmsData = bookingsUtils.getMdmsSearchRequest(requestInfo, mdmsModuleName, mdmsFileName);
 			String jsonString = objectMapper.writeValueAsString(mdmsData);
 			MdmsResponse mdmsResponse = objectMapper.readValue(jsonString, MdmsResponse.class);
 			Map<String, Map<String, JSONArray>> mdmsResMap = mdmsResponse.getMdmsRes();

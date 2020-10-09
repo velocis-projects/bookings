@@ -2,47 +2,34 @@ package org.egov.bookings.utils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
+import org.egov.bookings.config.BookingsConfiguration;
+import org.egov.bookings.contract.RequestInfoWrapper;
+import org.egov.bookings.model.ActionHistory;
+import org.egov.bookings.model.ActionInfo;
+import org.egov.bookings.model.AuditDetails;
+import org.egov.bookings.repository.impl.ServiceRequestRepository;
+import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.mdms.model.MasterDetail;
 import org.egov.mdms.model.MdmsCriteria;
 import org.egov.mdms.model.MdmsCriteriaReq;
 import org.egov.mdms.model.ModuleDetail;
-import org.egov.bookings.config.BookingsConfiguration;
-import org.egov.bookings.contract.RequestInfoWrapper;
-import org.egov.bookings.contract.SearcherRequest;
-import org.egov.bookings.contract.ServiceReqSearchCriteria;
-import org.egov.bookings.contract.ServiceResponse;
-import org.egov.bookings.model.ActionHistory;
-import org.egov.bookings.model.ActionInfo;
-import org.egov.bookings.model.AuditDetails;
-import org.egov.bookings.model.Service;
-import org.egov.bookings.repository.impl.ServiceRequestRepository;
-import org.egov.bookings.web.models.BookingsRequest;
-import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.jayway.jsonpath.JsonPath;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -262,7 +249,16 @@ public class BookingsUtils {
 		return mdmsCriteriaReq;
 	}
 	
-	private MdmsCriteriaReq getMDMSSearchRequest(RequestInfo requestInfo, String tenantId, String moduleName, String mdmsFileName) {
+	/**
+	 * Gets the MDMS request.
+	 *
+	 * @param requestInfo the request info
+	 * @param tenantId the tenant id
+	 * @param moduleName the module name
+	 * @param mdmsFileName the mdms file name
+	 * @return the MDMS request
+	 */
+	private MdmsCriteriaReq getMDMSRequest(RequestInfo requestInfo, String tenantId, String moduleName, String mdmsFileName) {
 
 		ModuleDetail getMdmsModuleTypes = getMdmsModuleSearchType(moduleName, mdmsFileName);
 
@@ -293,9 +289,17 @@ public class BookingsUtils {
 
 	}
 
-	public Object getMdMsSearchRequest(RequestInfo requestInfo, String moduleName, String mdmsFileName) {
+	/**
+	 * Gets the mdms search request.
+	 *
+	 * @param requestInfo the request info
+	 * @param moduleName the module name
+	 * @param mdmsFileName the mdms file name
+	 * @return the mdms search request
+	 */
+	public Object getMdmsSearchRequest(RequestInfo requestInfo, String moduleName, String mdmsFileName) {
 		String tenantId = requestInfo.getUserInfo().getTenantId();
-		MdmsCriteriaReq mdmsCriteriaReq = getMDMSSearchRequest(requestInfo, tenantId, moduleName, mdmsFileName);
+		MdmsCriteriaReq mdmsCriteriaReq = getMDMSRequest(requestInfo, tenantId, moduleName, mdmsFileName);
 		StringBuilder uri = new StringBuilder(mdmsHost).append(mdmsEndpoint);
 		Object result = serviceRequestRepository.fetchResult(uri, mdmsCriteriaReq);
 		return result;
