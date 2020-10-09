@@ -10,8 +10,7 @@ import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.DocumentFields;
 import org.egov.bookings.contract.MasterRequest;
-import org.egov.bookings.contract.MdmsJsonFields;
-import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
+import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
@@ -25,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -543,29 +543,17 @@ public class MasterController {
 		return ResponseEntity.ok(rs);
 	}
 	
+	
 	/**
 	 * Gets the roles.
 	 *
-	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @return the roles
 	 */
 	@PostMapping("roles/_search")
-	public ResponseEntity<?> getRoles(@RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
-		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
-		{
-			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
-		}
-		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getUuid())) 
-		{
-			throw new IllegalArgumentException("Invalid uuid");
-		}
-		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getRequestInfo())) 
-		{
-			throw new IllegalArgumentException("Invalid requestInfo");
-		}
+	public ResponseEntity<?> getRoles() {
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<MdmsJsonFields> roleList = masterService.getRoles(searchCriteriaFieldsDTO); 
+			List<String> roleList = masterService.getRoles(); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(roleList);
@@ -578,4 +566,29 @@ public class MasterController {
 		return ResponseEntity.ok(rs);
 	}
 	
+	/**
+	 * Gets the users.
+	 *
+	 * @return the users
+	 */
+	@PostMapping("user/_search")
+	public ResponseEntity<?> getUsers(@RequestParam(value = "approver") String approver) {
+		if (BookingsFieldsValidator.isNullOrEmpty(approver)) 
+		{
+			throw new IllegalArgumentException("Invalid approver");
+		}
+		ResponseModel rs = new ResponseModel();
+		try {
+			List<UserDetails> userList = masterService.getUsers(approver); 
+			rs.setStatus("200");
+			rs.setMessage("Success");
+			rs.setData(userList);
+		}
+		catch(Exception e)
+		{
+			LOGGER.error("Exception occur in the getUsers " + e);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(rs);
+	}
 }

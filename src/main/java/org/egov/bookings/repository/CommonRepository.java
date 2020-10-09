@@ -167,6 +167,14 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	public List<String> findRolesByUuid(@Param(BookingsConstants.UUID) String uuid);
 	
 	/**
+	 * Find roles.
+	 *
+	 * @return the list
+	 */
+	@Query(value = BookingsQueryBuilder.FIND_ROLES, nativeQuery = true)
+	public List<String> findRoles();
+	
+	/**
 	 * Find application list.
 	 *
 	 * @param action the action
