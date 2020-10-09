@@ -5,8 +5,7 @@ import java.util.List;
 import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.MasterRequest;
-import org.egov.bookings.contract.MdmsJsonFields;
-import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
+import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
@@ -154,9 +153,15 @@ public interface MasterService {
 	/**
 	 * Gets the roles.
 	 *
-	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @return the roles
 	 */
-	public List<MdmsJsonFields> getRoles(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO);
+	public List<String> getRoles();
+	
+	/**
+	 * Gets the users.
+	 *
+	 * @return the users
+	 */
+	public List<UserDetails> getUsers(String approver);
 
 }

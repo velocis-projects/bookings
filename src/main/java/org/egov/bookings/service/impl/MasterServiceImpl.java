@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -17,8 +16,7 @@ import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.MasterRequest;
-import org.egov.bookings.contract.MdmsJsonFields;
-import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
+import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
@@ -35,17 +33,13 @@ import org.egov.bookings.repository.ParkCommunityHallV1MasterRepository;
 import org.egov.bookings.repository.ParkCommunityInventoryRepsitory;
 import org.egov.bookings.service.MasterService;
 import org.egov.bookings.utils.BookingsConstants;
-import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.validator.BookingsFieldsValidator;
-import org.egov.mdms.model.MdmsResponse;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import net.minidev.json.JSONArray;
 
 /**
  * The Class MasterServiceImpl.
@@ -92,10 +86,6 @@ public class MasterServiceImpl implements MasterService{
 	/** The bookings fields validator. */
 	@Autowired
 	private BookingsFieldsValidator bookingsFieldsValidator;
-	
-	/** The bookings utils. */
-	@Autowired
-	private BookingsUtils bookingsUtils;
 	
 	/** The commercial ground fee repository. */
 	@Autowired
@@ -594,56 +584,56 @@ public class MasterServiceImpl implements MasterService{
 	/**
 	 * Gets the roles.
 	 *
-	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @return the roles
 	 */
 	@Override
-	public List<MdmsJsonFields> getRoles(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
-		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
-		{
-			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
-		}
-		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getUuid())) 
-		{
-			throw new IllegalArgumentException("Invalid uuid");
-		}
-		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getRequestInfo())) 
-		{
-			throw new IllegalArgumentException("Invalid requestInfo");
-		}
+	public List<String> getRoles() {
 		List<String> roleList = new ArrayList<>();
-		List<MdmsJsonFields> mdmsRoleList = new ArrayList<>();
 		try {
-			roleList = commonRepository.findRolesByUuid(searchCriteriaFieldsDTO.getUuid());
-			if (!BookingsFieldsValidator.isNullOrEmpty(roleList)) 
+			roleList = commonRepository.findRoles();
+		}
+		catch (Exception e) {
+			LOGGER.error("Exception occur in the getRoles " + e);
+			e.printStackTrace();
+		}
+		return roleList;
+	}
+
+	/**
+	 * Gets the users.
+	 *
+	 * @param approver the approver
+	 * @return the users
+	 */
+	@Override
+	public List<UserDetails> getUsers(String approver) {
+		if (BookingsFieldsValidator.isNullOrEmpty(approver)) 
+		{
+			throw new IllegalArgumentException("Invalid approver");
+		}
+		List<UserDetails> userDetailsList = new ArrayList<>();
+		List<?> userList = new ArrayList<>();
+		List<Integer> userId = new ArrayList<>();
+		try {
+			userId = commonRepository.findUserId(approver);
+			if (!BookingsFieldsValidator.isNullOrEmpty(userId)) 
 			{
-				JSONArray mdmsArrayList = null;
-				Object mdmsData = bookingsUtils.getMdMsSearchRequest(searchCriteriaFieldsDTO.getRequestInfo(), BookingsConstants.MDMS_MODULE_NAME, BookingsConstants.MDMS_FILE_NAME);
-				String jsonString = objectMapper.writeValueAsString(mdmsData);
-				MdmsResponse mdmsResponse = objectMapper.readValue(jsonString, MdmsResponse.class);
-				Map<String, Map<String, JSONArray>> mdmsResMap = mdmsResponse.getMdmsRes();
-				Map<String, JSONArray> mdmsRes = mdmsResMap.get(BookingsConstants.MDMS_MODULE_NAME);
-				mdmsArrayList = mdmsRes.get(BookingsConstants.MDMS_FILE_NAME);
-				for (int i = 0; i < mdmsArrayList.size(); i++) 
-				{
-					jsonString = objectMapper.writeValueAsString(mdmsArrayList.get(i));
-					MdmsJsonFields mdmsJsonFields = objectMapper.readValue(jsonString, MdmsJsonFields.class);
-					for (String roleCode : roleList) {
-						if( roleCode.equals(mdmsJsonFields.getCode())) {
-							mdmsRoleList.add(mdmsJsonFields);
-						}
-					}
-					if(roleList.size() == mdmsRoleList.size()){
-						break;
-					}
-				}
+				userList = commonRepository.findUserList(userId);
+			}
+			for (Object object : userList) {
+				UserDetails userDetails = new UserDetails();
+				String jsonString = objectMapper.writeValueAsString(object);
+				String[] jsonArray = jsonString.split(",");
+				userDetails.setUuid(jsonArray[0].substring(2, jsonArray[0].length() - 1));
+				userDetails.setUserName(jsonArray[1].substring(1, jsonArray[1].length() - 2));
+				userDetailsList.add(userDetails);
 			}
 		}
 		catch (Exception e) {
-			LOGGER.error("Exception occur in the fetchAllOSUJMfee " + e);
+			LOGGER.error("Exception occur in the getUsers " + e);
 			e.printStackTrace();
 		}
-		return mdmsRoleList;
+		return userDetailsList;
 	}
 
 }

@@ -81,4 +81,7 @@ public class BookingsQueryBuilder {
 			+ "inner join eg_wf_action_v2 as ewav on ewav.currentstate = ewsv.uuid " 
 			+ "and ewpv.action = :action and ewav.roles = :approver";
 	
+	/** The Constant FIND_ROLES. */
+	public static final String FIND_ROLES = "select role_code from eg_userrole_v1 where role_code != 'CITIZEN'";
+	
 }
