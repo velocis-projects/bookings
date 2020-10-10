@@ -829,13 +829,20 @@ public class BookingsServiceImpl implements BookingsService {
 			String sector = searchCriteriaFieldsDTO.getSector();
 			String businessService = searchCriteriaFieldsDTO.getBusinessService();
 			String approverName = "";
+			String roles = "";
 			if (BookingsFieldsValidator.isNullOrEmpty(businessService)) {
 				List<String> nextState = commonRepository.findNextState(applicationNumber, action);
 				if (!BookingsFieldsValidator.isNullOrEmpty(nextState)) {
 					for (String state : nextState) {
-						approverName = commonRepository.findApproverName(state);
-						if (!BookingsFieldsValidator.isNullOrEmpty(approverName)) {
-							break;
+						if (BookingsFieldsValidator.isNullOrEmpty(approverName)) {
+							approverName = commonRepository.findApproverName(state);
+						}
+						else {
+							roles = commonRepository.findApproverName(state);
+						}
+						if (!BookingsFieldsValidator.isNullOrEmpty(roles)) {
+							approverName = approverName + "," + roles;
+							roles = "";
 						}
 					}
 				}
