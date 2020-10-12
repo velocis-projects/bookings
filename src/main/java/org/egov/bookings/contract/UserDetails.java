@@ -1,6 +1,5 @@
 package org.egov.bookings.contract;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class UserDetails.
  */
@@ -11,6 +10,9 @@ public class UserDetails {
 	
 	/** The uuid. */
 	private String uuid;
+	
+	/** The code. */
+	private String code;
 	
 	/**
 	 * Gets the uuid.
@@ -30,12 +32,40 @@ public class UserDetails {
 		this.uuid = uuid;
 	}
 	
+	/**
+	 * Gets the user name.
+	 *
+	 * @return the user name
+	 */
 	public String getUserName() {
 		return userName;
 	}
 
+	/**
+	 * Sets the user name.
+	 *
+	 * @param userName the new user name
+	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	/**
+	 * Gets the code.
+	 *
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
+	}
+
+	/**
+	 * Sets the code.
+	 *
+	 * @param code the new code
+	 */
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 }

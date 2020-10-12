@@ -4,7 +4,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -587,16 +589,22 @@ public class MasterServiceImpl implements MasterService{
 	 * @return the roles
 	 */
 	@Override
-	public List<String> getRoles() {
+	public Set<UserDetails> getRoles() {
 		List<String> roleList = new ArrayList<>();
+		Set<UserDetails> userDetailsSet = new HashSet<>();
 		try {
 			roleList = commonRepository.findRoles();
+			for(String roleCode : roleList) {
+				UserDetails userDetails = new UserDetails();
+				userDetails.setCode(roleCode);
+				userDetailsSet.add(userDetails);
+			}
 		}
 		catch (Exception e) {
 			LOGGER.error("Exception occur in the getRoles " + e);
 			e.printStackTrace();
 		}
-		return roleList;
+		return userDetailsSet;
 	}
 
 	/**

@@ -2,6 +2,7 @@ package org.egov.bookings.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -553,10 +554,10 @@ public class MasterController {
 	public ResponseEntity<?> getRoles() {
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<String> roleList = masterService.getRoles(); 
+			Set<UserDetails> roleSet = masterService.getRoles(); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
-			rs.setData(roleList);
+			rs.setData(roleSet);
 		}
 		catch(Exception e)
 		{

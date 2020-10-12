@@ -1,6 +1,7 @@
 package org.egov.bookings.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.CommonMasterFields;
@@ -155,7 +156,7 @@ public interface MasterService {
 	 *
 	 * @return the roles
 	 */
-	public List<String> getRoles();
+	public Set<UserDetails> getRoles();
 	
 	/**
 	 * Gets the users.
