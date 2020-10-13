@@ -1,7 +1,10 @@
 package org.egov.bookings.repository;
 
+import java.util.List;
+
 import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 // TODO: Auto-generated Javadoc
@@ -22,6 +25,15 @@ public interface CommercialGroundRepository extends JpaRepository<CommercialGrou
 
 	CommercialGroundFeeModel findByBookingVenueAndCategory(String bookingVenue, String category);
 	
-	
+	/**
+	 * Find GFCP fee records by limit.
+	 *
+	 * @param offSet the off set
+	 * @return the list
+	 */
+	@Query(
+			value = "SELECT * FROM bk_commercial_ground_fee LIMIT 100 OFFSET (?1)",
+			nativeQuery = true )
+			List<CommercialGroundFeeModel> findGFCPFeeRecordsByLimit( int offSet );
 
 }
