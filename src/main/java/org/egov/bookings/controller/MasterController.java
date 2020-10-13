@@ -278,6 +278,12 @@ public class MasterController {
 
 	}
 	
+	/**
+	 * Creates the GFCP fee.
+	 *
+	 * @param masterRequest the master request
+	 * @return the response entity
+	 */
 	@PostMapping("/gfcp/fee/_create")
 	public ResponseEntity<?> createGFCPFee(@RequestBody MasterRequest masterRequest) {
 		
@@ -436,13 +442,18 @@ public class MasterController {
 	/**
 	 * Fetch all approver details.
 	 *
+	 * @param offSet the off set
 	 * @return the response entity
 	 */
 	@PostMapping("/approver/_fetch")
-	public ResponseEntity<?> fetchAllApproverDetails() {
+	public ResponseEntity<?> fetchAllApproverDetails(@RequestParam(value="offSet") int offSet) {
+		if (offSet < 0) 
+		{
+			throw new IllegalArgumentException("Invalid offSet");
+		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsbmApproverModel> approverList = masterService.fetchAllApproverDetails(); 
+			List<OsbmApproverModel> approverList = masterService.fetchAllApproverDetails(offSet); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(approverList);
@@ -456,15 +467,20 @@ public class MasterController {
 	}
 	
 	/**
-	 * Fetch all OSB mfee.
+	 * Fetch all OSBM fee.
 	 *
+	 * @param offSet the off set
 	 * @return the response entity
 	 */
 	@PostMapping("osbm/fee/_fetch")
-	public ResponseEntity<?> fetchAllOSBMFee() {
+	public ResponseEntity<?> fetchAllOSBMFee(@RequestParam(value="offSet") int offSet) {
+		if (offSet < 0) 
+		{
+			throw new IllegalArgumentException("Invalid offSet");
+		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsbmFeeModel> osbmFeeList = masterService.fetchAllOSBMFee(); 
+			List<OsbmFeeModel> osbmFeeList = masterService.fetchAllOSBMFee(offSet); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(osbmFeeList);
@@ -478,15 +494,20 @@ public class MasterController {
 	}
 	
 	/**
-	 * Fetch all OSUJ mfee.
+	 * Fetch all OSUJM fee.
 	 *
+	 * @param offSet the off set
 	 * @return the response entity
 	 */
 	@PostMapping("osujm/fee/_fetch")
-	public ResponseEntity<?> fetchAllOSUJMFee() {
+	public ResponseEntity<?> fetchAllOSUJMFee(@RequestParam(value="offSet") int offSet) {
+		if (offSet < 0) 
+		{
+			throw new IllegalArgumentException("Invalid offSet");
+		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsujmFeeModel> osbmFeeList = masterService.fetchAllOSUJMFee(); 
+			List<OsujmFeeModel> osbmFeeList = masterService.fetchAllOSUJMFee(offSet); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(osbmFeeList);
@@ -500,15 +521,20 @@ public class MasterController {
 	}
 	
 	/**
-	 * Fetch all GFC pfee.
+	 * Fetch all GFCP fee.
 	 *
+	 * @param offSet the off set
 	 * @return the response entity
 	 */
 	@PostMapping("gfcp/fee/_fetch")
-	public ResponseEntity<?> fetchAllGFCPFee() {
+	public ResponseEntity<?> fetchAllGFCPFee(@RequestParam(value="offSet") int offSet) {
+		if (offSet < 0) 
+		{
+			throw new IllegalArgumentException("Invalid offSet");
+		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<CommercialGroundFeeModel> osbmFeeList = masterService.fetchAllGFCPFee(); 
+			List<CommercialGroundFeeModel> osbmFeeList = masterService.fetchAllGFCPFee(offSet); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(osbmFeeList);
@@ -524,13 +550,18 @@ public class MasterController {
 	/**
 	 * Fetch all PACC fee.
 	 *
+	 * @param offSet the off set
 	 * @return the response entity
 	 */
 	@PostMapping("pacc/fee/_fetch")
-	public ResponseEntity<?> fetchAllPACCFee() {
+	public ResponseEntity<?> fetchAllPACCFee(@RequestParam(value="offSet") int offSet) {
+		if (offSet < 0) 
+		{
+			throw new IllegalArgumentException("Invalid offSet");
+		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<ParkCommunityHallV1MasterModel> osbmFeeList = masterService.fetchAllPACCFee(); 
+			List<ParkCommunityHallV1MasterModel> osbmFeeList = masterService.fetchAllPACCFee(offSet); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(osbmFeeList);
@@ -569,6 +600,7 @@ public class MasterController {
 	/**
 	 * Gets the users.
 	 *
+	 * @param approver the approver
 	 * @return the users
 	 */
 	@PostMapping("user/_search")

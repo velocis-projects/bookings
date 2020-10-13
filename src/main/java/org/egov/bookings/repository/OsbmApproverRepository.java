@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.egov.bookings.model.OsbmApproverModel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 // TODO: Auto-generated Javadoc
@@ -37,6 +38,17 @@ public interface OsbmApproverRepository extends JpaRepository<OsbmApproverModel,
 	 * @return the osbm approver model
 	 */
 	public OsbmApproverModel findByUuidAndSector(String uuid, String sector);
+	
+	/**
+	 * Find approver by limit.
+	 *
+	 * @param offSet the off set
+	 * @return the list
+	 */
+	@Query(
+			value = "SELECT * FROM bk_approver LIMIT 100 OFFSET (?1)",
+			nativeQuery = true )
+			List<OsbmApproverModel> findApproverByLimit( int offSet );
 	
 	
 }

@@ -88,6 +88,6 @@ public class BookingsQueryBuilder {
 			+ "and ewpv.action = :action and ewav.roles = :approver";
 	
 	/** The Constant FIND_ROLES. */
-	public static final String FIND_ROLES = "select role_code from eg_userrole_v1 where role_code != 'CITIZEN'";
+	public static final String FIND_ROLES = "select distinct role_code from eg_userrole_v1 where role_code != 'CITIZEN'";
 	
 }

@@ -1,7 +1,10 @@
 package org.egov.bookings.repository;
 
+import java.util.List;
+
 import org.egov.bookings.model.OsbmFeeModel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -20,5 +23,17 @@ public interface OsbmFeeRepository extends JpaRepository<OsbmFeeModel, String> {
 	OsbmFeeModel findByVillageCityAndResidentialCommercialAndStorageAndDurationInMonthsAndConstructionType(
 			String villageCity, String residentialCommercial, String storage, String durationInMonths,
 			String constructionType);
+	
+	/**
+	 * Find OSBM fee records by limit.
+	 *
+	 * @param offSet the off set
+	 * @return the list
+	 */
+	@Query(
+			value = "SELECT * FROM bk_osbm_fee LIMIT 100 OFFSET (?1)",
+			nativeQuery = true )
+			List<OsbmFeeModel> findOSBMFeeRecordsByLimit( int offSet );
+	
 
 }

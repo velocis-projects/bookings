@@ -13,7 +13,6 @@ import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface MasterService.
  */
@@ -118,37 +117,42 @@ public interface MasterService {
 	/**
 	 * Fetch all approver details.
 	 *
+	 * @param offSet the off set
 	 * @return the list
 	 */
-	public List<OsbmApproverModel> fetchAllApproverDetails();
+	public List<OsbmApproverModel> fetchAllApproverDetails(int offSet);
 	
 	/**
 	 * Fetch all OSBM fee.
 	 *
+	 * @param offSet the off set
 	 * @return the list
 	 */
-	public List<OsbmFeeModel> fetchAllOSBMFee();
+	public List<OsbmFeeModel> fetchAllOSBMFee(int offSet);
 	
 	/**
 	 * Fetch all OSUJM fee.
 	 *
+	 * @param offSet the off set
 	 * @return the list
 	 */
-	public List<OsujmFeeModel> fetchAllOSUJMFee();
+	public List<OsujmFeeModel> fetchAllOSUJMFee(int offSet);
 	
 	/**
 	 * Fetch all GFCP fee.
 	 *
+	 * @param offSet the off set
 	 * @return the list
 	 */
-	public List<CommercialGroundFeeModel> fetchAllGFCPFee();
+	public List<CommercialGroundFeeModel> fetchAllGFCPFee(int offSet);
 	
 	/**
 	 * Fetch all PACC fee.
 	 *
+	 * @param offSet the off set
 	 * @return the list
 	 */
-	public List<ParkCommunityHallV1MasterModel> fetchAllPACCFee();
+	public List<ParkCommunityHallV1MasterModel> fetchAllPACCFee(int offSet);
 	
 	/**
 	 * Gets the roles.
@@ -160,6 +164,7 @@ public interface MasterService {
 	/**
 	 * Gets the users.
 	 *
+	 * @param approver the approver
 	 * @return the users
 	 */
 	public List<UserDetails> getUsers(String approver);

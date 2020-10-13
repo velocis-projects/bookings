@@ -1,5 +1,7 @@
 package org.egov.bookings.repository;
 
+import java.util.List;
+
 import org.egov.bookings.model.OsujmFeeModel;
 import org.egov.bookings.repository.querybuilder.BookingsQueryBuilder;
 import org.egov.bookings.utils.BookingsConstants;
@@ -14,5 +16,15 @@ public interface OsujmFeeRepository extends JpaRepository<OsujmFeeModel, String>
 	@Query(value = BookingsQueryBuilder.FIND_JURISDICTION_AMOUNT, nativeQuery = true)
 	OsujmFeeModel findJurisdictionFee(@Param(BookingsConstants.AREA) Long area, @Param(BookingsConstants.SECTOR)String sector);
 
+	/**
+	 * Find OSUJM fee records by limit.
+	 *
+	 * @param offSet the off set
+	 * @return the list
+	 */
+	@Query(
+			value = "SELECT * FROM bk_osujm_fee LIMIT 100 OFFSET (?1)",
+			nativeQuery = true )
+			List<OsujmFeeModel> findOSUJMFeeRecordsByLimit( int offSet );
 
 }
