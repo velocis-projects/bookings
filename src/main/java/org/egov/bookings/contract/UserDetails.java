@@ -11,9 +11,6 @@ public class UserDetails {
 	/** The uuid. */
 	private String uuid;
 	
-	/** The code. */
-	private String code;
-	
 	/**
 	 * Gets the uuid.
 	 *
@@ -48,24 +45,6 @@ public class UserDetails {
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
-	}
-
-	/**
-	 * Gets the code.
-	 *
-	 * @return the code
-	 */
-	public String getCode() {
-		return code;
-	}
-
-	/**
-	 * Sets the code.
-	 *
-	 * @param code the new code
-	 */
-	public void setCode(String code) {
-		this.code = code;
 	}
 
 }
