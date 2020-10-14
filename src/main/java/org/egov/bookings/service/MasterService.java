@@ -117,42 +117,37 @@ public interface MasterService {
 	/**
 	 * Fetch all approver details.
 	 *
-	 * @param offSet the off set
 	 * @return the list
 	 */
-	public List<OsbmApproverModel> fetchAllApproverDetails(int offSet);
+	public List<OsbmApproverModel> fetchAllApproverDetails();
 	
 	/**
 	 * Fetch all OSBM fee.
 	 *
-	 * @param offSet the off set
 	 * @return the list
 	 */
-	public List<OsbmFeeModel> fetchAllOSBMFee(int offSet);
+	public List<OsbmFeeModel> fetchAllOSBMFee();
 	
 	/**
 	 * Fetch all OSUJM fee.
 	 *
-	 * @param offSet the off set
 	 * @return the list
 	 */
-	public List<OsujmFeeModel> fetchAllOSUJMFee(int offSet);
+	public List<OsujmFeeModel> fetchAllOSUJMFee();
 	
 	/**
 	 * Fetch all GFCP fee.
 	 *
-	 * @param offSet the off set
 	 * @return the list
 	 */
-	public List<CommercialGroundFeeModel> fetchAllGFCPFee(int offSet);
+	public List<CommercialGroundFeeModel> fetchAllGFCPFee();
 	
 	/**
 	 * Fetch all PACC fee.
 	 *
-	 * @param offSet the off set
 	 * @return the list
 	 */
-	public List<ParkCommunityHallV1MasterModel> fetchAllPACCFee(int offSet);
+	public List<ParkCommunityHallV1MasterModel> fetchAllPACCFee();
 	
 	/**
 	 * Gets the roles.
