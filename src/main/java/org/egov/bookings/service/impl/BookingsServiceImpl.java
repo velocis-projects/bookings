@@ -558,7 +558,7 @@ public class BookingsServiceImpl implements BookingsService {
 		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
 		if (BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
 				&& !BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService))
-			enrichmentService.enrichBookingsAssignee(bookingsRequest);
+//			enrichmentService.enrichBookingsAssignee(bookingsRequest);
 
 		if (config.getIsExternalWorkFlowEnabled())
 			workflowIntegrator.callWorkFlow(bookingsRequest);
@@ -608,11 +608,11 @@ public class BookingsServiceImpl implements BookingsService {
 			}
 		}
 		String bookingType = bookingsRequest.getBookingsModel().getBkBookingType();
-		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)) {
+		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
 			Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
 			if (!BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap)) {
 				bookingsRequest.getBookingsModel()
-						.setBkBookingType(mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName());
+						.setBkBookingType(mdmsJsonFieldsMap.get(bookingsRequest.getBookingsModel().getBkBookingType()).getName());
 				bookingsProducer.push(config.getUpdateBookingSMSTopic(), bookingsRequest);
 			}
 		}
