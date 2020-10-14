@@ -2,6 +2,8 @@ package org.egov.bookings.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,10 +19,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity(name = "TimeslotsModel")
 @Table(name = "BK_TIMESLOTS")
-@EqualsAndHashCode(of = {"id"})
 public class TimeslotsModel {
 
 	@Id
+	@Column(name = "ID")
 	private String id;
 	
 	@Column(name = "slot")

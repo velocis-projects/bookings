@@ -35,6 +35,7 @@ import org.egov.bookings.repository.impl.DemandRepository;
 import org.egov.bookings.repository.impl.IdGenRepository;
 import org.egov.bookings.repository.impl.ServiceRequestRepository;
 import org.egov.bookings.service.BookingsCalculatorService;
+import org.egov.bookings.service.BookingsService;
 import org.egov.bookings.service.CommercialGroundService;
 import org.egov.bookings.service.DemandService;
 import org.egov.bookings.service.OsujmService;
@@ -93,18 +94,23 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	@Autowired
 	private ObjectMapper mapper;
 
+	/** The commercial ground service. */
 	@Autowired
 	private CommercialGroundService commercialGroundService;
 
+	/** The osujm service. */
 	@Autowired
 	private OsujmService osujmService;
 	
+	/** The enrichment service. */
 	@Autowired
 	private EnrichmentService enrichmentService;
 	
+	/** The park and community service. */
 	@Autowired
 	private ParkAndCommunityService parkAndCommunityService;
 	
+	/** The demand service. */
 	@Autowired
 	private DemandService demandService;
 	
@@ -222,11 +228,21 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 			break;
 			
 		case BookingsConstants.BUSINESS_SERVICE_PACC:
+			BigDecimal amount = null;
+			BigDecimal finalAmount = null;
 			ParkCommunityHallV1MasterModel parkCommunityHallV1FeeMaster = getParkAndCommunityAmount(bookingsRequest);
 			BigDecimal days = enrichmentService.extractDaysBetweenTwoDates(bookingsRequest);
-			BigDecimal amount = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges())+Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
-			BigDecimal finalAmount = days.multiply(amount);
-		//	BigDecimal finalAmount = new BigDecimal(4400);
+			if(BookingsConstants.EMPLOYEE.equals(bookingsRequest.getRequestInfo().getUserInfo().getType())) {
+				BigDecimal rent = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
+				BigDecimal cleaningCharges = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges()));
+				BigDecimal rentAfterDiscount = rent.multiply(bookingsRequest.getBookingsModel().getDiscount().divide(new BigDecimal(100))); 
+				 amount = cleaningCharges.add(rentAfterDiscount);
+				 finalAmount = days.multiply(amount);
+			}
+			else {
+				amount = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges())+Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
+				 finalAmount = days.multiply(amount);
+			}
 			taxHeadEstimate1 = enrichmentService.enrichPaccAmountForBookingChange(bookingsRequest, finalAmount,taxHeadCode1,taxHeadCode2,taxHeadMasterFieldList,parkCommunityHallV1FeeMaster);	
 			break;
 			
@@ -234,6 +250,12 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 		return taxHeadEstimate1;
 	}
 
+	/**
+	 * Gets the park and community amount.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the park and community amount
+	 */
 	private ParkCommunityHallV1MasterModel getParkAndCommunityAmount(BookingsRequest bookingsRequest) {
 
 		ParkCommunityHallV1MasterModel parkCommunityHallV1FeeMaster = null;
@@ -249,6 +271,9 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 		return parkCommunityHallV1FeeMaster;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.BookingsCalculatorService#getJurisdicationAmount(org.egov.bookings.web.models.BookingsRequest)
+	 */
 	public BigDecimal getJurisdicationAmount(BookingsRequest bookingsRequest) {
 
 		OsujmFeeModel osujmFeeModel = null;

@@ -91,7 +91,7 @@ public class DemandServiceImpl implements DemandService {
 	 * models.BookingsRequest)
 	 */
 	@Override
-	public List<Demand> createDemand(BookingsRequest bookingsRequest) {
+	public void createDemand(BookingsRequest bookingsRequest) {
 
 		List<Demand> demands = new ArrayList<>();
 
@@ -120,7 +120,7 @@ public class DemandServiceImpl implements DemandService {
 			break;	
 		}
 
-		return demandRepository.saveDemand(bookingsRequest.getRequestInfo(), demands);
+		 demandRepository.saveDemand(bookingsRequest.getRequestInfo(), demands);
 
 	}
 
@@ -458,7 +458,7 @@ public class DemandServiceImpl implements DemandService {
 	 * models.BookingsRequest)
 	 */
 	@Override
-	public List<Demand> updateDemand(BookingsRequest bookingsRequest) {
+	public void updateDemand(BookingsRequest bookingsRequest) {
 
 		List<Demand> demands = new ArrayList<>();
 		switch (bookingsRequest.getBookingsModel().getBusinessService()) {
@@ -475,10 +475,16 @@ public class DemandServiceImpl implements DemandService {
 			break;	
 		case BookingsConstants.BUSINESS_SERVICE_PACC:
 			demands = updateDemandsForPacc(bookingsRequest);
-			break;	
-		
+			if(config.isDemandFlag()) {
+			demandRepository.updateDemand(bookingsRequest.getRequestInfo(), demands);
+			return;
+			}
+			else {
+				config.setDemandFlag(true);
+				return;
+			}
 		}
-		return demandRepository.updateDemand(bookingsRequest.getRequestInfo(), demands);
+		 demandRepository.updateDemand(bookingsRequest.getRequestInfo(), demands);
 
 	}
 
@@ -494,29 +500,39 @@ public class DemandServiceImpl implements DemandService {
 
 		RequestInfo requestInfo = bookingsRequest.getRequestInfo();
 
-		List<Demand> searchResult = searchDemand(bookingsRequest.getBookingsModel().getTenantId(),
-				Collections.singleton(bookingsRequest.getBookingsModel().getBkApplicationNumber()), requestInfo,
-				bookingsRequest.getBookingsModel().getBusinessService());
+		if (config.isDemandFlag()) {
+			List<Demand> searchResult = searchDemand(bookingsRequest.getBookingsModel().getTenantId(),
+					Collections.singleton(bookingsRequest.getBookingsModel().getBkApplicationNumber()), requestInfo,
+					bookingsRequest.getBookingsModel().getBusinessService());
 
-		Demand demand = searchResult.get(0);
-		List<DemandDetail> demandDetails = demand.getDemandDetails();
-		List<DemandDetail> updatedDemandDetails = getUpdatedDemandDetails(taxHeadEstimate1, demandDetails,BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_PACC);
-		demand.setDemandDetails(updatedDemandDetails);
-		demands.add(demand);
+			Demand demand = searchResult.get(0);
+			List<DemandDetail> demandDetails = demand.getDemandDetails();
+			List<DemandDetail> updatedDemandDetails = new ArrayList<>();
+			/*if(BookingsConstants.PACC_RE_INITIATED_ACTION.equals(bookingsRequest.getBookingsModel().getBkAction())) {
+			 updatedDemandDetails = getUpdatedDemandDetailsForPACC(bookingsRequest,taxHeadEstimate1, demandDetails,
+					BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_PACC);
+			}else {*/
+				updatedDemandDetails = getUpdatedDemandDetails(taxHeadEstimate1, demandDetails,
+						BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_PACC);
+			//}
+			 
+			demand.setDemandDetails(updatedDemandDetails);
+			demands.add(demand);
 
-		/*
-		 * taxHeadEstimate1.forEach(taxHeadEstimate -> {
-		 * demandDetails.add(DemandDetail.builder().taxAmount(taxHeadEstimate.
-		 * getEstimateAmount())
-		 * .taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).collectionAmount(
-		 * BigDecimal.ZERO) .tenantId(tenantId).build()); });
-		 */
+			/*
+			 * taxHeadEstimate1.forEach(taxHeadEstimate -> {
+			 * demandDetails.add(DemandDetail.builder().taxAmount(taxHeadEstimate.
+			 * getEstimateAmount())
+			 * .taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).collectionAmount(
+			 * BigDecimal.ZERO) .tenantId(tenantId).build()); });
+			 */
 
-		// demands.add(demands);
+			// demands.add(demands);
 
-		if (CollectionUtils.isEmpty(searchResult)) {
-			throw new CustomException("INVALID UPDATE", "No demand exists for applicationNumber: "
-					+ bookingsRequest.getBookingsModel().getBkApplicationNumber());
+			if (CollectionUtils.isEmpty(searchResult)) {
+				throw new CustomException("INVALID UPDATE", "No demand exists for applicationNumber: "
+						+ bookingsRequest.getBookingsModel().getBkApplicationNumber());
+			}
 		}
 		return demands;
 	}
@@ -749,5 +765,48 @@ public class DemandServiceImpl implements DemandService {
          }
          return response;
     }
+	
+	
+	/*private List<DemandDetail> getUpdatedDemandDetailsForPACC(BookingsRequest bookingsRequest,List<TaxHeadEstimate> taxHeadEstimate1,
+			List<DemandDetail> demandDetails,String mdmsRoundOff) {
+
+		List<DemandDetail> newDemandDetails = new ArrayList<>();
+		Map<String, List<DemandDetail>> taxHeadToDemandDetail = new HashMap<>();
+
+		demandDetails.forEach(demandDetail -> {
+			if (!taxHeadToDemandDetail.containsKey(demandDetail.getTaxHeadMasterCode())) {
+				List<DemandDetail> demandDetailList = new LinkedList<>();
+				demandDetailList.add(demandDetail);
+				taxHeadToDemandDetail.put(demandDetail.getTaxHeadMasterCode(), demandDetailList);
+			} else
+				taxHeadToDemandDetail.get(demandDetail.getTaxHeadMasterCode()).add(demandDetail);
+		});
+
+		BigDecimal diffInTaxAmount;
+		List<DemandDetail> demandDetailList;
+		BigDecimal total;
+
+		for (TaxHeadEstimate taxHeadEstimate : taxHeadEstimate1) {
+			if (!taxHeadToDemandDetail.containsKey(taxHeadEstimate.getTaxHeadCode()))
+				newDemandDetails.add(DemandDetail.builder().taxAmount(taxHeadEstimate.getEstimateAmount())
+						.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).tenantId(demandDetails.get(0).getTenantId())
+						.collectionAmount(BigDecimal.ZERO).build());
+			else {
+				demandDetailList = taxHeadToDemandDetail.get(taxHeadEstimate.getTaxHeadCode());
+				total = demandDetailList.stream().map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO,
+						BigDecimal::add);
+				diffInTaxAmount = taxHeadEstimate.getEstimateAmount().subtract(total);
+				if (diffInTaxAmount.compareTo(BigDecimal.ZERO) != 0) {
+					newDemandDetails.add(DemandDetail.builder().taxAmount(diffInTaxAmount)
+							.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).tenantId(demandDetails.get(0).getTenantId())
+							.collectionAmount(BigDecimal.ZERO).build());
+				}
+			}
+		}
+		List<DemandDetail> combinedBillDetials = new LinkedList<>(demandDetails);
+		combinedBillDetials.addAll(newDemandDetails);
+		addRoundOffTaxHead(demandDetails.get(0).getTenantId(), combinedBillDetials,mdmsRoundOff);
+		return combinedBillDetials;
+	}*/
 
 }

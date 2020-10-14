@@ -82,9 +82,11 @@ public class EnrichmentService {
 	@Autowired
 	private BookingsRepository bookingsRepository;
 	
+	/** The osujm new location repository. */
 	@Autowired
 	private OsujmNewLocationRepository osujmNewLocationRepository;
 
+	/** The billing service repository. */
 	@Autowired
 	private BillingServiceRepository billingServiceRepository;
 	
@@ -137,6 +139,11 @@ public class EnrichmentService {
 	}
 	
 	
+	/**
+	 * Enrich new location create request.
+	 *
+	 * @param newLocationRequest the new location request
+	 */
 	public void enrichNewLocationCreateRequest(NewLocationRequest newLocationRequest) {
 		RequestInfo requestInfo = newLocationRequest.getRequestInfo();
 		/*
@@ -151,6 +158,11 @@ public class EnrichmentService {
 
 	
 
+	/**
+	 * Sets the idgen ids for new location.
+	 *
+	 * @param newLocationRequest the new idgen ids for new location
+	 */
 	private void setIdgenIdsForNewLocation(NewLocationRequest newLocationRequest) {
 		RequestInfo requestInfo = newLocationRequest.getRequestInfo();
 		String tenantId = newLocationRequest.getNewLocationModel().getTenantId();
@@ -292,6 +304,11 @@ public class EnrichmentService {
 
 
 
+	/**
+	 * Enrich new location details.
+	 *
+	 * @param newLocationRequest the new location request
+	 */
 	public void enrichNewLocationDetails(NewLocationRequest newLocationRequest) {
 		newLocationRequest.getNewLocationModel().setUuid(newLocationRequest.getRequestInfo().getUserInfo().getUuid());
 		java.sql.Date date = bookingsUtils.getCurrentSqlDate();
@@ -300,6 +317,12 @@ public class EnrichmentService {
 
 
 
+	/**
+	 * Enrich nlujm details.
+	 *
+	 * @param newLocationRequest the new location request
+	 * @return the osujm new location model
+	 */
 	public OsujmNewLocationModel enrichNlujmDetails(NewLocationRequest newLocationRequest) {
 		OsujmNewLocationModel osujmNewLocationModel = null;
 		try {
@@ -316,6 +339,12 @@ public class EnrichmentService {
 
 
 
+	/**
+	 * Extract days between two dates.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the big decimal
+	 */
 	public BigDecimal extractDaysBetweenTwoDates(BookingsRequest bookingsRequest) {
 			try {
 				LocalDate dateBefore = LocalDate.parse(bookingsRequest.getBookingsModel().getBkFromDate()+"");
@@ -331,6 +360,12 @@ public class EnrichmentService {
 
 
 
+	/**
+	 * Enrich osujm details.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the bookings model
+	 */
 	public BookingsModel enrichOsujmDetails(BookingsRequest bookingsRequest) {
 		BookingsModel bookingsModel = null;
 		try {
@@ -351,6 +386,12 @@ public class EnrichmentService {
 
 
 
+	/**
+	 * Enrich booked dates.
+	 *
+	 * @param bookingsModel the bookings model
+	 * @return the list
+	 */
 	public List<LocalDate> enrichBookedDates(Set<BookingsModel> bookingsModel) {
 		List<LocalDate> listOfDates = new ArrayList<>();
 
@@ -368,6 +409,12 @@ public class EnrichmentService {
 		return listOfDates;
 	}
 
+	/**
+	 * Extract all dates between two dates.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the list
+	 */
 	public List<LocalDate> extractAllDatesBetweenTwoDates(BookingsRequest bookingsRequest) {
 		LocalDate startDate = LocalDate.parse(bookingsRequest.getBookingsModel().getBkFromDate() + "");
 		LocalDate endDate = LocalDate.parse(bookingsRequest.getBookingsModel().getBkToDate() + "");
@@ -382,6 +429,12 @@ public class EnrichmentService {
 
 
 
+	/**
+	 * Enrich pacc details.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the bookings model
+	 */
 	public BookingsModel enrichPaccDetails(BookingsRequest bookingsRequest) {
 		BookingsModel bookingsModel = null;
 		try {
@@ -390,6 +443,7 @@ public class EnrichmentService {
 			bookingsModel.setBkApplicationStatus(bookingsRequest.getBookingsModel().getBkApplicationStatus());
 			bookingsModel.setBkAction(bookingsRequest.getBookingsModel().getBkAction());
 			bookingsModel.setBkRemarks(bookingsRequest.getBookingsModel().getBkRemarks());
+			bookingsModel.setTimeslots(bookingsRequest.getBookingsModel().getTimeslots());
 			if(!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
 				bookingsModel.setBkPaymentStatus(bookingsRequest.getBookingsModel().getBkPaymentStatus());
 			}
@@ -401,6 +455,12 @@ public class EnrichmentService {
 
 
 
+	/**
+	 * Enrich park community amount.
+	 *
+	 * @param parkCommunityHallFee the park community hall fee
+	 * @return the park community fee master response
+	 */
 	public ParkCommunityFeeMasterResponse enrichParkCommunityAmount(
 			ParkCommunityHallV1MasterModel parkCommunityHallFee) {
 		ParkCommunityFeeMasterResponse parkCommunityFeeMasterResponse = new ParkCommunityFeeMasterResponse();
@@ -430,6 +490,11 @@ public class EnrichmentService {
 
 
 
+	/**
+	 * Enrich bookings assignee.
+	 *
+	 * @param bookingsRequest the bookings request
+	 */
 	public void enrichBookingsAssignee(BookingsRequest bookingsRequest) {
 		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
 		SearchCriteriaFieldsDTO searchCriteriaFieldsDTO = new SearchCriteriaFieldsDTO();
@@ -445,6 +510,12 @@ public class EnrichmentService {
 
 
 
+	/**
+	 * Enrich for kafka.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the bookings request kafka
+	 */
 	public BookingsRequestKafka enrichForKafka(BookingsRequest bookingsRequest) {
 		List<BookingsModel> bModel = new ArrayList<>();
 		bModel.add(bookingsRequest.getBookingsModel());
@@ -454,6 +525,12 @@ public class EnrichmentService {
 
 
 
+	/**
+	 * Enrich kafka for new location.
+	 *
+	 * @param newLocationRequest the new location request
+	 * @return the new location kafka request
+	 */
 	public NewLocationKafkaRequest enrichKafkaForNewLocation(NewLocationRequest newLocationRequest) {
 		List<OsujmNewLocationModel> sujmNewLocationModelList = new ArrayList<>();
 		sujmNewLocationModelList.add(newLocationRequest.getNewLocationModel());
@@ -463,6 +540,11 @@ public class EnrichmentService {
 
 
 
+	/**
+	 * Enrich park community create request.
+	 *
+	 * @param bookingsRequest the bookings request
+	 */
 	public void enrichParkCommunityCreateRequest(BookingsRequest bookingsRequest) {
 		// TODO Auto-generated method stub
 
@@ -490,6 +572,11 @@ public class EnrichmentService {
 
 
 
+	/**
+	 * Enrich pacc payment details.
+	 *
+	 * @param bookingsRequest the bookings request
+	 */
 	public void enrichPaccPaymentDetails(BookingsRequest bookingsRequest) {
 		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
 		if (BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
@@ -502,6 +589,17 @@ public class EnrichmentService {
 		}
 	}
 
+	/**
+	 * Enrich tax head estimate for PACC.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @param finalAmount the final amount
+	 * @param taxHeadCode1 the tax head code 1
+	 * @param taxHeadCode2 the tax head code 2
+	 * @param taxHeadMasterFieldList the tax head master field list
+	 * @param parkCommunityHallV1FeeMaster the park community hall V 1 fee master
+	 * @return the list
+	 */
 	private List<TaxHeadEstimate> enrichTaxHeadEstimateForPACC(BookingsRequest bookingsRequest, BigDecimal finalAmount, String taxHeadCode1,
 			String taxHeadCode2, List<TaxHeadMasterFields> taxHeadMasterFieldList,
 			ParkCommunityHallV1MasterModel parkCommunityHallV1FeeMaster) {
@@ -511,6 +609,7 @@ public class EnrichmentService {
 			if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
 				taxHeadEstimate1.add(
 						new TaxHeadEstimate(taxHeadEstimate.getCode(), finalAmount, taxHeadEstimate.getCategory()));
+				continue;
 			}
 			if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
 				taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
@@ -518,6 +617,28 @@ public class EnrichmentService {
 								.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
 										.divide(new BigDecimal(100)))),
 						taxHeadEstimate.getCategory()));
+				continue;
+			}
+			if (taxHeadEstimate.getCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_LUXURY_TAX)) {
+				taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+						BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLuxuryTax())),
+						taxHeadEstimate.getCategory()));
+				continue;
+			}
+			if (taxHeadEstimate.getCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_REFUNDABLE_SECURITY_AMOUNT)) {
+				taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+						BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getRefundabelSecurity())),
+						taxHeadEstimate.getCategory()));
+				continue;
+			}
+			
+			if(bookingsRequest.getRequestInfo().getUserInfo().getType().equals(BookingsConstants.EMPLOYEE)) {
+			if (taxHeadEstimate.getCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_FACILITATION_CHARGE)) {
+				taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+						taxHeadEstimate.getFacilitationCharge(),
+						taxHeadEstimate.getCategory()));
+				}
+			continue;
 			}
 			if (BookingsConstants.PAYMENT_SUCCESS_STATUS
 					.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
@@ -526,12 +647,24 @@ public class EnrichmentService {
 							BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount())),
 							taxHeadEstimate.getCategory()));
 				}
+				break;
 			}
 		}
 		return taxHeadEstimate1;
 	}
 
 
+	/**
+	 * Enrich pacc amount for booking change.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @param finalAmount the final amount
+	 * @param taxHeadCode1 the tax head code 1
+	 * @param taxHeadCode2 the tax head code 2
+	 * @param taxHeadMasterFieldList the tax head master field list
+	 * @param parkCommunityHallV1FeeMaster the park community hall V 1 fee master
+	 * @return the list
+	 */
 	public List<TaxHeadEstimate> enrichPaccAmountForBookingChange(BookingsRequest bookingsRequest,
 			BigDecimal finalAmount, String taxHeadCode1, String taxHeadCode2,
 			List<TaxHeadMasterFields> taxHeadMasterFieldList,
@@ -540,24 +673,29 @@ public class EnrichmentService {
 		List<TaxHeadEstimate> taxHeadEstimate1 = new ArrayList<>();
 
 		if (BookingsConstants.PAYMENT_SUCCESS_STATUS.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
-
+			BillResponse billResponse = null;
+			if (bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
 			GenerateBillCriteria billCriteria = GenerateBillCriteria.builder()
 					.tenantId(bookingsRequest.getBookingsModel().getTenantId())
 					.businessService(bookingsRequest.getBookingsModel().getBusinessService())
 					.consumerCode(bookingsRequest.getBookingsModel().getBkApplicationNumber()).build();
-			BillResponse billResponse = demandService.generateBill(bookingsRequest.getRequestInfo(), billCriteria);
+			 billResponse = demandService.generateBill(bookingsRequest.getRequestInfo(), billCriteria);
+			}
 			BigDecimal amount = finalAmount.subtract(
 					billResponse.getBill().get(0).getBillDetails().get(0).getBillAccountDetails().get(0).getAmount());
 
 			if (finalAmount.compareTo(billResponse.getBill().get(0).getBillDetails().get(0).getBillAccountDetails()
-					.get(0).getAmount()) < 1) {
-
-				taxHeadEstimate1 = enrichTaxHeadEstimateForPACC(bookingsRequest, finalAmount, taxHeadCode1,
-						taxHeadCode2, taxHeadMasterFieldList, parkCommunityHallV1FeeMaster);
+					.get(0).getAmount()) < 1 || finalAmount.compareTo(billResponse.getBill().get(0).getBillDetails().get(0).getBillAccountDetails()
+							.get(0).getAmount()) == 0) {
+				config.setDemandFlag(false);
+				/*taxHeadEstimate1 = enrichTaxHeadEstimateForPACC(bookingsRequest, finalAmount, taxHeadCode1,
+						taxHeadCode2, taxHeadMasterFieldList, parkCommunityHallV1FeeMaster);*/
 			}
 
 			else {
-				for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
+				taxHeadEstimate1 = enrichTaxHeadEstimateForPACC(bookingsRequest, finalAmount, taxHeadCode1, taxHeadCode2,
+						taxHeadMasterFieldList, parkCommunityHallV1FeeMaster);
+			/*	for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
 					if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
 						taxHeadEstimate1.add(
 								new TaxHeadEstimate(taxHeadEstimate.getCode(), amount, taxHeadEstimate.getCategory()));
@@ -567,8 +705,8 @@ public class EnrichmentService {
 								.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
 										amount.multiply((BigDecimal
 												.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
-												/*.subtract(billResponse.getBill().get(0).getBillDetails().get(0)
-														.getBillAccountDetails().get(1).getAmount())*/)
+												.subtract(billResponse.getBill().get(0).getBillDetails().get(0)
+														.getBillAccountDetails().get(1).getAmount()))
 																.divide(new BigDecimal(100))),
 										taxHeadEstimate.getCategory()));
 					}
@@ -578,7 +716,7 @@ public class EnrichmentService {
 										.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount())),
 								taxHeadEstimate.getCategory()));
 					}
-				}
+				}*/
 			}
 		} else {
 
