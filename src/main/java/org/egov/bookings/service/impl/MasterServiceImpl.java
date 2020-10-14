@@ -497,14 +497,10 @@ public class MasterServiceImpl implements MasterService{
 	 * @return the list
 	 */
 	@Override
-	public List<OsbmApproverModel> fetchAllApproverDetails(int offSet) {
-		if (offSet < 0) 
-		{
-			throw new IllegalArgumentException("Invalid offSet");
-		}
+	public List<OsbmApproverModel> fetchAllApproverDetails() {
 		List<OsbmApproverModel> approverList = new ArrayList<>();
 		try {
-			approverList = osbmApproverRepository.findApproverByLimit(offSet);
+			approverList = osbmApproverRepository.findAll();
 		}
 		catch(Exception e)
 		{
@@ -521,14 +517,10 @@ public class MasterServiceImpl implements MasterService{
 	 * @return the list
 	 */
 	@Override
-	public List<OsbmFeeModel> fetchAllOSBMFee(int offSet) {
-		if (offSet < 0) 
-		{
-			throw new IllegalArgumentException("Invalid offSet");
-		}
+	public List<OsbmFeeModel> fetchAllOSBMFee() {
 		List<OsbmFeeModel> osbmFeeList = new ArrayList<>();
 		try {
-			osbmFeeList = osbmFeeRepository.findOSBMFeeRecordsByLimit(offSet); 
+			osbmFeeList = osbmFeeRepository.findAll(); 
 		}
 		catch (Exception e) {
 			LOGGER.error("Exception occur in the fetchAllOSBMFee " + e);
@@ -544,14 +536,10 @@ public class MasterServiceImpl implements MasterService{
 	 * @return the list
 	 */
 	@Override
-	public List<OsujmFeeModel> fetchAllOSUJMFee(int offSet) {
-		if (offSet < 0) 
-		{
-			throw new IllegalArgumentException("Invalid offSet");
-		}
+	public List<OsujmFeeModel> fetchAllOSUJMFee() {
 		List<OsujmFeeModel> osujmFeeList = new ArrayList<>();
 		try {
-			osujmFeeList = osujmFeeRepository.findOSUJMFeeRecordsByLimit(offSet); 
+			osujmFeeList = osujmFeeRepository.findAll(); 
 		}
 		catch (Exception e) {
 			LOGGER.error("Exception occur in the fetchAllOSUJMFee " + e);
@@ -567,14 +555,10 @@ public class MasterServiceImpl implements MasterService{
 	 * @return the list
 	 */
 	@Override
-	public List<CommercialGroundFeeModel> fetchAllGFCPFee(int offSet) {
-		if (offSet < 0) 
-		{
-			throw new IllegalArgumentException("Invalid offSet");
-		}
+	public List<CommercialGroundFeeModel> fetchAllGFCPFee() {
 		List<CommercialGroundFeeModel> gfcpFeeList = new ArrayList<>();
 		try {
-			gfcpFeeList = commercialGroundFeeRepository.findGFCPFeeRecordsByLimit(offSet); 
+			gfcpFeeList = commercialGroundFeeRepository.findAll(); 
 		}
 		catch (Exception e) {
 			LOGGER.error("Exception occur in the fetchAllGFCPFee " + e);
@@ -590,14 +574,10 @@ public class MasterServiceImpl implements MasterService{
 	 * @return the list
 	 */
 	@Override
-	public List<ParkCommunityHallV1MasterModel> fetchAllPACCFee(int offSet) {
-		if (offSet < 0) 
-		{
-			throw new IllegalArgumentException("Invalid offSet");
-		}
+	public List<ParkCommunityHallV1MasterModel> fetchAllPACCFee() {
 		List<ParkCommunityHallV1MasterModel> paccFeeList = new ArrayList<>();
 		try {
-			paccFeeList = parkCommunityHallV1MasterRepository.findPaccFeeRecordsByLimit(offSet); 
+			paccFeeList = parkCommunityHallV1MasterRepository.findAll(); 
 		}
 		catch (Exception e) {
 			LOGGER.error("Exception occur in the fetchAllPACCFee " + e);

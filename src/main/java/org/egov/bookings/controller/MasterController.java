@@ -438,22 +438,16 @@ public class MasterController {
 		return ResponseEntity.ok(rs);
 	}
 	
-	
 	/**
 	 * Fetch all approver details.
 	 *
-	 * @param offSet the off set
 	 * @return the response entity
 	 */
 	@PostMapping("/approver/_fetch")
-	public ResponseEntity<?> fetchAllApproverDetails(@RequestParam(value="offSet") int offSet) {
-		if (offSet < 0) 
-		{
-			throw new IllegalArgumentException("Invalid offSet");
-		}
+	public ResponseEntity<?> fetchAllApproverDetails() {
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsbmApproverModel> approverList = masterService.fetchAllApproverDetails(offSet); 
+			List<OsbmApproverModel> approverList = masterService.fetchAllApproverDetails(); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(approverList);
@@ -469,18 +463,13 @@ public class MasterController {
 	/**
 	 * Fetch all OSBM fee.
 	 *
-	 * @param offSet the off set
 	 * @return the response entity
 	 */
 	@PostMapping("osbm/fee/_fetch")
-	public ResponseEntity<?> fetchAllOSBMFee(@RequestParam(value="offSet") int offSet) {
-		if (offSet < 0) 
-		{
-			throw new IllegalArgumentException("Invalid offSet");
-		}
+	public ResponseEntity<?> fetchAllOSBMFee() {
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsbmFeeModel> osbmFeeList = masterService.fetchAllOSBMFee(offSet); 
+			List<OsbmFeeModel> osbmFeeList = masterService.fetchAllOSBMFee(); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(osbmFeeList);
@@ -496,18 +485,13 @@ public class MasterController {
 	/**
 	 * Fetch all OSUJM fee.
 	 *
-	 * @param offSet the off set
 	 * @return the response entity
 	 */
 	@PostMapping("osujm/fee/_fetch")
-	public ResponseEntity<?> fetchAllOSUJMFee(@RequestParam(value="offSet") int offSet) {
-		if (offSet < 0) 
-		{
-			throw new IllegalArgumentException("Invalid offSet");
-		}
+	public ResponseEntity<?> fetchAllOSUJMFee() {
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsujmFeeModel> osbmFeeList = masterService.fetchAllOSUJMFee(offSet); 
+			List<OsujmFeeModel> osbmFeeList = masterService.fetchAllOSUJMFee(); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(osbmFeeList);
@@ -519,22 +503,17 @@ public class MasterController {
 		}
 		return ResponseEntity.ok(rs);
 	}
-	
+
 	/**
 	 * Fetch all GFCP fee.
 	 *
-	 * @param offSet the off set
 	 * @return the response entity
 	 */
 	@PostMapping("gfcp/fee/_fetch")
-	public ResponseEntity<?> fetchAllGFCPFee(@RequestParam(value="offSet") int offSet) {
-		if (offSet < 0) 
-		{
-			throw new IllegalArgumentException("Invalid offSet");
-		}
+	public ResponseEntity<?> fetchAllGFCPFee() {
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<CommercialGroundFeeModel> osbmFeeList = masterService.fetchAllGFCPFee(offSet); 
+			List<CommercialGroundFeeModel> osbmFeeList = masterService.fetchAllGFCPFee(); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(osbmFeeList);
@@ -550,18 +529,13 @@ public class MasterController {
 	/**
 	 * Fetch all PACC fee.
 	 *
-	 * @param offSet the off set
 	 * @return the response entity
 	 */
 	@PostMapping("pacc/fee/_fetch")
-	public ResponseEntity<?> fetchAllPACCFee(@RequestParam(value="offSet") int offSet) {
-		if (offSet < 0) 
-		{
-			throw new IllegalArgumentException("Invalid offSet");
-		}
+	public ResponseEntity<?> fetchAllPACCFee() {
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<ParkCommunityHallV1MasterModel> osbmFeeList = masterService.fetchAllPACCFee(offSet); 
+			List<ParkCommunityHallV1MasterModel> osbmFeeList = masterService.fetchAllPACCFee(); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(osbmFeeList);
