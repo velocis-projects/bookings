@@ -508,13 +508,13 @@ public class DemandServiceImpl implements DemandService {
 			Demand demand = searchResult.get(0);
 			List<DemandDetail> demandDetails = demand.getDemandDetails();
 			List<DemandDetail> updatedDemandDetails = new ArrayList<>();
-			if(BookingsConstants.PACC_RE_INITIATED_ACTION.equals(bookingsRequest.getBookingsModel().getBkAction())) {
+			/*if(BookingsConstants.PACC_RE_INITIATED_ACTION.equals(bookingsRequest.getBookingsModel().getBkAction())) {
 			 updatedDemandDetails = getUpdatedDemandDetailsForPACC(bookingsRequest,taxHeadEstimate1, demandDetails,
 					BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_PACC);
-			}else {
+			}else {*/
 				updatedDemandDetails = getUpdatedDemandDetails(taxHeadEstimate1, demandDetails,
 						BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_PACC);
-			}
+			//}
 			 
 			demand.setDemandDetails(updatedDemandDetails);
 			demands.add(demand);
@@ -767,7 +767,7 @@ public class DemandServiceImpl implements DemandService {
     }
 	
 	
-	private List<DemandDetail> getUpdatedDemandDetailsForPACC(BookingsRequest bookingsRequest,List<TaxHeadEstimate> taxHeadEstimate1,
+	/*private List<DemandDetail> getUpdatedDemandDetailsForPACC(BookingsRequest bookingsRequest,List<TaxHeadEstimate> taxHeadEstimate1,
 			List<DemandDetail> demandDetails,String mdmsRoundOff) {
 
 		List<DemandDetail> newDemandDetails = new ArrayList<>();
@@ -807,6 +807,6 @@ public class DemandServiceImpl implements DemandService {
 		combinedBillDetials.addAll(newDemandDetails);
 		addRoundOffTaxHead(demandDetails.get(0).getTenantId(), combinedBillDetials,mdmsRoundOff);
 		return combinedBillDetials;
-	}
+	}*/
 
 }
