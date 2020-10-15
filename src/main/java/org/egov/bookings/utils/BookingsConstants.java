@@ -700,7 +700,7 @@ public class BookingsConstants {
 	
 	public static final String PACC_RE_INITIATED_ACTION = "RE_INITIATED";
 
-	public static final String BK_WATER_TANKER_DELIVER_ACTION_KEY = "bk-water-tanker-deliver-action";
+	public static final String BK_WATER_TANKER_DELIVER_ACTION_KEY = "BK_WATER_TANKER_DELIVER_ACTION";
 
 	/** The Constant BOOKING_MDMS_MODULE_NAME. */
 	public static final String BOOKING_MDMS_MODULE_NAME = "Booking";

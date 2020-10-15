@@ -95,7 +95,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 	public BookingsModel createParkAndCommunityBooking(BookingsRequest bookingsRequest) {
 		boolean flag = bookingService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 		
-		if(BookingsConstants.EMPLOYEE.equals(bookingsRequest.getRequestInfo().getUserInfo().getType()));
+		if(BookingsConstants.EMPLOYEE.equals(bookingsRequest.getRequestInfo().getUserInfo().getType()))
 		userService.createUser(bookingsRequest, false);
 		if (!flag)
 			enrichmentService.enrichParkCommunityCreateRequest(bookingsRequest);
