@@ -11,9 +11,7 @@ import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.web.models.BookingsRequest;
-import org.egov.common.contract.request.RequestInfo;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface BookingsService.
  */

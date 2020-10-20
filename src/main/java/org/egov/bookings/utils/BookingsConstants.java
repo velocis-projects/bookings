@@ -603,7 +603,7 @@ public class BookingsConstants {
     public static final String DEFAULT_OBJECT_MODIFIED_MSG = "Dear <1>,Your Trade License with application number <APPLICATION_NUMBER> was modified.";
     
     /** The Constant EMAIL_SUBJECT. */
-    public static  final String EMAIL_SUBJECT = "Chandigarh mSeva Application Status";
+    public static  final String EMAIL_SUBJECT = "Chandigarh mSeva Booking Application Status";
     
     /** The Constant BILL_AMOUNT_JSONPATH. */
     public static final String BILL_AMOUNT_JSONPATH = "$.billResponse.Bill[0].totalAmount";
@@ -714,5 +714,38 @@ public class BookingsConstants {
 	public static final String OFFLINE_APPLY = "OFFLINE_APPLY";
 
 	public static final String BOOKING_MDMS_FILE_NAME = "Booking_Config";
+	
+	public static final String MAIL_NOTIFICATION_INITIATED = "bk.m.counter.initiate";
+	
+	public static final String MAIL_NOTIFICATION_PENDINGAPPROVAL = "bk.m.counter.apply";
+	
+	public static final String MAIL_NOTIFICATION_PENDINGPAYMENT = "bk.m.counter.approved";
+	
+	public static final String MAIL_NOTIFICATION_REJECTED = "bk.m.counter.rejected";
+	
+	public static final String MAIL_NOTIFICATION_APPROVED = "bk.m.counter.pay";
+	
+	public static final String MAIL_NOTIFICATION_PENDINGASSIGNMENTDRIVER = "bk.m.counter.paidapply";
+	
+	public static final String MAIL_NOTIFICATION_PENDINGUPDATE = "bk.m.counter.assigndriver";
+	
+	public static final String MAIL_NOTIFICATION_APPLIED = "bk.m.counter.apply";
+	
+	public static final String MAIL_NOTIFICATION_UPDATE = "bk.m.counter.update";
+	
+	public static final String NOTIFICATION_DRIVER = "bk.en.counter.driver";
+	
+	public static final String MIME_TYPE = "application/pdf";
+	
+	public static final String PAYMENT_RECEIPT_NAME = "PaymentReceipt.pdf";
+	
+	public static final String PERMISSION_LETTER_NAME = "permissionLetter.pdf";
+	
+	public static final String PAYMENT_RECEIPT = "paymentReceipt";
+	
+	public static final String PERMISSION_LETTER = "permissionLetter";
+	
+	public static final String HOUSE_NO = "House No.";
+    
     
 }

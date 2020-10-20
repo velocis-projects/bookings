@@ -235,10 +235,12 @@ public class BookingsServiceImpl implements BookingsService {
 				Map<String, Map<String, JSONArray>> mdmsResMap = mdmsResponse.getMdmsRes();
 				Map<String, JSONArray> mdmsRes = mdmsResMap.get("Booking");
 				mdmsArrayList = mdmsRes.get("BookingType");
-				for (int i = 0; i < mdmsArrayList.size(); i++) {
-					jsonString = objectMapper.writeValueAsString(mdmsArrayList.get(i));
-					MdmsJsonFields mdmsJsonFields = objectMapper.readValue(jsonString, MdmsJsonFields.class);
-					mdmsJsonFieldsMap.put(mdmsJsonFields.getCode(), mdmsJsonFields);
+				if (!BookingsFieldsValidator.isNullOrEmpty(mdmsArrayList)) {
+					for (int i = 0; i < mdmsArrayList.size(); i++) {
+						jsonString = objectMapper.writeValueAsString(mdmsArrayList.get(i));
+						MdmsJsonFields mdmsJsonFields = objectMapper.readValue(jsonString, MdmsJsonFields.class);
+						mdmsJsonFieldsMap.put(mdmsJsonFields.getCode(), mdmsJsonFields);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -608,11 +610,11 @@ public class BookingsServiceImpl implements BookingsService {
 			}
 		}
 		String bookingType = bookingsRequest.getBookingsModel().getBkBookingType();
-		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsModel)) {
+		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
 			Map<String, MdmsJsonFields> mdmsJsonFieldsMap = mdmsJsonField(bookingsRequest);
 			if (!BookingsFieldsValidator.isNullOrEmpty(mdmsJsonFieldsMap)) {
 				bookingsRequest.getBookingsModel()
-						.setBkBookingType(mdmsJsonFieldsMap.get(bookingsModel.getBkBookingType()).getName());
+						.setBkBookingType(mdmsJsonFieldsMap.get(bookingsRequest.getBookingsModel().getBkBookingType()).getName());
 				bookingsProducer.push(config.getUpdateBookingSMSTopic(), bookingsRequest);
 			}
 		}
@@ -925,7 +927,5 @@ public class BookingsServiceImpl implements BookingsService {
 		}
 		return userDetailsList;
 	}
-	
-	
 	
 }

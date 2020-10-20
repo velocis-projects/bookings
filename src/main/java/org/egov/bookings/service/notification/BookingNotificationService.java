@@ -5,6 +5,7 @@ import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_GFCP;
 import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_OSBM;
 import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_OSUJM;
 import static org.egov.bookings.utils.BookingsConstants.BUSINESS_SERVICE_PACC;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,9 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.Action;
 import org.egov.bookings.contract.ActionItem;
+import org.egov.bookings.contract.EmailAttachment;
 import org.egov.bookings.contract.EmailRequest;
 import org.egov.bookings.contract.Event;
 import org.egov.bookings.contract.EventRequest;
@@ -114,7 +117,7 @@ public class BookingNotificationService {
 		BookingsModel bookingsModel = request.getBookingsModel();
 		String businessService = bookingsModel.getBusinessService();
 		String message = null;
-		String localizationMessages;
+		String localizationMessages = "";
 		switch (businessService) {
 		case BUSINESS_SERVICE_OSBM:
 		case BUSINESS_SERVICE_BWT:
@@ -124,11 +127,20 @@ public class BookingNotificationService {
 			localizationMessages = util.getLocalizationMessages(tenantId, request.getRequestInfo());
 			message = util.getCustomizedMsg(request.getRequestInfo(), bookingsModel, localizationMessages);
 		}
+		
 		Map<String, String> mobileNumberToOwner = new HashMap<>();
 		if (bookingsModel.getBkMobileNumber() != null)
 			mobileNumberToOwner.put(bookingsModel.getBkMobileNumber(), bookingsModel.getBkApplicantName());
-
+		
 		smsRequests.addAll(util.createSMSRequest(message, mobileNumberToOwner));
+		mobileNumberToOwner.remove(bookingsModel.getBkMobileNumber());
+		if(BookingsConstants.BUSINESS_SERVICE_BWT.equals(bookingsModel.getBusinessService()) 
+				&& BookingsConstants.ACTION_STATUS_PENDINGUPDATE.equals((bookingsModel.getBkAction() + "_" + bookingsModel.getBkApplicationStatus()))) {
+			message = util.getCustomizedMsgForDriver(request.getRequestInfo(), bookingsModel, localizationMessages);
+			mobileNumberToOwner.put(bookingsModel.getBkContactNo(), bookingsModel.getBkDriverName());
+			smsRequests.addAll(util.createSMSRequest(message, mobileNumberToOwner));
+		}
+		
 	}
     
 	/**
@@ -141,6 +153,7 @@ public class BookingNotificationService {
 		String tenantId = request.getBookingsModel().getTenantId();
 		BookingsModel bookingsModel = request.getBookingsModel();
 		Map<String, String> emailIdToOwner = new HashMap<>();
+		List<EmailAttachment> attachments = new ArrayList<>();
 		if (bookingsModel.getBkEmail() != null)
 			emailIdToOwner.put(bookingsModel.getBkEmail(), bookingsModel.getBkApplicantName());
 		String businessService = bookingsModel.getBusinessService();
@@ -153,9 +166,10 @@ public class BookingNotificationService {
 		case BUSINESS_SERVICE_OSUJM:
 		case BUSINESS_SERVICE_PACC:
 			localizationMessages = util.getLocalizationMessages(tenantId, request.getRequestInfo());
-			message = util.getCustomizedMsg(request.getRequestInfo(), bookingsModel, localizationMessages);
+			message = util.getMailCustomizedMsg(request.getRequestInfo(), bookingsModel, localizationMessages);
 			break;
 		}
+		
 		message = message.replace("\\n", "\n");
 		emailRequests.addAll(util.createEMAILRequest(message, emailIdToOwner));
 	}
