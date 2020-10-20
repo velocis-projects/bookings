@@ -102,8 +102,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		enrichmentService.generateDemand(bookingsRequest);
 
 		if (config.getIsExternalWorkFlowEnabled()) {
-			if (!flag)
-				workflowIntegrator.callWorkFlow(bookingsRequest);
+			workflowIntegrator.callWorkFlow(bookingsRequest);
 		}
 		enrichmentService.enrichBookingsDetails(bookingsRequest);
 		try {
@@ -154,7 +153,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 			//bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
 		}
 		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
-			bookingsProducer.push(config.getUpdateBookingSMSTopic(), bookingsRequest);
+			//bookingsProducer.push(config.getUpdateBookingSMSTopic(), bookingsRequest);
 		}
 		return bookingsRequest.getBookingsModel();
 	}
