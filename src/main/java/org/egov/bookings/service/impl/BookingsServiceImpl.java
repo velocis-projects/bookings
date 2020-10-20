@@ -235,10 +235,12 @@ public class BookingsServiceImpl implements BookingsService {
 				Map<String, Map<String, JSONArray>> mdmsResMap = mdmsResponse.getMdmsRes();
 				Map<String, JSONArray> mdmsRes = mdmsResMap.get("Booking");
 				mdmsArrayList = mdmsRes.get("BookingType");
-				for (int i = 0; i < mdmsArrayList.size(); i++) {
-					jsonString = objectMapper.writeValueAsString(mdmsArrayList.get(i));
-					MdmsJsonFields mdmsJsonFields = objectMapper.readValue(jsonString, MdmsJsonFields.class);
-					mdmsJsonFieldsMap.put(mdmsJsonFields.getCode(), mdmsJsonFields);
+				if (!BookingsFieldsValidator.isNullOrEmpty(mdmsArrayList)) {
+					for (int i = 0; i < mdmsArrayList.size(); i++) {
+						jsonString = objectMapper.writeValueAsString(mdmsArrayList.get(i));
+						MdmsJsonFields mdmsJsonFields = objectMapper.readValue(jsonString, MdmsJsonFields.class);
+						mdmsJsonFieldsMap.put(mdmsJsonFields.getCode(), mdmsJsonFields);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -558,7 +560,7 @@ public class BookingsServiceImpl implements BookingsService {
 		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
 		if (BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
 				&& !BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService))
-//			enrichmentService.enrichBookingsAssignee(bookingsRequest);
+			enrichmentService.enrichBookingsAssignee(bookingsRequest);
 
 		if (config.getIsExternalWorkFlowEnabled())
 			workflowIntegrator.callWorkFlow(bookingsRequest);
@@ -925,7 +927,5 @@ public class BookingsServiceImpl implements BookingsService {
 		}
 		return userDetailsList;
 	}
-	
-	
 	
 }
