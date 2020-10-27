@@ -342,6 +342,9 @@ public class BookingsServiceImpl implements BookingsService {
 	 */
 	@Override
 	public Booking getEmployeeSearchBooking(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) {
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
 		Booking booking = new Booking();
 		List<BookingsModel> bookingsList = new ArrayList<>();
 		Set<BookingsModel> bookingsSet = new HashSet<>();
@@ -349,9 +352,6 @@ public class BookingsServiceImpl implements BookingsService {
 		Map<String, String> documentMap = new HashMap<>();
 		Set<String> applicationNumberSet = new HashSet<>();
 		try {
-			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) {
-				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
-			}
 			String applicationNumber = searchCriteriaFieldsDTO.getApplicationNumber();
 			String applicationStatus = searchCriteriaFieldsDTO.getApplicationStatus();
 			String mobileNumber = searchCriteriaFieldsDTO.getMobileNumber();
@@ -373,8 +373,7 @@ public class BookingsServiceImpl implements BookingsService {
 				throw new IllegalArgumentException("Invalid roles");
 			}
 			for (Role role : roles) {
-				if (!BookingsConstants.CITIZEN.equals(role.getCode())
-						&& !BookingsConstants.EMPLOYEE.equals(role.getCode())) {
+				if (!BookingsConstants.CITIZEN.equals(role.getCode()) && !BookingsConstants.EMPLOYEE.equals(role.getCode())) {
 					if(BookingsConstants.DEO.equals(role.getCode()) || BookingsConstants.CLERK.equals(role.getCode())
 							|| BookingsConstants.E_SAMPARK_CENTER.equals(role.getCode())
 							|| BookingsConstants.MCC_USER.equals(role.getCode())) {
@@ -535,13 +534,15 @@ public class BookingsServiceImpl implements BookingsService {
 			Map<String, Map<String, JSONArray>> mdmsResMap = mdmsResponse.getMdmsRes();
 			Map<String, JSONArray> mdmsRes = mdmsResMap.get(mdmsModuleName);
 			mdmsArrayList = mdmsRes.get(mdmsFileName);
-			for (int i = 0; i < mdmsArrayList.size(); i++) {
-				jsonString = objectMapper.writeValueAsString(mdmsArrayList.get(i));
-				BookingConfigJsonFields bookingConfigJsonFields = objectMapper.readValue(jsonString, BookingConfigJsonFields.class);
-					if (BookingsConstants.BK_WATER_TANKER_DELIVER_ACTION_KEY.equals(bookingConfigJsonFields.getKey())) {
-						action = bookingConfigJsonFields.getValue();
-						break;
-					}
+			if(!BookingsFieldsValidator.isNullOrEmpty(mdmsArrayList)) {
+				for (int i = 0; i < mdmsArrayList.size(); i++) {
+					jsonString = objectMapper.writeValueAsString(mdmsArrayList.get(i));
+					BookingConfigJsonFields bookingConfigJsonFields = objectMapper.readValue(jsonString, BookingConfigJsonFields.class);
+						if (BookingsConstants.BK_WATER_TANKER_DELIVER_ACTION_KEY.equals(bookingConfigJsonFields.getKey())) {
+							action = bookingConfigJsonFields.getValue();
+							break;
+						}
+				}
 			}
 		} catch (Exception e) {
 			LOGGER.error("Exception occur in the mdmsSearch " + e);
@@ -927,5 +928,4 @@ public class BookingsServiceImpl implements BookingsService {
 		}
 		return userDetailsList;
 	}
-	
 }

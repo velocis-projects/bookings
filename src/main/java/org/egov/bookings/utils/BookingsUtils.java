@@ -199,6 +199,13 @@ public class BookingsUtils {
 		return bkModuleDtls;
 	}
 	
+	/**
+	 * Gets the mdms module search type.
+	 *
+	 * @param moduleName the module name
+	 * @param mdmsFileName the mdms file name
+	 * @return the mdms module search type
+	 */
 	private ModuleDetail getMdmsModuleSearchType(String moduleName, String mdmsFileName) {
 
 		List<MasterDetail> bkMasterDetails = new ArrayList<>();
