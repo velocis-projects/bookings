@@ -463,13 +463,13 @@ public class BookingsConstants {
 	public static final String EMPLOYEE = "EMPLOYEE";
 
 	/** The Constant OSBM_APPROVER. */
-	public static final String OSBM_APPROVER = "OSBM_APPROVER";
+	public static final String OSBM_APPROVER = "BK_OSBM_APPROVER";
 
 	/** The Constant MCC_HELPDESK_USER. */
-	public static final String MCC_HELPDESK_USER = "MCC_HELPDESK_USER";
+	public static final String MCC_HELPDESK_USER = "BK_MCC_HELPDESK_USER";
 
 	/** The Constant COMMERCIAL_GROUND_VIEWER. */
-	public static final String COMMERCIAL_GROUND_VIEWER = "COMMERCIAL_GROUND_VIEWER";
+	public static final String COMMERCIAL_GROUND_VIEWER = "BK_COMMERCIAL_GROUND_VIEWER";
 
 	/** The Constant GROUND_FOR_COMMERCIAL_PURPOSE. */
 	public static final String GROUND_FOR_COMMERCIAL_PURPOSE = "GROUND_FOR_COMMERCIAL_PURPOSE";
@@ -484,7 +484,7 @@ public class BookingsConstants {
 	public static final String BK_SECTOR = "bkSector";
 
 	/** The Constant MCC_APPROVER. */
-	public static final String MCC_APPROVER = "MCC_APPROVER";
+	public static final String MCC_APPROVER = "BK_MCC_APPROVER";
 
 	/** The Constant ACTION_SPECIAL_APPLY. */
 	public static final String ACTION_DELIVER = "DELIVER";
@@ -511,7 +511,7 @@ public class BookingsConstants {
 	public static final String USER_ID = "userId";
 	
 	/** The Constant PARKS_AND_COMMUNITY_VIEWER. */
-	public static final String PARKS_AND_COMMUNITY_VIEWER = "PARKS_AND_COMMUNITY_VIEWER";
+	public static final String PARKS_AND_COMMUNITY_VIEWER = "BK_PARKS_AND_COMMUNITY_VIEWER";
 	
 	
 	
@@ -627,28 +627,28 @@ public class BookingsConstants {
     public static final String COMMUNITY_CENTER = "Community Center";
     
     /** The Constant DEO. */
-    public static final String DEO = "DEO";
+    public static final String DEO = "BK_DEO";
     
     /** The Constant CLERK. */
-    public static final String CLERK = "CLERK";
+    public static final String CLERK = "BK_CLERK";
     
     /** The Constant SENIOR_ASSISTANT. */
-    public static final String SENIOR_ASSISTANT = "SENIOR_ASSISTANT";
+    public static final String SENIOR_ASSISTANT = "BK_SENIOR_ASSISTANT";
     
     /** The Constant AUDIT_DEPARTMENT. */
-    public static final String AUDIT_DEPARTMENT = "AUDIT_DEPARTMENT";
+    public static final String AUDIT_DEPARTMENT = "BK_AUDIT_DEPARTMENT";
     
     /** The Constant CHIEF_ACCOUNT_OFFICER. */
-    public static final String CHIEF_ACCOUNT_OFFICER = "CHIEF_ACCOUNT_OFFICER";
+    public static final String CHIEF_ACCOUNT_OFFICER = "BK_CHIEF_ACCOUNT_OFFICER";
     
     /** The Constant PAYMENT_PROCESSING_AUTHORITY. */
-    public static final String PAYMENT_PROCESSING_AUTHORITY = "PAYMENT_PROCESSING_AUTHORITY";
+    public static final String PAYMENT_PROCESSING_AUTHORITY = "BK_PAYMENT_PROCESSING_AUTHORITY";
     
     /** The Constant E_SAMPARK_CENTER. */
-    public static final String E_SAMPARK_CENTER = "E-SAMPARK-CENTER";
+    public static final String E_SAMPARK_CENTER = "BK_E-SAMPARK-CENTER";
     
     /** The Constant MCC_USER. */
-    public static final String MCC_USER = "MCC_USER";
+    public static final String MCC_USER = "BK_MCC_USER";
     
     /** The Constant NLUJM_BOOKING_TYPE. */
     public static final String NLUJM_BOOKING_TYPE = "New Location Open Spaces Under Jurisdiction of MCC";
