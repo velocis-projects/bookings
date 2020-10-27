@@ -95,15 +95,14 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 	public BookingsModel createParkAndCommunityBooking(BookingsRequest bookingsRequest) {
 		boolean flag = bookingService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 		
-		if(BookingsConstants.EMPLOYEE.equals(bookingsRequest.getRequestInfo().getUserInfo().getType()));
+		if(BookingsConstants.EMPLOYEE.equals(bookingsRequest.getRequestInfo().getUserInfo().getType()))
 		userService.createUser(bookingsRequest, false);
 		if (!flag)
 			enrichmentService.enrichParkCommunityCreateRequest(bookingsRequest);
 		enrichmentService.generateDemand(bookingsRequest);
 
 		if (config.getIsExternalWorkFlowEnabled()) {
-			if (!flag)
-				workflowIntegrator.callWorkFlow(bookingsRequest);
+			workflowIntegrator.callWorkFlow(bookingsRequest);
 		}
 		enrichmentService.enrichBookingsDetails(bookingsRequest);
 		try {
@@ -154,7 +153,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 			//bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
 		}
 		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
-			bookingsProducer.push(config.getUpdateBookingSMSTopic(), bookingsRequest);
+			//bookingsProducer.push(config.getUpdateBookingSMSTopic(), bookingsRequest);
 		}
 		return bookingsRequest.getBookingsModel();
 	}

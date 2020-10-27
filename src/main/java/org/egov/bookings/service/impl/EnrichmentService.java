@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -27,6 +28,8 @@ import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
+import org.egov.bookings.models.demand.Demand;
+import org.egov.bookings.models.demand.DemandDetail;
 import org.egov.bookings.models.demand.GenerateBillCriteria;
 import org.egov.bookings.models.demand.TaxHeadEstimate;
 import org.egov.bookings.repository.BookingsRepository;
@@ -86,9 +89,7 @@ public class EnrichmentService {
 	@Autowired
 	private OsujmNewLocationRepository osujmNewLocationRepository;
 
-	/** The billing service repository. */
-	@Autowired
-	private BillingServiceRepository billingServiceRepository;
+	
 	
 	/**
 	 * Enrich bookings create request.
@@ -647,7 +648,7 @@ public class EnrichmentService {
 							BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount())),
 							taxHeadEstimate.getCategory()));
 				}
-				break;
+			continue;
 			}
 		}
 		return taxHeadEstimate1;
@@ -671,22 +672,18 @@ public class EnrichmentService {
 			ParkCommunityHallV1MasterModel parkCommunityHallV1FeeMaster) {
 
 		List<TaxHeadEstimate> taxHeadEstimate1 = new ArrayList<>();
-
+		
 		if (BookingsConstants.PAYMENT_SUCCESS_STATUS.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
-			BillResponse billResponse = null;
+			List<DemandDetail> demandDetails = null;
 			if (bookingsService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
-			GenerateBillCriteria billCriteria = GenerateBillCriteria.builder()
-					.tenantId(bookingsRequest.getBookingsModel().getTenantId())
-					.businessService(bookingsRequest.getBookingsModel().getBusinessService())
-					.consumerCode(bookingsRequest.getBookingsModel().getBkApplicationNumber()).build();
-			 billResponse = demandService.generateBill(bookingsRequest.getRequestInfo(), billCriteria);
-			}
-			BigDecimal amount = finalAmount.subtract(
-					billResponse.getBill().get(0).getBillDetails().get(0).getBillAccountDetails().get(0).getAmount());
+				List<Demand> searchResult = demandService.searchDemand(bookingsRequest.getBookingsModel().getTenantId(),
+						Collections.singleton(bookingsRequest.getBookingsModel().getBkApplicationNumber()), bookingsRequest.getRequestInfo(),
+						bookingsRequest.getBookingsModel().getBusinessService());
 
-			if (finalAmount.compareTo(billResponse.getBill().get(0).getBillDetails().get(0).getBillAccountDetails()
-					.get(0).getAmount()) < 1 || finalAmount.compareTo(billResponse.getBill().get(0).getBillDetails().get(0).getBillAccountDetails()
-							.get(0).getAmount()) == 0) {
+				Demand demand = searchResult.get(0);
+				 demandDetails = demand.getDemandDetails();
+			}
+			if (finalAmount.compareTo(demandDetails.get(0).getTaxAmount()) < 1 || finalAmount.compareTo(demandDetails.get(0).getTaxAmount()) == 0) {
 				config.setDemandFlag(false);
 				/*taxHeadEstimate1 = enrichTaxHeadEstimateForPACC(bookingsRequest, finalAmount, taxHeadCode1,
 						taxHeadCode2, taxHeadMasterFieldList, parkCommunityHallV1FeeMaster);*/

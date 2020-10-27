@@ -1,6 +1,7 @@
 target/
 *.classpath
 *.png
+*.jpg
 *.ucls
 *.factorypath
 .project

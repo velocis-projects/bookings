@@ -35,12 +35,12 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.egov.bookings.config.BookingsConfiguration;
-import org.egov.bookings.contract.BookingInfo;
+//import org.egov.bookings.contract.BookingInfo;
 import org.egov.bookings.contract.EmailAttachment;
 import org.egov.bookings.contract.EmailRequest;
 import org.egov.bookings.contract.EventRequest;
-import org.egov.bookings.contract.PdfRequest;
-import org.egov.bookings.contract.PdfResponse;
+//import org.egov.bookings.contract.PdfRequest;
+//import org.egov.bookings.contract.PdfResponse;
 import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.contract.SMSRequest;
 import org.egov.bookings.model.BookingsModel;
