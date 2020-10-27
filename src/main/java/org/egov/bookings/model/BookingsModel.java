@@ -108,10 +108,10 @@ public class BookingsModel {
 	@Column(name = "BK_PAYMENT_STATUS")
 	private String bkPaymentStatus;
 
-	@JsonProperty("bkPaymentDate")
+	/*@JsonProperty("bkPaymentDate")
 	@Column(name = "BK_PAYMENT_DATE")
 	private Date bkPaymentDate;
-
+*/
 	@JsonProperty("bkBookingType")
 	@Column(name = "BK_BOOKING_TYPE")
 	private String bkBookingType;
@@ -246,13 +246,13 @@ public class BookingsModel {
 	@Column(name = "BK_LOCATION_PICTURES")
 	private String bkLocationPictures;
 
-	@JsonProperty("bkBookingReferenceNumber")
+	/*@JsonProperty("bkBookingReferenceNumber")
 	@Column(name = "BK_BOOKING_REFERENCE_NUMBER")
 	private String bkBookingReferenceNumber;
 
 	@JsonProperty("bkPaymentReceiptNumber")
 	@Column(name = "BK_PAYMENT_RECEIPT_NUMBER")
-	private String bkPaymentReceiptNumber;
+	private String bkPaymentReceiptNumber;*/
 
 	@JsonProperty("bkParkOrCommunityCenter")
 	@Column(name = "BK_PARK_OR_COMMUNITY_CENTER")
@@ -262,7 +262,7 @@ public class BookingsModel {
 	@Column(name = "BK_REFUND_AMOUNT")
 	private String bkRefundAmount;
 
-	@JsonProperty("bkBankAccountNumber")
+	/*@JsonProperty("bkBankAccountNumber")
 	@Column(name = "BK_BANK_ACCOUNT_NUMBER")
 	private String bkBankAccountNumber;
 
@@ -276,7 +276,7 @@ public class BookingsModel {
 
 	@JsonProperty("bkAccountType")
 	@Column(name = "BK_ACCOUNT_TYPE")
-	private String bkAccountType;
+	private String bkAccountType;*/
 
 	@JsonProperty("bkPropertyOwnerName")
 	@Column(name = "BK_PROPERTY_OWNER_NAME")
