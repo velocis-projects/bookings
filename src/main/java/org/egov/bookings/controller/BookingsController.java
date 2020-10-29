@@ -121,17 +121,17 @@ public class BookingsController {
 	@PostMapping(value = "/citizen/_search")
 	public ResponseEntity<?> getCitizenSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getUuid())) 
+		{
+			throw new IllegalArgumentException("Invalid uuId");
+		}
 		Booking booking = new Booking();
 		try
 		{
-			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
-			{
-				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
-			}
-			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getUuid())) 
-			{
-				throw new IllegalArgumentException("Invalid uuId");
-			}
 			booking = bookingsService.getCitizenSearchBooking(searchCriteriaFieldsDTO);
 		}
 		catch(Exception e)
@@ -150,17 +150,17 @@ public class BookingsController {
 	@PostMapping(value = "/employee/_search")
 	public ResponseEntity<?> getEmployeeSearchBooking( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getUuid())) 
+		{
+			throw new IllegalArgumentException("Invalid uuId");
+		}
 		Booking booking = new Booking();
 		try
 		{
-			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
-			{
-				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
-			}
-			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getUuid())) 
-			{
-				throw new IllegalArgumentException("Invalid uuId");
-			}
 			booking = bookingsService.getEmployeeSearchBooking(searchCriteriaFieldsDTO);
 		}
 		catch(Exception e)
@@ -180,17 +180,17 @@ public class BookingsController {
 	@PostMapping(value = "/employee/records/_count")
 	public ResponseEntity<?> employeeRecordsCount( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO, @RequestBody BookingsRequest bookingsRequest )
 	{
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid bookingsRequest");
+		}
 		Map< String, Integer > bookingCountMap = new HashMap<>();
 		try
 		{
-			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
-			{
-				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
-			}
-			if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) 
-			{
-				throw new IllegalArgumentException("Invalid bookingsRequest");
-			}
 			String tenantId = searchCriteriaFieldsDTO.getTenantId();
 			String uuid = searchCriteriaFieldsDTO.getUuid();
 			if (BookingsFieldsValidator.isNullOrEmpty(tenantId)) 
@@ -220,17 +220,17 @@ public class BookingsController {
 	@PostMapping(value = "/citizen/records/_count")
 	public ResponseEntity<?> citizenRecordsCount( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO, @RequestBody BookingsRequest bookingsRequest )
 	{
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO) ) 
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) 
+		{
+			throw new IllegalArgumentException("Invalid bookingsRequest");
+		}
 		Map< String, Integer > bookingCountMap = new HashMap<>();
 		try
 		{
-			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO) ) 
-			{
-				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
-			}
-			if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) 
-			{
-				throw new IllegalArgumentException("Invalid bookingsRequest");
-			}
 			String tenantId = searchCriteriaFieldsDTO.getTenantId();
 			String uuid = searchCriteriaFieldsDTO.getUuid();
 			if (BookingsFieldsValidator.isNullOrEmpty(tenantId)) 
@@ -261,17 +261,17 @@ public class BookingsController {
 	public ResponseEntity<?> getWorkflowProcessInstances( @Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
             @Valid @ModelAttribute ProcessInstanceSearchCriteria criteria )
 	{
+		if (BookingsFieldsValidator.isNullOrEmpty(requestInfoWrapper)) 
+		{
+			throw new IllegalArgumentException("Invalid requestInfoWrapper");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(criteria)) 
+		{
+			throw new IllegalArgumentException("Invalid criteria");
+		}
 		Object result = new Object();
 		try
 		{
-			if (BookingsFieldsValidator.isNullOrEmpty(requestInfoWrapper)) 
-			{
-				throw new IllegalArgumentException("Invalid requestInfoWrapper");
-			}
-			if (BookingsFieldsValidator.isNullOrEmpty(criteria)) 
-			{
-				throw new IllegalArgumentException("Invalid criteria");
-			}
 			result = bookingsService.getWorkflowProcessInstances(requestInfoWrapper, criteria);
 		}
 		catch(Exception e)
@@ -290,13 +290,16 @@ public class BookingsController {
 	@PostMapping( value = "employee/assignee/_search")
 	public ResponseEntity<?> getAssignee( @RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO )
 	{
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getRequestInfo())) {
+			throw new IllegalArgumentException("Invalid requestInfo");
+		}
 		List<UserDetails> userdetailsList = new ArrayList<>();
 		try
 		{
-			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
-			{
-				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
-			}
 			userdetailsList = bookingsService.getAssignee(searchCriteriaFieldsDTO);
 		}
 		catch(Exception e)

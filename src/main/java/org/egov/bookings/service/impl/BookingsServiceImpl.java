@@ -27,6 +27,8 @@ import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsbmApproverModel;
+import org.egov.bookings.model.user.OwnerInfo;
+import org.egov.bookings.model.user.UserDetailResponse;
 import org.egov.bookings.producer.BookingsProducer;
 import org.egov.bookings.repository.BookingsRepository;
 import org.egov.bookings.repository.CommonRepository;
@@ -94,8 +96,13 @@ public class BookingsServiceImpl implements BookingsService {
 	@Autowired
 	private ServiceRequestRepository serviceRequestRepository;
 
+	/** The bookings producer. */
 	@Autowired
 	private BookingsProducer bookingsProducer;
+	
+	/** The user service. */
+	@Autowired
+	private UserService userService;
 
 	/** The mail notification service. */
 	/*
@@ -281,15 +288,14 @@ public class BookingsServiceImpl implements BookingsService {
 	 */
 	@Override
 	public Booking getCitizenSearchBooking(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) {
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
 		Booking booking = new Booking();
 		List<BookingsModel> myBookingList = new ArrayList<>();
 		List<?> documentList = new ArrayList<>();
 		Map<String, String> documentMap = new HashMap<>();
 		try {
-			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) {
-				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
-			}
-
 			String applicationNumber = searchCriteriaFieldsDTO.getApplicationNumber();
 			String applicationStatus = searchCriteriaFieldsDTO.getApplicationStatus();
 			String mobileNumber = searchCriteriaFieldsDTO.getMobileNumber();
@@ -633,17 +639,17 @@ public class BookingsServiceImpl implements BookingsService {
 	 */
 	@Override
 	public Map<String, Integer> employeeRecordsCount(String tenantId, String uuid, BookingsRequest bookingsRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
+			throw new IllegalArgumentException("Invalid bookingsRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(tenantId)) {
+			throw new IllegalArgumentException("Invalid tentantId");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(uuid)) {
+			throw new IllegalArgumentException("Invalid uuId");
+		}
 		Map<String, Integer> bookingCountMap = new HashMap<>();
 		try {
-			if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
-				throw new IllegalArgumentException("Invalid bookingsRequest");
-			}
-			if (BookingsFieldsValidator.isNullOrEmpty(tenantId)) {
-				throw new IllegalArgumentException("Invalid tentantId");
-			}
-			if (BookingsFieldsValidator.isNullOrEmpty(uuid)) {
-				throw new IllegalArgumentException("Invalid uuId");
-			}
 			List<String> sectorList = commonRepository.findSectorList(uuid);
 			int allRecordsCount = bookingsRepository.countByTenantIdAndBkSectorIn(tenantId, sectorList);
 			bookingCountMap.put("allRecordsCount", allRecordsCount);
@@ -678,17 +684,17 @@ public class BookingsServiceImpl implements BookingsService {
 	 */
 	@Override
 	public Map<String, Integer> citizenRecordsCount(String tenantId, String uuid, BookingsRequest bookingsRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
+			throw new IllegalArgumentException("Invalid bookingsRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(tenantId)) {
+			throw new IllegalArgumentException("Invalid tentantId");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(uuid)) {
+			throw new IllegalArgumentException("Invalid uuId");
+		}
 		Map<String, Integer> bookingCountMap = new HashMap<>();
 		try {
-			if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
-				throw new IllegalArgumentException("Invalid bookingsRequest");
-			}
-			if (BookingsFieldsValidator.isNullOrEmpty(tenantId)) {
-				throw new IllegalArgumentException("Invalid tentantId");
-			}
-			if (BookingsFieldsValidator.isNullOrEmpty(uuid)) {
-				throw new IllegalArgumentException("Invalid uuId");
-			}
 			int allRecordsCount = bookingsRepository.countByTenantIdAndUuid(tenantId, uuid);
 			bookingCountMap.put("allRecordsCount", allRecordsCount);
 			int bookingCount = 0;
@@ -722,14 +728,14 @@ public class BookingsServiceImpl implements BookingsService {
 	@Override
 	public Object getWorkflowProcessInstances(RequestInfoWrapper requestInfoWrapper,
 			ProcessInstanceSearchCriteria criteria) {
+		if (BookingsFieldsValidator.isNullOrEmpty(requestInfoWrapper)) {
+			throw new IllegalArgumentException("Invalid requestInfoWrapper");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(criteria)) {
+			throw new IllegalArgumentException("Invalid criteria");
+		}
 		Object result = new Object();
 		try {
-			if (BookingsFieldsValidator.isNullOrEmpty(requestInfoWrapper)) {
-				throw new IllegalArgumentException("Invalid requestInfoWrapper");
-			}
-			if (BookingsFieldsValidator.isNullOrEmpty(criteria)) {
-				throw new IllegalArgumentException("Invalid criteria");
-			}
 			StringBuilder url = new StringBuilder(config.getWfHost());
 			url.append(config.getWorkflowProcessInstancePath());
 			url.append("?businessIds=");
@@ -757,7 +763,6 @@ public class BookingsServiceImpl implements BookingsService {
 	 */
 	@Override
 	public List<BookingApprover> fetchAllApprover() {
-
 		List<BookingApprover> bookingApprover1 = new ArrayList<>();
 		List<?> userList = new ArrayList<>();
 		try {
@@ -820,19 +825,23 @@ public class BookingsServiceImpl implements BookingsService {
 	 */
 	@Override
 	public List<UserDetails> getAssignee(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
-		List<?> userList = new ArrayList<>();
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) {
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getRequestInfo())) {
+			throw new IllegalArgumentException("Invalid requestInfo");
+		}
 		List<UserDetails> userDetailsList = new ArrayList<>();
-		List<Integer> userId = new ArrayList<>();
+		List<String> roleCodes = new ArrayList<>();
+		UserDetailResponse userDetailResponse = new UserDetailResponse();
 		try {
-			if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) {
-				throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
-			}
 			String applicationNumber = searchCriteriaFieldsDTO.getApplicationNumber();
 			String action = searchCriteriaFieldsDTO.getAction();
 			String sector = searchCriteriaFieldsDTO.getSector();
 			String businessService = searchCriteriaFieldsDTO.getBusinessService();
 			String approverName = "";
 			String roles = "";
+			StringBuilder url = prepareUrlForUserList();
 			if (BookingsFieldsValidator.isNullOrEmpty(businessService)) {
 				List<String> nextState = commonRepository.findNextState(applicationNumber, action);
 				if (!BookingsFieldsValidator.isNullOrEmpty(nextState)) {
@@ -853,33 +862,29 @@ public class BookingsServiceImpl implements BookingsService {
 				if (!BookingsFieldsValidator.isNullOrEmpty(approverArray)) {
 					for (String approver : approverArray) {
 						if (!BookingsConstants.CITIZEN.equals(approver)) {
-							userId.addAll(commonRepository.findUserId(approver));
+							roleCodes.add(approver);
 						}
 					}
-					if (!BookingsFieldsValidator.isNullOrEmpty(userId)) {
-						userList = commonRepository.findUserList(userId);
+					if (!BookingsFieldsValidator.isNullOrEmpty(roleCodes)) {
+						userDetailResponse = userService.getUserSearchDetails(roleCodes, url, searchCriteriaFieldsDTO.getRequestInfo());
 					}
-					if (!BookingsFieldsValidator.isNullOrEmpty(userList)) {
-						userDetailsList = prepareUserList(userList, sector);
+					if (!BookingsFieldsValidator.isNullOrEmpty(userDetailResponse)) {
+						userDetailsList = prepareUserList(userDetailResponse, sector);
 					}
 				}
 			} else if (!BookingsFieldsValidator.isNullOrEmpty(businessService)
 					&& BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService)) {
-				userId = commonRepository.findUserId(BookingsConstants.COMMERCIAL_GROUND_VIEWER);
-				if (!BookingsFieldsValidator.isNullOrEmpty(userId)) {
-					userList = commonRepository.findUserList(userId);
-				}
-				if (!BookingsFieldsValidator.isNullOrEmpty(userList)) {
-					userDetailsList = prepareUserList(userList, sector);
+				roleCodes.add(BookingsConstants.COMMERCIAL_GROUND_VIEWER);
+				userDetailResponse = userService.getUserSearchDetails(roleCodes, url, searchCriteriaFieldsDTO.getRequestInfo());
+				if (!BookingsFieldsValidator.isNullOrEmpty(userDetailResponse)) {
+					userDetailsList = prepareUserList(userDetailResponse, sector);
 				}
 			} else if (!BookingsFieldsValidator.isNullOrEmpty(businessService)
 					&& BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService)) {
-				userId = commonRepository.findUserId(BookingsConstants.PARKS_AND_COMMUNITY_VIEWER);
-				if (!BookingsFieldsValidator.isNullOrEmpty(userId)) {
-					userList = commonRepository.findUserList(userId);
-				}
-				if (!BookingsFieldsValidator.isNullOrEmpty(userList)) {
-					userDetailsList = prepareUserList(userList, sector);
+				roleCodes.add(BookingsConstants.PARKS_AND_COMMUNITY_VIEWER);
+				userDetailResponse = userService.getUserSearchDetails(roleCodes, url, searchCriteriaFieldsDTO.getRequestInfo());
+				if (!BookingsFieldsValidator.isNullOrEmpty(userDetailResponse)) {
+					userDetailsList = prepareUserList(userDetailResponse, sector);
 				}
 			}
 
@@ -897,17 +902,22 @@ public class BookingsServiceImpl implements BookingsService {
 	 * @param sector   the sector
 	 * @return the list
 	 */
-	private List<UserDetails> prepareUserList(List<?> userList, String sector) {
+	private List<UserDetails> prepareUserList(UserDetailResponse userDetailResponse, String sector) {
 		List<UserDetails> userDetailsList = new ArrayList<>();
 		Map<String, UserDetails> userDetailsMap = new HashMap<>();
 		OsbmApproverModel osbmApproverModel = new OsbmApproverModel();
+		if (BookingsFieldsValidator.isNullOrEmpty(userDetailResponse)) {
+			throw new IllegalArgumentException("Invalid userDetailResponse");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(userDetailResponse.getUser())) {
+			throw new IllegalArgumentException("Invalid User List");
+		}
+		List<OwnerInfo> userList = userDetailResponse.getUser();
 		try {
-			for (Object object : userList) {
+			for (OwnerInfo user : userList) {
 				UserDetails userDetails = new UserDetails();
-				String jsonString = objectMapper.writeValueAsString(object);
-				String[] jsonArray = jsonString.split(",");
-				userDetails.setUuid(jsonArray[0].substring(2, jsonArray[0].length() - 1));
-				userDetails.setUserName(jsonArray[1].substring(1, jsonArray[1].length() - 2));
+				userDetails.setUuid(user.getUuid());
+				userDetails.setUserName(user.getUserName());
 				osbmApproverModel = osbmApproverRepository.findByUuidAndSector(userDetails.getUuid(), sector);
 				if (!BookingsFieldsValidator.isNullOrEmpty(sector)
 						&& !BookingsFieldsValidator.isNullOrEmpty(osbmApproverModel)) {
@@ -928,4 +938,16 @@ public class BookingsServiceImpl implements BookingsService {
 		}
 		return userDetailsList;
 	}
+	
+	/**
+	 * Prepare url for user list.
+	 *
+	 * @return the string builder
+	 */
+	public StringBuilder prepareUrlForUserList() {
+		StringBuilder url = new StringBuilder(config.getUserHost());
+		url.append(config.getUserSearchEndpoint());
+		return url;
+	}
+	
 }

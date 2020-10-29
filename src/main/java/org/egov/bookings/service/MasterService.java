@@ -6,12 +6,14 @@ import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.MasterRequest;
 import org.egov.bookings.contract.UserDetails;
+import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
+import org.egov.bookings.model.user.UserSearchRequest;
 
 /**
  * The Interface MasterService.
@@ -110,9 +112,10 @@ public interface MasterService {
 	/**
 	 * Fetch all approver.
 	 *
+	 * @param userSearchRequest the user search request
 	 * @return the list
 	 */
-	public List<BookingApprover> fetchAllApprover();
+	public List<BookingApprover> fetchAllApprover(UserSearchRequest userSearchRequest);
 	
 	/**
 	 * Fetch all approver details.
@@ -150,18 +153,11 @@ public interface MasterService {
 	public List<ParkCommunityHallV1MasterModel> fetchAllPACCFee();
 	
 	/**
-	 * Gets the roles.
-	 *
-	 * @return the roles
-	 */
-	public List<String> getRoles();
-	
-	/**
 	 * Gets the users.
 	 *
-	 * @param approver the approver
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @return the users
 	 */
-	public List<UserDetails> getUsers(String approver);
+	public List<UserDetails> getUsers(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO);
 
 }

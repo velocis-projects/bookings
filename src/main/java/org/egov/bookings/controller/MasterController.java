@@ -11,12 +11,14 @@ import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.DocumentFields;
 import org.egov.bookings.contract.MasterRequest;
 import org.egov.bookings.contract.UserDetails;
+import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
+import org.egov.bookings.model.user.UserSearchRequest;
 import org.egov.bookings.service.MasterService;
 import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -419,13 +420,20 @@ public class MasterController {
 	/**
 	 * Fetch all approver.
 	 *
+	 * @param userSearchRequest the user search request
 	 * @return the response entity
 	 */
 	@PostMapping("all/approver/_fetch")
-	public ResponseEntity<?> fetchAllApprover() {
+	public ResponseEntity<?> fetchAllApprover(@RequestBody UserSearchRequest userSearchRequest ) {
+		if (BookingsFieldsValidator.isNullOrEmpty(userSearchRequest)) {
+			throw new IllegalArgumentException("Invalid userSearchRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(userSearchRequest.getRequestInfo())) {
+			throw new IllegalArgumentException("Invalid requestInfo");
+		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<BookingApprover> bookingApproverList = masterService.fetchAllApprover();
+			List<BookingApprover> bookingApproverList = masterService.fetchAllApprover(userSearchRequest);
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(bookingApproverList);
@@ -548,44 +556,29 @@ public class MasterController {
 		return ResponseEntity.ok(rs);
 	}
 	
-	
-	/**
-	 * Gets the roles.
-	 *
-	 * @return the roles
-	 */
-	@PostMapping("roles/_search")
-	public ResponseEntity<?> getRoles() {
-		ResponseModel rs = new ResponseModel();
-		try {
-			List<String> roleList = masterService.getRoles(); 
-			rs.setStatus("200");
-			rs.setMessage("Success");
-			rs.setData(roleList);
-		}
-		catch(Exception e)
-		{
-			LOGGER.error("Exception occur in the getRoles " + e);
-			e.printStackTrace();
-		}
-		return ResponseEntity.ok(rs);
-	}
-	
 	/**
 	 * Gets the users.
 	 *
-	 * @param approver the approver
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @return the users
 	 */
 	@PostMapping("user/_search")
-	public ResponseEntity<?> getUsers(@RequestParam(value = "approver") String approver) {
-		if (BookingsFieldsValidator.isNullOrEmpty(approver)) 
+	public ResponseEntity<?> getUsers(@RequestBody SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getRoleCode())) 
 		{
 			throw new IllegalArgumentException("Invalid approver");
 		}
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getRequestInfo())) 
+		{
+			throw new IllegalArgumentException("Invalid requestInfo");
+		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<UserDetails> userList = masterService.getUsers(approver); 
+			List<UserDetails> userList = masterService.getUsers(searchCriteriaFieldsDTO); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(userList);
