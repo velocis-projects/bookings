@@ -142,4 +142,7 @@ public class CommonMasterFields {
 
 	/** The booking allowed for. */
 	private String bookingAllowedFor;
+	
+	/** The user id. */
+	private Long userId;
 }

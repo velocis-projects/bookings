@@ -15,6 +15,7 @@ import org.egov.bookings.model.user.CreateUserRequest;
 import org.egov.bookings.model.user.OwnerInfo;
 import org.egov.bookings.model.user.User;
 import org.egov.bookings.model.user.UserDetailResponse;
+import org.egov.bookings.model.user.UserSearchRequest;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.Role;
@@ -278,12 +279,32 @@ public class UserService {
 
 	}
 	
+	/**
+	 * Gets the user search details.
+	 *
+	 * @param roleCodes the role codes
+	 * @param url the url
+	 * @param requestInfo the request info
+	 * @return the user search details
+	 */
 	public UserDetailResponse getUserSearchDetails(List<String> roleCodes, StringBuilder url, RequestInfo requestInfo) {
 		org.egov.bookings.model.user.UserSearchRequest userSearchRequest = new org.egov.bookings.model.user.UserSearchRequest();
 		userSearchRequest.setRoleCodes(roleCodes);
 		userSearchRequest.setRequestInfo(requestInfo);
 		return userCall(userSearchRequest, url);
 
+	}
+	
+	/**
+	 * Gets the user search details.
+	 *
+	 * @param url the url
+	 * @param requestInfo the request info
+	 * @param userSearchRequest the user search request
+	 * @return the user search details
+	 */
+	public UserDetailResponse getUserSearchDetails(StringBuilder url, RequestInfo requestInfo, UserSearchRequest userSearchRequest) {
+		return userCall(userSearchRequest, url);
 	}
 
 }

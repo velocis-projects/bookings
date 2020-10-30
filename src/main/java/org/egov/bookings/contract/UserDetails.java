@@ -11,6 +11,9 @@ public class UserDetails {
 	/** The uuid. */
 	private String uuid;
 	
+	/** The id. */
+	private Long id;
+	
 	/**
 	 * Gets the uuid.
 	 *
@@ -46,5 +49,22 @@ public class UserDetails {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+	
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
 
+	/**
+	 * Sets the id.
+	 *
+	 * @param id the new id
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
 }
