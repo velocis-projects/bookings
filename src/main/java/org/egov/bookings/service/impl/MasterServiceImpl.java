@@ -4,7 +4,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -13,19 +15,26 @@ import javax.transaction.Transactional;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
+import org.egov.bookings.contract.ApproverBean;
 import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.MasterRequest;
+import org.egov.bookings.contract.MdmsJsonFields;
+import org.egov.bookings.contract.MdmsSearchRequest;
+import org.egov.bookings.contract.MdmsSearchResponse;
 import org.egov.bookings.contract.UserDetails;
+import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.InventoryModel;
 import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
+import org.egov.bookings.model.user.OwnerInfo;
+import org.egov.bookings.model.user.UserDetailResponse;
+import org.egov.bookings.model.user.UserSearchRequest;
 import org.egov.bookings.producer.BookingsProducer;
 import org.egov.bookings.repository.CommercialGroundRepository;
-import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsbmApproverRepository;
 import org.egov.bookings.repository.OsbmFeeRepository;
 import org.egov.bookings.repository.OsujmFeeRepository;
@@ -33,13 +42,17 @@ import org.egov.bookings.repository.ParkCommunityHallV1MasterRepository;
 import org.egov.bookings.repository.ParkCommunityInventoryRepsitory;
 import org.egov.bookings.service.MasterService;
 import org.egov.bookings.utils.BookingsConstants;
+import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.validator.BookingsFieldsValidator;
+import org.egov.common.contract.request.RequestInfo;
+import org.egov.mdms.model.MdmsResponse;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.minidev.json.JSONArray;
 
 /**
  * The Class MasterServiceImpl.
@@ -59,14 +72,6 @@ public class MasterServiceImpl implements MasterService{
 	@Autowired
 	private OsbmApproverRepository osbmApproverRepository; 
 
-	/** The object mapper. */
-	@Autowired
-	private ObjectMapper objectMapper;
-	/** The common repository. */
-	
-	@Autowired
-	private CommonRepository commonRepository;
-	
 	/** The osbm fee repository. */
 	@Autowired
 	private OsbmFeeRepository osbmFeeRepository;
@@ -94,6 +99,18 @@ public class MasterServiceImpl implements MasterService{
 	/** The park community hall V 1 master repository. */
 	@Autowired
 	private ParkCommunityHallV1MasterRepository parkCommunityHallV1MasterRepository;
+	
+	/** The user service. */
+	@Autowired
+	private UserService userService;
+	
+	/** The bookings utils. */
+	@Autowired
+	private BookingsUtils bookingsUtils;
+	
+	/** The object mapper. */
+	@Autowired
+	private ObjectMapper objectMapper;
 	
 	/**
 	 * Gets the park community inventory details.
@@ -439,55 +456,37 @@ public class MasterServiceImpl implements MasterService{
 	 * @see org.egov.bookings.service.BookingsService#fetchAllApprover()
 	 */
 	@Override
-	public List<BookingApprover> fetchAllApprover() {
-		List<BookingApprover> bookingApprover1 = new ArrayList<>();
-		List<?> userList = new ArrayList<>();
+	public List<BookingApprover> fetchAllApprover(UserSearchRequest userSearchRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(userSearchRequest)) {
+			throw new IllegalArgumentException("Invalid userSearchRequest");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(userSearchRequest.getRequestInfo())) {
+			throw new IllegalArgumentException("Invalid requestInfo");
+		}
+		List<String> roleCodes = new ArrayList<>();
+		List<OwnerInfo> userList = new ArrayList<>();
+		List<BookingApprover> bookingApproverList = new ArrayList<>();
+		roleCodes.add(BookingsConstants.EMPLOYEE);
 		try {
-			String type = "EMPLOYEE";
-			userList = commonRepository.fetchAllApprover(type);
-			if (null == userList || CollectionUtils.isEmpty(userList)) {
-				throw new CustomException("APPROVER_ERROR", "NO APPROVER EXISTS IN EG_USER TABLE");
-			} else {
-				if (!BookingsFieldsValidator.isNullOrEmpty(userList)) {
-					for (Object userObject : userList) {
-						BookingApprover bookingApprover = new BookingApprover();
-						String jsonString = objectMapper.writeValueAsString(userObject);
-						String approverDetails = jsonString.substring(1, (jsonString.length() - 1));
-						String[] documentStrArray = approverDetails.split(",");
-						for (int i = 0; i < documentStrArray.length; i++) {
-							switch (i) {
-							case 0:
-								bookingApprover.setUserName(
-										documentStrArray[i].substring(1, documentStrArray[i].length() - 1));
-								break;
-							case 1:
-								bookingApprover.setMobileNumber(
-										documentStrArray[i].substring(1, documentStrArray[i].length() - 1));
-								break;
-							case 2:
-								bookingApprover
-										.setName(documentStrArray[i].substring(1, documentStrArray[i].length() - 1));
-								break;
-							case 3:
-								bookingApprover
-										.setUuid(documentStrArray[i].substring(1, documentStrArray[i].length() - 1));
-								break;
-							case 4:
-								bookingApprover.setId(Long.parseLong(documentStrArray[i]));
-								break;
-							default:
-								break;
-							}
-						}
-						bookingApprover1.add(bookingApprover);
-					}
+			StringBuilder url = prepareUrlForUserList();
+			UserDetailResponse userDetailResponse = userService.getUserSearchDetails(roleCodes, url, userSearchRequest.getRequestInfo());
+			if (!BookingsFieldsValidator.isNullOrEmpty(userDetailResponse) && !BookingsFieldsValidator.isNullOrEmpty(userDetailResponse.getUser())) {
+				userList = userDetailResponse.getUser();
+				for (OwnerInfo user : userList) {
+					BookingApprover bookingApprover = new BookingApprover();
+					bookingApprover.setUuid(user.getUuid());
+					bookingApprover.setUserName(user.getUserName());
+					bookingApprover.setMobileNumber(user.getMobileNumber());
+					bookingApprover.setName(user.getName());
+					bookingApprover.setId(user.getId());
+					bookingApproverList.add(bookingApprover);
 				}
 			}
 		}
 		catch (Exception e) {
 			throw new CustomException("APPROVER_ERROR", e.getLocalizedMessage());
 		}
-		return bookingApprover1;
+		return bookingApproverList;
 	}
 	
 	/**
@@ -497,17 +496,46 @@ public class MasterServiceImpl implements MasterService{
 	 * @return the list
 	 */
 	@Override
-	public List<OsbmApproverModel> fetchAllApproverDetails() {
+	public List<ApproverBean> fetchAllApproverDetails(MdmsSearchRequest mdmsSearchRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(mdmsSearchRequest)) {
+			throw new IllegalArgumentException("Invalid requestInfo");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(mdmsSearchRequest.getRequestInfo())) {
+			throw new IllegalArgumentException("Invalid requestInfo");
+		}
+		Map<String, String> rolesMap = new HashMap<>();
 		List<OsbmApproverModel> approverList = new ArrayList<>();
+		List<ApproverBean> approverBeanList = new ArrayList<>();
 		try {
 			approverList = osbmApproverRepository.findAll();
+			if (!BookingsFieldsValidator.isNullOrEmpty(approverList)) {
+				MdmsSearchResponse mdmsSearchResponse = mdmsBookingRoles(mdmsSearchRequest.getRequestInfo(), BookingsConstants.BOOKING_MDMS_MODULE_NAME, BookingsConstants.BOOKING_ROLES);
+				if (!BookingsFieldsValidator.isNullOrEmpty(mdmsSearchResponse) && !BookingsFieldsValidator.isNullOrEmpty(mdmsSearchResponse.getBookingRoles())) {
+					for (MdmsJsonFields mdmsJsonFields : mdmsSearchResponse.getBookingRoles()) {
+						rolesMap.put(mdmsJsonFields.getCode(), mdmsJsonFields.getName());
+					}
+				}
+				if(!BookingsFieldsValidator.isNullOrEmpty(rolesMap)) {
+					for (OsbmApproverModel osbmApproverModel : approverList) {
+						ApproverBean approverBean = new ApproverBean();
+						approverBean.setCreatedDate(osbmApproverModel.getCreatedDate());
+						approverBean.setId(osbmApproverModel.getId());
+						approverBean.setLastModifiedDate(osbmApproverModel.getLastModifiedDate());
+						approverBean.setName(osbmApproverModel.getName());
+						approverBean.setRoleCode(rolesMap.get(osbmApproverModel.getRoleCode()));
+						approverBean.setSector(osbmApproverModel.getSector());
+						approverBean.setUuid(osbmApproverModel.getUuid());
+						approverBeanList.add(approverBean);
+					}
+				}
+			}
 		}
 		catch(Exception e)
 		{
 			LOGGER.error("Exception occur in the fetchAllApproverDetails " + e);
 			e.printStackTrace();
 		}
-		return approverList;
+		return approverBeanList;
 	}
 
 	/**
@@ -587,52 +615,41 @@ public class MasterServiceImpl implements MasterService{
 	}
 	
 	/**
-	 * Gets the roles.
-	 *
-	 * @return the roles
-	 */
-	@Override
-	public List<String> getRoles() {
-		List<String> roleList = new ArrayList<>();
-		try {
-			roleList = commonRepository.findRoles();
-			
-		}
-		catch (Exception e) {
-			LOGGER.error("Exception occur in the getRoles " + e);
-			e.printStackTrace();
-		}
-		return roleList;
-	}
-
-	/**
 	 * Gets the users.
 	 *
-	 * @param approver the approver
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @return the users
 	 */
 	@Override
-	public List<UserDetails> getUsers(String approver) {
-		if (BookingsFieldsValidator.isNullOrEmpty(approver)) 
+	public List<UserDetails> getUsers(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO) {
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO)) 
+		{
+			throw new IllegalArgumentException("Invalid searchCriteriaFieldsDTO");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getRoleCode())) 
 		{
 			throw new IllegalArgumentException("Invalid approver");
 		}
+		if (BookingsFieldsValidator.isNullOrEmpty(searchCriteriaFieldsDTO.getRequestInfo())) 
+		{
+			throw new IllegalArgumentException("Invalid requestInfo");
+		}
+		List<String> roleCodes = new ArrayList<>();
+		UserDetailResponse userDetailResponse = new UserDetailResponse();
 		List<UserDetails> userDetailsList = new ArrayList<>();
-		List<?> userList = new ArrayList<>();
-		List<Integer> userId = new ArrayList<>();
+		List<OwnerInfo> userList = new ArrayList<>();
 		try {
-			userId = commonRepository.findUserId(approver);
-			if (!BookingsFieldsValidator.isNullOrEmpty(userId)) 
-			{
-				userList = commonRepository.findUserList(userId);
-			}
-			for (Object object : userList) {
-				UserDetails userDetails = new UserDetails();
-				String jsonString = objectMapper.writeValueAsString(object);
-				String[] jsonArray = jsonString.split(",");
-				userDetails.setUuid(jsonArray[0].substring(2, jsonArray[0].length() - 1));
-				userDetails.setUserName(jsonArray[1].substring(1, jsonArray[1].length() - 2));
-				userDetailsList.add(userDetails);
+			roleCodes.add(searchCriteriaFieldsDTO.getRoleCode());
+			StringBuilder url = prepareUrlForUserList();
+			userDetailResponse = userService.getUserSearchDetails(roleCodes, url, searchCriteriaFieldsDTO.getRequestInfo());
+			if (!BookingsFieldsValidator.isNullOrEmpty(userDetailResponse) && !BookingsFieldsValidator.isNullOrEmpty(userDetailResponse.getUser())) {
+				userList = userDetailResponse.getUser();
+				for (OwnerInfo user : userList) {
+					UserDetails userDetails = new UserDetails();
+					userDetails.setUuid(user.getUuid());
+					userDetails.setUserName(user.getUserName());
+					userDetailsList.add(userDetails);
+				}
 			}
 		}
 		catch (Exception e) {
@@ -642,4 +659,31 @@ public class MasterServiceImpl implements MasterService{
 		return userDetailsList;
 	}
 
+	/**
+	 * Prepare url for user list.
+	 *
+	 * @return the string builder
+	 */
+	public StringBuilder prepareUrlForUserList() {
+		StringBuilder url = new StringBuilder(config.getUserHost());
+		url.append(config.getUserSearchEndpoint());
+		return url;
+	}
+	
+	private MdmsSearchResponse mdmsBookingRoles(RequestInfo requestInfo, String mdmsModuleName, String mdmsFileName) {
+		MdmsSearchResponse mdmsSearchResponse = new MdmsSearchResponse();
+		try {
+			Object mdmsData = bookingsUtils.getMdmsSearchRequest(requestInfo, mdmsModuleName, mdmsFileName);
+			String jsonString = objectMapper.writeValueAsString(mdmsData);
+			MdmsResponse mdmsResponse = objectMapper.readValue(jsonString, MdmsResponse.class);
+			Map<String, Map<String, JSONArray>> mdmsResMap = mdmsResponse.getMdmsRes();
+			Map<String, JSONArray> mdmsRes = mdmsResMap.get(mdmsModuleName);
+			jsonString = objectMapper.writeValueAsString(mdmsRes);
+			mdmsSearchResponse = objectMapper.readValue(jsonString, MdmsSearchResponse.class);
+		} catch (Exception e) {
+			LOGGER.error("Exception occur in the mdmsBookingRoles " + e);
+		}
+		return mdmsSearchResponse;
+	}
+	
 }

@@ -277,5 +277,13 @@ public class UserService {
 		return userCall(userSearchRequest, uri);
 
 	}
+	
+	public UserDetailResponse getUserSearchDetails(List<String> roleCodes, StringBuilder url, RequestInfo requestInfo) {
+		org.egov.bookings.model.user.UserSearchRequest userSearchRequest = new org.egov.bookings.model.user.UserSearchRequest();
+		userSearchRequest.setRoleCodes(roleCodes);
+		userSearchRequest.setRequestInfo(requestInfo);
+		return userCall(userSearchRequest, url);
+
+	}
 
 }

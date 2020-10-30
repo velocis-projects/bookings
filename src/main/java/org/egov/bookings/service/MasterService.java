@@ -2,17 +2,21 @@ package org.egov.bookings.service;
 
 import java.util.List;
 
+import org.egov.bookings.contract.ApproverBean;
 import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.MasterRequest;
+import org.egov.bookings.contract.MdmsSearchRequest;
 import org.egov.bookings.contract.UserDetails;
+import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.InventoryModel;
-import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
+import org.egov.bookings.model.user.UserSearchRequest;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface MasterService.
  */
@@ -110,16 +114,18 @@ public interface MasterService {
 	/**
 	 * Fetch all approver.
 	 *
+	 * @param userSearchRequest the user search request
 	 * @return the list
 	 */
-	public List<BookingApprover> fetchAllApprover();
+	public List<BookingApprover> fetchAllApprover(UserSearchRequest userSearchRequest);
 	
 	/**
 	 * Fetch all approver details.
 	 *
+	 * @param mdmsSearchRequest the mdms search request
 	 * @return the list
 	 */
-	public List<OsbmApproverModel> fetchAllApproverDetails();
+	public List<ApproverBean> fetchAllApproverDetails(MdmsSearchRequest mdmsSearchRequest);
 	
 	/**
 	 * Fetch all OSBM fee.
@@ -150,18 +156,11 @@ public interface MasterService {
 	public List<ParkCommunityHallV1MasterModel> fetchAllPACCFee();
 	
 	/**
-	 * Gets the roles.
-	 *
-	 * @return the roles
-	 */
-	public List<String> getRoles();
-	
-	/**
 	 * Gets the users.
 	 *
-	 * @param approver the approver
+	 * @param searchCriteriaFieldsDTO the search criteria fields DTO
 	 * @return the users
 	 */
-	public List<UserDetails> getUsers(String approver);
+	public List<UserDetails> getUsers(SearchCriteriaFieldsDTO searchCriteriaFieldsDTO);
 
 }

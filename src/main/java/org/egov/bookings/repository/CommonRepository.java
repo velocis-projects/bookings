@@ -149,41 +149,6 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	public String findApproverName(@Param(BookingsConstants.STATE) String state);
 	
 	/**
-	 * Find user id.
-	 *
-	 * @param approver the approver
-	 * @return the list
-	 */
-	@Query(value = BookingsQueryBuilder.FIND_USER_ID, nativeQuery = true)
-	public List<Integer> findUserId(@Param(BookingsConstants.APPROVER) String approver);
-	
-	/**
-	 * Find user list.
-	 *
-	 * @param userId the user id
-	 * @return the list
-	 */
-	@Query(value = BookingsQueryBuilder.FIND_USER_LIST, nativeQuery = true)
-	public List<?> findUserList(@Param(BookingsConstants.USER_ID) List<Integer> userId);
-	
-	/**
-	 * Find roles by uuid.
-	 *
-	 * @param uuid the uuid
-	 * @return the list
-	 */
-	@Query(value = BookingsQueryBuilder.FIND_ROLES_BY_UUID, nativeQuery = true)
-	public List<String> findRolesByUuid(@Param(BookingsConstants.UUID) String uuid);
-	
-	/**
-	 * Find roles.
-	 *
-	 * @return the list
-	 */
-	@Query(value = BookingsQueryBuilder.FIND_ROLES, nativeQuery = true)
-	public List<String> findRoles();
-	
-	/**
 	 * Find application list.
 	 *
 	 * @param action the action
@@ -192,5 +157,5 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	 */
 	@Query(value = BookingsQueryBuilder.FIND_APPLICATION_LIST, nativeQuery = true)
 	public List<String> findApplicationList(@Param(BookingsConstants.ACTION) String action, @Param(BookingsConstants.APPROVER) String approver);
-
+	
 }
