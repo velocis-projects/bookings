@@ -1,20 +1,33 @@
 package org.egov.bookings.validator;
 
 import java.lang.reflect.Array;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
+import org.egov.bookings.contract.Bill;
 import org.egov.bookings.contract.CommercialGroundAvailabiltySearchCriteria;
 import org.egov.bookings.contract.CommercialGroundFeeSearchCriteria;
 import org.egov.bookings.contract.JurisdictionAvailabilityRequest;
 import org.egov.bookings.contract.MasterRequest;
 import org.egov.bookings.contract.OsbmSearchCriteria;
+import org.egov.bookings.contract.ParkAndCommunitySearchCriteria;
 import org.egov.bookings.contract.ParkCommunityFeeMasterRequest;
+import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.CommercialGrndAvailabilityModel;
+import org.egov.bookings.repository.BookingsRepository;
+import org.egov.bookings.repository.impl.BillingServiceRepository;
+import org.egov.bookings.service.BookingsService;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.bookings.web.models.NewLocationRequest;
+import org.egov.common.contract.request.Role;
+import org.egov.tracer.model.CustomException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -23,6 +36,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class BookingsFieldsValidator {
 
+	@Autowired
+	private BillingServiceRepository billingServiceRepository;
+	
+	@Autowired
+	private BookingsRepository bookingsRepository;
+	
 	/**
 	 * Validate tenant id.
 	 *
@@ -521,5 +540,48 @@ public class BookingsFieldsValidator {
 		if (BookingsFieldsValidator.isNullOrEmpty(parkCommunityFeeMasterRequest.getSector())) {
 			throw new IllegalArgumentException("Invalid Sector");
 		}
+		
+	}
+
+	public void validateRefundAmount(BookingsRequest bookingsRequest) {
+		BookingsModel bookingsModel = bookingsRepository
+				.findByBkApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
+		if (isNullOrEmpty(bookingsModel)) {
+			throw new CustomException("INVALID_APPLICATION_NO",
+					"Application Number provided does not exist or is in an invalid");
+		} else {
+			long days = ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.parse(bookingsModel.getBkFromDate() + ""));
+			for (Role role : bookingsRequest.getRequestInfo().getUserInfo().getRoles()) {
+				if (role.getCode().equals(BookingsConstants.PAYMENT_PROCESSING_AUTHORITY)) {
+					if (days >= BookingsConstants.DAYS_FIFTEEN
+							&& BookingsConstants.PAY.equals(bookingsRequest.getBookingsModel().getBkAction())) {
+						throw new CustomException("INVALID_DAYS_DIFFERENCE",
+								"Less than or equal to 15 days left you cannot process refund");
+					}
+				}
+
+			}
+		}
+	}
+
+	public void validatePACCSearchCriteria(ParkAndCommunitySearchCriteria parkAndCommunitySearchCriteria) {
+		
+		if(isNullOrEmpty(parkAndCommunitySearchCriteria)) {
+			throw new IllegalArgumentException("Invalid park and community search criteria");
+		}
+		
+		if(isNullOrEmpty(parkAndCommunitySearchCriteria.getSector())) {
+			throw new IllegalArgumentException("Invalid Sector in park and community search criteria");
+		}
+		if(isNullOrEmpty(parkAndCommunitySearchCriteria.getBookingType())) {
+			throw new IllegalArgumentException("Invalid booking Type in park and community search criteria");
+		}
+		if(isNullOrEmpty(parkAndCommunitySearchCriteria.getBookingVenue())) {
+			throw new IllegalArgumentException("Invalid booking benue in park and community search criteria");
+		}
+		if(isNullOrEmpty(parkAndCommunitySearchCriteria.getApplicationNumber())) {
+			parkAndCommunitySearchCriteria.setApplicationNumber("");
+		}
+		
 	}
 }

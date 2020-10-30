@@ -85,6 +85,10 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 	/** The user service. */
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private BookingsFieldsValidator bookingsFieldsValidator;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -134,7 +138,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 			enrichmentService.enrichBookingsAssignee(bookingsRequest);*/
 
 		String businessService = bookingsRequest.getBookingsModel().getBusinessService();
-
+		bookingsFieldsValidator.validateRefundAmount(bookingsRequest);
 		if (config.getIsExternalWorkFlowEnabled())
 			workflowIntegrator.callWorkFlow(bookingsRequest);
 
@@ -191,7 +195,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		Set<AvailabilityResponse> bookedDates = new HashSet<>();
 		Set<BookingsModel> bookingsModel = parkAndCommunityRepository.fetchBookedDatesOfParkAndCommunity(
 				parkAndCommunitySearchCriteria.getBookingVenue(), parkAndCommunitySearchCriteria.getBookingType(),
-				parkAndCommunitySearchCriteria.getSector(), date1, BookingsConstants.APPLY,BookingsConstants.OFFLINE_APPLY);
+				parkAndCommunitySearchCriteria.getSector(), date1, BookingsConstants.PAYMENT_SUCCESS_STATUS,parkAndCommunitySearchCriteria.getApplicationNumber());
 		if (null != bookingsModel) {
 			for (BookingsModel bkModel : bookingsModel) {
 				bookedDates.add(AvailabilityResponse.builder().fromDate(bkModel.getBkFromDate())
@@ -218,8 +222,9 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 			lock.lock();
 			if (config.isParkAndCommunityLock()) {
 				Set<BookingsModel> bookingsModelSet = parkAndCommunityRepository.fetchBookedDatesOfParkAndCommunity(
-						bookingsRequest.getBookingsModel().getBkBookingVenue(), bookingsRequest.getBookingsModel().getBkBookingType(),
-						bookingsRequest.getBookingsModel().getBkSector(), date1, BookingsConstants.APPLY,BookingsConstants.OFFLINE_APPLY);
+						bookingsRequest.getBookingsModel().getBkBookingVenue(),
+						bookingsRequest.getBookingsModel().getBkBookingType(),
+						bookingsRequest.getBookingsModel().getBkSector(), date1, BookingsConstants.PAYMENT_SUCCESS_STATUS, bookingsRequest.getBookingsModel().getBkApplicationNumber());
 
 				List<LocalDate> fetchBookedDates = enrichmentService.enrichBookedDates(bookingsModelSet);
 				

@@ -124,6 +124,12 @@ public class DemandServiceImpl implements DemandService {
 
 	}
 
+	/**
+	 * Gets the demands for PACC.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the demands for PACC
+	 */
 	private List<Demand> getDemandsForPACC(BookingsRequest bookingsRequest) {
 
 
@@ -175,6 +181,12 @@ public class DemandServiceImpl implements DemandService {
 	
 	}
 
+	/**
+	 * Gets the demands for osujm.
+	 *
+	 * @param bookingsRequest the bookings request
+	 * @return the demands for osujm
+	 */
 	private List<Demand> getDemandsForOsujm(BookingsRequest bookingsRequest) {
 
 		List<Demand> demands = new LinkedList<>();

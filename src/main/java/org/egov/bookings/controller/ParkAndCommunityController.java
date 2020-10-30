@@ -132,6 +132,7 @@ public class ParkAndCommunityController {
 	@PostMapping("/availability/_search")
 	private ResponseEntity<?> availabilitySearch(@RequestBody ParkAndCommunitySearchCriteria parkAndCommunitySearchCriteria) {
 
+		bookingsFieldsValidator.validatePACCSearchCriteria(parkAndCommunitySearchCriteria);
 		Set<AvailabilityResponse> parkCommunityHallV1MasterList = parkAndCommunityService
 				.availabilitySearch(parkAndCommunitySearchCriteria);
 		ResponseModel rs = new ResponseModel();
