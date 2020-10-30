@@ -2,19 +2,21 @@ package org.egov.bookings.service;
 
 import java.util.List;
 
+import org.egov.bookings.contract.ApproverBean;
 import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.MasterRequest;
+import org.egov.bookings.contract.MdmsSearchRequest;
 import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.InventoryModel;
-import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 import org.egov.bookings.model.user.UserSearchRequest;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface MasterService.
  */
@@ -120,9 +122,10 @@ public interface MasterService {
 	/**
 	 * Fetch all approver details.
 	 *
+	 * @param mdmsSearchRequest the mdms search request
 	 * @return the list
 	 */
-	public List<OsbmApproverModel> fetchAllApproverDetails();
+	public List<ApproverBean> fetchAllApproverDetails(MdmsSearchRequest mdmsSearchRequest);
 	
 	/**
 	 * Fetch all OSBM fee.

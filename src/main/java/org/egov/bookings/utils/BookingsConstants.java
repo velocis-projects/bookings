@@ -744,5 +744,5 @@ public class BookingsConstants {
 	
 	public static final String HOUSE_NO = "House No.";
     
-    
+	public static final String BOOKING_ROLES = "BookingRoles";
 }

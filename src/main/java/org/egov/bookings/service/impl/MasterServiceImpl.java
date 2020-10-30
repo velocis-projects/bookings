@@ -4,7 +4,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -13,9 +15,13 @@ import javax.transaction.Transactional;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.config.BookingsConfiguration;
+import org.egov.bookings.contract.ApproverBean;
 import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.MasterRequest;
+import org.egov.bookings.contract.MdmsJsonFields;
+import org.egov.bookings.contract.MdmsSearchRequest;
+import org.egov.bookings.contract.MdmsSearchResponse;
 import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.CommercialGroundFeeModel;
@@ -36,10 +42,17 @@ import org.egov.bookings.repository.ParkCommunityHallV1MasterRepository;
 import org.egov.bookings.repository.ParkCommunityInventoryRepsitory;
 import org.egov.bookings.service.MasterService;
 import org.egov.bookings.utils.BookingsConstants;
+import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.validator.BookingsFieldsValidator;
+import org.egov.common.contract.request.RequestInfo;
+import org.egov.mdms.model.MdmsResponse;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.minidev.json.JSONArray;
 
 /**
  * The Class MasterServiceImpl.
@@ -90,6 +103,14 @@ public class MasterServiceImpl implements MasterService{
 	/** The user service. */
 	@Autowired
 	private UserService userService;
+	
+	/** The bookings utils. */
+	@Autowired
+	private BookingsUtils bookingsUtils;
+	
+	/** The object mapper. */
+	@Autowired
+	private ObjectMapper objectMapper;
 	
 	/**
 	 * Gets the park community inventory details.
@@ -475,17 +496,46 @@ public class MasterServiceImpl implements MasterService{
 	 * @return the list
 	 */
 	@Override
-	public List<OsbmApproverModel> fetchAllApproverDetails() {
+	public List<ApproverBean> fetchAllApproverDetails(MdmsSearchRequest mdmsSearchRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(mdmsSearchRequest)) {
+			throw new IllegalArgumentException("Invalid requestInfo");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(mdmsSearchRequest.getRequestInfo())) {
+			throw new IllegalArgumentException("Invalid requestInfo");
+		}
+		Map<String, String> rolesMap = new HashMap<>();
 		List<OsbmApproverModel> approverList = new ArrayList<>();
+		List<ApproverBean> approverBeanList = new ArrayList<>();
 		try {
 			approverList = osbmApproverRepository.findAll();
+			if (!BookingsFieldsValidator.isNullOrEmpty(approverList)) {
+				MdmsSearchResponse mdmsSearchResponse = mdmsBookingRoles(mdmsSearchRequest.getRequestInfo(), BookingsConstants.BOOKING_MDMS_MODULE_NAME, BookingsConstants.BOOKING_ROLES);
+				if (!BookingsFieldsValidator.isNullOrEmpty(mdmsSearchResponse) && !BookingsFieldsValidator.isNullOrEmpty(mdmsSearchResponse.getBookingRoles())) {
+					for (MdmsJsonFields mdmsJsonFields : mdmsSearchResponse.getBookingRoles()) {
+						rolesMap.put(mdmsJsonFields.getCode(), mdmsJsonFields.getName());
+					}
+				}
+				if(!BookingsFieldsValidator.isNullOrEmpty(rolesMap)) {
+					for (OsbmApproverModel osbmApproverModel : approverList) {
+						ApproverBean approverBean = new ApproverBean();
+						approverBean.setCreatedDate(osbmApproverModel.getCreatedDate());
+						approverBean.setId(osbmApproverModel.getId());
+						approverBean.setLastModifiedDate(osbmApproverModel.getLastModifiedDate());
+						approverBean.setName(osbmApproverModel.getName());
+						approverBean.setRoleCode(rolesMap.get(osbmApproverModel.getRoleCode()));
+						approverBean.setSector(osbmApproverModel.getSector());
+						approverBean.setUuid(osbmApproverModel.getUuid());
+						approverBeanList.add(approverBean);
+					}
+				}
+			}
 		}
 		catch(Exception e)
 		{
 			LOGGER.error("Exception occur in the fetchAllApproverDetails " + e);
 			e.printStackTrace();
 		}
-		return approverList;
+		return approverBeanList;
 	}
 
 	/**
@@ -619,4 +669,21 @@ public class MasterServiceImpl implements MasterService{
 		url.append(config.getUserSearchEndpoint());
 		return url;
 	}
+	
+	private MdmsSearchResponse mdmsBookingRoles(RequestInfo requestInfo, String mdmsModuleName, String mdmsFileName) {
+		MdmsSearchResponse mdmsSearchResponse = new MdmsSearchResponse();
+		try {
+			Object mdmsData = bookingsUtils.getMdmsSearchRequest(requestInfo, mdmsModuleName, mdmsFileName);
+			String jsonString = objectMapper.writeValueAsString(mdmsData);
+			MdmsResponse mdmsResponse = objectMapper.readValue(jsonString, MdmsResponse.class);
+			Map<String, Map<String, JSONArray>> mdmsResMap = mdmsResponse.getMdmsRes();
+			Map<String, JSONArray> mdmsRes = mdmsResMap.get(mdmsModuleName);
+			jsonString = objectMapper.writeValueAsString(mdmsRes);
+			mdmsSearchResponse = objectMapper.readValue(jsonString, MdmsSearchResponse.class);
+		} catch (Exception e) {
+			LOGGER.error("Exception occur in the mdmsBookingRoles " + e);
+		}
+		return mdmsSearchResponse;
+	}
+	
 }

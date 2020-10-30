@@ -6,15 +6,16 @@ import java.util.List;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.egov.bookings.common.model.ResponseModel;
+import org.egov.bookings.contract.ApproverBean;
 import org.egov.bookings.contract.BookingApprover;
 import org.egov.bookings.contract.CommonMasterFields;
 import org.egov.bookings.contract.DocumentFields;
 import org.egov.bookings.contract.MasterRequest;
+import org.egov.bookings.contract.MdmsSearchRequest;
 import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.CommercialGroundFeeModel;
 import org.egov.bookings.model.InventoryModel;
-import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MasterController.
  */
@@ -449,13 +451,20 @@ public class MasterController {
 	/**
 	 * Fetch all approver details.
 	 *
+	 * @param mdmsSearchRequest the mdms search request
 	 * @return the response entity
 	 */
 	@PostMapping("/approver/_fetch")
-	public ResponseEntity<?> fetchAllApproverDetails() {
+	public ResponseEntity<?> fetchAllApproverDetails(@RequestBody MdmsSearchRequest mdmsSearchRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(mdmsSearchRequest)) {
+			throw new IllegalArgumentException("Invalid requestInfo");
+		}
+		if (BookingsFieldsValidator.isNullOrEmpty(mdmsSearchRequest.getRequestInfo())) {
+			throw new IllegalArgumentException("Invalid requestInfo");
+		}
 		ResponseModel rs = new ResponseModel();
 		try {
-			List<OsbmApproverModel> approverList = masterService.fetchAllApproverDetails(); 
+			List<ApproverBean> approverList = masterService.fetchAllApproverDetails(mdmsSearchRequest); 
 			rs.setStatus("200");
 			rs.setMessage("Success");
 			rs.setData(approverList);
