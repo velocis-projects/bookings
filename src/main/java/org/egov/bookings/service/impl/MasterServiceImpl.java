@@ -506,9 +506,20 @@ public class MasterServiceImpl implements MasterService{
 		Map<String, String> rolesMap = new HashMap<>();
 		List<OsbmApproverModel> approverList = new ArrayList<>();
 		List<ApproverBean> approverBeanList = new ArrayList<>();
+		UserDetailResponse userDetailResponse = new UserDetailResponse();
+		List<OwnerInfo> userList = new ArrayList<>();
+		Map<Long,String> userMap = new HashMap<>();
 		try {
 			approverList = osbmApproverRepository.findAll();
 			if (!BookingsFieldsValidator.isNullOrEmpty(approverList)) {
+				StringBuilder url = prepareUrlForUserList();
+				userDetailResponse = userService.getUserSearchDetails(url, mdmsSearchRequest.getRequestInfo(), new UserSearchRequest());
+				if (!BookingsFieldsValidator.isNullOrEmpty(userDetailResponse) && !BookingsFieldsValidator.isNullOrEmpty(userDetailResponse.getUser())) {
+					userList = userDetailResponse.getUser();
+					for (OwnerInfo user : userList) {
+						userMap.put(user.getId(), user.getUserName());
+					}
+				}
 				MdmsSearchResponse mdmsSearchResponse = mdmsBookingRoles(mdmsSearchRequest.getRequestInfo(), BookingsConstants.BOOKING_MDMS_MODULE_NAME, BookingsConstants.BOOKING_ROLES);
 				if (!BookingsFieldsValidator.isNullOrEmpty(mdmsSearchResponse) && !BookingsFieldsValidator.isNullOrEmpty(mdmsSearchResponse.getBookingRoles())) {
 					for (MdmsJsonFields mdmsJsonFields : mdmsSearchResponse.getBookingRoles()) {
@@ -521,7 +532,10 @@ public class MasterServiceImpl implements MasterService{
 						approverBean.setCreatedDate(osbmApproverModel.getCreatedDate());
 						approverBean.setId(osbmApproverModel.getId());
 						approverBean.setLastModifiedDate(osbmApproverModel.getLastModifiedDate());
-						approverBean.setName(osbmApproverModel.getName());
+						if(!BookingsFieldsValidator.isNullOrEmpty(osbmApproverModel.getUserId())) {
+							approverBean.setName(userMap.get(osbmApproverModel.getUserId()));
+						}
+						approverBean.setUserId(osbmApproverModel.getUserId());
 						approverBean.setRoleCode(rolesMap.get(osbmApproverModel.getRoleCode()));
 						approverBean.setSector(osbmApproverModel.getSector());
 						approverBean.setUuid(osbmApproverModel.getUuid());
@@ -648,6 +662,7 @@ public class MasterServiceImpl implements MasterService{
 					UserDetails userDetails = new UserDetails();
 					userDetails.setUuid(user.getUuid());
 					userDetails.setUserName(user.getUserName());
+					userDetails.setId(user.getId());
 					userDetailsList.add(userDetails);
 				}
 			}

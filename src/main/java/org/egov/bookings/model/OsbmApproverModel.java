@@ -43,7 +43,7 @@ public class OsbmApproverModel {
 	@Column(name = "ROLE_CODE")
 	private String roleCode;
 	
-	/** The name. */
-	@Column(name = "name")
-	private String name;
+	/** The user id. */
+	@Column(name = "USER_ID")
+	private Long userId;
 }

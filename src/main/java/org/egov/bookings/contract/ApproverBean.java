@@ -27,6 +27,9 @@ public class ApproverBean {
 	
 	/** The name. */
 	private String name;
+	
+	/** The user id. */
+	private Long userId;
 
 	/**
 	 * Gets the id.
@@ -152,6 +155,24 @@ public class ApproverBean {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Gets the user id.
+	 *
+	 * @return the user id
+	 */
+	public Long getUserId() {
+		return userId;
+	}
+
+	/**
+	 * Sets the user id.
+	 *
+	 * @param userId the new user id
+	 */
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 }
