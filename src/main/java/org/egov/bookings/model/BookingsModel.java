@@ -48,7 +48,7 @@ public class BookingsModel {
 	@Column(name = "BK_HOUSE_NO")
 	private String bkHouseNo;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany
 	@JoinColumn(name = "application_number")
 	private List<TimeslotsModel> timeslots;
 	
