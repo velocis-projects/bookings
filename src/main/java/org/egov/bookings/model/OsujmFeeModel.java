@@ -12,9 +12,38 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// TODO: Auto-generated Javadoc
+/**
+ * To string.
+ *
+ * @return the java.lang. string
+ */
 @Builder
+
+/**
+ * To string.
+ *
+ * @return the java.lang. string
+ */
 @Data
+
+/**
+ * Instantiates a new osujm fee model.
+ *
+ * @param id the id
+ * @param sector the sector
+ * @param slab the slab
+ * @param areaFrom the area from
+ * @param areaTo the area to
+ * @param ratePerSqrFeetPerDay the rate per sqr feet per day
+ * @param lastModifiedDate the last modified date
+ * @param createdDate the created date
+ */
 @AllArgsConstructor
+
+/**
+ * Instantiates a new osujm fee model.
+ */
 @NoArgsConstructor
 @Entity(name = "OsujmFeeModel")
 @Table(name = "BK_OSUJM_FEE")
@@ -52,5 +81,13 @@ public class OsujmFeeModel {
 	/** The created date. */
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
+	
+	/** The from date. */
+	@Column(name = "FROM_DATE")
+	private Date fromDate;
+	
+	/** The to date. */
+	@Column(name = "TO_DATE")
+	private Date toDate;
 	
 }

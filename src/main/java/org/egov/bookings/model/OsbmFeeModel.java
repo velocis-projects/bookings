@@ -73,5 +73,13 @@ public class OsbmFeeModel {
 	/** The created date. */
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
+	
+	/** The from date. */
+	@Column(name = "FROM_DATE")
+	private Date fromDate;
+	
+	/** The to date. */
+	@Column(name = "TO_DATE")
+	private Date toDate;
 
 }

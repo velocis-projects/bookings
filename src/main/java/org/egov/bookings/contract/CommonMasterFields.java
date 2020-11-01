@@ -1,5 +1,9 @@
 package org.egov.bookings.contract;
 
+import java.util.Date;
+
+import javax.persistence.Column;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -145,4 +149,10 @@ public class CommonMasterFields {
 	
 	/** The user id. */
 	private Long userId;
+	
+	/** The from date. */
+	private String fromDate;
+	
+	/** The to date. */
+	private String toDate;
 }
