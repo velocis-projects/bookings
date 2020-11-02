@@ -175,7 +175,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		List<ParkCommunityHallV1MasterModel> parkCommunityHallV1Master = null;
 		try {
 
-			parkCommunityHallV1Master = parkCommunityHallV1MasterRepository.findByVenueTypeAndSector(parkCommunityFeeMasterRequest.getVenueType(),parkCommunityFeeMasterRequest.getSector());
+			parkCommunityHallV1Master = parkCommunityHallV1MasterRepository.findByVenueTypeAndSectorAndIsActive(parkCommunityFeeMasterRequest.getVenueType(),parkCommunityFeeMasterRequest.getSector(),true);
 			return parkCommunityHallV1Master;
 
 		} catch (Exception e) {
