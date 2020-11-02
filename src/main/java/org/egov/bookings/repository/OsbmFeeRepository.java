@@ -41,6 +41,6 @@ public interface OsbmFeeRepository extends JpaRepository<OsbmFeeModel, String> {
 	 * @param id the id
 	 * @return the osbm fee model
 	 */
-	OsbmFeeModel findById(String id);
+	public OsbmFeeModel findById(String id);
 
 }

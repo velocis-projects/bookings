@@ -152,12 +152,19 @@ public class MasterServiceImpl implements MasterService{
 			throw new IllegalArgumentException("Invalid Approver List");
 		}
 		try {
-			masterRequest.getApproverList().get(0).setId(UUID.randomUUID().toString());
-			bookingsFieldsValidator.validateApproverBody(masterRequest);
-			DateFormat formatter = getSimpleDateFormat();
-			masterRequest.getApproverList().get(0).setCreatedDate(formatter.format(new Date()));
-			masterRequest.getApproverList().get(0).setLastModifiedDate(formatter.format(new Date()));
-			bookingsProducer.push(config.getSaveApproverTopic(), masterRequest);
+			OsbmApproverModel OsbmApproverModel = osbmApproverRepository.findBySectorAndUuidAndRoleCodeAndUserId(masterRequest.getApproverList().get(0).getSector(), masterRequest.getApproverList().get(0).getUuid(), masterRequest.getApproverList().get(0).getRoleCode(), masterRequest.getApproverList().get(0).getUserId());
+			if (BookingsFieldsValidator.isNullOrEmpty(OsbmApproverModel)) 
+			{
+				masterRequest.getApproverList().get(0).setId(UUID.randomUUID().toString());
+				bookingsFieldsValidator.validateApproverBody(masterRequest);
+				DateFormat formatter = getSimpleDateFormat();
+				masterRequest.getApproverList().get(0).setCreatedDate(formatter.format(new Date()));
+				masterRequest.getApproverList().get(0).setLastModifiedDate(formatter.format(new Date()));
+				bookingsProducer.push(config.getSaveApproverTopic(), masterRequest);
+			}
+			else {
+				throw new IllegalArgumentException("Duplicate Data");
+			}
 		}catch (Exception e) {
 			throw new CustomException("APPROVER_SAVE_ERROR", "ERROR WHILE SAVING APPROVER DETAILS");
 		}
@@ -262,13 +269,48 @@ public class MasterServiceImpl implements MasterService{
 			osbmFeeList.add(commonMasterFields);
 			masterRequestOsbmFeeCreate.setOsbmFeeList(osbmFeeList);
 			bookingsProducer.push(config.getSaveOsbmFeeTopic(), masterRequestOsbmFeeCreate);
-			masterRequest.getOsbmFeeList().get(0).setFromDate(formatter.format(osbmFeeModel.getFromDate()));
+			masterRequest.getOsbmFeeList().get(0).setAmount(osbmFeeModel.getAmount());
 			masterRequest.getOsbmFeeList().get(0).setToDate(toDate);
 			bookingsProducer.push(config.getUpdateOsbmFeeTopic(), masterRequest);
 		}catch (Exception e) {
 			throw new CustomException("OSBM_FEE_UPDATE_ERROR", "ERROR WHILE UPDATE OSBM FEE DETAILS");
 		}
 		return masterRequest.getOsbmFeeList();
+	}
+	
+	/**
+	 * Prepare to date.
+	 *
+	 * @param strFromDate the str from date
+	 * @return the string
+	 */
+	private String prepareToDate(String strFromDate) {
+		String toDate = "";
+		try {
+			if(!BookingsFieldsValidator.isNullOrEmpty(strFromDate)) {
+				DateFormat formatter = getSimpleDateFormat();
+				formatter.setTimeZone(TimeZone.getTimeZone("GMT+5:30"));
+				Date fromDate = formatter.parse(strFromDate);
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(fromDate);
+				cal.set(Calendar.HOUR_OF_DAY, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				Date d = cal.getTime();
+			    long time = d.getTime();
+			    time -= 1 * 24 * 3600 * 1000;
+			    d.setTime(time);
+			    cal.setTime(d);
+			    cal.set(Calendar.HOUR_OF_DAY, BookingsConstants.HOURS);
+				cal.set(Calendar.MINUTE, BookingsConstants.MINUTES);
+				cal.set(Calendar.SECOND, BookingsConstants.SECONDS);
+				toDate = formatter.format(cal.getTime());
+			}
+		}
+		catch (Exception e) {
+			throw new CustomException("TO_DATE_FORMATTER", "ERROR WHILE FORMATTINF TODATE OF OSBM FEE");
+		}
+		return toDate;
 	}
 	
 	/**
@@ -279,6 +321,8 @@ public class MasterServiceImpl implements MasterService{
 	 */
 	private Object prepareFeeObject(CommonMasterFields commonMasterFields) {
 		CommonMasterFields commonMasterFields2 = new CommonMasterFields();
+		DateFormat formatter = getSimpleDateFormat();
+		commonMasterFields2.setId(UUID.randomUUID().toString());
 		commonMasterFields2.setAmount(commonMasterFields.getAmount());
 		commonMasterFields2.setAreaFrom(commonMasterFields.getAreaFrom());
 		commonMasterFields2.setAreaTo(commonMasterFields.getAreaTo());
@@ -288,7 +332,7 @@ public class MasterServiceImpl implements MasterService{
 		commonMasterFields2.setCgstRate(commonMasterFields.getCgstRate());
 		commonMasterFields2.setCleaningCharges(commonMasterFields.getCleaningCharges());
 		commonMasterFields2.setConstructionType(commonMasterFields.getConstructionType());
-		commonMasterFields2.setCreatedDate(commonMasterFields.getCreatedDate());
+		commonMasterFields2.setCreatedDate(formatter.format(new Date()));
 		commonMasterFields2.setDimensionSqrYards(commonMasterFields.getDimensionSqrYards());
 		commonMasterFields2.setDurationInMonths(commonMasterFields.getDurationInMonths());
 		commonMasterFields2.setFromDate(commonMasterFields.getFromDate());
@@ -328,36 +372,7 @@ public class MasterServiceImpl implements MasterService{
 		return commonMasterFields2;
 	}
 	
-	/**
-	 * Prepare to date.
-	 *
-	 * @param strFromDate the str from date
-	 * @return the string
-	 */
-	private String prepareToDate(String strFromDate) {
-		String toDate = "";
-		try {
-			if(!BookingsFieldsValidator.isNullOrEmpty(strFromDate)) {
-				DateFormat formatter = getSimpleDateFormat();
-				formatter.setTimeZone(TimeZone.getTimeZone("GMT+5:30"));
-				Date fromDate = formatter.parse(strFromDate);
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(fromDate);
-				cal.set(Calendar.HOUR_OF_DAY, 0);
-				cal.set(Calendar.MINUTE, 0);
-				cal.set(Calendar.SECOND, 0);
-				cal.add(Calendar.DAY_OF_MONTH, -1);
-				cal.add(Calendar.HOUR_OF_DAY, 23);
-				cal.add(Calendar.MINUTE, 59);
-				cal.add(Calendar.SECOND, 59);
-				toDate = formatter.format(cal.getTime());
-			}
-		}
-		catch (Exception e) {
-			throw new CustomException("OSBM_FEE_TO_DATE_FORMATTER", "ERROR WHILE FORMATTINF TODATE OF OSBM FEE");
-		}
-		return toDate;
-	}
+	
 	
 	/**
 	 * Creates the OSUJM fee.
@@ -387,7 +402,6 @@ public class MasterServiceImpl implements MasterService{
 		}
 		return masterRequest.getOsujmFeeList();
 	}
-
 	
 	/**
 	 * Update OSUJM fee.

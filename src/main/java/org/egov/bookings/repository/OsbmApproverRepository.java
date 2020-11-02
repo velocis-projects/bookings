@@ -50,5 +50,16 @@ public interface OsbmApproverRepository extends JpaRepository<OsbmApproverModel,
 			nativeQuery = true )
 			List<OsbmApproverModel> findApproverByLimit( int offSet );
 	
+	/**
+	 * Find by sector and uuid and role code and user id.
+	 *
+	 * @param sector the sector
+	 * @param uuid the uuid
+	 * @param roleCode the role code
+	 * @param userId the user id
+	 * @return the osbm approver model
+	 */
+	public OsbmApproverModel findBySectorAndUuidAndRoleCodeAndUserId(String sector, String uuid, String roleCode, Long userId);
+	
 	
 }
