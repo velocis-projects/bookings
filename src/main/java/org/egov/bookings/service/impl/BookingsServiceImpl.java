@@ -448,8 +448,11 @@ public class BookingsServiceImpl implements BookingsService {
 						String parksBookingType = BookingsConstants.PARKS;
 						String communityCenterBookingType = BookingsConstants.COMMUNITY_CENTER;
 						if (!BookingsFieldsValidator.isNullOrEmpty(bookingType)) {
-							parksBookingType = bookingType;
-							communityCenterBookingType = bookingType;
+							String[] bookingArray = bookingType.split(BookingsConstants.AND);
+							parksBookingType = bookingArray[0].trim();
+							communityCenterBookingType = bookingArray[1].trim();
+//							parksBookingType = bookingType;
+//							communityCenterBookingType = bookingType;
 						}
 						if (BookingsFieldsValidator.isNullOrEmpty(fromDate)
 								&& BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
