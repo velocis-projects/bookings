@@ -1,9 +1,5 @@
 package org.egov.bookings.contract;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

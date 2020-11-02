@@ -279,102 +279,6 @@ public class MasterServiceImpl implements MasterService{
 	}
 	
 	/**
-	 * Prepare to date.
-	 *
-	 * @param strFromDate the str from date
-	 * @return the string
-	 */
-	private String prepareToDate(String strFromDate) {
-		String toDate = "";
-		try {
-			if(!BookingsFieldsValidator.isNullOrEmpty(strFromDate)) {
-				DateFormat formatter = getSimpleDateFormat();
-				formatter.setTimeZone(TimeZone.getTimeZone("GMT+5:30"));
-				Date fromDate = formatter.parse(strFromDate);
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(fromDate);
-				cal.set(Calendar.HOUR_OF_DAY, 0);
-				cal.set(Calendar.MINUTE, 0);
-				cal.set(Calendar.SECOND, 0);
-				Date d = cal.getTime();
-			    long time = d.getTime();
-			    time -= 1 * 24 * 3600 * 1000;
-			    d.setTime(time);
-			    cal.setTime(d);
-			    cal.set(Calendar.HOUR_OF_DAY, BookingsConstants.HOURS);
-				cal.set(Calendar.MINUTE, BookingsConstants.MINUTES);
-				cal.set(Calendar.SECOND, BookingsConstants.SECONDS);
-				toDate = formatter.format(cal.getTime());
-			}
-		}
-		catch (Exception e) {
-			throw new CustomException("TO_DATE_FORMATTER", "ERROR WHILE FORMATTINF TODATE OF OSBM FEE");
-		}
-		return toDate;
-	}
-	
-	/**
-	 * Prepare fee object.
-	 *
-	 * @param commonMasterFields the common master fields
-	 * @return the object
-	 */
-	private Object prepareFeeObject(CommonMasterFields commonMasterFields) {
-		CommonMasterFields commonMasterFields2 = new CommonMasterFields();
-		DateFormat formatter = getSimpleDateFormat();
-		commonMasterFields2.setId(UUID.randomUUID().toString());
-		commonMasterFields2.setAmount(commonMasterFields.getAmount());
-		commonMasterFields2.setAreaFrom(commonMasterFields.getAreaFrom());
-		commonMasterFields2.setAreaTo(commonMasterFields.getAreaTo());
-		commonMasterFields2.setBookingAllowedFor(commonMasterFields.getBookingAllowedFor());
-		commonMasterFields2.setBookingVenue(commonMasterFields.getBookingVenue());
-		commonMasterFields2.setCategory(commonMasterFields.getCategory());
-		commonMasterFields2.setCgstRate(commonMasterFields.getCgstRate());
-		commonMasterFields2.setCleaningCharges(commonMasterFields.getCleaningCharges());
-		commonMasterFields2.setConstructionType(commonMasterFields.getConstructionType());
-		commonMasterFields2.setCreatedDate(formatter.format(new Date()));
-		commonMasterFields2.setDimensionSqrYards(commonMasterFields.getDimensionSqrYards());
-		commonMasterFields2.setDurationInMonths(commonMasterFields.getDurationInMonths());
-		commonMasterFields2.setFromDate(commonMasterFields.getFromDate());
-		commonMasterFields2.setImagePath(commonMasterFields.getImagePath());
-		commonMasterFields2.setIsActive(commonMasterFields.getIsActive());
-		commonMasterFields2.setLastModifiedDate(commonMasterFields.getLastModifiedDate());
-		commonMasterFields2.setLocality(commonMasterFields.getLocality());
-		commonMasterFields2.setLocationChangeAmount(commonMasterFields.getLocationChangeAmount());
-		commonMasterFields2.setLuxuryTax(commonMasterFields.getLuxuryTax());
-		commonMasterFields2.setName(commonMasterFields.getName());
-		commonMasterFields2.setNormalType(commonMasterFields.getNormalType());
-		commonMasterFields2.setOldrent1(commonMasterFields.getOldrent1());
-		commonMasterFields2.setPaccAmount(commonMasterFields.getPaccAmount());
-		commonMasterFields2.setRadius(commonMasterFields.getRadius());
-		commonMasterFields2.setRatePerDay(commonMasterFields.getRatePerDay());
-		commonMasterFields2.setRatePerSqrFeetPerDay(commonMasterFields.getRatePerSqrFeetPerDay());
-		commonMasterFields2.setRefundabelSecurity(commonMasterFields.getRefundabelSecurity());
-		commonMasterFields2.setRent(commonMasterFields.getRent());
-		commonMasterFields2.setRentNextSession(commonMasterFields.getRentNextSession());
-		commonMasterFields2.setResidentialCommercial(commonMasterFields.getResidentialCommercial());
-		commonMasterFields2.setReviserate1(commonMasterFields.getReviserate1());
-		commonMasterFields2.setRoleCode(commonMasterFields.getRoleCode());
-		commonMasterFields2.setSccid(commonMasterFields.getSccid());
-		commonMasterFields2.setScid(commonMasterFields.getScid());
-		commonMasterFields2.setSector(commonMasterFields.getSector());
-		commonMasterFields2.setSlab(commonMasterFields.getSlab());
-		commonMasterFields2.setStorage(commonMasterFields.getStorage());
-		commonMasterFields2.setSurcharge(commonMasterFields.getSurcharge());
-		commonMasterFields2.setToDate(commonMasterFields.getToDate());
-		commonMasterFields2.setUserId(commonMasterFields.getUserId());
-		commonMasterFields2.setUtgstRate(commonMasterFields.getUtgstRate());
-		commonMasterFields2.setUuid(commonMasterFields.getUuid());
-		commonMasterFields2.setVenueType(commonMasterFields.getVenueType());
-		commonMasterFields2.setVillageCity(commonMasterFields.getVillageCity());
-		commonMasterFields2.setX(commonMasterFields.getX());
-		commonMasterFields2.setY(commonMasterFields.getY());
-		return commonMasterFields2;
-	}
-	
-	
-	
-	/**
 	 * Creates the OSUJM fee.
 	 *
 	 * @param masterRequest the master request
@@ -423,10 +327,23 @@ public class MasterServiceImpl implements MasterService{
 		{
 			throw new IllegalArgumentException("Invalid OSUJM Fee id");
 		}
+		OsujmFeeModel osujmFeeModel = new OsujmFeeModel();
+		MasterRequest masterRequestOsbmFeeCreate = new MasterRequest();
+		List<CommonMasterFields> osujmFeeList = new ArrayList<>();
 		try {
 			bookingsFieldsValidator.validateOSUJMFeeBody(masterRequest);
 			DateFormat formatter = getSimpleDateFormat();
 			masterRequest.getOsujmFeeList().get(0).setLastModifiedDate(formatter.format(new Date()));
+			osujmFeeModel = osujmFeeRepository.findById(masterRequest.getOsujmFeeList().get(0).getId()); 
+			String toDate = prepareToDate(masterRequest.getOsujmFeeList().get(0).getFromDate());
+			Object object = prepareFeeObject(masterRequest.getOsujmFeeList().get(0));
+			String jsonString = objectMapper.writeValueAsString(object);
+			CommonMasterFields commonMasterFields = objectMapper.readValue(jsonString, CommonMasterFields.class);
+			osujmFeeList.add(commonMasterFields);
+			masterRequestOsbmFeeCreate.setOsujmFeeList(osujmFeeList);
+			bookingsProducer.push(config.getSaveOsujmFeeTopic(), masterRequestOsbmFeeCreate);
+			masterRequest.getOsujmFeeList().get(0).setRatePerSqrFeetPerDay(osujmFeeModel.getRatePerSqrFeetPerDay());
+			masterRequest.getOsujmFeeList().get(0).setToDate(toDate);
 			bookingsProducer.push(config.getUpdateOsujmFeeTopic(), masterRequest);
 		}catch (Exception e) {
 			throw new CustomException("OSUJM_FEE_UPDATE_ERROR", "ERROR WHILE UPDATE OSUJM FEE DETAILS");
@@ -483,10 +400,23 @@ public class MasterServiceImpl implements MasterService{
 		{
 			throw new IllegalArgumentException("Invalid GFCP Fee id");
 		}
+		CommercialGroundFeeModel commercialGroundFeeModel = new CommercialGroundFeeModel();
+		MasterRequest masterRequestOsbmFeeCreate = new MasterRequest();
+		List<CommonMasterFields> gfcpFeeList = new ArrayList<>();
 		try {
 			bookingsFieldsValidator.validateGFCPFeeBody(masterRequest);
 			DateFormat formatter = getSimpleDateFormat();
 			masterRequest.getGfcpFeeList().get(0).setLastModifiedDate(formatter.format(new Date()));
+			commercialGroundFeeModel = commercialGroundFeeRepository.findById(masterRequest.getGfcpFeeList().get(0).getId()); 
+			String toDate = prepareToDate(masterRequest.getGfcpFeeList().get(0).getFromDate());
+			Object object = prepareFeeObject(masterRequest.getGfcpFeeList().get(0));
+			String jsonString = objectMapper.writeValueAsString(object);
+			CommonMasterFields commonMasterFields = objectMapper.readValue(jsonString, CommonMasterFields.class);
+			gfcpFeeList.add(commonMasterFields);
+			masterRequestOsbmFeeCreate.setGfcpFeeList(gfcpFeeList);
+			bookingsProducer.push(config.getSaveGfcpFeeTopic(), masterRequestOsbmFeeCreate);
+			masterRequest.getGfcpFeeList().get(0).setRatePerSqrFeetPerDay(commercialGroundFeeModel.getRatePerDay());
+			masterRequest.getGfcpFeeList().get(0).setToDate(toDate);
 			bookingsProducer.push(config.getUpdateGfcpFeeTopic(), masterRequest);
 		}catch (Exception e) {
 			throw new CustomException("GFCP_FEE_UPDATE_ERROR", "ERROR WHILE UPDATE GFCP FEE DETAILS");
@@ -542,9 +472,22 @@ public class MasterServiceImpl implements MasterService{
 		{
 			throw new IllegalArgumentException("Invalid PACC Fee id");
 		}
+		ParkCommunityHallV1MasterModel parkCommunityHallV1MasterModel = new ParkCommunityHallV1MasterModel();
+		MasterRequest masterRequestOsbmFeeCreate = new MasterRequest();
+		List<CommonMasterFields> paccFeeList = new ArrayList<>();
 		try {
 			DateFormat formatter = getSimpleDateFormat();
 			masterRequest.getPaccFeeList().get(0).setLastModifiedDate(formatter.format(new Date()));
+			parkCommunityHallV1MasterModel = parkCommunityHallV1MasterRepository.findById(masterRequest.getPaccFeeList().get(0).getId()); 
+			String toDate = prepareToDate(masterRequest.getPaccFeeList().get(0).getFromDate());
+			Object object = prepareFeeObject(masterRequest.getPaccFeeList().get(0));
+			String jsonString = objectMapper.writeValueAsString(object);
+			CommonMasterFields commonMasterFields = objectMapper.readValue(jsonString, CommonMasterFields.class);
+			paccFeeList.add(commonMasterFields);
+			masterRequestOsbmFeeCreate.setPaccFeeList(paccFeeList);
+			bookingsProducer.push(config.getSavePaccFeeTopic(), masterRequestOsbmFeeCreate);
+			masterRequest.getPaccFeeList().get(0).setPaccAmount(parkCommunityHallV1MasterModel.getAmount());
+			masterRequest.getPaccFeeList().get(0).setToDate(toDate);
 			bookingsProducer.push(config.getUpdatePaccFeeTopic(), masterRequest);
 		}catch (Exception e) {
 			throw new CustomException("PACC_FEE_UPDATE_ERROR", "ERROR WHILE UPDATE PACC FEE DETAILS");
@@ -823,6 +766,100 @@ public class MasterServiceImpl implements MasterService{
 			LOGGER.error("Exception occur in the mdmsBookingRoles " + e);
 		}
 		return mdmsSearchResponse;
+	}
+
+	/**
+	 * Prepare to date.
+	 *
+	 * @param strFromDate the str from date
+	 * @return the string
+	 */
+	private String prepareToDate(String strFromDate) {
+		String toDate = "";
+		try {
+			if(!BookingsFieldsValidator.isNullOrEmpty(strFromDate)) {
+				DateFormat formatter = getSimpleDateFormat();
+				formatter.setTimeZone(TimeZone.getTimeZone("GMT+5:30"));
+				Date fromDate = formatter.parse(strFromDate);
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(fromDate);
+				cal.set(Calendar.HOUR_OF_DAY, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				Date d = cal.getTime();
+			    long time = d.getTime();
+			    time -= 1 * 24 * 3600 * 1000;
+			    d.setTime(time);
+			    cal.setTime(d);
+			    cal.set(Calendar.HOUR_OF_DAY, BookingsConstants.HOURS);
+				cal.set(Calendar.MINUTE, BookingsConstants.MINUTES);
+				cal.set(Calendar.SECOND, BookingsConstants.SECONDS);
+				toDate = formatter.format(cal.getTime());
+			}
+		}
+		catch (Exception e) {
+			throw new CustomException("TO_DATE_FORMATTER", "ERROR WHILE FORMATTINF TODATE OF OSBM FEE");
+		}
+		return toDate;
+	}
+	
+	/**
+	 * Prepare fee object.
+	 *
+	 * @param commonMasterFields the common master fields
+	 * @return the object
+	 */
+	private Object prepareFeeObject(CommonMasterFields commonMasterFields) {
+		CommonMasterFields commonMasterFields2 = new CommonMasterFields();
+		DateFormat formatter = getSimpleDateFormat();
+		commonMasterFields2.setId(UUID.randomUUID().toString());
+		commonMasterFields2.setAmount(commonMasterFields.getAmount());
+		commonMasterFields2.setAreaFrom(commonMasterFields.getAreaFrom());
+		commonMasterFields2.setAreaTo(commonMasterFields.getAreaTo());
+		commonMasterFields2.setBookingAllowedFor(commonMasterFields.getBookingAllowedFor());
+		commonMasterFields2.setBookingVenue(commonMasterFields.getBookingVenue());
+		commonMasterFields2.setCategory(commonMasterFields.getCategory());
+		commonMasterFields2.setCgstRate(commonMasterFields.getCgstRate());
+		commonMasterFields2.setCleaningCharges(commonMasterFields.getCleaningCharges());
+		commonMasterFields2.setConstructionType(commonMasterFields.getConstructionType());
+		commonMasterFields2.setCreatedDate(formatter.format(new Date()));
+		commonMasterFields2.setDimensionSqrYards(commonMasterFields.getDimensionSqrYards());
+		commonMasterFields2.setDurationInMonths(commonMasterFields.getDurationInMonths());
+		commonMasterFields2.setFromDate(commonMasterFields.getFromDate());
+		commonMasterFields2.setImagePath(commonMasterFields.getImagePath());
+		commonMasterFields2.setIsActive(commonMasterFields.getIsActive());
+		commonMasterFields2.setLastModifiedDate(commonMasterFields.getLastModifiedDate());
+		commonMasterFields2.setLocality(commonMasterFields.getLocality());
+		commonMasterFields2.setLocationChangeAmount(commonMasterFields.getLocationChangeAmount());
+		commonMasterFields2.setLuxuryTax(commonMasterFields.getLuxuryTax());
+		commonMasterFields2.setName(commonMasterFields.getName());
+		commonMasterFields2.setNormalType(commonMasterFields.getNormalType());
+		commonMasterFields2.setOldrent1(commonMasterFields.getOldrent1());
+		commonMasterFields2.setPaccAmount(commonMasterFields.getPaccAmount());
+		commonMasterFields2.setRadius(commonMasterFields.getRadius());
+		commonMasterFields2.setRatePerDay(commonMasterFields.getRatePerDay());
+		commonMasterFields2.setRatePerSqrFeetPerDay(commonMasterFields.getRatePerSqrFeetPerDay());
+		commonMasterFields2.setRefundabelSecurity(commonMasterFields.getRefundabelSecurity());
+		commonMasterFields2.setRent(commonMasterFields.getRent());
+		commonMasterFields2.setRentNextSession(commonMasterFields.getRentNextSession());
+		commonMasterFields2.setResidentialCommercial(commonMasterFields.getResidentialCommercial());
+		commonMasterFields2.setReviserate1(commonMasterFields.getReviserate1());
+		commonMasterFields2.setRoleCode(commonMasterFields.getRoleCode());
+		commonMasterFields2.setSccid(commonMasterFields.getSccid());
+		commonMasterFields2.setScid(commonMasterFields.getScid());
+		commonMasterFields2.setSector(commonMasterFields.getSector());
+		commonMasterFields2.setSlab(commonMasterFields.getSlab());
+		commonMasterFields2.setStorage(commonMasterFields.getStorage());
+		commonMasterFields2.setSurcharge(commonMasterFields.getSurcharge());
+		commonMasterFields2.setToDate(commonMasterFields.getToDate());
+		commonMasterFields2.setUserId(commonMasterFields.getUserId());
+		commonMasterFields2.setUtgstRate(commonMasterFields.getUtgstRate());
+		commonMasterFields2.setUuid(commonMasterFields.getUuid());
+		commonMasterFields2.setVenueType(commonMasterFields.getVenueType());
+		commonMasterFields2.setVillageCity(commonMasterFields.getVillageCity());
+		commonMasterFields2.setX(commonMasterFields.getX());
+		commonMasterFields2.setY(commonMasterFields.getY());
+		return commonMasterFields2;
 	}
 	
 }

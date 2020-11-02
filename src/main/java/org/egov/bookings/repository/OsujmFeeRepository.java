@@ -26,5 +26,13 @@ public interface OsujmFeeRepository extends JpaRepository<OsujmFeeModel, String>
 			value = "SELECT * FROM bk_osujm_fee LIMIT 100 OFFSET (?1)",
 			nativeQuery = true )
 			List<OsujmFeeModel> findOSUJMFeeRecordsByLimit( int offSet );
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param id the id
+	 * @return the osujm fee model
+	 */
+	public OsujmFeeModel findById(String id);
 
 }
