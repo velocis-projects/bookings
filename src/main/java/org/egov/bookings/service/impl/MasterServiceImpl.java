@@ -415,7 +415,7 @@ public class MasterServiceImpl implements MasterService{
 			gfcpFeeList.add(commonMasterFields);
 			masterRequestOsbmFeeCreate.setGfcpFeeList(gfcpFeeList);
 			bookingsProducer.push(config.getSaveGfcpFeeTopic(), masterRequestOsbmFeeCreate);
-			masterRequest.getGfcpFeeList().get(0).setRatePerSqrFeetPerDay(commercialGroundFeeModel.getRatePerDay());
+			masterRequest.getGfcpFeeList().get(0).setRatePerDay(commercialGroundFeeModel.getRatePerDay());
 			masterRequest.getGfcpFeeList().get(0).setToDate(toDate);
 			bookingsProducer.push(config.getUpdateGfcpFeeTopic(), masterRequest);
 		}catch (Exception e) {
