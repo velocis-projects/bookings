@@ -23,6 +23,13 @@ public interface CommercialGroundRepository extends JpaRepository<CommercialGrou
 	 */
 	CommercialGroundFeeModel findByLocalityAndCategory(String locality, String category);
 
+	/**
+	 * Find by booking venue and category.
+	 *
+	 * @param bookingVenue the booking venue
+	 * @param category the category
+	 * @return the commercial ground fee model
+	 */
 	CommercialGroundFeeModel findByBookingVenueAndCategory(String bookingVenue, String category);
 	
 	/**
@@ -35,5 +42,13 @@ public interface CommercialGroundRepository extends JpaRepository<CommercialGrou
 			value = "SELECT * FROM bk_commercial_ground_fee LIMIT 100 OFFSET (?1)",
 			nativeQuery = true )
 			List<CommercialGroundFeeModel> findGFCPFeeRecordsByLimit( int offSet );
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param id the id
+	 * @return the commercial ground fee model
+	 */
+	public CommercialGroundFeeModel findById(String id);
 
 }

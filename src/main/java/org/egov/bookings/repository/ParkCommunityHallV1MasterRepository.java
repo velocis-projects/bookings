@@ -27,5 +27,5 @@ public interface ParkCommunityHallV1MasterRepository extends JpaRepository<ParkC
 			value = "SELECT * FROM bk_park_community_hall_v1 LIMIT 100 OFFSET (?1)",
 			nativeQuery = true )
 			List<ParkCommunityHallV1MasterModel> findPaccFeeRecordsByLimit( int offSet );
-
+	
 }
