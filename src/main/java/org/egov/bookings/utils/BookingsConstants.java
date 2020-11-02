@@ -747,4 +747,12 @@ public class BookingsConstants {
 	public static final int DAYS_FIFTEEN = 15;
     
 	public static final String BOOKING_ROLES = "BookingRoles";
+	
+	public static final String AND = "and";
+	
+	public static final int HOURS = 18;
+	
+	public static final int MINUTES = 29;
+	
+	public static final int SECONDS = 59;
 }

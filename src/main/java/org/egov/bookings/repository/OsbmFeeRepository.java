@@ -35,5 +35,12 @@ public interface OsbmFeeRepository extends JpaRepository<OsbmFeeModel, String> {
 			nativeQuery = true )
 			List<OsbmFeeModel> findOSBMFeeRecordsByLimit( int offSet );
 	
+	/**
+	 * Find by id.
+	 *
+	 * @param id the id
+	 * @return the osbm fee model
+	 */
+	public OsbmFeeModel findById(String id);
 
 }

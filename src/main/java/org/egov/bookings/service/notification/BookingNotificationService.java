@@ -29,6 +29,7 @@ import org.egov.bookings.model.Source;
 import org.egov.bookings.repository.impl.ServiceRequestRepository;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.NotificationUtil;
+import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.common.contract.request.RequestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,6 +169,10 @@ public class BookingNotificationService {
 			localizationMessages = util.getLocalizationMessages(tenantId, request.getRequestInfo());
 			message = util.getMailCustomizedMsg(request.getRequestInfo(), bookingsModel, localizationMessages);
 			break;
+		}
+		if (!BookingsFieldsValidator.isNullOrEmpty(request) && !BookingsFieldsValidator.isNullOrEmpty(request.getReceiptMap())) 
+		{
+//			attachments = util.prepareEmailAttachment(request);
 		}
 		
 		message = message.replace("\\n", "\n");
