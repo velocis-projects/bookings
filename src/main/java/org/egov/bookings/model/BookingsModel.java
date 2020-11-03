@@ -397,6 +397,9 @@ public class BookingsModel {
     @JsonProperty("financialYear")
     private String financialYear = null;
     
+    @Transient
+    private boolean reInitiateStatus;
+    
 	
 
 }

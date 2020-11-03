@@ -106,7 +106,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		enrichmentService.generateDemand(bookingsRequest);
 
 		if (config.getIsExternalWorkFlowEnabled()) {
-			if (!flag)
+			if (!flag || bookingsRequest.getBookingsModel().isReInitiateStatus())
 			workflowIntegrator.callWorkFlow(bookingsRequest);
 		}
 		enrichmentService.enrichBookingsDetails(bookingsRequest);
