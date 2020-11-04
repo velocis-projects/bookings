@@ -753,4 +753,6 @@ public class BookingsConstants {
 	public static final int MINUTES = 29;
 	
 	public static final int SECONDS = 59;
+	
+	public static final String PARKS_AND_COMMUNITY_CENTER = "Parks and Community Center";
 }

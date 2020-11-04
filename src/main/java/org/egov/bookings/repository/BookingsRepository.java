@@ -906,7 +906,6 @@ public interface BookingsRepository
 			List<BookingsModel> getCitizenSearchBooking( String applicationNumber, String applicationStatus, String mobileNumber
 					, String bookingType, String uuid );
 	
-	 
 	/**
 	 * Gets the citizen search booking.
 	 *
@@ -925,6 +924,46 @@ public interface BookingsRepository
 			nativeQuery = true )
 			List<BookingsModel> getCitizenSearchBooking( String applicationNumber, String applicationStatus, String mobileNumber
 					, String bookingType, String uuid, Date fromDate, Date toDate );
+	
+
+	/**
+	 * Gets the citizen search PACC booking.
+	 *
+	 * @param applicationNumber the application number
+	 * @param applicationStatus the application status
+	 * @param mobileNumber the mobile number
+	 * @param parksBookingType the parks booking type
+	 * @param communityCenterBookingType the community center booking type
+	 * @param uuid the uuid
+	 * @return the citizen search PACC booking
+	 */
+	@Query(
+			value = "SELECT * FROM BK_BOOKINGS WHERE BK_APPLICATION_NUMBER LIKE (%?1%) AND BK_APPLICATION_STATUS LIKE (%?2%) " 
+					+ "AND BK_MOBILE_NUMBER LIKE (%?3%) AND (BK_BOOKING_TYPE = (?4) OR BK_BOOKING_TYPE = (?5)) AND UUID LIKE (?6) ORDER BY BK_APPLICATION_NUMBER DESC",
+			nativeQuery = true )
+			List<BookingsModel> getCitizenSearchPACCBooking( String applicationNumber, String applicationStatus, String mobileNumber
+					, String parksBookingType, String communityCenterBookingType, String uuid );
+	
+	
+	/**
+	 * Gets the citizen search PACC booking.
+	 *
+	 * @param applicationNumber the application number
+	 * @param applicationStatus the application status
+	 * @param mobileNumber the mobile number
+	 * @param parksBookingType the parks booking type
+	 * @param communityCenterBookingType the community center booking type
+	 * @param uuid the uuid
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @return the citizen search PACC booking
+	 */
+	@Query(
+			value = "SELECT * FROM BK_BOOKINGS WHERE BK_APPLICATION_NUMBER LIKE (%?1%) AND BK_APPLICATION_STATUS LIKE (%?2%) "
+					+ "AND BK_MOBILE_NUMBER LIKE (%?3%) AND (BK_BOOKING_TYPE = (?4) OR BK_BOOKING_TYPE = (?5)) AND UUID LIKE (?6) AND BK_DATE_CREATED BETWEEN (?7) AND (?8) ORDER BY BK_APPLICATION_NUMBER DESC",
+			nativeQuery = true )
+			List<BookingsModel> getCitizenSearchPACCBooking( String applicationNumber, String applicationStatus, String mobileNumber
+					, String parksBookingType, String communityCenterBookingType, String uuid, Date fromDate, Date toDate );
 	
 	
 	/**
