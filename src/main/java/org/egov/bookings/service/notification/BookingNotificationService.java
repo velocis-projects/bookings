@@ -170,13 +170,22 @@ public class BookingNotificationService {
 			message = util.getMailCustomizedMsg(request.getRequestInfo(), bookingsModel, localizationMessages);
 			break;
 		}
-		if (!BookingsFieldsValidator.isNullOrEmpty(request) && !BookingsFieldsValidator.isNullOrEmpty(request.getReceiptMap())) 
-		{
-//			attachments = util.prepareEmailAttachment(request);
+		Map<String, String> receiptURLMap = new HashMap<>();
+		if (!BookingsFieldsValidator.isNullOrEmpty(request.getUrlData())) {
+			receiptURLMap = request.getUrlData();
+		}
+		String paymentReceiptURL = "";
+		String permissionLetterURL = "";
+		if (!BookingsFieldsValidator.isNullOrEmpty(receiptURLMap)){
+			paymentReceiptURL = receiptURLMap.get(BookingsConstants.PAYMENT_RECEIPT);
+			permissionLetterURL = receiptURLMap.get(BookingsConstants.PERMISSION_LETTER);
+		}
+		if (!BookingsFieldsValidator.isNullOrEmpty(paymentReceiptURL) || !BookingsFieldsValidator.isNullOrEmpty(permissionLetterURL)) {
+			attachments = util.prepareEmailAttachment(paymentReceiptURL, permissionLetterURL);
 		}
 		
 		message = message.replace("\\n", "\n");
-		emailRequests.addAll(util.createEMAILRequest(message, emailIdToOwner));
+		emailRequests.addAll(util.createEMAILRequest(message, emailIdToOwner, attachments));
 	}
     
 	/**

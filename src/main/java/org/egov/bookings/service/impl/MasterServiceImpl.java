@@ -779,7 +779,6 @@ public class MasterServiceImpl implements MasterService{
 		try {
 			if(!BookingsFieldsValidator.isNullOrEmpty(strFromDate)) {
 				DateFormat formatter = getSimpleDateFormat();
-				formatter.setTimeZone(TimeZone.getTimeZone("GMT+5:30"));
 				Date fromDate = formatter.parse(strFromDate);
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(fromDate);
@@ -798,7 +797,7 @@ public class MasterServiceImpl implements MasterService{
 			}
 		}
 		catch (Exception e) {
-			throw new CustomException("TO_DATE_FORMATTER", "ERROR WHILE FORMATTINF TODATE OF OSBM FEE");
+			throw new CustomException("TO_DATE_FORMATTER", "ERROR WHILE FORMATTING TODATE OF MODULE FEE");
 		}
 		return toDate;
 	}
