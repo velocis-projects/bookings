@@ -708,6 +708,10 @@ public class BookingsConstants {
 	
 	public static final String PACC_TAXHEAD_CODE_FACILITATION_CHARGE = "FACILITATION_CHARGE";
 	
+	public static final String PACC_TAXHEAD_CODE_PACC_TAX = "PACC_TAX";
+	
+	public static final String PACC_TAXHEAD_CODE_PACC = "PACC";
+	
 	public static final String OFFLINE_APPLY = "OFFLINE_APPLY";
 
 	public static final String BOOKING_MDMS_FILE_NAME = "Booking_Config";

@@ -1,9 +1,13 @@
 package org.egov.bookings.service.impl;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -336,25 +340,54 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 	 */
 	public BigDecimal getOsbmAmount(BookingsRequest bookingsRequest) {
 
-		OsbmFeeModel osbmFeeModel = null;
+		List<OsbmFeeModel> osbmFeeModel = null;
+		BigDecimal amount = null;
 		try {
+			
+			LocalDate currentDate = LocalDate.now();
 			String constructionType = bookingsRequest.getBookingsModel().getBkConstructionType();
 			String durationInMonths = bookingsRequest.getBookingsModel().getBkDuration();
 			String storage = bookingsRequest.getBookingsModel().getBkAreaRequired();
 			String villageCity = bookingsRequest.getBookingsModel().getBkVillCity();
 			String residentialCommercial = bookingsRequest.getBookingsModel().getBkType();
-
+			//String toDateInString = "";
 			osbmFeeModel = osbmFeeRepository
 					.findByVillageCityAndResidentialCommercialAndStorageAndDurationInMonthsAndConstructionType(
 							villageCity, residentialCommercial, storage, durationInMonths, constructionType);
-		if(BookingsFieldsValidator.isNullOrEmpty(osbmFeeModel)) {
+			
+			if(BookingsFieldsValidator.isNullOrEmpty(osbmFeeModel)) {
+				throw new CustomException("DATA_NOT_FOUND","There is not any amount for this osbm criteria in database");
+			}
+			
+			for(OsbmFeeModel osbmFeeModel1 : osbmFeeModel) {
+				if(BookingsFieldsValidator.isNullOrEmpty(osbmFeeModel1.getFromDate())) {
+					throw new CustomException("DATA_NOT_FOUND","There is no from date for this osbm criteria in database");
+				}
+				String pattern = "yyyy-MM-dd";
+				DateFormat df = new SimpleDateFormat(pattern);
+				String fromDateInString = df.format(osbmFeeModel1.getFromDate());
+				LocalDate fromDate = LocalDate.parse(fromDateInString);
+				//LocalDate toDate = LocalDate.parse(toDateInString);
+				if(BookingsFieldsValidator.isNullOrEmpty(osbmFeeModel1.getToDate()) && currentDate.isAfter(fromDate) || currentDate.isEqual(fromDate)) {
+					//toDateInString = df.format(osbmFeeModel1.getToDate());
+					amount = new BigDecimal(osbmFeeModel1.getAmount());
+				}
+				if (!BookingsFieldsValidator.isNullOrEmpty(osbmFeeModel1.getToDate())
+						&& (fromDate.isEqual(currentDate) || fromDate.isBefore(currentDate))
+						&& (currentDate.isBefore(LocalDate.parse(df.format(osbmFeeModel1.getToDate()))))) {
+					amount = new BigDecimal(osbmFeeModel1.getAmount());
+					break;
+				}
+			}
+			
+		if(BookingsFieldsValidator.isNullOrEmpty(amount)) {
 			throw new CustomException("DATA_NOT_FOUND","There is not any amount for this osbm criteria in database");
 		}
 			
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Exception while fetching osbm amount from database");
+			throw new IllegalArgumentException("Exception while fetching osbm amount from database : "+e.getLocalizedMessage());
 		}
-		return new BigDecimal(osbmFeeModel.getAmount());
+		return amount;
 	}
 
 	/**

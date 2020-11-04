@@ -1,6 +1,9 @@
 package org.egov.bookings.service.impl;
 
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +19,7 @@ import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.AvailabilityResponse;
 import org.egov.bookings.contract.JurisdictionAvailabilityRequest;
 import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsujmFeeRepository;
@@ -56,14 +60,36 @@ public class OsujmServiceImpl implements OsujmService {
 	 */
 	@Override
 	public OsujmFeeModel findJurisdictionFee(BookingsRequest bookingsRequest) {
-		OsujmFeeModel osujmFeeModel = null;
+		List<OsujmFeeModel> osujmFeeModelList = null;
+		OsujmFeeModel osujmFeeModel1 = null;
 		try {
+			LocalDate currentDate =LocalDate.now();
 			Long area = Long.valueOf(bookingsRequest.getBookingsModel().getBkAreaRequired());
 			String sector = bookingsRequest.getBookingsModel().getBkSector();
 			if(!sector.equals("SECTOR-17") && !sector.equals("SECTOR-22"))
 				sector = "OTHER";
-			osujmFeeModel = osujmFeeRepository.findJurisdictionFee(area,sector);
-			if(BookingsFieldsValidator.isNullOrEmpty(osujmFeeModel)) {
+			osujmFeeModelList = osujmFeeRepository.findJurisdictionFee(area,sector);
+			
+			for(OsujmFeeModel osujmFeeModel : osujmFeeModelList) {
+				if(BookingsFieldsValidator.isNullOrEmpty(osujmFeeModel.getFromDate())) {
+					throw new IllegalArgumentException("There is no from date for this open space under jurisdiction criteria in database");
+				}
+				String pattern = "yyyy-MM-dd";
+				DateFormat df = new SimpleDateFormat(pattern);
+				String fromDateInString = df.format(osujmFeeModel.getFromDate());
+				LocalDate fromDate = LocalDate.parse(fromDateInString);
+				if(BookingsFieldsValidator.isNullOrEmpty(osujmFeeModel.getToDate()) && currentDate.isAfter(fromDate) || currentDate.isEqual(fromDate)) {
+					osujmFeeModel1 = osujmFeeModel;
+				}
+				if (!BookingsFieldsValidator.isNullOrEmpty(osujmFeeModel.getToDate())
+						&& (fromDate.isEqual(currentDate) || fromDate.isBefore(currentDate))
+						&& (currentDate.isBefore(LocalDate.parse(df.format(osujmFeeModel.getToDate()))))) {
+					osujmFeeModel1 = osujmFeeModel;
+					break;
+				}
+			}
+			
+			if(BookingsFieldsValidator.isNullOrEmpty(osujmFeeModel1)) {
 				throw new IllegalArgumentException("There is not any amount for open space under jurisdiction criteria in database");
 			}
 			
@@ -72,7 +98,7 @@ public class OsujmServiceImpl implements OsujmService {
 			throw new CustomException("INVALID_REQUEST",e.getLocalizedMessage());
 		}
 		
-		return osujmFeeModel;
+		return osujmFeeModel1;
 	}
 
 	/* (non-Javadoc)

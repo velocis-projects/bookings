@@ -1,6 +1,8 @@
 package org.egov.bookings.service.impl;
 
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +31,7 @@ import org.egov.bookings.repository.CommercialGroundRepository;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.service.CommercialGroundService;
 import org.egov.bookings.utils.BookingsConstants;
+import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,13 +80,47 @@ public class CommercialGroundServiceImpl implements CommercialGroundService {
 	@Override
 	public CommercialGroundFeeModel searchCommercialGroundFee(
 			CommercialGroundFeeSearchCriteria commercialGroundFeeSearchCriteria) {
+		List<CommercialGroundFeeModel> commercialGroundFeeModelList = null;
+		CommercialGroundFeeModel commercialGroundFeeModel = null;
 		try {
-			return commercialGroundRepository.findByBookingVenueAndCategory(
+			LocalDate currentDate = LocalDate.now();
+			commercialGroundFeeModelList = commercialGroundRepository.findByBookingVenueAndCategory(
 					commercialGroundFeeSearchCriteria.getBookingVenue(),
 					commercialGroundFeeSearchCriteria.getCategory());
+			if(BookingsFieldsValidator.isNullOrEmpty(commercialGroundFeeModelList)) {
+				throw new CustomException("DATA_NOT_FOUND","There is not any amount for this commercial ground criteria in database");
+			}
+			for(CommercialGroundFeeModel commercialGroundFeeModel1 : commercialGroundFeeModelList) {
+				
+				if(BookingsFieldsValidator.isNullOrEmpty(commercialGroundFeeModel1.getFromDate())) {
+					throw new CustomException("DATA_NOT_FOUND","There is no from date for this commercial ground criteria in database");
+				}
+				
+				String pattern = "yyyy-MM-dd";
+				DateFormat df = new SimpleDateFormat(pattern);
+				String fromDateInString = df.format(commercialGroundFeeModel1.getFromDate());
+				LocalDate fromDate = LocalDate.parse(fromDateInString);
+				//LocalDate toDate = LocalDate.parse(toDateInString);
+				if(BookingsFieldsValidator.isNullOrEmpty(commercialGroundFeeModel1.getToDate()) && currentDate.isAfter(fromDate) || currentDate.isEqual(fromDate)) {
+					//toDateInString = df.format(osbmFeeModel1.getToDate());
+					commercialGroundFeeModel = commercialGroundFeeModel1;
+				}
+				if (!BookingsFieldsValidator.isNullOrEmpty(commercialGroundFeeModel1.getToDate())
+						&& (fromDate.isEqual(currentDate) || fromDate.isBefore(currentDate))
+						&& (currentDate.isBefore(LocalDate.parse(df.format(commercialGroundFeeModel1.getToDate()))))) {
+					commercialGroundFeeModel = commercialGroundFeeModel1;
+					break;
+				}
+			}
+			
+			if(BookingsFieldsValidator.isNullOrEmpty(commercialGroundFeeModel)) {
+				throw new CustomException("DATA_NOT_FOUND","There is not any amount for this commercial ground criteria in database");
+			}
+			
 		} catch (Exception e) {
 			throw new CustomException("DATABASE_FETCH_ERROR", e.getLocalizedMessage());
 		}
+		return commercialGroundFeeModel;
 	}
 
 	/*
