@@ -303,17 +303,33 @@ public class BookingsServiceImpl implements BookingsService {
 			Date toDate = searchCriteriaFieldsDTO.getToDate();
 			String uuid = searchCriteriaFieldsDTO.getUuid();
 			String bookingType = searchCriteriaFieldsDTO.getBookingType();
-
+			String parksBookingType = "";
+			String communityCenterBookingType = "";
 			if (BookingsFieldsValidator.isNullOrEmpty(uuid)) {
 				throw new IllegalArgumentException("Invalid uuId");
 			}
-			if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-				myBookingList = bookingsRepository.getCitizenSearchBooking(applicationNumber, applicationStatus,
-						mobileNumber, bookingType, uuid);
-			} else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate)
-					&& !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
-				myBookingList = bookingsRepository.getCitizenSearchBooking(applicationNumber, applicationStatus,
-						mobileNumber, bookingType, uuid, fromDate, toDate);
+			if (!BookingsFieldsValidator.isNullOrEmpty(bookingType) && BookingsConstants.PARKS_AND_COMMUNITY_CENTER.equals(bookingType)) {
+				String[] bookingArray = bookingType.split(BookingsConstants.AND);
+				parksBookingType = bookingArray[0].trim();
+				communityCenterBookingType = bookingArray[1].trim();
+				if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
+					myBookingList = bookingsRepository.getCitizenSearchPACCBooking(applicationNumber, applicationStatus,
+							mobileNumber, parksBookingType, communityCenterBookingType, uuid);
+				} 
+				else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
+					myBookingList = bookingsRepository.getCitizenSearchPACCBooking(applicationNumber, applicationStatus,
+							mobileNumber, parksBookingType, communityCenterBookingType, uuid, fromDate, toDate);
+				}
+			}
+			else {
+				if (BookingsFieldsValidator.isNullOrEmpty(fromDate) && BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
+					myBookingList = bookingsRepository.getCitizenSearchBooking(applicationNumber, applicationStatus,
+							mobileNumber, bookingType, uuid);
+				} 
+				else if (!BookingsFieldsValidator.isNullOrEmpty(fromDate) && !BookingsFieldsValidator.isNullOrEmpty(fromDate)) {
+					myBookingList = bookingsRepository.getCitizenSearchBooking(applicationNumber, applicationStatus,
+							mobileNumber, bookingType, uuid, fromDate, toDate);
+				}
 			}
 			if (!BookingsFieldsValidator.isNullOrEmpty(applicationNumber)) {
 				documentList = commonRepository.findDocumentList(applicationNumber);
