@@ -743,6 +743,8 @@ public class BookingsConstants {
 	public static final String PERMISSION_LETTER = "permissionLetter";
 	
 	public static final String HOUSE_NO = "House No.";
+	
+	public static final int DAYS_FIFTEEN = 15;
     
 	public static final String BOOKING_ROLES = "BookingRoles";
 	

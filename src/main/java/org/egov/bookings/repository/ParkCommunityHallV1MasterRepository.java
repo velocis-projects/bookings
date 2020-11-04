@@ -15,7 +15,7 @@ public interface ParkCommunityHallV1MasterRepository extends JpaRepository<ParkC
 
 	ParkCommunityHallV1MasterModel findById(String bookingVenue);
 
-	List<ParkCommunityHallV1MasterModel> findByVenueTypeAndSector(String venueType, String sector);
+	List<ParkCommunityHallV1MasterModel> findByVenueTypeAndSectorAndIsActive(String venueType, String sector, boolean isActive);
 	
 	/**
 	 * Find pacc fee records by limit.

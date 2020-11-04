@@ -68,7 +68,8 @@ public class BookingsQueryBuilder {
 	public static final String FIND_APPROVER_NAME = "select roles from eg_wf_action_v2 where currentstate = :state";
 	
 	/** The Constant CHECK_PARK_AND_COMMUNITY_AVAILABILITY. */
-	public static final String CHECK_PARK_AND_COMMUNITY_AVAILABILITY = "select * from bk_bookings where bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType and bk_sector =:sector and bk_to_date >= :date and bk_action =:APPLY or bk_action =:OFFLINE_APPLY";
+	//public static final String CHECK_PARK_AND_COMMUNITY_AVAILABILITY = "select * from bk_bookings where bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType and bk_sector =:sector and bk_to_date >= :date and bk_action =:APPLY or bk_action =:OFFLINE_APPLY and bk_application_number != :applicationNumber";
+	public static final String CHECK_PARK_AND_COMMUNITY_AVAILABILITY = "select * from bk_bookings where bk_booking_venue =:bookingVenue and bk_Booking_Type =:bookingType and bk_sector =:sector and bk_to_date >= :date and bk_payment_status =:SUCCESS and bk_application_number !=:applicationNumber";
 	
 	public static final String FIND_APPLICATION_LIST = "select ewpv.businessid from eg_wf_processinstance_v2 as ewpv "
 			+ "inner join eg_wf_state_v2 as ewsv on ewsv.state is null "

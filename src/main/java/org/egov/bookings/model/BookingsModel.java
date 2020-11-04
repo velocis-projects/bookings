@@ -48,7 +48,7 @@ public class BookingsModel {
 	@Column(name = "BK_HOUSE_NO")
 	private String bkHouseNo;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany
 	@JoinColumn(name = "application_number")
 	private List<TimeslotsModel> timeslots;
 	
@@ -396,6 +396,9 @@ public class BookingsModel {
     @Size(max=64)
     @JsonProperty("financialYear")
     private String financialYear = null;
+    
+    @Transient
+    private boolean reInitiateStatus;
     
 	
 
