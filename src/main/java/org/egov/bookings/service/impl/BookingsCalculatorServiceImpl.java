@@ -232,20 +232,24 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 			break;
 			
 		case BookingsConstants.BUSINESS_SERVICE_PACC:
-			BigDecimal amount = null;
-			BigDecimal finalAmount = null;
+			BigDecimal amount = BigDecimal.ZERO;
+			BigDecimal finalAmount = BigDecimal.ZERO;
+			BigDecimal rent = BigDecimal.ZERO;
+			BigDecimal cleaningCharges = BigDecimal.ZERO;
 			ParkCommunityHallV1MasterModel parkCommunityHallV1FeeMaster = getParkAndCommunityAmount(bookingsRequest);
 			BigDecimal days = enrichmentService.extractDaysBetweenTwoDates(bookingsRequest);
 			if(BookingsConstants.EMPLOYEE.equals(bookingsRequest.getRequestInfo().getUserInfo().getType())) {
-				BigDecimal rent = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
-				BigDecimal cleaningCharges = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges()));
-				BigDecimal rentAfterDiscount = rent.multiply(bookingsRequest.getBookingsModel().getDiscount().divide(new BigDecimal(100))); 
-				 amount = cleaningCharges.add(rentAfterDiscount);
-				 finalAmount = days.multiply(amount);
+				rent = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
+			    cleaningCharges = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges()));
+				amount = days.multiply(rent);
+				BigDecimal rentAfterDiscount = amount.multiply(bookingsRequest.getBookingsModel().getDiscount().divide(new BigDecimal(100))); 
+				finalAmount = cleaningCharges.add(rentAfterDiscount);
 			}
 			else {
-				amount = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges())+Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
-				 finalAmount = days.multiply(amount);
+				 rent = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
+				 cleaningCharges = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges()));
+				 amount = days.multiply(rent);
+				 finalAmount = cleaningCharges.add(amount);
 			}
 			taxHeadEstimate1 = enrichmentService.enrichPaccAmountForBookingChange(bookingsRequest, finalAmount,taxHeadCode1,taxHeadCode2,taxHeadMasterFieldList,parkCommunityHallV1FeeMaster);	
 			break;
