@@ -180,12 +180,14 @@ public class BookingNotificationService {
 			paymentReceiptURL = receiptURLMap.get(BookingsConstants.PAYMENT_RECEIPT);
 			permissionLetterURL = receiptURLMap.get(BookingsConstants.PERMISSION_LETTER);
 		}
+		message = message.replace("\\n", "\n");
 		if (!BookingsFieldsValidator.isNullOrEmpty(paymentReceiptURL) || !BookingsFieldsValidator.isNullOrEmpty(permissionLetterURL)) {
 			attachments = util.prepareEmailAttachment(paymentReceiptURL, permissionLetterURL);
+			emailRequests.addAll(util.createEMAILRequest(message, emailIdToOwner, attachments));
 		}
-		
-		message = message.replace("\\n", "\n");
-		emailRequests.addAll(util.createEMAILRequest(message, emailIdToOwner, attachments));
+		else {
+			emailRequests.addAll(util.createEMAILRequest(message, emailIdToOwner));
+		}
 	}
     
 	/**

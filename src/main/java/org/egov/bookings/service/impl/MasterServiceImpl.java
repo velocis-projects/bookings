@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,7 @@ import org.egov.bookings.repository.ParkCommunityInventoryRepsitory;
 import org.egov.bookings.service.MasterService;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.BookingsUtils;
+import org.egov.bookings.utils.MasterCreatedDateComparator;
 import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.mdms.model.MdmsResponse;
@@ -570,6 +572,8 @@ public class MasterServiceImpl implements MasterService{
 		Map<Long,String> userMap = new HashMap<>();
 		try {
 			approverList = osbmApproverRepository.findAll();
+			Collections.sort(approverList, new MasterCreatedDateComparator());
+			Collections.reverse(approverList);
 			if (!BookingsFieldsValidator.isNullOrEmpty(approverList)) {
 				StringBuilder url = prepareUrlForUserList();
 				userDetailResponse = userService.getUserSearchDetails(url, mdmsSearchRequest.getRequestInfo(), new UserSearchRequest());
@@ -621,7 +625,9 @@ public class MasterServiceImpl implements MasterService{
 	public List<OsbmFeeModel> fetchAllOSBMFee() {
 		List<OsbmFeeModel> osbmFeeList = new ArrayList<>();
 		try {
-			osbmFeeList = osbmFeeRepository.findAll(); 
+			osbmFeeList = osbmFeeRepository.findAll();
+			Collections.sort(osbmFeeList, new MasterCreatedDateComparator());
+			Collections.reverse(osbmFeeList);
 		}
 		catch (Exception e) {
 			LOGGER.error("Exception occur in the fetchAllOSBMFee " + e);
@@ -641,6 +647,8 @@ public class MasterServiceImpl implements MasterService{
 		List<OsujmFeeModel> osujmFeeList = new ArrayList<>();
 		try {
 			osujmFeeList = osujmFeeRepository.findAll(); 
+			Collections.sort(osujmFeeList, new MasterCreatedDateComparator());
+			Collections.reverse(osujmFeeList);
 		}
 		catch (Exception e) {
 			LOGGER.error("Exception occur in the fetchAllOSUJMFee " + e);
@@ -660,6 +668,8 @@ public class MasterServiceImpl implements MasterService{
 		List<CommercialGroundFeeModel> gfcpFeeList = new ArrayList<>();
 		try {
 			gfcpFeeList = commercialGroundFeeRepository.findAll(); 
+			Collections.sort(gfcpFeeList, new MasterCreatedDateComparator());
+			Collections.reverse(gfcpFeeList);
 		}
 		catch (Exception e) {
 			LOGGER.error("Exception occur in the fetchAllGFCPFee " + e);
@@ -679,6 +689,8 @@ public class MasterServiceImpl implements MasterService{
 		List<ParkCommunityHallV1MasterModel> paccFeeList = new ArrayList<>();
 		try {
 			paccFeeList = parkCommunityHallV1MasterRepository.findAll(); 
+			Collections.sort(paccFeeList, new MasterCreatedDateComparator());
+			Collections.reverse(paccFeeList);
 		}
 		catch (Exception e) {
 			LOGGER.error("Exception occur in the fetchAllPACCFee " + e);
