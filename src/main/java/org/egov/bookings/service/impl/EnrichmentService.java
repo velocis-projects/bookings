@@ -683,9 +683,23 @@ public class EnrichmentService {
 				Demand demand = searchResult.get(0);
 				 demandDetails = demand.getDemandDetails();
 			}
-			if (finalAmount.compareTo(demandDetails.get(0).getTaxAmount()) < 1 || finalAmount.compareTo(demandDetails.get(0).getTaxAmount()) == 0) {
-				config.setDemandFlag(false);
+			if (finalAmount.compareTo(demandDetails.get(0).getTaxAmount()) < 1
+					|| finalAmount.compareTo(demandDetails.get(0).getTaxAmount()) == 0) {
+				//config.setDemandFlag(false);
 				
+				for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
+					if (BookingsConstants.PAYMENT_SUCCESS_STATUS
+							.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
+						if (taxHeadEstimate.getCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_3)) {
+							taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+									BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount())),
+									taxHeadEstimate.getCategory()));
+						}
+					}
+				}
+				
+				/*taxHeadEstimate1 = enrichTaxHeadEstimateForPACC(bookingsRequest, BigDecimal.ZERO, taxHeadCode1, taxHeadCode2,
+						taxHeadMasterFieldList, parkCommunityHallV1FeeMaster);*/
 			}
 
 			else {

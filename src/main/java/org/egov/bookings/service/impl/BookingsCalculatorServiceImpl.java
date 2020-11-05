@@ -243,7 +243,8 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 			    cleaningCharges = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getCleaningCharges()));
 				amount = days.multiply(rent);
 				BigDecimal rentAfterDiscount = amount.multiply(bookingsRequest.getBookingsModel().getDiscount().divide(new BigDecimal(100))); 
-				finalAmount = cleaningCharges.add(rentAfterDiscount);
+				BigDecimal rentAfterDiscount1 = amount.subtract(rentAfterDiscount);
+				finalAmount = cleaningCharges.add(rentAfterDiscount1);
 			}
 			else {
 				 rent = BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getRent()));
@@ -251,7 +252,8 @@ public class BookingsCalculatorServiceImpl implements BookingsCalculatorService 
 				 amount = days.multiply(rent);
 				 finalAmount = cleaningCharges.add(amount);
 			}
-			taxHeadEstimate1 = enrichmentService.enrichPaccAmountForBookingChange(bookingsRequest, finalAmount,taxHeadCode1,taxHeadCode2,taxHeadMasterFieldList,parkCommunityHallV1FeeMaster);	
+			taxHeadEstimate1 = enrichmentService.enrichPaccAmountForBookingChange(bookingsRequest, finalAmount,
+					taxHeadCode1, taxHeadCode2, taxHeadMasterFieldList, parkCommunityHallV1FeeMaster);	
 			break;
 			
 		}

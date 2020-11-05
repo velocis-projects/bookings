@@ -28,6 +28,7 @@ import org.egov.bookings.utils.BookingsCalculatorConstants;
 import org.egov.bookings.utils.BookingsConstants;
 import org.egov.bookings.utils.BookingsUtils;
 import org.egov.bookings.utils.CalculationUtils;
+import org.egov.bookings.validator.BookingsFieldsValidator;
 import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
@@ -487,14 +488,15 @@ public class DemandServiceImpl implements DemandService {
 			break;	
 		case BookingsConstants.BUSINESS_SERVICE_PACC:
 			demands = updateDemandsForPacc(bookingsRequest);
-			if(config.isDemandFlag()) {
+			break;
+			/*if(config.isDemandFlag()) {
 			demandRepository.updateDemand(bookingsRequest.getRequestInfo(), demands);
 			return;
 			}
 			else {
 				config.setDemandFlag(true);
 				return;
-			}
+			}*/
 		}
 		 demandRepository.updateDemand(bookingsRequest.getRequestInfo(), demands);
 
@@ -755,6 +757,9 @@ public class DemandServiceImpl implements DemandService {
 		}
 		List<DemandDetail> combinedBillDetials = new LinkedList<>(demandDetails);
 		combinedBillDetials.addAll(newDemandDetails);
+		if(BookingsFieldsValidator.isNullOrEmpty(newDemandDetails)) {
+			return combinedBillDetials;
+		}
 		addRoundOffTaxHeadForPaccUpdate(demandDetails.get(0).getTenantId(), combinedBillDetials,mdmsRoundOff);
 		return combinedBillDetials;
 	}
