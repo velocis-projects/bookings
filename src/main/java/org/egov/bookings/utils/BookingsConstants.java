@@ -669,10 +669,10 @@ public class BookingsConstants {
     public static final String BK_CGB = "BK_CGB_";
     
     /** The Constant BK_WF_OSUJM. */
-    public static final String BK_WF_OSUJM = "bk.en.counter.update";
+    public static final String BK_WF_OSUJM = "BK_WF_OSUJM_";
     
     /** The Constant BK_WF_PACC. */
-    public static final String BK_WF_PACC = "bk.en.counter.update";
+    public static final String BK_WF_PACC = "BK_WF_PACC_";
     
     /** The Constant DATE_FORMAT. */
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";

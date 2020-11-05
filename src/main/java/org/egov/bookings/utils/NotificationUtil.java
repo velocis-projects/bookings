@@ -585,6 +585,13 @@ public class NotificationUtil {
 		return message;
 	}
 	
+	/**
+	 * Gets the NLUJM rejected msg.
+	 *
+	 * @param osujmNewLocationModel the osujm new location model
+	 * @param message the message
+	 * @return the NLUJM rejected msg
+	 */
 	private String getNLUJMRejectedMsg(OsujmNewLocationModel osujmNewLocationModel, String message) {
 		message = message.replace("<1>",osujmNewLocationModel.getApplicantName());
 		message = message.replace("<2>", BookingsConstants.NLUJM_BOOKING_TYPE);
@@ -636,6 +643,14 @@ public class NotificationUtil {
 		return message;
 	}
 	
+	/**
+	 * Gets the NLUJM updated msg.
+	 *
+	 * @param osujmNewLocationModel the osujm new location model
+	 * @param message the message
+	 * @param applicationStatus the application status
+	 * @return the NLUJM updated msg
+	 */
 	private String getNLUJMUpdatedMsg(OsujmNewLocationModel osujmNewLocationModel, String message, String applicationStatus) {
 		message = message.replace("<1>", osujmNewLocationModel.getApplicantName());
 		message = message.replace("<2>", osujmNewLocationModel.getApplicationNumber());
@@ -719,12 +734,13 @@ public class NotificationUtil {
 		}
 	}
 
+	
 	/**
-	 * Creates sms request for the each owners.
+	 * Creates the SMS request.
 	 *
-	 * @param message            The message for the specific tradeLicense
-	 * @param mobileNumberToOwnerName            Map of mobileNumber to OwnerName
-	 * @return List of SMSRequest
+	 * @param message the message
+	 * @param mobileNumberToOwnerName the mobile number to owner name
+	 * @return the list
 	 */
 	public List<SMSRequest> createSMSRequest(String message, Map<String, String> mobileNumberToOwnerName) {
 		List<SMSRequest> smsRequest = new LinkedList<>();
@@ -736,12 +752,13 @@ public class NotificationUtil {
 	}
 	
 	
+	
 	/**
-	 * Creates email request for the each owners.
+	 * Creates the EMAIL request.
 	 *
-	 * @param message            The message for the specific tradeLicense
-	 * @param emailIdToOwner            Map of emailId to OwnerName
-	 * @return List of EMAILRequest
+	 * @param message the message
+	 * @param emailIdToOwner the email id to owner
+	 * @return the list
 	 */
 	public List<EmailRequest> createEMAILRequest(String message, Map<String, String> emailIdToOwner) {
 		List<EmailRequest> emailRequest = new LinkedList<>();
