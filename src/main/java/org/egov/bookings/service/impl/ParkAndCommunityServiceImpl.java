@@ -144,8 +144,10 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 			workflowIntegrator.callWorkFlow(bookingsRequest);
 
 		BookingsModel bookingsModel = null;
-		if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()) && !BookingsConstants.OFFLINE_APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
-				&& BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService)) {
+		if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
+				&& !BookingsConstants.OFFLINE_APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
+				&& BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService)
+				&& !BookingsConstants.PACC_ACTION_CANCEL.equals(bookingsRequest.getBookingsModel().getBkAction())) {
 			bookingsModel = enrichmentService.enrichPaccDetails(bookingsRequest);
 			bookingsRequest.setBookingsModel(bookingsModel);
 			BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);

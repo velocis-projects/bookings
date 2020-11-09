@@ -431,7 +431,7 @@ public class DemandServiceImpl implements DemandService {
 		 * roundOff taxHead so as to nullify the decimal eg: If the tax is 12.64 we will
 		 * add extra tax roundOff taxHead of 0.36 so that the total becomes 13
 		 */
-		if (decimalValue.compareTo(midVal) > 0)
+		if (decimalValue.compareTo(midVal) >= 0)
 			roundOff = BigDecimal.ONE.subtract(decimalValue);
 
 		/*
@@ -502,7 +502,7 @@ public class DemandServiceImpl implements DemandService {
 
 	}
 
-	private List<Demand> updateDemandsForPacc(BookingsRequest bookingsRequest) {
+	public List<Demand> updateDemandsForPacc(BookingsRequest bookingsRequest) {
 		List<Demand> demands = new LinkedList<>();
 
 		String taxHeadCode1 = BookingsCalculatorConstants.PACC_TAX_CODE_1;
@@ -518,35 +518,20 @@ public class DemandServiceImpl implements DemandService {
 			List<Demand> searchResult = searchDemand(bookingsRequest.getBookingsModel().getTenantId(),
 					Collections.singleton(bookingsRequest.getBookingsModel().getBkApplicationNumber()), requestInfo,
 					bookingsRequest.getBookingsModel().getBusinessService());
-
-			Demand demand = searchResult.get(0);
-			List<DemandDetail> demandDetails = demand.getDemandDetails();
-			List<DemandDetail> updatedDemandDetails = new ArrayList<>();
-			/*if(BookingsConstants.PACC_RE_INITIATED_ACTION.equals(bookingsRequest.getBookingsModel().getBkAction())) {
-			 updatedDemandDetails = getUpdatedDemandDetailsForPACC(bookingsRequest,taxHeadEstimate1, demandDetails,
-					BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_PACC);
-			}else {*/
-				updatedDemandDetails = getUpdatedDemandDetailsForPacc(taxHeadEstimate1, demandDetails,
-						BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_PACC);
-			//}
-			 
-			demand.setDemandDetails(updatedDemandDetails);
-			demands.add(demand);
-
-			/*
-			 * taxHeadEstimate1.forEach(taxHeadEstimate -> {
-			 * demandDetails.add(DemandDetail.builder().taxAmount(taxHeadEstimate.
-			 * getEstimateAmount())
-			 * .taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).collectionAmount(
-			 * BigDecimal.ZERO) .tenantId(tenantId).build()); });
-			 */
-
-			// demands.add(demands);
-
 			if (CollectionUtils.isEmpty(searchResult)) {
 				throw new CustomException("INVALID UPDATE", "No demand exists for applicationNumber: "
 						+ bookingsRequest.getBookingsModel().getBkApplicationNumber());
 			}
+			Demand demand = searchResult.get(0);
+			List<DemandDetail> demandDetails = demand.getDemandDetails();
+			List<DemandDetail> updatedDemandDetails = new ArrayList<>();
+
+			updatedDemandDetails = getUpdatedDemandDetailsForPacc(taxHeadEstimate1, demandDetails,
+					BookingsCalculatorConstants.MDMS_ROUNDOFF_TAXHEAD_PACC);
+			demand.setDemandDetails(updatedDemandDetails);
+			demands.add(demand);
+
+			
 		}
 		return demands;
 	}
@@ -771,10 +756,18 @@ public class DemandServiceImpl implements DemandService {
 		BigDecimal paccFinalTax = BigDecimal.ZERO;
 		BigDecimal paccFinalAmount = BigDecimal.ZERO;
 
+		BigDecimal demo = BigDecimal.ZERO;
+		
+		for (DemandDetail demandDetail : demandDetails) {
+			demo = demo.add(demandDetail.getTaxAmount());
+			
+		}
+		
+		
 		/*
 		 * Sum all taxHeads except RoundOff as new roundOff will be calculated
 		 */
-		for (DemandDetail demandDetail : demandDetails) {
+		/*for (DemandDetail demandDetail : demandDetails) {
 			if (!demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(mdmsRoundOff)) {
 				totalTax = totalTax.add(demandDetail.getTaxAmount());
 				if (BookingsConstants.PACC_TAXHEAD_CODE_PACC_TAX.equals(demandDetail.getTaxHeadMasterCode())) {
@@ -784,15 +777,33 @@ public class DemandServiceImpl implements DemandService {
 					paccFinalAmount = demandDetail.getTaxAmount();
 				}
 			} 
-		}
+		}*/
 
 		BigDecimal midVal = new BigDecimal(0.5);
 		BigDecimal roundOff = BigDecimal.ZERO;
 		BigDecimal paccFinalTaxRoundOff = paccFinalTax.remainder(BigDecimal.ONE);
 		BigDecimal paccFinalAmountRoundOff = paccFinalAmount.remainder(BigDecimal.ONE);
 		
+		BigDecimal demoRoundOff = demo.remainder(BigDecimal.ONE);
 		
-		if(paccFinalAmountRoundOff.compareTo(BigDecimal.ZERO) != 0) {
+		
+		
+		if(demoRoundOff.compareTo(BigDecimal.ZERO) != 0) {
+			if(demoRoundOff.compareTo(midVal) >= 0) {
+				roundOff = BigDecimal.ONE.subtract(demoRoundOff);
+			}	
+			else {
+				roundOff = demoRoundOff.negate();
+			}
+			DemandDetail roundOffDemandDetail = DemandDetail.builder().taxAmount(roundOff)
+					.taxHeadMasterCode(mdmsRoundOff).tenantId(tenantId)
+					.collectionAmount(BigDecimal.ZERO).build();
+
+			demandDetails.add(roundOffDemandDetail);
+		}
+		
+		
+	/*	if(paccFinalAmountRoundOff.compareTo(BigDecimal.ZERO) != 0) {
 			if(paccFinalAmountRoundOff.compareTo(midVal) >= 0) {
 				roundOff = BigDecimal.ONE.subtract(paccFinalTaxRoundOff);
 			}	
@@ -819,7 +830,7 @@ public class DemandServiceImpl implements DemandService {
 					.collectionAmount(BigDecimal.ZERO).build();
 
 			demandDetails.add(roundOffDemandDetail);
-		}
+		}*/
 	}
 
 	/**

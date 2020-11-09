@@ -612,13 +612,30 @@ public class EnrichmentService {
 						new TaxHeadEstimate(taxHeadEstimate.getCode(), finalAmount, taxHeadEstimate.getCategory()));
 				continue;
 			}
-			if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
-				taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
-						finalAmount
-								.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
-										.divide(new BigDecimal(100)))),
-						taxHeadEstimate.getCategory()));
-				continue;
+			
+			if(BookingsConstants.PAYMENT_SUCCESS_STATUS
+					.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
+				if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
+					finalAmount = finalAmount
+							.add(BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount())));
+					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+							finalAmount
+									.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
+											.divide(new BigDecimal(100)))),
+							taxHeadEstimate.getCategory()));
+					continue;
+				}
+			}
+			else {
+				if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
+					taxHeadEstimate1
+							.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+									finalAmount.multiply((BigDecimal
+											.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
+											.divide(new BigDecimal(100)))),
+									taxHeadEstimate.getCategory()));
+					continue;
+				}
 			}
 			if (taxHeadEstimate.getCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_LUXURY_TAX)) {
 				taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
@@ -690,11 +707,31 @@ public class EnrichmentService {
 				for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
 					if (BookingsConstants.PAYMENT_SUCCESS_STATUS
 							.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
+						
+						if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
+							taxHeadEstimate1.add(
+									new TaxHeadEstimate(taxHeadEstimate.getCode(), BigDecimal.ZERO, taxHeadEstimate.getCategory()));
+							continue;
+						}
+						
 						if (taxHeadEstimate.getCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_3)) {
 							taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
 									BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount())),
 									taxHeadEstimate.getCategory()));
+							continue;
 						}
+						if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
+							taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+									BigDecimal
+											.valueOf(Long
+													.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount()))
+											.multiply((BigDecimal
+													.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
+													.divide(new BigDecimal(100)))),
+									taxHeadEstimate.getCategory()));
+							continue;
+						}
+						
 					}
 				}
 				
