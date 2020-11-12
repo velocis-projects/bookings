@@ -757,4 +757,8 @@ public class BookingsConstants {
 	public static final int SECONDS = 59;
 	
 	public static final String PARKS_AND_COMMUNITY_CENTER = "Parks and Community Center";
+	
+	public static final String SUPERVISOR = "BK_SUPERVISOR";
+	
+	public static final String OSD = "BK_OSD";
 }
