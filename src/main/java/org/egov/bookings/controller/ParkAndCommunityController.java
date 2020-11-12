@@ -195,15 +195,10 @@ public class ParkAndCommunityController {
 		bookingsFieldsValidator.validatePACCDemandRequest(bookingsRequest);
 		
 		
-		List<Demand> demantList = demandService.updateDemandsForPacc(bookingsRequest);
+		demandService.updateDemand(bookingsRequest);
 		ResponseModel rs = new ResponseModel();
-		if (BookingsFieldsValidator.isNullOrEmpty(demantList)) {
-			rs.setStatus("400");
-			rs.setMessage("Failure");
-		} else {
 			rs.setStatus("200");
 			rs.setMessage("Success");
-		}
 		return ResponseEntity.ok(rs);
 	}
 	

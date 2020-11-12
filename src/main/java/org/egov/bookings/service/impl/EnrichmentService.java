@@ -703,14 +703,34 @@ public class EnrichmentService {
 			if (finalAmount.compareTo(demandDetails.get(0).getTaxAmount()) < 1
 					|| finalAmount.compareTo(demandDetails.get(0).getTaxAmount()) == 0) {
 				//config.setDemandFlag(false);
-				
+				BigDecimal totalPACCAmount = BigDecimal.ZERO;
+				BigDecimal totalPACCTaxAmount = BigDecimal.ZERO;
+				boolean paccTaxFlag = true;
+				BigDecimal locationChangeTax = BigDecimal
+						.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount()))
+						.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
+								.divide(new BigDecimal(100))));
+				for(DemandDetail demandDetail : demandDetails) {
+					if(demandDetail.getTaxHeadMasterCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_PACC)) {
+						totalPACCAmount = totalPACCAmount.add(demandDetail.getTaxAmount());
+					}
+					if(demandDetail.getTaxHeadMasterCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_PACC_TAX)) {
+						totalPACCTaxAmount = totalPACCTaxAmount.add(demandDetail.getTaxAmount());
+					}
+					if(demandDetail.getTaxHeadMasterCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_PACC_TAX)
+							&& demandDetail.getTaxAmount().compareTo(locationChangeTax) == 0) {
+						paccTaxFlag = false;
+					}
+				}
+				if(paccTaxFlag)
+				totalPACCTaxAmount = totalPACCTaxAmount.add(locationChangeTax);
 				for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
 					if (BookingsConstants.PAYMENT_SUCCESS_STATUS
 							.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
 						
 						if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
 							taxHeadEstimate1.add(
-									new TaxHeadEstimate(taxHeadEstimate.getCode(), BigDecimal.ZERO, taxHeadEstimate.getCategory()));
+									new TaxHeadEstimate(taxHeadEstimate.getCode(), totalPACCAmount, taxHeadEstimate.getCategory()));
 							continue;
 						}
 						
@@ -722,12 +742,7 @@ public class EnrichmentService {
 						}
 						if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
 							taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
-									BigDecimal
-											.valueOf(Long
-													.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount()))
-											.multiply((BigDecimal
-													.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
-													.divide(new BigDecimal(100)))),
+									totalPACCTaxAmount,
 									taxHeadEstimate.getCategory()));
 							continue;
 						}
