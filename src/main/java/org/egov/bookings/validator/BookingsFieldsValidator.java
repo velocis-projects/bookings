@@ -250,9 +250,7 @@ public class BookingsFieldsValidator {
 	public void validateGFCPFeeBody(MasterRequest masterRequest) {
 		if (isNullOrEmpty(masterRequest) || isNullOrEmpty(masterRequest.getGfcpFeeList())) {
 			throw new IllegalArgumentException("Invalid GFCP Fee Request Body");
-		} else if (isNullOrEmpty(masterRequest.getGfcpFeeList().get(0).getLocality())) {
-			throw new IllegalArgumentException("Invalid Locality");
-		} else if (isNullOrEmpty(masterRequest.getGfcpFeeList().get(0).getCategory())) {
+		}else if (isNullOrEmpty(masterRequest.getGfcpFeeList().get(0).getCategory())) {
 			throw new IllegalArgumentException("Invalid Category");
 		}else if (isNullOrEmpty(masterRequest.getGfcpFeeList().get(0).getRatePerDay())) {
 			throw new IllegalArgumentException("Invalid Rate per day");
