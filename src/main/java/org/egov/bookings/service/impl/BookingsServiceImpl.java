@@ -490,12 +490,16 @@ public class BookingsServiceImpl implements BookingsService {
 									|| BookingsConstants.CHIEF_ACCOUNT_OFFICER.equals(role.getCode())
 									|| BookingsConstants.PAYMENT_PROCESSING_AUTHORITY.equals(role.getCode())
 									|| BookingsConstants.E_SAMPARK_CENTER.equals(role.getCode())
-									|| BookingsConstants.MCC_USER.equals(role.getCode()))) {
+									|| BookingsConstants.MCC_USER.equals(role.getCode())
+									|| BookingsConstants.SUPERVISOR.equals(role.getCode())
+									|| BookingsConstants.OSD.equals(role.getCode())
+							)) {
 						String parksBookingType = BookingsConstants.PARKS;
 						String communityCenterBookingType = BookingsConstants.COMMUNITY_CENTER;
 						if (!BookingsFieldsValidator.isNullOrEmpty(bookingType)) {
-							parksBookingType = bookingType;
-							communityCenterBookingType = bookingType;
+							String[] bookingArray = bookingType.split(BookingsConstants.AND);
+							parksBookingType = bookingArray[0].trim();
+							communityCenterBookingType = bookingArray[1].trim();
 						}
 						if (BookingsFieldsValidator.isNullOrEmpty(fromDate)
 								&& BookingsFieldsValidator.isNullOrEmpty(fromDate)) {

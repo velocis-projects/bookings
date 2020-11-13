@@ -763,4 +763,8 @@ public class BookingsConstants {
 	public static final String PARKS_AND_COMMUNITY_CENTER = "Parks and Community Center";
 	
 	public static final String PACC_ACTION_CANCEL = "CANCEL";
+	
+	public static final String SUPERVISOR = "BK_SUPERVISOR";
+	
+	public static final String OSD = "BK_OSD";
 }
