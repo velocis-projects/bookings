@@ -767,4 +767,65 @@ public class BookingsConstants {
 	public static final String SUPERVISOR = "BK_SUPERVISOR";
 	
 	public static final String OSD = "BK_OSD";
+	
+	public static final String ACTION_STATUS_RE_INITIATED  = "RE_INITIATE_RE_INITIATED";
+	
+	public static final String ACTION_STATUS_CANCEL  = "CANCEL_PENDING_FOR_APPROVAL_CLEARK_DEO";
+	
+	public static final String ACTION_STATUS_SECURITY_REFUND  = "SECURITY_REFUND_PENDING_FOR_APPROVAL_SUPERVISOR";
+	
+	public static final String ACTION_STATUS_MODIFY  = "MODIFY_MODIFIED";
+	
+	public static final String ACTION_STATUS_APPROVE_CLERK_DEO  = "APPROVE_CLERK_DEO_PENDING_FOR_APPROVAL_SENIOR_ASSISTANT";
+	
+	public static final String ACTION_STATUS_APPROVE_SENIOR_ASSISTANT  = "APPROVE_SENIOR_ASSISTANT_PENDING_FOR_APPROVAL_AUDIT_DEPARTMENT";
+	
+	public static final String ACTION_STATUS_APPROVE_AUDIT_DEPARTMENT  = "APPROVE_AUDIT_DEPARTMENT_PENDING_FOR_APPROVAL_CAO";
+	
+	public static final String ACTION_STATUS_APPROVE_CHIEF_ACCOUNT_OFFICER  = "APPROVE_CHIEF_ACCOUNT_OFFICER_PENDING_FOR_DISBURSEMENT";
+	
+	public static final String ACTION_STATUS_PAY  = "PAY_PAYMENT_DISBURSED";
+	
+	public static final String ACTION_STATUS_OFFLINE_INITIATE  = "OFFLINE_INITIATE_OFFLINE_INITIATED";
+	
+	public static final String ACTION_STATUS_OFFLINE_APPLY  = "OFFLINE_APPLY_OFFLINE_APPLIED";
+	
+	public static final String ACTION_STATUS_OFFLINE_RE_INITIATE  = "OFFLINE_RE_INITIATE_OFFLINE_RE_INITIATED";
+	
+	public static final String ACTION_STATUS_OFFLINE_CANCEL  = "OFFLINE_CANCEL_PENDING_FOR_DISBURSEMENT";
+	
+	public static final String ACTION_STATUS_OFFLINE_SECURITY_REFUND  = "OFFLINE_SECURITY_REFUND_PENDING_FOR_APPROVAL_SUPERVISOR";
+	
+	public static final String ACTION_STATUS_OFFLINE_MODIFY  = "OFFLINE_MODIFY_OFFLINE_MODIFIED";
+	
+	public static final String ACTION_STATUS_APPROVE_SUPERVISOR  = "APPROVE_SUPERVISOR_PENDING_FOR_APPROVAL_OSD";
+	
+	public static final String ACTION_STATUS_APPROVE_OSD  = "APPROVE_OSD_PENDING_FOR_APPROVAL_AUDIT_DEPARTMENT";
+	
+	public static final String NOTIFICATION_RE_INITIATED = "bk.en.counter.re_initiate";
+	
+	public static final String NOTIFICATION_CANCEL = "bk.en.counter.cancel";
+	
+	public static final String NOTIFICATION_SECURITY_REFUND = "bk.en.counter.security_refund";
+	
+	public static final String NOTIFICATION_MODIFY = "bk.en.counter.modify";
+	
+	public static final String NOTIFICATION_DISBURSED = "bk.en.counter.disbursed";
+	
+	public static final String ACTION_STATUS_PACC_REJECTED = "PACC_REJECT_REJECTED";
+	
+	public static final String NOTIFICATION_PACC_REJECTED = "bk.en.counter.pacc_reject";
+	
+	public static final String MAIL_NOTIFICATION_RE_INITIATED = "bk.m.counter.re_initiate";
+	
+	public static final String MAIL_NOTIFICATION_CANCEL = "bk.m.counter.cancel";
+	
+	public static final String MAIL_NOTIFICATION_SECURITY_REFUND = "bk.m.counter.security_refund";
+	
+	public static final String MAIL_NOTIFICATION_MODIFY = "bk.m.counter.modify";
+	
+	public static final String MAIL_NOTIFICATION_DISBURSED = "bk.m.counter.disbursed";
+	
+	public static final String MAIL_ACTION_STATUS_PACC_REJECTED = "bk.m.counter.pacc_reject";
+	
 }
