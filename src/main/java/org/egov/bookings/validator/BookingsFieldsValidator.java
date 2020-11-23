@@ -551,7 +551,7 @@ public class BookingsFieldsValidator {
 			long days = ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.parse(bookingsModel.getBkFromDate() + ""));
 			for (Role role : bookingsRequest.getRequestInfo().getUserInfo().getRoles()) {
 				if (role.getCode().equals(BookingsConstants.PAYMENT_PROCESSING_AUTHORITY)) {
-					if (days >= BookingsConstants.DAYS_FIFTEEN
+					if (days <= BookingsConstants.DAYS_FIFTEEN
 							&& BookingsConstants.PAY.equals(bookingsRequest.getBookingsModel().getBkAction())) {
 						throw new CustomException("INVALID_DAYS_DIFFERENCE",
 								"Less than or equal to 15 days left you cannot process refund");

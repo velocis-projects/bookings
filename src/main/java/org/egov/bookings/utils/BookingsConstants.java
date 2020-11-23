@@ -695,7 +695,7 @@ public class BookingsConstants {
 	/** The Constant DELIVER. */
 	public static final String DELIVER = "DELIVER";
 	
-	public static final String PACC_RE_INITIATED_ACTION = "RE_INITIATED";
+	public static final String PACC_RE_INITIATED_ACTION = "RE_INITIATE";
 
 	public static final String BK_WATER_TANKER_DELIVER_ACTION_KEY = "BK_WATER_TANKER_DELIVER_ACTION";
 

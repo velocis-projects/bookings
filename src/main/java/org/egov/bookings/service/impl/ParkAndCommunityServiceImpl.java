@@ -98,7 +98,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 	@Override
 	public BookingsModel createParkAndCommunityBooking(BookingsRequest bookingsRequest) {
 		boolean flag = bookingService.isBookingExists(bookingsRequest.getBookingsModel().getBkApplicationNumber());
-		
+		enrichmentService.enrichReInitiatedRequest(bookingsRequest,flag);
 		if(BookingsConstants.EMPLOYEE.equals(bookingsRequest.getRequestInfo().getUserInfo().getType()))
 		userService.createUser(bookingsRequest, false);
 		if (!flag)
@@ -198,11 +198,14 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		Set<AvailabilityResponse> bookedDates = new HashSet<>();
 		Set<BookingsModel> bookingsModel = parkAndCommunityRepository.fetchBookedDatesOfParkAndCommunity(
 				parkAndCommunitySearchCriteria.getBookingVenue(), parkAndCommunitySearchCriteria.getBookingType(),
-				parkAndCommunitySearchCriteria.getSector(), date1, BookingsConstants.PAYMENT_SUCCESS_STATUS,parkAndCommunitySearchCriteria.getApplicationNumber());
+				parkAndCommunitySearchCriteria.getSector(), date1, BookingsConstants.PAYMENT_SUCCESS_STATUS,
+				parkAndCommunitySearchCriteria.getApplicationNumber());
 		if (null != bookingsModel) {
 			for (BookingsModel bkModel : bookingsModel) {
-				bookedDates.add(AvailabilityResponse.builder().fromDate(bkModel.getBkFromDate())
-						.toDate(bkModel.getBkToDate()).timeslots(bkModel.getTimeslots()).build());
+				if (!BookingsConstants.PACC_ACTION_CANCEL.equals(bkModel.getBkStatus())) {
+					bookedDates.add(AvailabilityResponse.builder().fromDate(bkModel.getBkFromDate())
+							.toDate(bkModel.getBkToDate()).timeslots(bkModel.getTimeslots()).build());
+				}
 			}
 		}
 		return bookedDates;

@@ -396,16 +396,18 @@ public class EnrichmentService {
 	public List<LocalDate> enrichBookedDates(Set<BookingsModel> bookingsModel) {
 		List<LocalDate> listOfDates = new ArrayList<>();
 
-			for (BookingsModel bookingsModel1 : bookingsModel) {
+		for (BookingsModel bookingsModel1 : bookingsModel) {
+			if (!BookingsConstants.PACC_ACTION_CANCEL.equals(bookingsModel1.getBkStatus())) {
 				LocalDate startDate = LocalDate.parse(bookingsModel1.getBkFromDate() + "");
 				LocalDate endDate = LocalDate.parse(bookingsModel1.getBkToDate() + "");
 				long numOfDays = ChronoUnit.DAYS.between(startDate, endDate);
 
-				List<LocalDate>listOfDates2 = LongStream.range(0, numOfDays).mapToObj(startDate::plusDays)
+				List<LocalDate> listOfDates2 = LongStream.range(0, numOfDays).mapToObj(startDate::plusDays)
 						.collect(Collectors.toList());
 				listOfDates.addAll(listOfDates2);
 				listOfDates.add(endDate);
 			}
+		}
 
 		return listOfDates;
 	}
@@ -765,6 +767,26 @@ public class EnrichmentService {
 
 		}
 		return taxHeadEstimate1;
+	}
+
+
+
+	/**
+	 * Enrich re initiated request. setting BkStartingDate and BkEndingDate from
+	 * requestBody and setting BkFromDate and BkToDate from db in case of action
+	 * RE_INITIATED
+	 * @param bookingsRequest the bookings request
+	 * @param flag 
+	 */
+	public void enrichReInitiatedRequest(BookingsRequest bookingsRequest, boolean flag) {
+		if (BookingsConstants.PACC_RE_INITIATED_ACTION.equals(bookingsRequest.getBookingsModel().getBkAction()) && flag) {
+			BookingsModel findByBkApplicationNumber = bookingsRepository
+					.findByBkApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
+			bookingsRequest.getBookingsModel().setBkStartingDate(bookingsRequest.getBookingsModel().getBkFromDate());
+			bookingsRequest.getBookingsModel().setBkEndingDate(bookingsRequest.getBookingsModel().getBkToDate());
+			bookingsRequest.getBookingsModel().setBkFromDate(findByBkApplicationNumber.getBkFromDate());
+			bookingsRequest.getBookingsModel().setBkToDate(findByBkApplicationNumber.getBkToDate());
+		}
 	}
 
 }

@@ -262,12 +262,6 @@ public class BookingsServiceImpl implements BookingsService {
 	 * @param bkApplicationnumber the bk applicationnumber
 	 * @return true, if is booking exists
 	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.egov.bookings.service.BookingsService#isBookingExists(java.lang.String)
-	 */
 	public boolean isBookingExists(String bkApplicationnumber) {
 
 		BookingsModel bookingsModel = bookingsRepository.findByBkApplicationNumber(bkApplicationnumber);
