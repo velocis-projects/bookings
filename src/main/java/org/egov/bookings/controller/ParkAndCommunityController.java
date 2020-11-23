@@ -11,6 +11,8 @@ import org.egov.bookings.contract.ParkCommunityFeeMasterRequest;
 import org.egov.bookings.contract.ParkCommunityFeeMasterResponse;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
+import org.egov.bookings.models.demand.Demand;
+import org.egov.bookings.service.DemandService;
 import org.egov.bookings.service.ParkAndCommunityService;
 import org.egov.bookings.service.impl.EnrichmentService;
 import org.egov.bookings.service.impl.UserService;
@@ -46,7 +48,10 @@ public class ParkAndCommunityController {
 
 	/** The bookings fields validator. */
 	@Autowired
-	BookingsFieldsValidator bookingsFieldsValidator;
+	private BookingsFieldsValidator bookingsFieldsValidator;
+	
+	@Autowired
+	private DemandService demandService;
 
 	
 	/**
@@ -180,6 +185,20 @@ public class ParkAndCommunityController {
 		rs.setMessage("Amount Fetched");
 		rs.setData(res);
 		
+		return ResponseEntity.ok(rs);
+	}
+	
+	@PostMapping("/demand/_update")
+	private ResponseEntity<?> updateDemand(
+			@RequestBody BookingsRequest bookingsRequest) {
+		
+		bookingsFieldsValidator.validatePACCDemandRequest(bookingsRequest);
+		
+		
+		demandService.updateDemand(bookingsRequest);
+		ResponseModel rs = new ResponseModel();
+			rs.setStatus("200");
+			rs.setMessage("Success");
 		return ResponseEntity.ok(rs);
 	}
 	

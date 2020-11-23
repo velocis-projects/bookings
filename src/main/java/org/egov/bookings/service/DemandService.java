@@ -20,5 +20,7 @@ public interface DemandService {
 	
 	public List<Demand> searchDemand(String tenantId, Set<String> consumerCodes, RequestInfo requestInfo,
 			String businessService);
+	
+	public List<Demand> updateDemandsForPacc(BookingsRequest bookingsRequest);
 
 }

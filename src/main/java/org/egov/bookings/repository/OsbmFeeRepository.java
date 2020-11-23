@@ -20,7 +20,7 @@ public interface OsbmFeeRepository extends JpaRepository<OsbmFeeModel, String> {
 	 * @param constructionType the construction type
 	 * @return the osbm fee model
 	 */
-	OsbmFeeModel findByVillageCityAndResidentialCommercialAndStorageAndDurationInMonthsAndConstructionType(
+	List<OsbmFeeModel> findByVillageCityAndResidentialCommercialAndStorageAndDurationInMonthsAndConstructionType(
 			String villageCity, String residentialCommercial, String storage, String durationInMonths,
 			String constructionType);
 	

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface OsujmFeeRepository extends JpaRepository<OsujmFeeModel, String> {
 
 	@Query(value = BookingsQueryBuilder.FIND_JURISDICTION_AMOUNT, nativeQuery = true)
-	OsujmFeeModel findJurisdictionFee(@Param(BookingsConstants.AREA) Long area, @Param(BookingsConstants.SECTOR)String sector);
+	List<OsujmFeeModel> findJurisdictionFee(@Param(BookingsConstants.AREA) Long area, @Param(BookingsConstants.SECTOR)String sector);
 
 	/**
 	 * Find OSUJM fee records by limit.

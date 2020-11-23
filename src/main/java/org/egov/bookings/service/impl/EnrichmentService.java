@@ -396,16 +396,18 @@ public class EnrichmentService {
 	public List<LocalDate> enrichBookedDates(Set<BookingsModel> bookingsModel) {
 		List<LocalDate> listOfDates = new ArrayList<>();
 
-			for (BookingsModel bookingsModel1 : bookingsModel) {
+		for (BookingsModel bookingsModel1 : bookingsModel) {
+			if (!BookingsConstants.PACC_ACTION_CANCEL.equals(bookingsModel1.getBkStatus())) {
 				LocalDate startDate = LocalDate.parse(bookingsModel1.getBkFromDate() + "");
 				LocalDate endDate = LocalDate.parse(bookingsModel1.getBkToDate() + "");
 				long numOfDays = ChronoUnit.DAYS.between(startDate, endDate);
 
-				List<LocalDate>listOfDates2 = LongStream.range(0, numOfDays).mapToObj(startDate::plusDays)
+				List<LocalDate> listOfDates2 = LongStream.range(0, numOfDays).mapToObj(startDate::plusDays)
 						.collect(Collectors.toList());
 				listOfDates.addAll(listOfDates2);
 				listOfDates.add(endDate);
 			}
+		}
 
 		return listOfDates;
 	}
@@ -612,13 +614,30 @@ public class EnrichmentService {
 						new TaxHeadEstimate(taxHeadEstimate.getCode(), finalAmount, taxHeadEstimate.getCategory()));
 				continue;
 			}
-			if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
-				taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
-						finalAmount
-								.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
-										.divide(new BigDecimal(100)))),
-						taxHeadEstimate.getCategory()));
-				continue;
+			
+			if(BookingsConstants.PAYMENT_SUCCESS_STATUS
+					.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
+				if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
+					finalAmount = finalAmount
+							.add(BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount())));
+					taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+							finalAmount
+									.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
+											.divide(new BigDecimal(100)))),
+							taxHeadEstimate.getCategory()));
+					continue;
+				}
+			}
+			else {
+				if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
+					taxHeadEstimate1
+							.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+									finalAmount.multiply((BigDecimal
+											.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
+											.divide(new BigDecimal(100)))),
+									taxHeadEstimate.getCategory()));
+					continue;
+				}
 			}
 			if (taxHeadEstimate.getCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_LUXURY_TAX)) {
 				taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
@@ -683,37 +702,63 @@ public class EnrichmentService {
 				Demand demand = searchResult.get(0);
 				 demandDetails = demand.getDemandDetails();
 			}
-			if (finalAmount.compareTo(demandDetails.get(0).getTaxAmount()) < 1 || finalAmount.compareTo(demandDetails.get(0).getTaxAmount()) == 0) {
-				config.setDemandFlag(false);
-				/*taxHeadEstimate1 = enrichTaxHeadEstimateForPACC(bookingsRequest, finalAmount, taxHeadCode1,
-						taxHeadCode2, taxHeadMasterFieldList, parkCommunityHallV1FeeMaster);*/
+			if (finalAmount.compareTo(demandDetails.get(0).getTaxAmount()) < 1
+					|| finalAmount.compareTo(demandDetails.get(0).getTaxAmount()) == 0) {
+				//config.setDemandFlag(false);
+				BigDecimal totalPACCAmount = BigDecimal.ZERO;
+				BigDecimal totalPACCTaxAmount = BigDecimal.ZERO;
+				boolean paccTaxFlag = true;
+				BigDecimal locationChangeTax = BigDecimal
+						.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount()))
+						.multiply((BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
+								.divide(new BigDecimal(100))));
+				for(DemandDetail demandDetail : demandDetails) {
+					if(demandDetail.getTaxHeadMasterCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_PACC)) {
+						totalPACCAmount = totalPACCAmount.add(demandDetail.getTaxAmount());
+					}
+					if(demandDetail.getTaxHeadMasterCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_PACC_TAX)) {
+						totalPACCTaxAmount = totalPACCTaxAmount.add(demandDetail.getTaxAmount());
+					}
+					if(demandDetail.getTaxHeadMasterCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_PACC_TAX)
+							&& demandDetail.getTaxAmount().compareTo(locationChangeTax) == 0) {
+						paccTaxFlag = false;
+					}
+				}
+				if(paccTaxFlag)
+				totalPACCTaxAmount = totalPACCTaxAmount.add(locationChangeTax);
+				for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
+					if (BookingsConstants.PAYMENT_SUCCESS_STATUS
+							.equals(bookingsRequest.getBookingsModel().getBkPaymentStatus())) {
+						
+						if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
+							taxHeadEstimate1.add(
+									new TaxHeadEstimate(taxHeadEstimate.getCode(), totalPACCAmount, taxHeadEstimate.getCategory()));
+							continue;
+						}
+						
+						if (taxHeadEstimate.getCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_3)) {
+							taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+									BigDecimal.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount())),
+									taxHeadEstimate.getCategory()));
+							continue;
+						}
+						if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
+							taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
+									totalPACCTaxAmount,
+									taxHeadEstimate.getCategory()));
+							continue;
+						}
+						
+					}
+				}
+				
+				/*taxHeadEstimate1 = enrichTaxHeadEstimateForPACC(bookingsRequest, BigDecimal.ZERO, taxHeadCode1, taxHeadCode2,
+						taxHeadMasterFieldList, parkCommunityHallV1FeeMaster);*/
 			}
 
 			else {
 				taxHeadEstimate1 = enrichTaxHeadEstimateForPACC(bookingsRequest, finalAmount, taxHeadCode1, taxHeadCode2,
 						taxHeadMasterFieldList, parkCommunityHallV1FeeMaster);
-			/*	for (TaxHeadMasterFields taxHeadEstimate : taxHeadMasterFieldList) {
-					if (taxHeadEstimate.getCode().equals(taxHeadCode1)) {
-						taxHeadEstimate1.add(
-								new TaxHeadEstimate(taxHeadEstimate.getCode(), amount, taxHeadEstimate.getCategory()));
-					}
-					if (taxHeadEstimate.getCode().equals(taxHeadCode2)) {
-						taxHeadEstimate1
-								.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
-										amount.multiply((BigDecimal
-												.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getSurcharge()))
-												.subtract(billResponse.getBill().get(0).getBillDetails().get(0)
-														.getBillAccountDetails().get(1).getAmount()))
-																.divide(new BigDecimal(100))),
-										taxHeadEstimate.getCategory()));
-					}
-					if (taxHeadEstimate.getCode().equals(BookingsConstants.PACC_TAXHEAD_CODE_3)) {
-						taxHeadEstimate1.add(new TaxHeadEstimate(taxHeadEstimate.getCode(),
-								BigDecimal
-										.valueOf(Long.valueOf(parkCommunityHallV1FeeMaster.getLocationChangeAmount())),
-								taxHeadEstimate.getCategory()));
-					}
-				}*/
 			}
 		} else {
 
@@ -722,6 +767,26 @@ public class EnrichmentService {
 
 		}
 		return taxHeadEstimate1;
+	}
+
+
+
+	/**
+	 * Enrich re initiated request. setting BkStartingDate and BkEndingDate from
+	 * requestBody and setting BkFromDate and BkToDate from db in case of action
+	 * RE_INITIATED
+	 * @param bookingsRequest the bookings request
+	 * @param flag 
+	 */
+	public void enrichReInitiatedRequest(BookingsRequest bookingsRequest, boolean flag) {
+		if (BookingsConstants.PACC_RE_INITIATED_ACTION.equals(bookingsRequest.getBookingsModel().getBkAction()) && flag) {
+			BookingsModel findByBkApplicationNumber = bookingsRepository
+					.findByBkApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
+			bookingsRequest.getBookingsModel().setBkStartingDate(bookingsRequest.getBookingsModel().getBkFromDate());
+			bookingsRequest.getBookingsModel().setBkEndingDate(bookingsRequest.getBookingsModel().getBkToDate());
+			bookingsRequest.getBookingsModel().setBkFromDate(findByBkApplicationNumber.getBkFromDate());
+			bookingsRequest.getBookingsModel().setBkToDate(findByBkApplicationNumber.getBkToDate());
+		}
 	}
 
 }

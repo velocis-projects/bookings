@@ -28,9 +28,9 @@ public interface CommercialGroundRepository extends JpaRepository<CommercialGrou
 	 *
 	 * @param bookingVenue the booking venue
 	 * @param category the category
-	 * @return the commercial ground fee model
+	 * @return the list of commercial ground fee model
 	 */
-	CommercialGroundFeeModel findByBookingVenueAndCategory(String bookingVenue, String category);
+	List<CommercialGroundFeeModel> findByBookingVenueAndCategory(String bookingVenue, String category);
 	
 	/**
 	 * Find GFCP fee records by limit.

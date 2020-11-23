@@ -551,7 +551,7 @@ public class BookingsFieldsValidator {
 			long days = ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.parse(bookingsModel.getBkFromDate() + ""));
 			for (Role role : bookingsRequest.getRequestInfo().getUserInfo().getRoles()) {
 				if (role.getCode().equals(BookingsConstants.PAYMENT_PROCESSING_AUTHORITY)) {
-					if (days >= BookingsConstants.DAYS_FIFTEEN
+					if (days <= BookingsConstants.DAYS_FIFTEEN
 							&& BookingsConstants.PAY.equals(bookingsRequest.getBookingsModel().getBkAction())) {
 						throw new CustomException("INVALID_DAYS_DIFFERENCE",
 								"Less than or equal to 15 days left you cannot process refund");
@@ -579,6 +579,33 @@ public class BookingsFieldsValidator {
 		}
 		if(isNullOrEmpty(parkAndCommunitySearchCriteria.getApplicationNumber())) {
 			parkAndCommunitySearchCriteria.setApplicationNumber("");
+		}
+		
+	}
+
+	public void validatePACCDemandRequest(BookingsRequest bookingsRequest) {
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
+			throw new IllegalArgumentException("Invalid Booking Request");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
+			throw new IllegalArgumentException("Invalid Booking Model object");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getRequestInfo())) {
+			throw new IllegalArgumentException("Invalid Request Info");
+		}
+
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBusinessService())) {
+			throw new IllegalArgumentException("Invalid Business Service");
+		}
+		
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getTenantId())) {
+			throw new IllegalArgumentException("Invalid Tenant Id");
+		}
+		
+		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
+			throw new IllegalArgumentException("Invalid Application Number");
 		}
 		
 	}
