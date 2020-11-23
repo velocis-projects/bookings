@@ -15,22 +15,33 @@ import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_PENDINGUPD
 import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_PUBLISH;
 import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_REJECTED;
 import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_SPECIALAPPLY_DELIVERED;
-import static org.egov.bookings.utils.BookingsConstants.BILL_AMOUNT_JSONPATH;
-import static org.egov.bookings.utils.BookingsConstants.DEFAULT_OBJECT_MODIFIED_MSG;
 import static org.egov.bookings.utils.BookingsConstants.NOTIFICATION_LOCALE;
-
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_RE_INITIATED;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_CANCEL;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_SECURITY_REFUND;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_MODIFY;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_APPROVE_CLERK_DEO;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_APPROVE_SENIOR_ASSISTANT;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_APPROVE_AUDIT_DEPARTMENT;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_APPROVE_CHIEF_ACCOUNT_OFFICER;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_PAY;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_OFFLINE_INITIATE;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_OFFLINE_APPLY;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_OFFLINE_RE_INITIATE;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_OFFLINE_CANCEL;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_OFFLINE_SECURITY_REFUND;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_OFFLINE_MODIFY;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_APPROVE_SUPERVISOR;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_APPROVE_OSD;
+import static org.egov.bookings.utils.BookingsConstants.ACTION_STATUS_PACC_REJECTED;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,9 +50,6 @@ import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.EmailAttachment;
 import org.egov.bookings.contract.EmailRequest;
 import org.egov.bookings.contract.EventRequest;
-//import org.egov.bookings.contract.PdfRequest;
-//import org.egov.bookings.contract.PdfResponse;
-import org.egov.bookings.contract.RequestInfoWrapper;
 import org.egov.bookings.contract.SMSRequest;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
@@ -50,15 +58,9 @@ import org.egov.bookings.repository.impl.ServiceRequestRepository;
 import org.egov.bookings.service.impl.BookingsServiceImpl;
 import org.egov.bookings.service.impl.OsujmNewLocationServiceImpl;
 import org.egov.bookings.validator.BookingsFieldsValidator;
-import org.egov.bookings.web.models.BookingsRequest;
 import org.egov.common.contract.request.RequestInfo;
-//import org.egov.tl.web.models.*;
-import org.egov.tracer.model.CustomException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -66,7 +68,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.parser.JSONParser;
 
 /**
  * The Class NotificationUtil.
@@ -126,10 +127,14 @@ public class NotificationUtil {
 	public String getCustomizedMsg(RequestInfo requestInfo, BookingsModel bookingsModel, String localizationMessage) {
 		String message = null, messageTemplate;
 		String ACTION_STATUS = bookingsModel.getBkAction() + "_" + bookingsModel.getBkApplicationStatus();
+		if(ACTION_STATUS_REJECTED.equals(ACTION_STATUS) && BookingsConstants.BUSINESS_SERVICE_PACC.equals(bookingsModel.getBusinessService())) {
+			ACTION_STATUS = ACTION_STATUS_PACC_REJECTED;
+		}
 		String applicationStatus = bookingsServiceImpl.prepareApplicationStatus(requestInfo, bookingsModel);
 		switch (ACTION_STATUS) {
-		//OSBM,OSUJM,NLUJM
+		//OSBM,OSUJM,NLUJM,PACC
 		case ACTION_STATUS_INITIATED:
+		case ACTION_STATUS_OFFLINE_INITIATE:
 			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_INITIATED, localizationMessage);
 			message = getInitiatedMsg(bookingsModel, messageTemplate);
 			break;
@@ -151,7 +156,6 @@ public class NotificationUtil {
 			
 		case ACTION_STATUS_APPROVED:
 			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_APPROVED, localizationMessage);
-//			message = getApprovedMsg(bookingsModel,localizationMessage, messageTemplate);
 			message = getPaymentMsg(bookingsModel, messageTemplate);
 			break;
 			
@@ -166,7 +170,6 @@ public class NotificationUtil {
 			
 		case ACTION_STATUS_PAIDAPPLY_PENDINGASSIGNMENTDRIVER:	
 			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_PENDINGASSIGNMENTDRIVER, localizationMessage);
-//			message = getApprovedMsg(bookingsModel,localizationMessage, messageTemplate);
 			message = getPendingAssignmentDriverMsg(bookingsModel, messageTemplate);
 			break;
 		
@@ -175,11 +178,97 @@ public class NotificationUtil {
 			message = getPendingAssignmentDriverMsg(bookingsModel, messageTemplate);
 			break;
 			
-		//GFCP
+		//GFCP,PACC
 		case ACTION_STATUS_APPLIED:
+		case ACTION_STATUS_OFFLINE_APPLY:
 			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_APPLIED, localizationMessage);
 			message = getAppliedMsg(bookingsModel, messageTemplate);
 			break;
+		
+		//PACC
+		case ACTION_STATUS_RE_INITIATED:
+		case ACTION_STATUS_OFFLINE_RE_INITIATE:
+			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_RE_INITIATED, localizationMessage);
+			message = getReInitiatedMsg(bookingsModel, messageTemplate);
+			break;
+
+		case ACTION_STATUS_CANCEL:
+		case ACTION_STATUS_OFFLINE_CANCEL:
+			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_CANCEL, localizationMessage);
+			message = getCancelMsg(bookingsModel, messageTemplate, applicationStatus);
+			break;
+		
+		case ACTION_STATUS_SECURITY_REFUND:
+		case ACTION_STATUS_OFFLINE_SECURITY_REFUND:
+			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_SECURITY_REFUND, localizationMessage);
+			message = getSecurityRefundMsg(bookingsModel, messageTemplate, applicationStatus);
+			break;
+		
+		case ACTION_STATUS_MODIFY:
+		case ACTION_STATUS_OFFLINE_MODIFY:
+			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_MODIFY, localizationMessage);
+			message = getModifiedMsg(bookingsModel, messageTemplate, applicationStatus);
+			break;
+		
+		case ACTION_STATUS_APPROVE_CLERK_DEO:
+		case ACTION_STATUS_APPROVE_SENIOR_ASSISTANT:
+		case ACTION_STATUS_APPROVE_AUDIT_DEPARTMENT:
+		case ACTION_STATUS_APPROVE_CHIEF_ACCOUNT_OFFICER:
+		case ACTION_STATUS_APPROVE_SUPERVISOR:
+		case ACTION_STATUS_APPROVE_OSD:
+			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_UPDATE, localizationMessage);
+			message = getUpdatedMsg(bookingsModel, messageTemplate, applicationStatus);
+			break;
+		
+		case ACTION_STATUS_PAY:
+			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_DISBURSED, localizationMessage);
+			message = getAppliedMsg(bookingsModel, messageTemplate);
+			break;
+			
+		case ACTION_STATUS_PACC_REJECTED:
+			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_PACC_REJECTED, localizationMessage);
+			message = getRejectedMsg(bookingsModel, messageTemplate);
+			break;
+		
+//		case ACTION_STATUS_OFFLINE_INITIATE:
+//			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_APPLIED, localizationMessage);
+//			message = getAppliedMsg(bookingsModel, messageTemplate);
+//			break;
+		
+//		case ACTION_STATUS_OFFLINE_APPLY:
+//			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_APPLIED, localizationMessage);
+//			message = getAppliedMsg(bookingsModel, messageTemplate);
+//			break;
+		
+//		case ACTION_STATUS_OFFLINE_RE_INITIATE:
+//			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_APPLIED, localizationMessage);
+//			message = getAppliedMsg(bookingsModel, messageTemplate);
+//			break;
+		
+//		case ACTION_STATUS_OFFLINE_CANCEL:
+//			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_APPLIED, localizationMessage);
+//			message = getAppliedMsg(bookingsModel, messageTemplate);
+//			break;
+		
+//		case ACTION_STATUS_OFFLINE_SECURITY_REFUND:
+//			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_APPLIED, localizationMessage);
+//			message = getAppliedMsg(bookingsModel, messageTemplate);
+//			break;
+		
+//		case ACTION_STATUS_OFFLINE_MODIFY:
+//			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_APPLIED, localizationMessage);
+//			message = getAppliedMsg(bookingsModel, messageTemplate);
+//			break;
+		
+//		case ACTION_STATUS_APPROVE_SUPERVISOR:
+//			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_APPLIED, localizationMessage);
+//			message = getAppliedMsg(bookingsModel, messageTemplate);
+//			break;
+		
+//		case ACTION_STATUS_APPROVE_OSD:
+//			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_APPLIED, localizationMessage);
+//			message = getAppliedMsg(bookingsModel, messageTemplate);
+//			break;
 		}
 		return message;
 	}
@@ -211,10 +300,14 @@ public class NotificationUtil {
 	public String getMailCustomizedMsg(RequestInfo requestInfo, BookingsModel bookingsModel, String localizationMessage) {
 		String message = null, messageTemplate;
 		String ACTION_STATUS = bookingsModel.getBkAction() + "_" + bookingsModel.getBkApplicationStatus();
+		if(ACTION_STATUS_REJECTED.equals(ACTION_STATUS) && BookingsConstants.BUSINESS_SERVICE_PACC.equals(bookingsModel.getBusinessService())) {
+			ACTION_STATUS = ACTION_STATUS_PACC_REJECTED;
+		}
 		String applicationStatus = bookingsServiceImpl.prepareApplicationStatus(requestInfo, bookingsModel);
 		switch (ACTION_STATUS) {
-		//OSBM,OSUJM,NLUJM
+		//OSBM,OSUJM,NLUJM,PACC
 		case ACTION_STATUS_INITIATED:
+		case ACTION_STATUS_OFFLINE_INITIATE:
 			messageTemplate = getMessageTemplate(BookingsConstants.MAIL_NOTIFICATION_INITIATED, localizationMessage);
 			message = getInitiatedMsg(bookingsModel, messageTemplate);
 			break;
@@ -260,12 +353,59 @@ public class NotificationUtil {
 			message = getPendingAssignmentDriverMsg(bookingsModel, messageTemplate);
 			break;
 			
-		//GFCP
+		//GFCP,PACC
 		case ACTION_STATUS_APPLIED:
+		case ACTION_STATUS_OFFLINE_APPLY:
 			messageTemplate = getMessageTemplate(BookingsConstants.MAIL_NOTIFICATION_APPLIED, localizationMessage);
 			message = getAppliedMsg(bookingsModel, messageTemplate);
 			break;
-		}
+		
+		//PACC
+		case ACTION_STATUS_RE_INITIATED:
+		case ACTION_STATUS_OFFLINE_RE_INITIATE:
+			messageTemplate = getMessageTemplate(BookingsConstants.MAIL_NOTIFICATION_RE_INITIATED, localizationMessage);
+			message = getReInitiatedMsg(bookingsModel, messageTemplate);
+			break;
+	
+		case ACTION_STATUS_CANCEL:
+		case ACTION_STATUS_OFFLINE_CANCEL:
+			messageTemplate = getMessageTemplate(BookingsConstants.MAIL_NOTIFICATION_CANCEL, localizationMessage);
+			message = getCancelMsg(bookingsModel, messageTemplate, applicationStatus);
+			break;
+		
+		case ACTION_STATUS_SECURITY_REFUND:
+		case ACTION_STATUS_OFFLINE_SECURITY_REFUND:
+			messageTemplate = getMessageTemplate(BookingsConstants.MAIL_NOTIFICATION_SECURITY_REFUND, localizationMessage);
+			message = getSecurityRefundMsg(bookingsModel, messageTemplate, applicationStatus);
+			break;
+		
+		case ACTION_STATUS_MODIFY:
+		case ACTION_STATUS_OFFLINE_MODIFY:
+			messageTemplate = getMessageTemplate(BookingsConstants.MAIL_NOTIFICATION_MODIFY, localizationMessage);
+			message = getModifiedMsg(bookingsModel, messageTemplate, applicationStatus);
+			break;
+		
+		case ACTION_STATUS_APPROVE_CLERK_DEO:
+		case ACTION_STATUS_APPROVE_SENIOR_ASSISTANT:
+		case ACTION_STATUS_APPROVE_AUDIT_DEPARTMENT:
+		case ACTION_STATUS_APPROVE_CHIEF_ACCOUNT_OFFICER:
+		case ACTION_STATUS_APPROVE_SUPERVISOR:
+		case ACTION_STATUS_APPROVE_OSD:
+			messageTemplate = getMessageTemplate(BookingsConstants.MAIL_NOTIFICATION_UPDATE, localizationMessage);
+			message = getUpdatedMsg(bookingsModel, messageTemplate, applicationStatus);
+			break;
+		
+		case ACTION_STATUS_PAY:
+			messageTemplate = getMessageTemplate(BookingsConstants.MAIL_NOTIFICATION_DISBURSED, localizationMessage);
+			message = getAppliedMsg(bookingsModel, messageTemplate);
+			break;
+			
+		case ACTION_STATUS_PACC_REJECTED:
+			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_PACC_REJECTED, localizationMessage);
+			message = getRejectedMsg(bookingsModel, messageTemplate);
+			break;
+
+		}		
 		return message;
 	}
 	
@@ -498,6 +638,68 @@ public class NotificationUtil {
 	}
 	
 	/**
+	 * Gets the re initiated msg.
+	 *
+	 * @param bookingsModel the bookings model
+	 * @param message the message
+	 * @return the re initiated msg
+	 */
+	private String getReInitiatedMsg(BookingsModel bookingsModel, String message) {
+		message = message.replace("<1>",bookingsModel.getBkApplicantName());
+		message = message.replace("<2>", bookingsModel.getBkBookingType());
+		message = message.replace("<3>", bookingsModel.getBkApplicationNumber());
+		return message;
+	}
+	
+	/**
+	 * Gets the cancel msg.
+	 *
+	 * @param bookingsModel the bookings model
+	 * @param message the message
+	 * @param applicationStatus the application status
+	 * @return the cancel msg
+	 */
+	private String getCancelMsg(BookingsModel bookingsModel, String message, String applicationStatus) {
+		message = message.replace("<1>",bookingsModel.getBkApplicantName());
+		message = message.replace("<2>", bookingsModel.getBkBookingType());
+		message = message.replace("<3>", bookingsModel.getBkApplicationNumber());
+		message = message.replace("<4>", applicationStatus);
+		return message;
+	}
+	
+	/**
+	 * Gets the security refund msg.
+	 *
+	 * @param bookingsModel the bookings model
+	 * @param message the message
+	 * @param applicationStatus the application status
+	 * @return the security refund msg
+	 */
+	private String getSecurityRefundMsg(BookingsModel bookingsModel, String message, String applicationStatus) {
+		message = message.replace("<1>",bookingsModel.getBkApplicantName());
+		message = message.replace("<2>", bookingsModel.getBkBookingType());
+		message = message.replace("<3>", bookingsModel.getBkApplicationNumber());
+		message = message.replace("<4>", applicationStatus);
+		return message;
+	}
+	
+	/**
+	 * Gets the modified msg.
+	 *
+	 * @param bookingsModel the bookings model
+	 * @param message the message
+	 * @param applicationStatus the application status
+	 * @return the modified msg
+	 */
+	private String getModifiedMsg(BookingsModel bookingsModel, String message, String applicationStatus) {
+		message = message.replace("<1>",bookingsModel.getBkApplicantName());
+		message = message.replace("<2>", bookingsModel.getBkBookingType());
+		message = message.replace("<3>", bookingsModel.getBkApplicationNumber());
+		message = message.replace("<4>", applicationStatus);
+		return message;
+	}
+	
+	/**
 	 * Gets the driver msg.
 	 *
 	 * @param bookingsModel the bookings model
@@ -652,6 +854,22 @@ public class NotificationUtil {
 	 * @return the NLUJM updated msg
 	 */
 	private String getNLUJMUpdatedMsg(OsujmNewLocationModel osujmNewLocationModel, String message, String applicationStatus) {
+		message = message.replace("<1>", osujmNewLocationModel.getApplicantName());
+		message = message.replace("<2>", osujmNewLocationModel.getApplicationNumber());
+		message = message.replace("<3>", BookingsConstants.NLUJM_BOOKING_TYPE);
+		message = message.replace("<4>", applicationStatus);
+		return message;
+	}
+	
+	/**
+	 * Gets the updated msg.
+	 *
+	 * @param osujmNewLocationModel the osujm new location model
+	 * @param message the message
+	 * @param applicationStatus the application status
+	 * @return the updated msg
+	 */
+	private String getUpdatedMsg(OsujmNewLocationModel osujmNewLocationModel, String message, String applicationStatus) {
 		message = message.replace("<1>", osujmNewLocationModel.getApplicantName());
 		message = message.replace("<2>", osujmNewLocationModel.getApplicationNumber());
 		message = message.replace("<3>", BookingsConstants.NLUJM_BOOKING_TYPE);
