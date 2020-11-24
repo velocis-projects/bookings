@@ -281,13 +281,45 @@ public class NotificationUtil {
 	 * @param localizationMessage the localization message
 	 * @return the customized msg for driver
 	 */
-	public String getCustomizedMsgForDriver(RequestInfo requestInfo, BookingsModel bookingsModel, String localizationMessage) {
+	public String getCustomizedMsgForDriver(BookingsModel bookingsModel, String localizationMessage) {
 		String message = null, messageTemplate;
 		messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_DRIVER, localizationMessage);
 		message = getDriverMsg(bookingsModel, messageTemplate);
 		return message;
 	}
 	
+	/**
+	 * Gets the customized msg for approver.
+	 *
+	 * @param requestInfo the request info
+	 * @param applicationNumber the application number
+	 * @param bookingType the booking type
+	 * @param localizationMessage the localization message
+	 * @param userName the user name
+	 * @return the customized msg for approver
+	 */
+	public String getCustomizedMsgForApprover(String applicationNumber, String bookingType, String localizationMessage, String userName) {
+		String message = null, messageTemplate;
+		messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_APPROVER_MSG, localizationMessage);
+		message = getAppoverMsg(userName, bookingType, applicationNumber, messageTemplate);
+		return message;
+	}
+	
+	/**
+	 * Gets the mail customized msg for approver.
+	 *
+	 * @param applicationNumber the application number
+	 * @param bookingType the booking type
+	 * @param localizationMessage the localization message
+	 * @param userName the user name
+	 * @return the mail customized msg for approver
+	 */
+	public String getMailCustomizedMsgForApprover(String applicationNumber, String bookingType, String localizationMessage, String userName) {
+		String message = null, messageTemplate;
+		messageTemplate = getMessageTemplate(BookingsConstants.MAIL_NOTIFICATION_APPROVER_MSG, localizationMessage);
+		message = getAppoverMsg(userName, bookingType, applicationNumber, messageTemplate);
+		return message;
+	}
 	
 	/**
 	 * Gets the mail customized msg.
@@ -401,7 +433,7 @@ public class NotificationUtil {
 			break;
 			
 		case ACTION_STATUS_PACC_REJECTED:
-			messageTemplate = getMessageTemplate(BookingsConstants.NOTIFICATION_PACC_REJECTED, localizationMessage);
+			messageTemplate = getMessageTemplate(BookingsConstants.MAIL_NOTIFICATION_PACC_REJECTED, localizationMessage);
 			message = getRejectedMsg(bookingsModel, messageTemplate);
 			break;
 
@@ -711,6 +743,22 @@ public class NotificationUtil {
 		message = message.replace("<1>",bookingsModel.getBkDriverName());
 		message = message.replace("<2>", address);
 		message = message.replace("<3>", bookingsModel.getBkMobileNumber());
+		return message;
+	}
+	
+	/**
+	 * Gets the appover msg.
+	 *
+	 * @param userName the user name
+	 * @param bookingType the booking type
+	 * @param applicationNumber the application number
+	 * @param message the message
+	 * @return the appover msg
+	 */
+	private String getAppoverMsg(String userName, String bookingType, String applicationNumber, String message) {
+		message = message.replace("<1>",userName);
+		message = message.replace("<2>", bookingType);
+		message = message.replace("<3>", applicationNumber);
 		return message;
 	}
 	

@@ -158,4 +158,13 @@ public interface CommonRepository extends JpaRepository<BookingsModel, Long> {
 	@Query(value = BookingsQueryBuilder.FIND_APPLICATION_LIST, nativeQuery = true)
 	public List<String> findApplicationList(@Param(BookingsConstants.ACTION) String action, @Param(BookingsConstants.APPROVER) String approver);
 	
+	/**
+	 * Find roles.
+	 *
+	 * @param applicationNumber the application number
+	 * @param action the action
+	 * @return the list
+	 */
+	@Query(value = BookingsQueryBuilder.FIND_ROLES, nativeQuery = true)
+	public List<String> findRoles(@Param(BookingsConstants.APPLICATION_NUMBER) String applicationNumber, @Param(BookingsConstants.ACTION) String action);
 }

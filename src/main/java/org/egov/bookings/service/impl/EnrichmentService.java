@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 import org.egov.bookings.config.BookingsConfiguration;
-import org.egov.bookings.contract.Bill;
-import org.egov.bookings.contract.BillResponse;
 import org.egov.bookings.contract.BookingsRequestKafka;
 import org.egov.bookings.contract.IdResponse;
 import org.egov.bookings.contract.NewLocationKafkaRequest;
@@ -28,13 +26,14 @@ import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
+import org.egov.bookings.model.user.OwnerInfo;
+import org.egov.bookings.model.user.UserDetailResponse;
 import org.egov.bookings.models.demand.Demand;
 import org.egov.bookings.models.demand.DemandDetail;
-import org.egov.bookings.models.demand.GenerateBillCriteria;
 import org.egov.bookings.models.demand.TaxHeadEstimate;
 import org.egov.bookings.repository.BookingsRepository;
+import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsujmNewLocationRepository;
-import org.egov.bookings.repository.impl.BillingServiceRepository;
 import org.egov.bookings.repository.impl.IdGenRepository;
 import org.egov.bookings.service.BookingsCalculatorService;
 import org.egov.bookings.service.BookingsService;
@@ -88,7 +87,18 @@ public class EnrichmentService {
 	/** The osujm new location repository. */
 	@Autowired
 	private OsujmNewLocationRepository osujmNewLocationRepository;
+	
+	/** The common repository. */
+	@Autowired
+	CommonRepository commonRepository;
 
+	/** The bookings service impl. */
+	@Autowired
+	private BookingsServiceImpl bookingsServiceImpl;
+	
+	/** The user service. */
+	@Autowired
+	private UserService userService;
 	
 	
 	/**
@@ -509,6 +519,40 @@ public class EnrichmentService {
 		List<UserDetails> userdetailsList = bookingsService.getAssignee(searchCriteriaFieldsDTO);
 		 if(!BookingsFieldsValidator.isNullOrEmpty(userdetailsList))
 		 bookingsRequest.getBookingsModel().setAssignee(userdetailsList.get(0).getUuid());
+	}
+
+	/**
+	 * Enrich assignee.
+	 *
+	 * @param bookingsRequest the bookings request
+	 */
+	public void enrichAssignee(BookingsRequest bookingsRequest) {
+		List<String> roleCodes = new ArrayList<>();
+		UserDetailResponse userDetailResponse = new UserDetailResponse();
+		String aplicationNumber = bookingsRequest.getBookingsModel().getBkApplicationNumber();
+		String action = bookingsRequest.getBookingsModel().getBkAction();
+		if(!BookingsFieldsValidator.isNullOrEmpty(aplicationNumber) && !BookingsFieldsValidator.isNullOrEmpty(action)) {
+			List<String> roles = commonRepository.findRoles(aplicationNumber, action);
+			if(!BookingsFieldsValidator.isNullOrEmpty(roles)) {
+				String approverName = roles.get(0);
+				String[] approverArray = approverName.split(",");
+				if (!BookingsFieldsValidator.isNullOrEmpty(approverArray)) {
+					for (String approver : approverArray) {
+						if (!BookingsConstants.CITIZEN.equals(approver)) {
+							roleCodes.add(approver);
+						}
+					}
+					if (!BookingsFieldsValidator.isNullOrEmpty(roleCodes)) {
+						StringBuilder url = bookingsServiceImpl.prepareUrlForUserList();
+						userDetailResponse = userService.getUserSearchDetails(roleCodes, url, bookingsRequest.getRequestInfo());
+					}
+					if (!BookingsFieldsValidator.isNullOrEmpty(userDetailResponse)) {
+						List<OwnerInfo> userList = userDetailResponse.getUser();
+						bookingsRequest.setUser(userList.get(0));
+					}
+				}
+			}
+		}
 	}
 
 

@@ -137,8 +137,16 @@ public class BookingNotificationService {
 		mobileNumberToOwner.remove(bookingsModel.getBkMobileNumber());
 		if(BookingsConstants.BUSINESS_SERVICE_BWT.equals(bookingsModel.getBusinessService()) 
 				&& BookingsConstants.ACTION_STATUS_PENDINGUPDATE.equals((bookingsModel.getBkAction() + "_" + bookingsModel.getBkApplicationStatus()))) {
-			message = util.getCustomizedMsgForDriver(request.getRequestInfo(), bookingsModel, localizationMessages);
+			message = util.getCustomizedMsgForDriver(bookingsModel, localizationMessages);
 			mobileNumberToOwner.put(bookingsModel.getBkContactNo(), bookingsModel.getBkDriverName());
+			smsRequests.addAll(util.createSMSRequest(message, mobileNumberToOwner));
+		}
+		
+		// When Applicant submit application of OSBM booking, then SMS notification send to approver of OSBM.
+		if(!BookingsFieldsValidator.isNullOrEmpty(request.getUser())) {
+			mobileNumberToOwner.remove(bookingsModel.getBkMobileNumber());
+			mobileNumberToOwner.put(request.getUser().getMobileNumber(), request.getUser().getUserName());
+			message = util.getCustomizedMsgForApprover(bookingsModel.getBkApplicationNumber(), bookingsModel.getBkBookingType(), localizationMessages, request.getUser().getUserName());
 			smsRequests.addAll(util.createSMSRequest(message, mobileNumberToOwner));
 		}
 		
@@ -159,7 +167,7 @@ public class BookingNotificationService {
 			emailIdToOwner.put(bookingsModel.getBkEmail(), bookingsModel.getBkApplicantName());
 		String businessService = bookingsModel.getBusinessService();
 		String message = null;
-		String localizationMessages;
+		String localizationMessages = "";
 		switch (businessService) {
 		case BUSINESS_SERVICE_OSBM:
 		case BUSINESS_SERVICE_BWT:
@@ -186,6 +194,14 @@ public class BookingNotificationService {
 			emailRequests.addAll(util.createEMAILRequest(message, emailIdToOwner, attachments));
 		}
 		else {
+			emailRequests.addAll(util.createEMAILRequest(message, emailIdToOwner));
+		}
+		
+		// When Applicant submit application of OSBM booking, then mail notification send to approver of OSBM.
+		if(!BookingsFieldsValidator.isNullOrEmpty(request.getUser())) {
+			emailIdToOwner.remove(bookingsModel.getBkEmail());
+			emailIdToOwner.put(request.getUser().getEmailId(), request.getUser().getUserName());
+			message = util.getMailCustomizedMsgForApprover(bookingsModel.getBkApplicationNumber(), bookingsModel.getBkBookingType(), localizationMessages, request.getUser().getUserName());
 			emailRequests.addAll(util.createEMAILRequest(message, emailIdToOwner));
 		}
 	}

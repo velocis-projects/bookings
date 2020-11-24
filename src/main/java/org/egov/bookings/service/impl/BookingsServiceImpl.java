@@ -585,6 +585,10 @@ public class BookingsServiceImpl implements BookingsService {
 		if (BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
 				&& !BookingsConstants.BUSINESS_SERVICE_GFCP.equals(businessService))
 			enrichmentService.enrichBookingsAssignee(bookingsRequest);
+		
+		if (BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction()) && !BookingsConstants.BUSINESS_SERVICE_OSBM.equals(businessService)) {
+			enrichmentService.enrichAssignee(bookingsRequest);
+		}
 
 		if (config.getIsExternalWorkFlowEnabled())
 			workflowIntegrator.callWorkFlow(bookingsRequest);
