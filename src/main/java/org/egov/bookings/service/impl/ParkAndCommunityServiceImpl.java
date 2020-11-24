@@ -147,7 +147,8 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 		if (!BookingsConstants.APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
 				&& !BookingsConstants.OFFLINE_APPLY.equals(bookingsRequest.getBookingsModel().getBkAction())
 				&& BookingsConstants.BUSINESS_SERVICE_PACC.equals(businessService)
-				&& !BookingsConstants.PACC_ACTION_CANCEL.equals(bookingsRequest.getBookingsModel().getBkAction())) {
+				&& !BookingsConstants.PACC_ACTION_CANCEL.equals(bookingsRequest.getBookingsModel().getBkAction())
+				&& !BookingsConstants.PACC_ACTION_MODIFY.equals(bookingsRequest.getBookingsModel().getBkAction())) {
 			bookingsModel = enrichmentService.enrichPaccDetails(bookingsRequest);
 			bookingsRequest.setBookingsModel(bookingsModel);
 			BookingsRequestKafka kafkaBookingRequest = enrichmentService.enrichForKafka(bookingsRequest);

@@ -582,31 +582,4 @@ public class BookingsFieldsValidator {
 		}
 		
 	}
-
-	public void validatePACCDemandRequest(BookingsRequest bookingsRequest) {
-		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest)) {
-			throw new IllegalArgumentException("Invalid Booking Request");
-		}
-
-		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
-			throw new IllegalArgumentException("Invalid Booking Model object");
-		}
-
-		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getRequestInfo())) {
-			throw new IllegalArgumentException("Invalid Request Info");
-		}
-
-		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBusinessService())) {
-			throw new IllegalArgumentException("Invalid Business Service");
-		}
-		
-		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getTenantId())) {
-			throw new IllegalArgumentException("Invalid Tenant Id");
-		}
-		
-		if (BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel().getBkApplicationNumber())) {
-			throw new IllegalArgumentException("Invalid Application Number");
-		}
-		
-	}
 }

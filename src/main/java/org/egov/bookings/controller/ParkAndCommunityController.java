@@ -49,11 +49,10 @@ public class ParkAndCommunityController {
 	/** The bookings fields validator. */
 	@Autowired
 	private BookingsFieldsValidator bookingsFieldsValidator;
-	
+
 	@Autowired
 	private DemandService demandService;
 
-	
 	/**
 	 * Creates the park and community booking.
 	 *
@@ -111,10 +110,11 @@ public class ParkAndCommunityController {
 	 * @return the response entity
 	 */
 	@PostMapping("/master/_fetch")
-	private ResponseEntity<?> fetchParkCommunityMaster(@RequestBody ParkCommunityFeeMasterRequest parkCommunityFeeMasterRequest) {
+	private ResponseEntity<?> fetchParkCommunityMaster(
+			@RequestBody ParkCommunityFeeMasterRequest parkCommunityFeeMasterRequest) {
 
 		bookingsFieldsValidator.validateParkAndCommunityMasterRequest(parkCommunityFeeMasterRequest);
-		
+
 		List<ParkCommunityHallV1MasterModel> parkCommunityHallV1MasterList = parkAndCommunityService
 				.fetchParkCommunityMaster(parkCommunityFeeMasterRequest);
 
@@ -132,10 +132,9 @@ public class ParkAndCommunityController {
 		return ResponseEntity.ok(rs);
 	}
 
-	
-	
 	@PostMapping("/availability/_search")
-	private ResponseEntity<?> availabilitySearch(@RequestBody ParkAndCommunitySearchCriteria parkAndCommunitySearchCriteria) {
+	private ResponseEntity<?> availabilitySearch(
+			@RequestBody ParkAndCommunitySearchCriteria parkAndCommunitySearchCriteria) {
 
 		bookingsFieldsValidator.validatePACCSearchCriteria(parkAndCommunitySearchCriteria);
 		Set<AvailabilityResponse> parkCommunityHallV1MasterList = parkAndCommunityService
@@ -153,54 +152,32 @@ public class ParkAndCommunityController {
 
 		return ResponseEntity.ok(rs);
 	}
-	
-	
+
 	@PostMapping("/booked/dates/_search")
-	private ResponseEntity<?> fetchBookedDates(
-			@RequestBody BookingsRequest bookingsRequest) {
-		
+	private ResponseEntity<?> fetchBookedDates(@RequestBody BookingsRequest bookingsRequest) {
+
 		bookingsFieldsValidator.validateGrndAvailabilityRequest(bookingsRequest);
-		
-		
+
 		Set<Date> res = parkAndCommunityService.fetchBookedDates(bookingsRequest);
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");
 		rs.setMessage("Already Booked Dates");
 		rs.setData(res);
-		
+
 		return ResponseEntity.ok(rs);
 	}
 
-	
 	@PostMapping("/amount/_fetch")
-	private ResponseEntity<?> fetchAmount(
-			@RequestBody ParkCommunityFeeMasterRequest parkCommunityFeeMasterRequest) {
-		
-		//bookingsFieldsValidator.validateGrndAvailabilityRequest(bookingsRequest);
-		
-		
+	private ResponseEntity<?> fetchAmount(@RequestBody ParkCommunityFeeMasterRequest parkCommunityFeeMasterRequest) {
+
+		// bookingsFieldsValidator.validateGrndAvailabilityRequest(bookingsRequest);
+
 		ParkCommunityFeeMasterResponse res = parkAndCommunityService.fetchAmount(parkCommunityFeeMasterRequest);
 		ResponseModel rs = new ResponseModel();
 		rs.setStatus("200");
 		rs.setMessage("Amount Fetched");
 		rs.setData(res);
-		
+
 		return ResponseEntity.ok(rs);
 	}
-	
-	@PostMapping("/demand/_update")
-	private ResponseEntity<?> updateDemand(
-			@RequestBody BookingsRequest bookingsRequest) {
-		
-		bookingsFieldsValidator.validatePACCDemandRequest(bookingsRequest);
-		
-		
-		demandService.updateDemand(bookingsRequest);
-		ResponseModel rs = new ResponseModel();
-			rs.setStatus("200");
-			rs.setMessage("Success");
-		return ResponseEntity.ok(rs);
-	}
-	
-	
 }

@@ -828,4 +828,6 @@ public class BookingsConstants {
 	
 	public static final String MAIL_ACTION_STATUS_PACC_REJECTED = "bk.m.counter.pacc_reject";
 	
+	public static final String PACC_ACTION_MODIFY = "MODIFY";
+	
 }

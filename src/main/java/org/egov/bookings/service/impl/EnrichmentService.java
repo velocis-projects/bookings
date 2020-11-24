@@ -215,10 +215,12 @@ public class EnrichmentService {
 	 */
 	public void enrichBookingsDetails(BookingsRequest bookingsRequest) {
 		try {
-		bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
-		java.sql.Date date = bookingsUtils.getCurrentSqlDate();
-		bookingsRequest.getBookingsModel().setBkDateCreated(date);
-		}catch (Exception e) {
+			if (!BookingsConstants.PACC_RE_INITIATED_ACTION.equals(bookingsRequest.getBookingsModel().getBkAction())) {
+				bookingsRequest.getBookingsModel().setUuid(bookingsRequest.getRequestInfo().getUserInfo().getUuid());
+				java.sql.Date date = bookingsUtils.getCurrentSqlDate();
+				bookingsRequest.getBookingsModel().setBkDateCreated(date);
+			}
+		} catch (Exception e) {
 			throw new CustomException("INVALID_BOOKING_REQUEST", e.getMessage());
 		}
 	}
@@ -348,8 +350,15 @@ public class EnrichmentService {
 	 */
 	public BigDecimal extractDaysBetweenTwoDates(BookingsRequest bookingsRequest) {
 			try {
-				LocalDate dateBefore = LocalDate.parse(bookingsRequest.getBookingsModel().getBkFromDate()+"");
-				LocalDate dateAfter = LocalDate.parse(bookingsRequest.getBookingsModel().getBkToDate()+"");
+				LocalDate dateBefore = null;
+				LocalDate dateAfter = null;
+				if(BookingsConstants.PACC_RE_INITIATED_ACTION.equals(bookingsRequest.getBookingsModel().getBkAction())) {
+				 dateBefore = LocalDate.parse(bookingsRequest.getBookingsModel().getBkStartingDate()+"");
+				 dateAfter = LocalDate.parse(bookingsRequest.getBookingsModel().getBkEndingDate()+"");
+				}else {
+					dateBefore = LocalDate.parse(bookingsRequest.getBookingsModel().getBkFromDate()+"");
+					dateAfter = LocalDate.parse(bookingsRequest.getBookingsModel().getBkToDate()+"");	
+				}
 				long noOfDaysBetween = ChronoUnit.DAYS.between(dateBefore, dateAfter);
 				long totalDays = noOfDaysBetween+1;
 				BigDecimal finalAmount = BigDecimal.valueOf(totalDays);
