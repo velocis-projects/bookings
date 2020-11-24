@@ -24,6 +24,7 @@ import org.egov.bookings.contract.TaxHeadMasterFields;
 import org.egov.bookings.contract.UserDetails;
 import org.egov.bookings.dto.SearchCriteriaFieldsDTO;
 import org.egov.bookings.model.BookingsModel;
+import org.egov.bookings.model.OsbmApproverModel;
 import org.egov.bookings.model.OsujmNewLocationModel;
 import org.egov.bookings.model.ParkCommunityHallV1MasterModel;
 import org.egov.bookings.model.user.OwnerInfo;
@@ -33,6 +34,7 @@ import org.egov.bookings.models.demand.DemandDetail;
 import org.egov.bookings.models.demand.TaxHeadEstimate;
 import org.egov.bookings.repository.BookingsRepository;
 import org.egov.bookings.repository.CommonRepository;
+import org.egov.bookings.repository.OsbmApproverRepository;
 import org.egov.bookings.repository.OsujmNewLocationRepository;
 import org.egov.bookings.repository.impl.IdGenRepository;
 import org.egov.bookings.service.BookingsCalculatorService;
@@ -99,6 +101,11 @@ public class EnrichmentService {
 	/** The user service. */
 	@Autowired
 	private UserService userService;
+	
+	/** The osbm approver repository. */
+	@Autowired
+	OsbmApproverRepository osbmApproverRepository;
+
 	
 	
 	/**
@@ -534,30 +541,42 @@ public class EnrichmentService {
 	 * Enrich assignee.
 	 *
 	 * @param bookingsRequest the bookings request
+	 * @param bookingsModel the bookings model
 	 */
-	public void enrichAssignee(BookingsRequest bookingsRequest) {
+	public void enrichAssignee(BookingsRequest bookingsRequest, BookingsModel bookingsModel) {
 		List<String> roleCodes = new ArrayList<>();
 		UserDetailResponse userDetailResponse = new UserDetailResponse();
-		String aplicationNumber = bookingsRequest.getBookingsModel().getBkApplicationNumber();
-		String action = bookingsRequest.getBookingsModel().getBkAction();
-		if(!BookingsFieldsValidator.isNullOrEmpty(aplicationNumber) && !BookingsFieldsValidator.isNullOrEmpty(action)) {
-			List<String> roles = commonRepository.findRoles(aplicationNumber, action);
-			if(!BookingsFieldsValidator.isNullOrEmpty(roles)) {
-				String approverName = roles.get(0);
-				String[] approverArray = approverName.split(",");
-				if (!BookingsFieldsValidator.isNullOrEmpty(approverArray)) {
-					for (String approver : approverArray) {
-						if (!BookingsConstants.CITIZEN.equals(approver)) {
-							roleCodes.add(approver);
+		String applicationNumber = bookingsModel.getBkApplicationNumber();
+		String action = bookingsModel.getBkAction();
+		String approverName = "";
+		OsbmApproverModel osbmApproverModel = new OsbmApproverModel();
+		if(!BookingsFieldsValidator.isNullOrEmpty(applicationNumber) && !BookingsFieldsValidator.isNullOrEmpty(action)) {
+			List<String> nextState = commonRepository.findNextState(applicationNumber, action);
+			if (!BookingsFieldsValidator.isNullOrEmpty(nextState)) {
+				approverName = commonRepository.findApproverName(nextState.get(0));
+			}
+			String[] approverArray = approverName.split(",");
+			if (!BookingsFieldsValidator.isNullOrEmpty(approverArray)) {
+				for (String approver : approverArray) {
+					if (!BookingsConstants.CITIZEN.equals(approver)) {
+						roleCodes.add(approver);
+					}
+				}
+				if (!BookingsFieldsValidator.isNullOrEmpty(roleCodes)) {
+					StringBuilder url = bookingsServiceImpl.prepareUrlForUserList();
+					userDetailResponse = userService.getUserSearchDetails(roleCodes, url,
+							bookingsRequest.getRequestInfo());
+				}
+				if (!BookingsFieldsValidator.isNullOrEmpty(userDetailResponse)) {
+					List<OwnerInfo> userList = userDetailResponse.getUser();
+					if (!BookingsFieldsValidator.isNullOrEmpty(userList)) {
+						for (int i=0; i<= userList.size(); i++) {
+							osbmApproverModel = osbmApproverRepository.findByUuidAndSector(userList.get(i).getUuid(), bookingsModel.getBkSector());
+							if (!BookingsFieldsValidator.isNullOrEmpty(osbmApproverModel)) {
+								bookingsRequest.setUser(userList.get(i));
+								break;
+							}
 						}
-					}
-					if (!BookingsFieldsValidator.isNullOrEmpty(roleCodes)) {
-						StringBuilder url = bookingsServiceImpl.prepareUrlForUserList();
-						userDetailResponse = userService.getUserSearchDetails(roleCodes, url, bookingsRequest.getRequestInfo());
-					}
-					if (!BookingsFieldsValidator.isNullOrEmpty(userDetailResponse)) {
-						List<OwnerInfo> userList = userDetailResponse.getUser();
-						bookingsRequest.setUser(userList.get(0));
 					}
 				}
 			}
