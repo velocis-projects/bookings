@@ -832,4 +832,6 @@ public class BookingsConstants {
 	
 	public static final String MAIL_NOTIFICATION_APPROVER_MSG = "bk.m.counter.approver_msg";
 	
+	public static final String PACC_ACTION_MODIFY = "MODIFY";
+	
 }
