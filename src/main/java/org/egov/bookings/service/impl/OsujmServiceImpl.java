@@ -1,6 +1,5 @@
 package org.egov.bookings.service.impl;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,7 +18,6 @@ import org.egov.bookings.config.BookingsConfiguration;
 import org.egov.bookings.contract.AvailabilityResponse;
 import org.egov.bookings.contract.JurisdictionAvailabilityRequest;
 import org.egov.bookings.model.BookingsModel;
-import org.egov.bookings.model.OsbmFeeModel;
 import org.egov.bookings.model.OsujmFeeModel;
 import org.egov.bookings.repository.CommonRepository;
 import org.egov.bookings.repository.OsujmFeeRepository;
@@ -126,6 +124,9 @@ public class OsujmServiceImpl implements OsujmService {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.egov.bookings.service.OsujmService#fetchBookedDates(org.egov.bookings.web.models.BookingsRequest)
+	 */
 	@Override
 	public Set<Date> fetchBookedDates(BookingsRequest bookingsRequest) {
 

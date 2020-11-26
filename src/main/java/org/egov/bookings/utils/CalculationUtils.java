@@ -4,13 +4,23 @@ import org.egov.bookings.config.BookingsConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CalculationUtils.
+ */
 @Component
 public class CalculationUtils {
 
+	/** The config. */
 	@Autowired
 	private BookingsConfiguration config;
 	
-	  public String getBillGenerateURI(){
+	  /**
+  	 * Gets the bill generate URI.
+  	 *
+  	 * @return the bill generate URI
+  	 */
+  	public String getBillGenerateURI(){
 	        StringBuilder url = new StringBuilder(config.getBillingHost());
 	        url.append(config.getBillGenerateEndpoint());
 	        url.append("?");
