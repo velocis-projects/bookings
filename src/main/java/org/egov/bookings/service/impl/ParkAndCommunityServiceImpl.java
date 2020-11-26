@@ -161,7 +161,7 @@ public class ParkAndCommunityServiceImpl implements ParkAndCommunityService {
 			//bookingsModel = parkAndCommunityRepository.save(bookingsRequest.getBookingsModel());
 		}
 		if (!BookingsFieldsValidator.isNullOrEmpty(bookingsRequest.getBookingsModel())) {
-			//bookingsProducer.push(config.getUpdateBookingSMSTopic(), bookingsRequest);
+			bookingsProducer.push(config.getUpdateBookingSMSTopic(), bookingsRequest);
 		}
 		return bookingsRequest.getBookingsModel();
 	}
