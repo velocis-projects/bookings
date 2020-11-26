@@ -851,13 +851,16 @@ public class EnrichmentService {
 	 * @param flag 
 	 */
 	public void enrichReInitiatedRequest(BookingsRequest bookingsRequest, boolean flag) {
-		if (BookingsConstants.PACC_RE_INITIATED_ACTION.equals(bookingsRequest.getBookingsModel().getBkAction()) && flag) {
+		if (BookingsConstants.PACC_RE_INITIATED_ACTION.equals(bookingsRequest.getBookingsModel().getBkAction()) && flag
+				&& BookingsConstants.BUSINESS_SERVICE_PACC.equals(bookingsRequest.getBookingsModel().getBusinessService())) {
 			BookingsModel findByBkApplicationNumber = bookingsRepository
 					.findByBkApplicationNumber(bookingsRequest.getBookingsModel().getBkApplicationNumber());
 			bookingsRequest.getBookingsModel().setBkStartingDate(bookingsRequest.getBookingsModel().getBkFromDate());
 			bookingsRequest.getBookingsModel().setBkEndingDate(bookingsRequest.getBookingsModel().getBkToDate());
 			bookingsRequest.getBookingsModel().setBkFromDate(findByBkApplicationNumber.getBkFromDate());
 			bookingsRequest.getBookingsModel().setBkToDate(findByBkApplicationNumber.getBkToDate());
+			bookingsRequest.getBookingsModel().setBkBookingVenue(findByBkApplicationNumber.getBkBookingVenue());
+			bookingsRequest.getBookingsModel().setBkType(bookingsRequest.getBookingsModel().getBkBookingVenue());
 		}
 	}
 
