@@ -570,7 +570,7 @@ public class EnrichmentService {
 				if (!BookingsFieldsValidator.isNullOrEmpty(userDetailResponse)) {
 					List<OwnerInfo> userList = userDetailResponse.getUser();
 					if (!BookingsFieldsValidator.isNullOrEmpty(userList)) {
-						for (int i=0; i<= userList.size(); i++) {
+						for (int i=0; i< userList.size(); i++) {
 							osbmApproverModel = osbmApproverRepository.findByUuidAndSector(userList.get(i).getUuid(), bookingsModel.getBkSector());
 							if (!BookingsFieldsValidator.isNullOrEmpty(osbmApproverModel)) {
 								bookingsRequest.setUser(userList.get(i));

@@ -7,7 +7,7 @@ serviceMaps:
    isTransaction: true
    queryMaps:
    
-       - query: INSERT INTO public.bk_osbm_approver(id, sector, uuid, role_code, created_date, last_modified_date) VALUES(?, ?, ?, ?, ?::timestamp, ?::timestamp);
+       - query: INSERT INTO public.bk_approver(id, sector, uuid, role_code, created_date, last_modified_date) VALUES(?, ?, ?, ?, ?::timestamp, ?::timestamp);
          basePath: ApproverDetails.*
          jsonMaps:
          
@@ -30,7 +30,7 @@ serviceMaps:
    isTransaction: true
    queryMaps:  
    
-       - query: UPDATE public.bk_osbm_approver SET sector=?, uuid=?, role_code=?, last_modified_date=?::timestamp WHERE id=?; 
+       - query: UPDATE public.bk_approver SET sector=?, uuid=?, role_code=?, last_modified_date=?::timestamp WHERE id=?; 
          basePath: ApproverDetails.*
          jsonMaps:
   

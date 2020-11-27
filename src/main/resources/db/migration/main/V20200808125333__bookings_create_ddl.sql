@@ -1,6 +1,5 @@
 CREATE TABLE public.bk_bookings (
 	bk_application_number varchar(255) NOT NULL,
-	bk_account_type varchar(255) NULL,
 	bk_action varchar(255) NULL,
 	bk_actual_delivery_time varchar(255) NULL,
 	bk_add_special_request_details varchar(255) NULL,
@@ -12,11 +11,8 @@ CREATE TABLE public.bk_bookings (
 	bk_approved_by varchar(255) NULL,
 	approver_name varchar(255) NULL,
 	bk_area_required varchar(255) NULL,
-	bk_bank_account_number varchar(255) NULL,
-	bk_bank_name varchar(255) NULL,
 	bk_booking_duration varchar(255) NULL,
 	bk_booking_purpose varchar(255) NULL,
-	bk_booking_reference_number varchar(255) NULL,
 	bk_booking_time varchar(255) NULL,
 	bk_booking_type varchar(255) NULL,
 	bk_booking_venue varchar(255) NULL,
@@ -43,7 +39,6 @@ CREATE TABLE public.bk_bookings (
 	bk_from_date date NULL,
 	bk_house_no varchar(255) NULL,
 	bk_id_proof varchar(255) NULL,
-	bk_ifsc_code varchar(255) NULL,
 	bk_landmark varchar(255) NULL,
 	bk_location varchar(255) NULL,
 	bk_location_change_amount varchar(255) NULL,
@@ -54,8 +49,6 @@ CREATE TABLE public.bk_bookings (
 	bk_normal_water_failure_request varchar(255) NULL,
 	bk_open_space_location varchar(255) NULL,
 	bk_park_or_community_center varchar(255) NULL,
-	bk_payment_date date NULL,
-	bk_payment_receipt_number varchar(255) NULL,
 	bk_payment_status varchar(255) NULL,
 	bk_plot_sketch varchar(255) NULL,
 	bk_property_owner_name varchar(255) NULL,
@@ -84,10 +77,6 @@ CREATE TABLE public.bk_bookings (
 	financial_year varchar(64) NULL,
 	tenant_id varchar(255) NULL,
 	uuid varchar(255) NULL,
-	fromtime varchar(255) NULL,
-	totime varchar(255) NULL,
-	bk_from_time varchar(255) NULL,
-	bk_to_time varchar(255) NULL,
 	CONSTRAINT bk_bookings_pkey PRIMARY KEY (bk_application_number)
 );
 
@@ -112,6 +101,8 @@ CREATE TABLE public.bk_commercial_ground_fee (
 	rate_per_day int8 NULL,
 	created_date timestamp NULL,
 	last_modified_date timestamp NULL,
+	from_date timestamp NULL,
+	to_date timestamp NULL,
 	CONSTRAINT bk_commercial_ground_fee_pkey PRIMARY KEY (id)
 );
 
@@ -125,8 +116,10 @@ CREATE TABLE public.bk_approver (
 	created_date timestamp NULL,
 	last_modified_date timestamp NULL,
 	role_code varchar(255) NULL,
+	user_id int8 NULL,
 	CONSTRAINT bk_approver_pkey PRIMARY KEY (id)
 );
+
 
 
 
@@ -140,9 +133,10 @@ CREATE TABLE public.bk_osbm_fee (
 	village_city varchar(255) NULL,
 	created_date timestamp NULL,
 	last_modified_date timestamp NULL,
+	from_date timestamp NULL,
+	to_date timestamp NULL,
 	CONSTRAINT bk_osbm_fee_pkey PRIMARY KEY (id)
 );
-
 
 
 CREATE TABLE public.bk_osujm_fee (
@@ -154,8 +148,11 @@ CREATE TABLE public.bk_osujm_fee (
 	slab varchar(255) NULL,
 	created_date timestamp NULL,
 	last_modified_date timestamp NULL,
+	from_date timestamp NULL,
+	to_date timestamp NULL,
 	CONSTRAINT bk_osujm_fee_pkey PRIMARY KEY (id)
 );
+
 
 
 
@@ -186,6 +183,10 @@ CREATE TABLE public.bk_park_community_hall_v1 (
 	venue_type varchar(255) NULL,
 	x varchar(255) NULL,
 	y varchar(255) NULL,
+	created_date timestamp NULL,
+	last_modified_date timestamp NULL,
+	from_date timestamp NULL,
+	to_date timestamp NULL,
 	CONSTRAINT bk_park_community_hall_v1_pkey PRIMARY KEY (id)
 );
 
@@ -224,7 +225,6 @@ CREATE TABLE public.bk_osujm_new_location (
 	uuid varchar(255) NULL,
 	CONSTRAINT bk_osujm_new_location_pkey PRIMARY KEY (application_number)
 );
-
 
 
 
